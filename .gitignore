@@ -1,0 +1,160 @@
+
+# /
+/integration-repository
+/build
+
+# /projects/TIPsServices/
+/projects/TIPsServices/build
+/projects/TIPsServices/ext
+/projects/TIPsServices/bin
+
+# /projects/TropixAuth/
+/projects/TropixAuth/ext
+/projects/TropixAuth/bin
+/projects/TropixAuth/build
+/projects/TropixAuth/test-output
+
+# /projects/TropixClient/
+/projects/TropixClient/build
+/projects/TropixClient/ext
+/projects/TropixClient/bin
+/projects/TropixClient/test-output
+/projects/TropixClient/temp-testng-customsuite.xml
+
+# /projects/TropixCommons/
+/projects/TropixCommons/build
+/projects/TropixCommons/ext
+/projects/TropixCommons/bin
+/projects/TropixCommons/temp-testng-customsuite.xml
+/projects/TropixCommons/test-output
+
+# /projects/TropixFiles/
+/projects/TropixFiles/bin
+/projects/TropixFiles/build
+
+# /projects/TropixFunctionalTests/
+/projects/TropixFunctionalTests/ext
+/projects/TropixFunctionalTests/test-output
+/projects/TropixFunctionalTests/bin
+/projects/TropixFunctionalTests/build
+
+# /projects/TropixGalaxy/
+/projects/TropixGalaxy/build
+/projects/TropixGalaxy/ext
+/projects/TropixGalaxy/bin
+/projects/TropixGalaxy/test-output
+/projects/TropixGalaxy/temp-testng-customsuite.xml
+
+# /projects/TropixGrid/
+/projects/TropixGrid/build
+/projects/TropixGrid/ext
+/projects/TropixGrid/bin
+/projects/TropixGrid/test-output
+/projects/TropixGrid/temp-testng-customsuite.xml
+
+# /projects/TropixHttpTransfer/
+/projects/TropixHttpTransfer/build
+/projects/TropixHttpTransfer/ext
+/projects/TropixHttpTransfer/bin
+/projects/TropixHttpTransfer/test-output
+/projects/TropixHttpTransfer/temp-testng-customsuite.xml
+
+# /projects/TropixJobQueue/
+/projects/TropixJobQueue/build
+/projects/TropixJobQueue/ext
+/projects/TropixJobQueue/bin
+/projects/TropixJobQueue/temp-testng-customsuite.xml
+/projects/TropixJobQueue/test-output
+
+# /projects/TropixJobs/
+/projects/TropixJobs/build
+/projects/TropixJobs/ext
+/projects/TropixJobs/bin
+/projects/TropixJobs/test-output
+/projects/TropixJobs/temp-testng-customsuite.xml
+
+# /projects/TropixLabs/
+/projects/TropixLabs/build
+/projects/TropixLabs/ext
+/projects/TropixLabs/bin
+/projects/TropixLabs/test-output
+/projects/TropixLabs/temp-testng-customsuite.xml
+
+# /projects/TropixMessaging/
+/projects/TropixMessaging/activemq-data
+/projects/TropixMessaging/bin
+/projects/TropixMessaging/ext
+/projects/TropixMessaging/test-output
+/projects/TropixMessaging/build
+
+# /projects/TropixPersistence/
+/projects/TropixPersistence/build
+/projects/TropixPersistence/ext
+/projects/TropixPersistence/bin
+/projects/TropixPersistence/temp-testng-customsuite.xml
+/projects/TropixPersistence/test-output
+
+# /projects/TropixProteomics/
+/projects/TropixProteomics/build
+/projects/TropixProteomics/ext
+/projects/TropixProteomics/bin
+/projects/TropixProteomics/test-output
+/projects/TropixProteomics/temp-testng-customsuite.xml
+
+# /projects/TropixProteomicsCore/
+/projects/TropixProteomicsCore/bin
+/projects/TropixProteomicsCore/build
+/projects/TropixProteomicsCore/ext
+/projects/TropixProteomicsCore/test-output
+
+# /projects/TropixSshServer/
+/projects/TropixSshServer/bin
+/projects/TropixSshServer/build
+/projects/TropixSshServer/ext
+/projects/TropixSshServer/test-output
+
+# /projects/TropixStorageClient/
+/projects/TropixStorageClient/build
+/projects/TropixStorageClient/ext
+/projects/TropixStorageClient/bin
+/projects/TropixStorageClient/test-output
+/projects/TropixStorageClient/temp-testng-customsuite.xml
+
+# /projects/TropixStorageCore/
+/projects/TropixStorageCore/build
+/projects/TropixStorageCore/ext
+/projects/TropixStorageCore/bin
+/projects/TropixStorageCore/test-output
+/projects/TropixStorageCore/temp-testng-customsuite.xml
+
+# /projects/TropixStorageService/
+/projects/TropixStorageService/build
+/projects/TropixStorageService/ext
+/projects/TropixStorageService/bin
+/projects/TropixStorageService/test-output
+
+# /projects/TropixUofMModels/
+/projects/TropixUofMModels/build
+/projects/TropixUofMModels/ext
+/projects/TropixUofMModels/bin
+/projects/TropixUofMModels/test-output
+/projects/TropixUofMModels/temp-testng-customsuite.xml
+
+# /projects/TropixWebGui/
+/projects/TropixWebGui/build
+/projects/TropixWebGui/ext
+/projects/TropixWebGui/bin
+/projects/TropixWebGui/test-output
+/projects/TropixWebGui/temp-testng-customsuite.xml
+/projects/TropixWebGui/all.warn
+/projects/TropixWebGui/spring.info
+/projects/TropixWebGui/tropix.debug
+/projects/TropixWebGui/tropix.info
+/projects/TropixWebGui/tropix.trace
+/projects/TropixWebGui/tropix.warn
+
+# /tools/
+/tools/ws-core
+/tools/tomcat
+/tools/tomcat.zip
+/tools/ws-core.zip
