@@ -18,11 +18,9 @@
       <pathelement path="${build.classes.dir}/impl" />
       <path refid="ivy.path" />
       <path refid="source.classpath" />
-      <path refid="ext.globus.classpath" />
     </path>
     <path id="test.classpath">
       <pathelement path="${build.test.classes.dir}" /> 
-
       <pathelement path="${build.classes.dir}/test" />
       <pathelement path="${resources.dir}/test" />
       <path refid="compile.classpath" />
