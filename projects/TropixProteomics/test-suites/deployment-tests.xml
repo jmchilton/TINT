@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Deployment Tests" verbose="1" >
+  <test name="deployment">
+    <groups>
+      <run><include name="deployment" /></run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.proteomics" />
+    </packages>
+  </test>
+</suite>

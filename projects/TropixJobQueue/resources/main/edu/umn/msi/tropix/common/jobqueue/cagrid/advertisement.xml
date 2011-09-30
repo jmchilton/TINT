@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config/> 
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="advertise.index.service.urls" value="http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService" />
+        <entry key="advertise.container.url" value="" />
+        <entry key="advertise.container.hostname" value="" />
+        <entry key="advertise.container.scheme" value="" />
+        <entry key="advertise.container.port" value="0" />
+        <entry key="advertise.perform" value="true" />
+      </map>
+    </property>
+  </bean>
+
+  <bean class="edu.umn.msi.cagrid.introduce.interfaces.spring.client.Advertiser">
+    <property name="perform" value="${advertise.perform}" />  
+    <property name="indexServices" value="${advertise.index.service.urls}" />
+    <property name="containerScheme" value="${advertise.container.scheme}" />
+    <property name="containerHostname" value="${advertise.container.hostname}" />
+    <property name="containerPort" value="${advertise.container.port}" />
+    <!-- TODO: This must be set last, otherwise other commands overwrite this... -->              
+    <property name="containerUrl" value="${advertise.container.url}" />
+  </bean>    
+  
+</beans>

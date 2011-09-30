@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models.sequest">
+	<class name="SequestParameters" table="SEQUEST_PARAMETERS" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="PARAMETERS_ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the SequestParameters class -->
+		<property name="enzymeName" type="string" column="ENZYME_NAME"/>
+		<property name="enzymeLimit" type="string" column="ENZYME_LIMIT"/>
+		<property name="enzymeCTerm" type="boolean" column="ENZYME_C_TERM"/>
+		<property name="enzymeCleave" type="string" column="ENZYME_CLEAVE"/>
+		<property name="enzymeNoCleave" type="string" column="ENZYME_NO_CLEAVE"/>
+		<property name="peptideMassTolerance" type="double" column="PEPTIDE_MASS_TOLERANCE"/>
+		<property name="peptideMassUnits" type="string" column="PEPTIDE_MASS_UNITS"/>
+		<property name="fragmentMassTolerance" type="double" column="FRAGMENT_MASS_TOLERANCE"/>
+		<property name="massTypeFragment" type="string" column="MASS_TYPE_FRAGMENT"/>
+		<property name="internalCleavageSites" type="integer" column="INTERNAL_CLEAVAGE_SITES"/>
+		<property name="addG" type="double" column="ADD_G"/>
+		<property name="addS" type="double" column="ADD_S"/>
+		<property name="addP" type="double" column="ADD_P"/>
+		<property name="addV" type="double" column="ADD_V"/>
+		<property name="addT" type="double" column="ADD_T"/>
+		<property name="addC" type="double" column="ADD_C"/>
+		<property name="addL" type="double" column="ADD_L"/>
+		<property name="addI" type="double" column="ADD_I"/>
+		<property name="addX" type="double" column="ADD_X"/>
+		<property name="addN" type="double" column="ADD_N"/>
+		<property name="addO" type="double" column="ADD_O"/>
+		<property name="addB" type="double" column="ADD_B"/>
+		<property name="addD" type="double" column="ADD_D"/>
+		<property name="addQ" type="double" column="ADD_Q"/>
+		<property name="addK" type="double" column="ADD_K"/>
+		<property name="addZ" type="double" column="ADD_Z"/>
+		<property name="addE" type="double" column="ADD_E"/>
+		<property name="addM" type="double" column="ADD_M"/>
+		<property name="addH" type="double" column="ADD_H"/>
+		<property name="addF" type="double" column="ADD_F"/>
+		<property name="addR" type="double" column="ADD_R"/>
+		<property name="addY" type="double" column="ADD_Y"/>
+		<property name="addW" type="double" column="ADD_W"/>
+		<property name="addCTermPeptide" type="double" column="ADD_C_TERM_PEPTIDE"/>
+		<property name="addNTermPeptide" type="double" column="ADD_N_TERM_PEPTIDE"/>
+		<property name="addCTermProtein" type="double" column="ADD_C_TERM_PROTEIN"/>
+		<property name="addNTermProtein" type="double" column="ADD_N_TERM_PROTEIN"/>
+		<property name="diffSearch1Residue" type="string" column="DIFF_SEARCH_1_RESIDUE"/>
+		<property name="diffSearch2Residue" type="string" column="DIFF_SEARCH_2_RESIDUE"/>
+		<property name="diffSearch3Residue" type="string" column="DIFF_SEARCH_3_RESIDUE"/>
+		<property name="diffSearch4Residue" type="string" column="DIFF_SEARCH_4_RESIDUE"/>
+		<property name="diffSearch5Residue" type="string" column="DIFF_SEARCH_5_RESIDUE"/>
+		<property name="diffSearch6Residue" type="string" column="DIFF_SEARCH_6_RESIDUE"/>
+		<property name="diffSearch1Value" type="double" column="DIFF_SEARCH_1_VALUE"/>
+		<property name="diffSearch2Value" type="double" column="DIFF_SEARCH_2_VALUE"/>
+		<property name="diffSearch3Value" type="double" column="DIFF_SEARCH_3_VALUE"/>
+		<property name="diffSearch4Value" type="double" column="DIFF_SEARCH_4_VALUE"/>
+		<property name="diffSearch5Value" type="double" column="DIFF_SEARCH_5_VALUE"/>
+		<property name="diffSearch6Value" type="double" column="DIFF_SEARCH_6_VALUE"/>
+		<property name="numOutputLines" type="integer" column="NUM_OUTPUT_LINES"/>
+		<property name="numDescriptionLines" type="integer" column="NUM_DESCRIPTION_LINES"/>
+		<property name="numResults" type="integer" column="NUM_RESULTS"/>
+		<property name="showFragmentIons" type="boolean" column="SHOW_FRAGMENT_IONS"/>
+		<property name="maxNumDifferentialsPerPeptide" type="integer" column="MAX_NUM_DIFFERENTIALS_PER_PEPTIDE"/>
+		<property name="normalizeXCorr" type="boolean" column="NORMALIZE_X_CORR"/>
+		<property name="removePrecursorPeak" type="boolean" column="REMOVE_PRECURSOR_PEAK"/>
+		<property name="ionCutoffPercentage" type="double" column="ION_CUTOFF_PERCENTAGE"/>
+		<property name="matchPeakCount" type="integer" column="MATCH_PEAK_COUNT"/>
+		<property name="matchPeakAllowedError" type="integer" column="MATCH_PEAK_ALLOWED_ERROR"/>
+		<property name="matchPeakTolerance" type="double" column="MATCH_PEAK_TOLERANCE"/>
+		<property name="massTypeParent" type="string" column="MASS_TYPE_PARENT"/>
+		<property name="digestMassRangeLower" type="double" column="DIGEST_MASS_RANGE_LOWER"/>
+		<property name="digestMassRangeUpper" type="double" column="DIGEST_MASS_RANGE_UPPER"/>
+		<property name="proteinMassFilterLower" type="integer" column="PROTEIN_MASS_FILTER_LOWER"/>
+		<property name="proteinMassFilterUpper" type="integer" column="PROTEIN_MASS_FILTER_UPPER"/>
+		<property name="printDuplicateReferences" type="integer" column="PRINT_DUPLICATE_REFERENCES"/>
+		<property name="ionSeriesNA" type="boolean" column="ION_SERIES_NA"/>
+		<property name="ionSeriesNB" type="boolean" column="ION_SERIES_NB"/>
+		<property name="ionSeriesA" type="double" column="ION_SERIES_A"/>
+		<property name="ionSeriesB" type="double" column="ION_SERIES_B"/>
+		<property name="ionSeriesC" type="double" column="ION_SERIES_C"/>
+		<property name="ionSeriesD" type="double" column="ION_SERIES_D"/>
+		<property name="ionSeriesV" type="double" column="ION_SERIES_V"/>
+		<property name="ionSeriesW" type="double" column="ION_SERIES_W"/>
+		<property name="ionSeriesX" type="double" column="ION_SERIES_X"/>
+		<property name="ionSeriesY" type="double" column="ION_SERIES_Y"/>
+		<property name="ionSeriesZ" type="double" column="ION_SERIES_Z"/>
+		<property name="diffSearchN" type="double" column="DIFF_SEARCH_N"/>
+		<property name="diffSearchC" type="double" column="DIFF_SEARCH_C"/>
+		<property name="ionSeriesNY" type="boolean" column="ION_SERIES_NY"/>
+		<property name="secondaryDatabaseId" type="string" column="SECONDARY_DATABASE_ID"/>
+		<property name="nucleotideReadingFrame" type="integer" column="NUCLEOTIDE_READING_FRAME"/>
+		<property name="partialSequence" type="string" column="PARTIAL_SEQUENCE"/>
+		<property name="sequenceHeaderFilter" type="string" column="SEQUENCE_HEADER_FILTER"/>
+		<property name="addA" type="double" column="ADD_A"/>
+		<property name="addJ" type="double" column="ADD_J"/>
+		<property name="addU" type="double" column="ADD_U"/>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/training"
+            xmlns="http://msi.umn.edu/tropix/proteomics/itraqquantitation/training"
+            elementFormDefault="qualified">
+
+  <xsd:element name="quantificationTrainingOptions">
+    <xsd:complexType>
+      <xsd:attribute name="numBins" type="xsd:int" />
+      <xsd:attribute name="i113Proportion" type="xsd:double" />
+      <xsd:attribute name="i114Proportion" type="xsd:double" />
+      <xsd:attribute name="i115Proportion" type="xsd:double" />
+      <xsd:attribute name="i116Proportion" type="xsd:double" />
+      <xsd:attribute name="i117Proportion" type="xsd:double" />
+      <xsd:attribute name="i118Proportion" type="xsd:double" />
+      <xsd:attribute name="i119Proportion" type="xsd:double" />
+      <xsd:attribute name="i121Proportion" type="xsd:double" />
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

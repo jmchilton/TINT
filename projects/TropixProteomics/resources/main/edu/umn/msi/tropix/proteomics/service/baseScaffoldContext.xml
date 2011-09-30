@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="scaffoldConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="scaffold" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="scaffold" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="scaffold.staging.type" value="system" />
+        <entry key="scaffold.execution.type" value="system" />
+        <entry key="scaffold.version" value="3" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="scaffoldApplicationDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
+    <property name="properties">
+      <map>
+        <entry key="scaffold.path" value="${scaffold.path}" />
+      </map>
+    </property>
+    <property name="deployer">
+      <bean class="edu.umn.msi.tropix.proteomics.scaffold.impl.FakeScaffoldDeployerImpl">
+        <property name="deploymentDirectory" value="file:${user.home}/.tropix/scaffold" />
+      </bean>
+    </property>
+  </bean>
+    
+  <bean id="scaffoldJobFactory" class="edu.umn.msi.tropix.proteomics.scaffold.impl.ScaffoldJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="applicationPath">
+      <bean factory-bean="scaffoldApplicationDeployerProperties" factory-method="get" />
+    </property>
+    <property name="credentialedStagingDirectoryFactory" ref="${scaffold.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${scaffold.execution.type}" />            
+  </bean>  
+
+  <bean id="scaffoldService" class="edu.umn.msi.tropix.proteomics.service.impl.ScaffoldJobQueueContextImpl" parent="queueServiceParent">
+    <property name="scaffoldJobBuilder" ref="scaffoldJobFactory" />
+  </bean>
+          
+</beans>

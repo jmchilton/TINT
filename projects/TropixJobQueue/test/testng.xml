@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Job Queue Test Suite" verbose="2" >
+  <test name="Job Queue Test">
+    <groups>
+      <run>
+        <include name="unit" />
+        <include name="persistent" />
+      </run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.common.jobqueue.*" />
+   </packages>
+ </test>
+</suite>
+

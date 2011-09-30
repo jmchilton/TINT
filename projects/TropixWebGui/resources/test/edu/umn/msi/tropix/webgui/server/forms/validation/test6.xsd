@@ -1,0 +1,23 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test6"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test6"
+      elementFormDefault="qualified">
+      
+  <xsd:simpleType name="coolInt">
+    <xsd:restriction base="xsd:int">
+      <xsd:minExclusive value="0" />
+      <xsd:maxExclusive value="100" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coolDouble">
+    <xsd:restriction base="xsd:double">
+      <xsd:minExclusive value="0.0" />
+      <xsd:maxExclusive value="100.0" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+  
+  <xsd:element name="theInt" type="coolInt" />
+  <xsd:element name="theDouble" type="coolDouble" />
+  
+</xsd:schema>

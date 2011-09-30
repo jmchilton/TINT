@@ -1,0 +1,13 @@
+<ns1:JobDescriptionType xsi:type="ns1:JobDescriptionType" xmlns:ns1="http://www.globus.org/namespaces/2004/10/gram/job/description" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <ns1:executable xsi:type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema">/home/john/test.sh</ns1:executable>
+ <ns1:stdout>/tmp/testoutput</ns1:stdout>
+<!-- 
+ <ns1:directory xsi:type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema">/opt/parallel_tandem_08-02-01-3/</ns1:directory>
+ <ns1:argument xsi:type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema">/tmp/4/input.xml</ns1:argument>
+ <ns1:extensions xsi:type="ns1:ExtensionsType">
+  <jobType xsi:type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema">xtandem</jobType>
+  <stagingDirectory xsi:type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema">/tmp/4</stagingDirectory>
+ </ns1:extensions>
+-->
+</ns1:JobDescriptionType>
+    

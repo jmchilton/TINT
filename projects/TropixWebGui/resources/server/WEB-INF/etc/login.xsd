@@ -1,0 +1,7 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/login"
+      xmlns="http://msi.umn.edu/tropix/webgui/login"
+      elementFormDefault="qualified">
+  <xsd:element name="username" type="xsd:string" />
+  <xsd:element name="password" type="xsd:string" />    
+</xsd:schema>

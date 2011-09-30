@@ -1,0 +1,17 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+<verticalPanel>
+  <entry>
+    <label text="Username" />
+  </entry>
+  <entry>
+    <input widget="textbox" parameter="username" />
+  </entry>
+  <entry>
+    <label text="Password" />
+  </entry>
+  <entry>
+    <input widget="password" parameter="password" />
+  </entry>
+</verticalPanel>
+</formConfiguration>

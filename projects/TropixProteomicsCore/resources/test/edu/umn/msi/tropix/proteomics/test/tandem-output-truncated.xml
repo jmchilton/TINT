@@ -1,0 +1,1105 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="/home/sdml/cagrid/xtandem/bin/tandem-style.xsl"?>
+<bioml xmlns:GAML="http://www.bioml.com/gaml/" label="models from '/project/sequest/tropix/tmp/xtandem/29/data.mzxml'">
+<group id="7209" mh="1815.868090" z="2" rt="PT3797.21S" expect="5.9e-02" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="5.76" maxI="490661" fI="490.661" >
+<protein expect="-122.6" id="7209.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7209.1.1" start="45" end="59" expect="5.9e-02" mh="1815.8687" delta="-0.0006" hyperscore="40.9" nextscore="14.4" y_score="7.0" y_ions="8" b_score="5.8" b_ions="7" pre="ESAK" post="QVID" seq="IEPPDTGLYYDEYLK" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7209.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">2.77346</GAML:attribute>
+<GAML:attribute type="a1">-0.097773</GAML:attribute>
+<GAML:Xdata label="7209.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="43">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7209.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="43">
+729 729 632 468 320 191 142 112 74 64 63 61 60 25 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7209.convolute" type="convolution survival function">
+<GAML:Xdata label="7209.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7209.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+669 669 572 341 171 38 10 0 62 0 0 0 60 3 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7209.b" type="b ion histogram">
+<GAML:Xdata label="7209.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 1 2 3 4 5 6 7 8 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7209.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+247 347 103 29 3 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7209.y" type="y ion histogram">
+<GAML:Xdata label="7209.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
+0 1 2 3 4 5 6 7 8 9 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7209.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="10">
+216 365 142 5 1 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7209 (charge 2)</note>
+<GAML:trace id="7209" label="7209.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1815.87</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7209.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+310.171 424.776 523.53 552.266 653.2 667.28 678.649 739.18 748.624 758.447 769.186 777.318 787.617 789.202 792.033 795.042 823.315 830.57 840.849 852.068 855.315 859.199 868.328 870.906 877.092 890.308 893.474 968.511 970.656 986.588 993.327 1013.51 1019.3 1022.54 1053.83 1068.26 1087.33 1096.6 1145.36 1163.53 1175.41 1218.6 1264.33 1393.48 1427.34 1446.83 1476.75 1556.64 1573.64 1574.67
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7209.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+2 2 2 3 5 2 2 2 3 2 1 13 1000 4 2 2 3 5 2 4 3 2 2 1 5 8 3 2 1 4 3 2 4 2 2 2 2 3 4 4 3 2 8 3 2 3 8 2 8 10
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7066" mh="1815.865893" z="2" rt="PT3736.65S" expect="1.9e-01" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="4.96" maxI="66991.7" fI="66.9917" >
+<protein expect="-122.6" id="7066.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7066.1.1" start="45" end="59" expect="1.9e-01" mh="1815.8687" delta="-0.0028" hyperscore="26.0" nextscore="15.1" y_score="7.8" y_ions="7" b_score="4.8" b_ions="3" pre="ESAK" post="QVID" seq="IEPPDTGLYYDEYLK" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7066.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">3.29236</GAML:attribute>
+<GAML:attribute type="a1">-0.1544</GAML:attribute>
+<GAML:Xdata label="7066.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="28">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7066.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="28">
+794 794 794 624 474 365 256 142 105 63 54 49 41 14 5 1 0 0 0 0 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7066.convolute" type="convolution survival function">
+<GAML:Xdata label="7066.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7066.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+755 755 755 585 435 233 75 18 6 0 0 0 41 3 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7066.b" type="b ion histogram">
+<GAML:Xdata label="7066.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+0 1 2 3 4 5 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7066.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+261 417 100 14 4 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7066.y" type="y ion histogram">
+<GAML:Xdata label="7066.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 1 2 3 4 5 6 7 8 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7066.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+267 361 139 27 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7066 (charge 2)</note>
+<GAML:trace id="7066" label="7066.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1815.87</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7066.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+536.941 552.312 653.522 662.017 667.757 688.212 694.48 697.705 703.931 706.775 717.876 722 728.456 751.692 762.558 778.562 787.614 800.67 808.449 830.533 846.746 849.402 855.885 858.146 859.957 864.615 874.305 877.392 882.384 886.746 890.377 892.356 896.656 899.102 900.449 1022.23 1039.58 1044.37 1065.27 1067.31 1082.19 1088.5 1132.61 1163.48 1175.02 1239.84 1264.74 1298.73 1477.21 1573.76
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7066.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+4 5 6 4 6 5 4 4 4 5 5 4 12 4 7 20 1000 7 5 7 5 5 5 8 5 7 5 10 7 28 22 10 14 25 5 4 5 4 4 4 4 8 4 5 4 4 4 4 4 20
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="3479" mh="1249.570195" z="3" rt="PT2141.6S" expect="4.7e-01" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="5.07" maxI="12393.5" fI="12.3935" >
+<protein expect="-122.6" id="3479.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="3479.1.1" start="161" end="171" expect="4.7e-01" mh="1249.5695" delta="0.0007" hyperscore="27.1" nextscore="24.1" y_score="14.2" y_ions="5" b_score="10.7" b_ions="5" pre="MLIK" post="TRHE" seq="AATSDLEHYDK" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="3479.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">5.62448</GAML:attribute>
+<GAML:attribute type="a1">-0.219915</GAML:attribute>
+<GAML:Xdata label="3479.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="29">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="3479.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="29">
+762 762 762 762 762 762 762 762 758 750 718 680 581 460 323 211 141 78 52 24 17 10 8 0 3 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="3479.convolute" type="convolution survival function">
+<GAML:Xdata label="3479.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="3479.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+765 765 765 765 765 765 765 765 761 747 717 621 365 91 5 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="3479.b" type="b ion histogram">
+<GAML:Xdata label="3479.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="7">
+0 1 2 3 4 5 6 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="3479.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="7">
+52 205 207 200 85 16 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="3479.y" type="y ion histogram">
+<GAML:Xdata label="3479.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 1 2 3 4 5 6 7 8 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="3479.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+67 176 190 216 94 20 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 3479 (charge 3)</note>
+<GAML:trace id="3479" label="3479.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1249.57</GAML:attribute>
+<GAML:attribute type="charge">3</GAML:attribute>
+<GAML:Xdata label="3479.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+143.051 175.083 201.106 214.587 216.196 288.26 294.529 298.803 313.094 329.043 331.17 340.179 342.894 345.238 348.938 352.969 354.916 356.758 360.249 363.965 371.095 372.125 380.248 381.212 387.666 389.322 394.956 396.923 399.222 402.554 405.329 408.27 411.265 428.302 434.475 460.304 472.878 485.76 494.875 503.853 523.767 533.025 543.456 554.304 559.105 571.715 580.692 589.815 594.829 617.064
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="3479.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+46 162 46 53 46 298 47 62 45 82 81 63 143 96 56 48 210 118 85 578 120 117 77 267 478 58 175 699 1000 272 374 319 253 64 60 59 45 52 61 317 89 57 148 936 91 70 492 108 162 53
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7002" mh="1676.765429" z="2" rt="PT3717.18S" expect="1.4e-08" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="5.24" maxI="23072.5" fI="23.0725" >
+<protein expect="-122.6" id="7002.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7002.1.1" start="227" end="240" expect="1.4e-08" mh="1676.7650" delta="0.0004" hyperscore="55.6" nextscore="24.4" y_score="13.0" y_ions="7" b_score="13.7" b_ions="10" pre="PGSK" post="PNDF" seq="DQLKEVWEETDGLD" missed_cleavages="13">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7002.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">5.78445</GAML:attribute>
+<GAML:attribute type="a1">-0.2454</GAML:attribute>
+<GAML:Xdata label="7002.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="58">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+50 51 52 53 54 55 56 57 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7002.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="58">
+4160 4160 4160 4160 4160 4160 4160 3546 3002 2121 1743 1127 767 421 249 152 84 38 18 7 2 0 4 2 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7002.convolute" type="convolution survival function">
+<GAML:Xdata label="7002.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7002.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
+4164 4164 4164 4164 4164 4164 4164 3550 2988 1874 1185 686 408 76 2 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7002.b" type="b ion histogram">
+<GAML:Xdata label="7002.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+0 1 2 3 4 5 6 7 8 9 10 11 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7002.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+1061 2136 756 173 36 1 0 0 0 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7002.y" type="y ion histogram">
+<GAML:Xdata label="7002.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 1 2 3 4 5 6 7 8 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7002.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+1495 2018 578 65 6 1 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7002 (charge 2)</note>
+<GAML:trace id="7002" label="7002.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1676.77</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7002.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+244.232 357.05 520.137 543.521 614.427 627.158 645.1 649.149 672.279 679.223 687.58 707.924 713.31 715.787 732.975 735.394 741.323 754.469 756.418 758.397 763.379 766.143 772.275 778.118 788.746 807.305 813.527 817.384 821.14 829.968 871.341 896.025 899.349 920.319 958.553 964.403 1023.63 1028.46 1031.87 1059.29 1063.42 1070.64 1121.69 1157.41 1192.38 1258.52 1373.52 1415.62 1430.33 1433.67
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7002.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+35 52 78 60 79 42 86 300 43 47 46 53 670 105 114 38 39 77 35 229 300 39 1000 428 64 43 38 41 126 97 40 42 508 34 48 661 38 463 36 50 39 41 40 424 96 99 131 133 90 46
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="6019" mh="1276.601367" z="2" rt="PT3256.45S" expect="5.4e-03" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="4.90" maxI="12810.9" fI="12.8109" >
+<protein expect="-122.6" id="6019.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="6019.1.1" start="227" end="236" expect="5.4e-03" mh="1276.6056" delta="-0.0042" hyperscore="30.7" nextscore="18.7" y_score="10.7" y_ions="3" b_score="12.2" b_ions="7" pre="PGSK" post="DGLD" seq="DQLKEVWEET" missed_cleavages="9">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="6019.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">6.41063</GAML:attribute>
+<GAML:attribute type="a1">-0.282397</GAML:attribute>
+<GAML:Xdata label="6019.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="33">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6019.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="33">
+6649 6649 6649 6649 6649 6649 6649 6649 5346 3564 2862 1945 1308 627 307 175 82 34 19 7 0 0 0 0 0 0 0 0 0 0 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="6019.convolute" type="convolution survival function">
+<GAML:Xdata label="6019.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6019.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="15">
+6650 6650 6650 6650 6650 6650 6650 6650 5347 3371 1981 1196 486 10 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="6019.b" type="b ion histogram">
+<GAML:Xdata label="6019.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 1 2 3 4 5 6 7 8 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6019.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+1809 3387 1172 241 39 1 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="6019.y" type="y ion histogram">
+<GAML:Xdata label="6019.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+0 1 2 3 4 5 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6019.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+2495 3073 940 133 9 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 6019 (charge 2)</note>
+<GAML:trace id="6019" label="6019.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1276.6</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="6019.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+213.3 244.153 342.212 357.248 395.095 442.169 462.288 508.371 509.952 514.511 517.061 522.351 543.231 546.38 562.035 564.139 570.582 575.677 577.339 579.311 584.909 589.105 590.075 600.239 602.195 611.534 614.187 616.58 618.414 620.401 623.247 626.277 627.866 629.847 713.455 731.965 741.948 747.64 791.902 795.317 812.823 833.396 862.37 899.379 948.962 1028.34 1029.4 1031.4 1033.36 1157.42
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6019.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+47 78 69 49 109 63 119 103 97 108 46 44 56 54 98 213 81 61 88 239 62 130 76 54 84 78 75 105 67 538 92 91 53 1000 283 47 43 84 43 60 56 133 294 279 51 125 78 108 69 70
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7396" mh="2490.130529" z="3" rt="PT3877.71S" expect="5.0e-06" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="5.18" maxI="11952.2" fI="11.9522" >
+<protein expect="-122.6" id="7396.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7396.1.1" start="227" end="247" expect="5.0e-06" mh="2490.1307" delta="-0.0002" hyperscore="61.5" nextscore="25.0" y_score="14.6" y_ions="12" b_score="14.5" b_ions="12" pre="PGSK" post="TFFK" seq="DQLKEVWEETDGLDPNDFDPK" missed_cleavages="1">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7396.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">4.66403</GAML:attribute>
+<GAML:attribute type="a1">-0.162171</GAML:attribute>
+<GAML:Xdata label="7396.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="63">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+50 51 52 53 54 55 56 57 58 59 60 61 62 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7396.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="63">
+482 482 482 482 482 482 482 482 482 459 434 389 325 269 210 156 120 95 66 49 24 14 8 2 0 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7396.convolute" type="convolution survival function">
+<GAML:Xdata label="7396.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="18">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7396.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="18">
+489 489 489 489 489 489 489 489 489 466 440 380 277 150 38 6 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7396.b" type="b ion histogram">
+<GAML:Xdata label="7396.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7396.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+56 148 143 71 32 26 8 3 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7396.y" type="y ion histogram">
+<GAML:Xdata label="7396.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7396.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="14">
+70 155 130 73 42 13 2 2 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7396 (charge 3)</note>
+<GAML:trace id="7396" label="7396.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">2490.13</GAML:attribute>
+<GAML:attribute type="charge">3</GAML:attribute>
+<GAML:Xdata label="7396.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+244.222 359.301 474.814 506.151 572.109 589.262 615.441 624.394 629.961 667.594 706.875 713.212 715.786 732.163 760.438 763.456 766.713 772.307 780.596 783.189 786.757 788.836 796.624 809.31 812.801 815.433 818.992 821.143 889.504 899.333 947.362 948.558 960.856 967.424 992.856 1019.34 1028.44 1058.29 1060.36 1066.46 1115.21 1119.61 1123.94 1157.44 1231.6 1232.61 1243.09 1247.44 1258.62 1259.66
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7396.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+164 107 107 98 100 459 126 155 103 133 114 316 157 145 128 424 137 900 223 122 139 113 138 185 166 149 502 369 162 344 1000 349 126 96 97 152 284 126 149 279 515 938 642 374 113 431 103 142 111 123
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7427" mh="2490.137011" z="2" rt="PT3889.75S" expect="4.7e-12" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="3.99" maxI="1747.15" fI="1.74715" >
+<protein expect="-122.6" id="7427.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7427.1.1" start="227" end="247" expect="4.7e-12" mh="2490.1307" delta="0.0063" hyperscore="62.8" nextscore="16.2" y_score="12.9" y_ions="9" b_score="13.2" b_ions="10" pre="PGSK" post="TFFK" seq="DQLKEVWEETDGLDPNDFDPK" missed_cleavages="1">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7427.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">4.66593</GAML:attribute>
+<GAML:attribute type="a1">-0.25472</GAML:attribute>
+<GAML:Xdata label="7427.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="65">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7427.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="65">
+510 510 510 510 510 510 510 410 280 215 132 78 45 24 11 7 4 0 9 4 2 0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7427.convolute" type="convolution survival function">
+<GAML:Xdata label="7427.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7427.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+519 519 519 519 519 519 519 419 283 178 79 36 18 14 4 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7427.b" type="b ion histogram">
+<GAML:Xdata label="7427.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+0 1 2 3 4 5 6 7 8 9 10 11 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7427.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+146 261 92 16 0 0 2 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7427.y" type="y ion histogram">
+<GAML:Xdata label="7427.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+0 1 2 3 4 5 6 7 8 9 10 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7427.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+168 279 54 15 1 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7427 (charge 2)</note>
+<GAML:trace id="7427" label="7427.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">2490.14</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7427.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+506.302 589.348 614.512 685.608 704.305 713.322 832.305 844.291 857.435 874.152 899.496 989.561 996.637 1028.61 1057.59 1066.71 1090.41 1117.43 1124.06 1157.47 1179.5 1188.22 1212.28 1214.33 1219.54 1223.37 1228 1230.31 1232.68 1246.78 1258.65 1334.48 1373.55 1379.22 1441.56 1462.49 1493.44 1543.67 1544.81 1573.7 1588.03 1591.63 1640.54 1658.63 1762.89 1777.66 1805.53 1870.86 1876.79 1984.46
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7427.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+57 225 31 34 48 43 760 53 51 39 50 67 75 118 29 34 51 515 236 79 98 68 29 57 56 41 116 29 140 32 49 48 467 46 35 33 34 138 46 75 33 37 69 1000 28 70 34 30 45 77
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7659" mh="2490.132372" z="2" rt="PT4009.89S" expect="3.9e-08" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="4.47" maxI="5203.98" fI="5.20398" >
+<protein expect="-122.6" id="7659.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7659.1.1" start="227" end="247" expect="3.9e-08" mh="2490.1307" delta="0.0017" hyperscore="71.1" nextscore="17.3" y_score="12.7" y_ions="10" b_score="13.6" b_ions="11" pre="PGSK" post="TFFK" seq="DQLKEVWEETDGLDPNDFDPK" missed_cleavages="1">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7659.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">3.74325</GAML:attribute>
+<GAML:attribute type="a1">-0.156893</GAML:attribute>
+<GAML:Xdata label="7659.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="73">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7659.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="73">
+458 458 458 458 458 458 406 341 277 203 146 101 76 53 39 26 16 11 10 6 4 3 2 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7659.convolute" type="convolution survival function">
+<GAML:Xdata label="7659.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7659.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+461 461 461 461 461 461 409 344 253 146 87 52 33 22 5 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7659.b" type="b ion histogram">
+<GAML:Xdata label="7659.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
+0 1 2 3 4 5 6 7 8 9 10 11 12 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7659.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
+98 230 99 25 7 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7659.y" type="y ion histogram">
+<GAML:Xdata label="7659.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+0 1 2 3 4 5 6 7 8 9 10 11 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7659.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="12">
+143 221 65 26 3 1 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7659 (charge 2)</note>
+<GAML:trace id="7659" label="7659.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">2490.13</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7659.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+502.664 506.319 561.313 589.328 614.367 704.324 713.508 815.479 832.363 871.54 874.248 899.612 929.8 947.388 1028.45 1059.52 1082.89 1114.9 1117.49 1124.25 1129.93 1154.4 1157.49 1179.32 1188.26 1214.46 1219.37 1223.8 1227.7 1232.16 1258.52 1302.7 1333.74 1356.62 1373.55 1462.56 1507.51 1525.09 1526.3 1534.44 1543.6 1574.22 1591.53 1633.42 1641.58 1658.65 1760.65 1777.69 1869.92 1984.7
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7659.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+27 70 20 211 24 103 29 27 674 21 82 56 26 196 89 19 23 23 277 240 26 21 99 136 104 40 51 19 106 25 34 24 25 27 647 39 29 25 65 23 270 37 86 26 56 1000 27 117 20 239
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7996" mh="2264.979785" z="2" rt="PT4171.79S" expect="6.2e-08" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="4.81" maxI="10950.5" fI="10.9505" >
+<protein expect="-122.6" id="7996.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7996.1.1" start="227" end="245" expect="6.2e-08" mh="2264.9830" delta="-0.0032" hyperscore="67.1" nextscore="21.0" y_score="13.0" y_ions="11" b_score="13.4" b_ions="9" pre="PGSK" post="PKTF" seq="DQLKEVWEETDGLDPNDFD" missed_cleavages="18">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7996.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">4.50602</GAML:attribute>
+<GAML:attribute type="a1">-0.174645</GAML:attribute>
+<GAML:Xdata label="7996.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="69">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7996.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="69">
+1961 1961 1961 1961 1961 1961 1950 1405 1163 891 552 394 254 202 121 73 47 25 24 15 13 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7996.convolute" type="convolution survival function">
+<GAML:Xdata label="7996.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7996.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="16">
+1962 1962 1962 1962 1962 1962 1951 1406 1078 761 415 199 74 48 5 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7996.b" type="b ion histogram">
+<GAML:Xdata label="7996.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+0 1 2 3 4 5 6 7 8 9 10 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7996.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+611 1006 272 66 6 0 0 0 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7996.y" type="y ion histogram">
+<GAML:Xdata label="7996.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
+0 1 2 3 4 5 6 7 8 9 10 11 12 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7996.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="13">
+643 943 295 69 10 1 0 0 0 0 0 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7996 (charge 2)</note>
+<GAML:trace id="7996" label="7996.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">2264.98</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7996.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+442.158 589.207 607.283 704.271 713.367 722.253 835.307 892.307 893.448 899.377 956.013 970.563 983.828 991.534 993.532 1007.31 1008.45 1011.71 1028.51 1049.29 1050.29 1057.79 1066.51 1075.53 1083.9 1091.94 1099.94 1101.55 1104.11 1108.36 1115.46 1157.47 1187.55 1219.21 1237.34 1258.52 1268.65 1366.4 1373.47 1374.62 1419.67 1430.32 1525.6 1543.55 1552.43 1640.69 1651.64 1658.66 1780.29 1810.9
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7996.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+48 155 235 29 105 543 25 137 27 201 24 38 24 25 36 92 72 47 194 154 28 78 223 46 194 30 28 29 33 117 100 59 26 30 152 103 24 190 202 102 39 24 57 1000 215 42 23 414 25 27
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="6930" mh="2005.865649" z="2" rt="PT3672.37S" expect="7.7e-09" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="4.66" maxI="4069.28" fI="4.06928" >
+<protein expect="-122.6" id="6930.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="6930.1.1" start="231" end="247" expect="7.7e-09" mh="2005.8662" delta="-0.0005" hyperscore="59.8" nextscore="15.2" y_score="14.2" y_ions="9" b_score="14.1" b_ions="9" pre="DQLK" post="TFFK" seq="EVWEETDGLDPNDFDPK" missed_cleavages="0">
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="6930.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">4.7306</GAML:attribute>
+<GAML:attribute type="a1">-0.214761</GAML:attribute>
+<GAML:Xdata label="6930.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="62">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+50 51 52 53 54 55 56 57 58 59 60 61 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6930.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="62">
+424 424 424 424 424 424 424 424 398 327 251 187 137 96 78 39 13 4 0 14 8 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="6930.convolute" type="convolution survival function">
+<GAML:Xdata label="6930.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="18">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6930.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="18">
+438 438 438 438 438 438 438 438 412 341 252 154 104 72 62 7 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="6930.b" type="b ion histogram">
+<GAML:Xdata label="6930.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+0 1 2 3 4 5 6 7 8 9 10 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6930.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+113 210 88 18 7 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="6930.y" type="y ion histogram">
+<GAML:Xdata label="6930.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+0 1 2 3 4 5 6 7 8 9 10 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6930.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="11">
+159 208 59 10 0 0 0 0 0 2 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 6930 (charge 2)</note>
+<GAML:trace id="6930" label="6930.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">2005.87</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="6930.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+359.202 605.352 621.227 673.413 719.294 756.366 774.409 832.449 871.612 874.755 880.602 889.342 893.516 902.53 921.045 927.86 929.896 938.452 947.272 953.156 955.984 959.383 963.087 971.224 976.509 981.597 985.515 989.268 993.544 1041.3 1059.27 1117.5 1138.27 1156.5 1174.3 1184.84 1215.24 1232.34 1268.99 1315.82 1333.62 1381.59 1385.58 1462.57 1500.5 1534.56 1591.57 1647.35 1744.39 1762.46
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="6930.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+72 121 121 67 93 132 234 909 73 77 146 446 74 122 79 149 127 92 964 77 73 100 98 109 163 77 586 96 172 380 506 176 64 245 585 74 100 590 76 90 286 67 93 223 157 88 156 251 295 1000
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group id="7399" mh="1987.851977" z="2" rt="PT3878.74S" expect="3.1e-03" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" type="model" sumI="4.50" maxI="3601.92" fI="3.60192" >
+<protein expect="-122.6" id="7399.1" uid="20361" label="gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]" sumI="6.88" >
+<note label="description">gi|4826870|ref|NP_005004.1| nucleobindin 2 [Homo sapiens]</note>
+<file type="peptide" URL="/project/sequest/tropix/tmp/xtandem/29/db.fasta"/>
+<peptide start="1" end="420">
+	MRWRTILLQY CFLLITCLLT ALEAVPIDID KTKVQNIHPV ESAKIEPPDT
+	GLYYDEYLKQ VIDVLETDKH FREKLQKADI EEIKSGRLSK ELDLVSHHVR
+	TKLDELKRQE VGRLRMLIKA KLDSLQDIGM DHQALLKQFD HLNHLNPDKF
+	ESTDLDMLIK AATSDLEHYD KTRHEEFKKY EMMKEHERRE YLKTLNEEKR
+	KEEESKFEEM KKKHENHPKV NHPGSKDQLK EVWEETDGLD PNDFDPKTFF
+	KLHDVNSDGF LDEQELEALF TKELEKVYDP KNEEDDMVEM EEERLRMREH
+	VMNEVDTNKD RLVTLEEFLK ATEKKEFLEP DSWETLDQQQ FFTEEELKEY
+	ENIIALQENE LKKKADELQK QKEELQRQHD QLEAQKLEYH QVIQQMEQKK
+	LQQGIPPSGP AGELKFEPHI 
+<domain id="7399.1.1" start="231" end="247" expect="3.1e-03" mh="1987.8556" delta="-0.0036" hyperscore="34.7" nextscore="17.6" y_score="12.8" y_ions="4" b_score="13.4" b_ions="7" pre="DQLK" post="TFFK" seq="EVWEETDGLDPNDFDPK" missed_cleavages="0">
+<aa type="E" at="231" modified="-18.0106" />
+</domain>
+</peptide>
+</protein>
+<group label="supporting data" type="support">
+<GAML:trace label="7399.hyper" type="hyperscore expectation function">
+<GAML:attribute type="a0">4.50811</GAML:attribute>
+<GAML:attribute type="a1">-0.202378</GAML:attribute>
+<GAML:Xdata label="7399.hyper" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="37">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7399.hyper" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="37">
+487 487 487 487 487 487 487 487 431 321 271 200 104 85 48 27 21 11 7 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7399.convolute" type="convolution survival function">
+<GAML:Xdata label="7399.convolute" units="score">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7399.convolute" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="17">
+491 491 491 491 491 491 491 491 435 325 217 118 48 28 14 1 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7399.b" type="b ion histogram">
+<GAML:Xdata label="7399.b" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+0 1 2 3 4 5 6 7 8 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7399.b" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="9">
+115 270 81 20 1 0 0 4 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+<GAML:trace label="7399.y" type="y ion histogram">
+<GAML:Xdata label="7399.y" units="number of ions">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+0 1 2 3 4 5 
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7399.y" units="counts">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="6">
+149 203 112 22 5 0 
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+
+</group>
+<group type="support" label="fragment ion mass spectrum">
+<note label="Description">data.mzxml scan 7399 (charge 2)</note>
+<GAML:trace id="7399" label="7399.spectrum" type="tandem mass spectrum">
+<GAML:attribute type="M+H">1987.85</GAML:attribute>
+<GAML:attribute type="charge">2</GAML:attribute>
+<GAML:Xdata label="7399.spectrum" units="MASSTOCHARGERATIO">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+359.188 589.262 657.411 673.164 756.059 759.703 774.042 799.414 815.645 832.33 841.776 844.3 871.587 874.626 880.53 906.378 929.621 947.403 950.702 954.25 958.835 976.371 979.542 982.769 984.735 1016.28 1023.61 1041.22 1059.33 1074.13 1118.01 1120.33 1126.13 1138.28 1153.27 1156.41 1214.48 1235.42 1254.15 1315.53 1444.7 1482.44 1516.46 1555.39 1573.67 1611.58 1612.65 1630.66 1726.62 1744.6
+
+</GAML:values>
+</GAML:Xdata>
+<GAML:Ydata label="7399.spectrum" units="UNKNOWN">
+<GAML:values byteorder="INTEL" format="ASCII" numvalues="50">
+128 114 71 124 91 72 67 67 166 1000 65 75 97 67 417 60 168 376 124 86 95 403 90 106 101 66 100 305 67 94 61 61 64 120 85 685 213 75 93 469 193 111 113 71 153 128 78 176 124 893
+
+</GAML:values>
+</GAML:Ydata>
+</GAML:trace>
+</group></group>
+<group label="input parameters" type="parameters">
+	<note type="input" label="list path, taxonomy information">/project/sequest/tropix/tmp/xtandem/29/taxonomy.xml</note>
+	<note type="input" label="output, histogram column width">50</note>
+	<note type="input" label="output, histograms">yes</note>
+	<note type="input" label="output, maximum valid expectation value">1000.0</note>
+	<note type="input" label="output, message">*</note>
+	<note type="input" label="output, one sequence copy">no</note>
+	<note type="input" label="output, parameters">yes</note>
+	<note type="input" label="output, path">/project/sequest/tropix/tmp/xtandem/29/output.xml</note>
+	<note type="input" label="output, path hashing">no</note>
+	<note type="input" label="output, performance">yes</note>
+	<note type="input" label="output, proteins">yes</note>
+	<note type="input" label="output, results">all</note>
+	<note type="input" label="output, sequences">yes</note>
+	<note type="input" label="output, sort results by">protein</note>
+	<note type="input" label="output, spectra">yes</note>
+	<note type="input" label="output, xsl path">/home/sdml/cagrid/xtandem/bin/tandem-style.xsl</note>
+	<note type="input" label="protein, C-terminal residue modification mass">0.0</note>
+	<note type="input" label="protein, N-terminal residue modification mass">0.0</note>
+	<note type="input" label="protein, cleavage C-terminal mass change">17.002735</note>
+	<note type="input" label="protein, cleavage N-terminal mass change">1.007825</note>
+	<note type="input" label="protein, cleavage semi">no</note>
+	<note type="input" label="protein, cleavage site">[FMWY]|{P}</note>
+	<note type="input" label="protein, taxon">unspecified</note>
+	<note type="input" label="protein, use annotations">no</note>
+	<note type="input" label="refine">yes</note>
+	<note type="input" label="refine, cleavage semi">no</note>
+	<note type="input" label="refine, maximum valid expectation value">1000.0</note>
+	<note type="input" label="refine, modification mass"></note>
+	<note type="input" label="refine, potential C-terminus modifications">0.0</note>
+	<note type="input" label="refine, potential N-terminus modifications">0.0</note>
+	<note type="input" label="refine, potential modification mass"></note>
+	<note type="input" label="refine, potential modification motif"></note>
+	<note type="input" label="refine, spectrum synthesis">no</note>
+	<note type="input" label="refine, unanticipated cleavage">yes</note>
+	<note type="input" label="refine, use annotations">no</note>
+	<note type="input" label="refine, use potential modifications for full refinement">no</note>
+	<note type="input" label="residue, modification mass"></note>
+	<note type="input" label="residue, potential modification mass">15.994920@M</note>
+	<note type="input" label="residue, potential modification motif"></note>
+	<note type="input" label="scoring, a ions">no</note>
+	<note type="input" label="scoring, b ions">yes</note>
+	<note type="input" label="scoring, c ions">no</note>
+	<note type="input" label="scoring, cyclic permutation">no</note>
+	<note type="input" label="scoring, include reverse">no</note>
+	<note type="input" label="scoring, maximum missed cleavage sites">2</note>
+	<note type="input" label="scoring, minimum ion count">0</note>
+	<note type="input" label="scoring, x ions">no</note>
+	<note type="input" label="scoring, y ions">yes</note>
+	<note type="input" label="scoring, z ions">no</note>
+	<note type="input" label="spectrum, dynamic range">1000.0</note>
+	<note type="input" label="spectrum, fragment mass error">0.5</note>
+	<note type="input" label="spectrum, fragment mass error units">Daltons</note>
+	<note type="input" label="spectrum, fragment mass type">monoisotopic</note>
+	<note type="input" label="spectrum, maximum parent charge">10</note>
+	<note type="input" label="spectrum, minimum fragment mz">0.0</note>
+	<note type="input" label="spectrum, minimum parent m+h">0.0</note>
+	<note type="input" label="spectrum, minimum peaks">0</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error minus">0.01</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error plus">0.01</note>
+	<note type="input" label="spectrum, parent monoisotopic mass error units">Daltons</note>
+	<note type="input" label="spectrum, parent monoisotopic mass isotope error">no</note>
+	<note type="input" label="spectrum, path">/project/sequest/tropix/tmp/xtandem/29/data.mzxml</note>
+	<note type="input" label="spectrum, path type">mzxml</note>
+	<note type="input" label="spectrum, total peaks">50</note>
+	<note type="input" label="spectrum, use contrast angle">no</note>
+	<note type="input" label="spectrum, use neutral loss window">no</note>
+	<note type="input" label="spectrum, use noise suppression">no</note>
+</group>
+<group label="unused input parameters"  type="parameters">
+	<note type="input" label="refine, single amino acid polymorphisms">no</note>
+	<note type="input" label="scoring, pluggable scoring">yes</note>
+	<note type="input" label="spectrum, contrast angle">0.0</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error">0.5</note>
+	<note type="input" label="spectrum, fragment monoisotopic mass error units">Daltons</note>
+	<note type="input" label="spectrum, neutral loss mass">466.0</note>
+	<note type="input" label="spectrum, neutral loss window">15.0</note>
+</group>
+<group label="performance parameters" type="parameters">
+	<note label="list path, sequence source #1">/project/sequest/tropix/tmp/xtandem/29/db.fasta</note>
+	<note label="modelling, total peptides used">34450287</note>
+	<note label="modelling, total proteins used">76256</note>
+	<note label="modelling, total spectra used">6188</note>
+	<note label="process, start time">2009:08:03:20:09:34</note>
+	<note label="process, version">x! tandem TORNADO (2008.02.01.1)</note>
+	<note label="quality values">559 269 149 115 91 80 74 63 62 50 48 52 51 50 36 28 17 32 28 23</note>
+	<note label="refining, # input models">6985</note>
+	<note label="refining, # input spectra">0</note>
+	<note label="refining, # partial cleavage">0</note>
+	<note label="refining, # point mutations">0</note>
+	<note label="refining, # potential C-terminii">0</note>
+	<note label="refining, # potential N-terminii">0</note>
+	<note label="refining, # unanticipated cleavage">0</note>
+	<note label="timing, initial modelling total (sec)">24.42</note>
+	<note label="timing, initial modelling/spectrum (sec)">0.004</note>
+	<note label="timing, load sequence models (sec)">0.46</note>
+	<note label="timing, refinement/spectrum (sec)">0.039</note>
+</group>
+</bioml>

@@ -1,0 +1,7 @@
+<s:ServiceDescription xmlns:s="gme://gov.nih.nci.cagrid/1/Introduce" xmlns:n="gme://gov.nih.nci.cagrid.introduce/1/Namespace"  
+                      xmlns:service="gme://gov.nih.nci.cagrid.introduce/1/Services"  xmlns:r="gme://gov.nih.nci.cagrid.introduce/1/Resources">
+ <n:Namespaces>
+   <n:Namespace generateStubs="false" location="bowtieInput.xsd" namespace="http://msi.umn.edu/tropix/genomics/bowtie/input" packageName="edu.umn.msi.tropix.genomics.bowtie.input" />
+ </n:Namespaces>
+ <service:Services />
+</s:ServiceDescription>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <import resource="classpath:edu/umn/msi/tropix/client/request/actions/impl/databaseContext.xml" />
+
+  <bean id="actionRepeaterSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.RepeaterSupplierImpl">
+    <property name="maxAttempts" value="-1" />
+    <property name="sleepTimeUnit" value="SECONDS" />
+    <property name="initialSleepDuration" value="20" /> <!-- Start every 20 seconds retry, and then backoff. -->
+    <property name="maxSleepDuration" value="1800" /> <!-- Max sleep time is halt hour -->
+  </bean>
+  
+  <bean id="tropixRequestServiceFactory" parent="gridServiceFactory" scope="singleton">
+    <constructor-arg value="info.minnesotapartnership.tropix.request.cagrid.client.TropixRequestServiceInterfacesClient" />
+  </bean>
+  
+  <bean id="persistentActionManager" class="edu.umn.msi.tropix.client.request.actions.impl.PersistentActionManagerImpl" scope="singleton">
+    <property name="persistentActionService" ref="persistentActionService" />
+    <property name="grouppedExecutor">
+      <bean class="edu.umn.msi.tropix.common.concurrent.impl.GrouppedFifoExecutorImpl">
+        <property name="executor" ref="executorService" />
+      </bean>
+    </property>
+    <property name="requestActionToRunnableFunction">
+      <bean class="edu.umn.msi.tropix.client.request.actions.impl.RequestActionToRunnableFunctionImpl">
+        <property name="uploadContextFactory" ref="transferContextFactory" />
+        <property name="repeaterSupplier" ref="actionRepeaterSupplier" />
+        <property name="proxySupplier" ref="hostProxySupplier" />
+        <property name="tropixRequestServiceFactory" ref="tropixRequestServiceFactory" />
+        <property name="storageDataFactory" ref="modelStorageDataFactory" />
+      </bean>
+    </property>  
+  </bean>
+  
+</beans>

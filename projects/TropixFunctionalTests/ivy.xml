@@ -1,0 +1,26 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-functional" />
+  
+  <configurations>
+    <conf name="default" description="Default" visibility="public" />
+    <conf name="test" description="Tests" extends="default" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-functional-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    <dependency org="org.seleniumhq.selenium" name="selenium-firefox-driver" rev="2.6.0">
+    </dependency>
+    <dependency org="org.seleniumhq.selenium" name="selenium-server" rev="2.6.0">
+    </dependency>
+
+  </dependencies>  
+
+</ivy-module>

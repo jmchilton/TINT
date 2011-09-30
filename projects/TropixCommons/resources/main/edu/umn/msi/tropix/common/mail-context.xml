@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="mail.host" value="smtp.gmail.com" />
+        <entry key="mail.port" value="465" />
+        <entry key="mail.protocol" value="smtps" />
+        <entry key="mail.username" value="" />
+        <entry key="mail.password" value="" />
+        <entry key="mail.smtps.auth" value="true" />
+        <entry key="mail.smtps.starttle.enable" value="true" />
+        <entry key="mail.smtps.debug" value="true" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailS enderImpl">
+    <property name="host" value="${mail.host}" />
+    <property name="port" value="${mail.port}" />
+    <property name="protocol" value="${mail.protocol}" />
+    <property name="username" value="${mail.address}"/>
+    <property name="password" value="${mail.password}"/>
+    <property name="javaMailProperties">
+      <props>
+        <prop key="mail.smtps.auth">${mail.smtps.auth}</prop>
+        <prop key="mail.smtps.starttls.enable">${mail.smtps.starttls.enable}</prop>
+        <prop key="mail.smtps.debug">${mail.smtps.debug}</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage" >
+    <property name="from" value="${mail.username}" />
+    <property name="subject" value="${mail.subject}" />
+  </bean>
+
+
+</beans>

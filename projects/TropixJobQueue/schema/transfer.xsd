@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+        targetNamespace="http://msi.umn.edu/tropix/transfer"
+        xmlns:catr="http://transfer.cagrid.org/TransferService/Context/types"
+        xmlns:tns="http://msi.umn.edu/tropix/transfer"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified">
+  
+  <import namespace="http://transfer.cagrid.org/TransferService/Context/types" schemaLocation="./TransferServiceContextTypes.xsd" />
+
+  <!-- Introduce doesn't work if this is not an element. -->
+  <xs:element name="transferResource" type="tns:TransferResource" />
+
+  <xs:complexType name="TransferResource" abstract="true">
+    <xs:attribute name="hash" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="CaGridTransferResource"> 
+    <xs:complexContent>
+      <xs:extension base="tns:TransferResource">
+        <xs:sequence>
+          <xs:element ref="catr:TransferServiceContextReference" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="caGridTransferResource" type="tns:CaGridTransferResource" />
+
+  <xs:complexType name="GridFtpTransferResource">
+    <xs:complexContent>
+      <xs:extension base="tns:TransferResource">
+        <xs:attribute name="url" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="gridFtpTransferResource" type="tns:GridFtpTransferResource" />
+
+  <xs:complexType name="HttpTransferResource">
+    <xs:complexContent>
+      <xs:extension base="tns:TransferResource">
+        <xs:attribute name="url" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="httpTransferResource" type="tns:HttpTransferResource" />  
+
+</schema>

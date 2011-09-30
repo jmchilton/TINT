@@ -1,0 +1,26 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test11"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test11"
+      elementFormDefault="qualified">
+      
+  <xsd:simpleType name="coolInt">
+    <xsd:restriction base="xsd:int" />  
+  </xsd:simpleType>
+  
+  <xsd:element name="intList">
+    <xsd:simpleType>
+      <xsd:list itemType="coolInt" />
+    </xsd:simpleType>
+  </xsd:element>
+  
+  <xsd:element name="doubleList">
+    <xsd:simpleType>
+      <xsd:list>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:double" />  
+        </xsd:simpleType>
+      </xsd:list>
+    </xsd:simpleType>
+  </xsd:element>
+  
+</xsd:schema>

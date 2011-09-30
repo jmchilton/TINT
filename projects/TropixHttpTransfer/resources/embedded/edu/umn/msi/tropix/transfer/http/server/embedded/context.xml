@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config/> 
+
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="httptransferConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="httptransfer" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="httptransfer" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+    <property name="properties">
+      <map>
+		<entry key="httptransfer.server.port" value="13139" />
+		<entry key="httptransfer.server.use" value="true" />
+      </map>
+    </property>
+  </bean>   
+  
+  <bean id="httpTransferUrlPrefixSupplier" class="edu.umn.msi.tropix.transfer.http.server.embedded.UrlPrefixSupplierImpl" depends-on="httpTransferServer">
+  	<property name="hasPort" ref="httpTransferServer" />
+  	<property name="hostname">
+  	  <bean class="edu.umn.msi.tropix.transfer.http.server.embedded.HostnameSupplierImpl">
+  	  	<property name="hostname" value="${hostname}" />
+  	  </bean>
+  	</property>  	
+  </bean>
+  
+  <alias name="httpTransferUrlPrefixSupplier" alias="httpTransferUploadUrlPrefixSupplier" />
+  
+  <alias name="httpTransferUrlPrefixSupplier" alias="httpTransferDownloadUrlPrefixSupplier" />
+
+  <bean id="httpTransferServer" class="edu.umn.msi.tropix.transfer.http.server.embedded.JettyServer" lazy-init="false">
+	<constructor-arg value="${httptransfer.server.port}" />
+	<property name="use" value="${httptransfer.server.use}" />
+	<property name="handler">
+	  <bean class="edu.umn.msi.tropix.transfer.http.server.embedded.ControllerHandlerImpl">
+        <constructor-arg>
+	  	  <bean class="edu.umn.msi.tropix.transfer.http.server.HttpTransferControllerImpl">
+	  	  	<property name="fileKeyResolver" ref="httpTransferServerFileKeyResolver" />
+	  	  </bean>  
+	  	</constructor-arg>
+	  </bean>
+	</property>  	
+  </bean>
+  
+</beans>

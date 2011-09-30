@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Deployment Test Suite" verbose="2" >
+  <test name="Deploy Test">
+    <groups>
+      <run><include name="deployment-xtandem" /></run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.proteomics.cagrid.*" />
+   </packages>
+ </test>
+</suite>
+

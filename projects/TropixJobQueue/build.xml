@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix Job Queue" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <property file="build.properties"/>
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="gen.globus.src.dir" value="${build.dir}/gen-src-axis" />
+
+  <property name="introduce.dir" value="${ext.cagrid.dir}/projects/introduce" />
+  <property name="introduce.extensions.dir" value="${introduce.dir}/extensions" />
+  <property name="extension.xml" value="${basedir}/extension.xml" />
+  <property name="extension.name.short" value="jobqueue" />
+  <property name="extension.dir" value="${introduce.extensions.dir}/${extension.name.short}" />
+  <property name="extension.schema.dir" value="${extension.dir}/schema" />
+  <property name="extension.lib.dir" value="${extension.dir}/lib" />
+
+  <property name="confs" value="stubs,main,extension,test" />
+  <property name="short.name" value="jobqueue" />
+
+  <target name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/main" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <pathelement path="${build.classes.dir}/main" /> 
+      <pathelement path="${build.classes.dir}/stubs" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}/" /> 
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/main" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="prepare" depends="define-classpaths">
+    <preparedirs />
+    <mkdir dir="${gen.globus.src.dir}" />
+  </target> 
+
+  <target name="init" depends="gen" />
+
+  <target name="gen" depends="gen-globus" />
+
+  <target name="gen-globus" depends="prepare">
+    <generate-globus-types globusdir="${ext.globus.dir}" targetdir="${gen.globus.src.dir}" workdir="${build.dir}/axis-tmp">
+      <mappings>
+        <schema path="${schema.dir}/jobQueueContextTicket.xsd" package="edu.umn.msi.tropix.common.jobqueue.ticket" namespace="http://msi.umn.edu/tropix/common/jobqueue/ticket" />
+        <schema path="${schema.dir}/status.xsd" package="edu.umn.msi.tropix.common.jobqueue.status" namespace="http://msi.umn.edu/tropix/common/jobqueue/status" />
+        <schema path="${schema.dir}/queueStatus.xsd" package="edu.umn.msi.tropix.common.jobqueue.queuestatus" namespace="http://msi.umn.edu/tropix/common/jobqueue/queueStatus" />
+<!--        <schema path="${schema.dir}/simple_job_description.xsd" package="edu.umn.msi.tropix.jobqueue.simplejobdescription" namespace="http://msi.umn.edu/tropix/common/jobqueue/simpleJobDescription" /> -->
+      </mappings>
+    </generate-globus-types>
+    <cleanGeneratedSource dir="${gen.globus.src.dir}" />
+    <copy toDir="${build.src.dir}/stubs">
+      <fileset dir="${gen.globus.src.dir}" />
+    </copy>
+  </target>
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="stubs,main,extension" />
+  </target>
+
+  <target name="checkstyle" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="clean"> 
+    <cleandirs />
+  </target>
+  
+  <target name="compile-java" description="Compiles java source." depends="gen">
+    <compileconfs />
+  </target>
+
+  <target name="compile" depends="compile-java" />
+  
+  <target name="jar" description="Builds a jar file" depends="compile">
+    <jarconfs />
+  </target> 
+
+  <target name="findbugs" depends="jar">
+    <runfindbugs confs="main,test" />
+  </target>
+  
+  <target name="jars" depends="jar" />
+
+  <target name="test" depends="compile">
+    <runtestng />
+  </target>
+
+  <target name="test-persistence" depends="compile">
+    <runtestng file="${test.dir}/testng-persistence.xml" />
+  </target>
+    
+  <target name="test-coverage" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.common.jobqueue.*,-edu.umn.msi.tropix.common.jobqueue.extension.*" file="${test.dir}/testng-coverage.xml" />
+  </target>
+
+  <target name="installIntroduceExtensions" depends="jars">
+    <copy todir="${introduce.extensions.dir}/lib">
+      <fileset file="${jars.dir}/tropix-jobqueue-extension.jar" />
+    </copy>
+    <mkdir dir="${extension.dir}" />
+    <mkdir dir="${extension.schema.dir}" />
+    <mkdir dir="${extension.lib.dir}" />
+    <copy todir="${extension.dir}">
+      <fileset file="${extension.xml}" />
+      <fileset file="${basedir}/JobContextFactory.java.template" />
+      <fileset file="${basedir}/JobClientFactoryImpl.java.template" />
+    </copy>    
+    <copy todir="${extension.schema.dir}">
+      <fileset dir="${schema.dir}" includes="*.xsd" />
+    </copy>
+    <copy todir="${extension.lib.dir}" flatten="true" >
+      <fileset file="${jars.dir}" includes="**/*.jar" />
+      <fileset dir="${ext.dir}" includes="**/*.jar"/>
+    </copy>
+  </target>
+
+  <target name="generate-queue-ddl" depends="compile-java">
+    <hibernatetool destdir="${build.dir}">
+      <classpath>
+        <path location="${build.classes.dir}" />
+      </classpath>
+      <jpaconfiguration persistenceunit="jobqueue" configurationfile="META-INF/jobqueue/persistence.xml" />
+      <hbm2ddl outputfilename="queue.ddl"
+               export="false"
+               create="true"
+               format="true"
+               haltonerror="true" />
+    </hibernatetool>
+  </target>
+
+  <target name="all" depends="jars" />
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>
+

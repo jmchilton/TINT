@@ -1,0 +1,166 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <tabs>
+    <tab name="Input">
+<table>
+    <row>
+      <cell>
+        <label text="Bases to trim from high-quality (left) end" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="trim5" default="0" />
+      </cell>
+    </row>
+    
+    <row>
+      <cell>
+        <label text="Bases to trim from low-quality (right) end" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="trim3" default="0" />
+      </cell>
+    </row>
+
+    
+    <row>
+      <cell>
+        <label text="Input qualities (if available)" />
+      </cell>
+      <cell>
+        <input widget="selection" parameter="inputQualities" default="phred33">
+          <entries>
+            <entry value="phred33" />
+            <entry value="phred64" />
+            <entry value="solexa" />
+            <entry value="solexa1.3" />
+            <entry value="integer" />
+          </entries>
+        </input>
+      </cell>
+    </row>
+</table>
+</tab>
+<tab name="Alignment">
+  <table>
+    <row>
+      <cell>
+        <label text="Mismatches allowed in seed" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="seedMismatches" default="2" />
+      </cell>
+    </row>
+    <row>
+      <cell>
+        <label text="Maximum total quality of mismatches" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="maxMismatchQuality" default="70" />
+      </cell>
+    </row>
+    <row>
+      <cell>
+        <label text="Seed length" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="seedLength" default="28" />
+      </cell>
+    </row>
+
+    <row>
+      <cell>
+        <label text="Minimum insertion size" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="minimumInsertionSize" default="0" />
+      </cell>
+    </row>
+
+    <row>
+      <cell>
+        <label text="Maximum insertion size" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="maximumInsertionSize" default="250" />
+      </cell>
+    </row>
+
+    <row>
+      <cell>
+        <label text="Mate orientations" />
+      </cell>
+      <cell>
+        <input widget="selection" parameter="mateOrientations" default="phred33">
+          <entries>
+            <entry value="fr" text="Forward / Reverse Complement" />
+            <entry value="rf" text="Reverse Complement / Forward" />
+            <entry value="ff" text="Forward / Forward" />
+          </entries>
+        </input>
+      </cell>
+    </row>  
+    
+    <row>
+      <cell>
+        <label text="Try Hard" />
+      </cell>
+      <cell>
+        <input widget="checkbox" parameter="tryHard" default="false" />
+      </cell>
+    </row>  
+    
+    
+    <row>
+      <cell>
+        <label text="Do not align against foward reference strand" />
+      </cell>
+      <cell>
+        <input widget="checkbox" parameter="noFw" default="false" />
+      </cell>
+    </row>  
+    
+    <row>
+      <cell>
+        <label text="Do not align against reverse-complement reference strand" />
+      </cell>
+      <cell>
+        <input widget="checkbox" parameter="noRc" default="false" />
+      </cell>
+    </row>  
+    
+    
+  </table>
+</tab>
+<tab name="Reporting">
+  <table>
+    <row>
+      <cell>
+        <label text="Maximum number of alignments reported per read or pair" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="maxReportedAlignment" default="1" />
+      </cell>
+    </row>
+    
+    <row>
+      <cell>
+        <label text="Report only best singleton alignments" />
+      </cell>
+      <cell>
+        <input widget="checkbox" parameter="tryHard" default="false" />
+      </cell>
+    </row>  
+    
+    <row>
+      <cell>
+        <label text="Report only alignments from the best stratum" />
+      </cell>
+      <cell>
+        <input widget="checkbox" parameter="tryHard" default="false" />
+      </cell>
+    </row>  
+    
+  </table>
+</tab>
+</tabs>
+</formConfiguration>

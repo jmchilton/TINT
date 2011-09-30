@@ -1,0 +1,28 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/scaffold"
+      xmlns="http://msi.umn.edu/tropix/webgui/scaffold"
+      elementFormDefault="qualified">
+      
+  <xsd:element name="maxResultRank" type="xsd:nonNegativeInteger" />
+  <xsd:element name="maxFDRQonvert" type="probability" />
+  <xsd:element name="maxFDRAssemble" type="probability" />
+  <xsd:element name="maxFDRReport" type="probability" />
+  <xsd:element name="hasDecoyDatabase" type="xsd:boolean" />
+  <xsd:element name="minDistinctPeptides" type="xsd:positiveInteger" />
+  <xsd:element name="maxAmbiguousIds" type="xsd:nonNegativeInteger" />
+  <xsd:element name="minAdditionalPeptides" type="xsd:nonNegativeInteger" />
+  
+  <xsd:element name="normalizeScoreWeights" type="xsd:boolean" />
+  <xsd:element name="optimizeScoreWeights" type="xsd:boolean" />
+  <xsd:element name="optimizeScorePermutations" type="xsd:nonNegativeInteger" />
+  
+    
+  <xsd:simpleType name="probability">
+    <xsd:restriction base="xsd:double">
+      <xsd:minInclusive value="0.0" />
+      <xsd:maxInclusive value="1.0" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  
+</xsd:schema>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/idpicker/parameters"
+            xmlns="http://msi.umn.edu/tropix/proteomics/idpicker/parameters"
+            elementFormDefault="qualified">
+
+  <xsd:element name="IdPickerParameters" type="IdPickerParameters" />
+  
+  <xsd:complexType name="IdPickerParameters">
+    <xsd:attribute name="MaxResultRank" type="xsd:int" default="1" use="optional" />
+    <xsd:attribute name="HasDecoyDatabase" type="xsd:boolean" default="true"  use="optional" />
+    <xsd:attribute name="DecoyPrefix" type="xsd:string" default="rev_"  use="optional" />
+    <xsd:attribute name="NormalizeSearchScores" type="xsd:boolean" default="false"  use="optional" />
+    <xsd:attribute name="OptimizeScoreWeights" type="xsd:boolean" default="false"  use="optional" />
+    <xsd:attribute name="OptimizeScorePermutations" type="xsd:int" default="200"  use="optional" />
+    <xsd:attribute name="MaxFDRQonvert" type="xsd:double" default="0.25"  use="optional" />
+    <xsd:attribute name="MaxFDRAssemble" type="xsd:double" default="0.05"  use="optional" />
+    <xsd:attribute name="MaxFDRReport" type="xsd:double" default="0.05"  use="optional" />
+    <xsd:attribute name="MinDistinctPeptides" type="xsd:int" default="2"  use="optional" />
+    <xsd:attribute name="MaxAmbiguousIds" type="xsd:int" default="2"  use="optional" />
+    <xsd:attribute name="MinAdditionalPeptides" type="xsd:int" default="1"  use="optional" />            
+    <xsd:sequence>
+      <xsd:element name="sample" type="Sample" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Sample">
+  	<xsd:attribute name="name" type="xsd:string" use="required" />
+  	<xsd:sequence>
+      <xsd:element name="input" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
+  	</xsd:sequence>
+  </xsd:complexType>
+  
+</xsd:schema>

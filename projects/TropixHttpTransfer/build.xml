@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix Http Transfer" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <!-- Should define msi.user and ssh.key.file -->
+  <property file="${user.home}/.ant-global.properties" />
+
+  <property file="project.properties" />
+  <property file="build.properties"/>
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <target name="define-classpaths" depends="cache-dependencies">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/client" />
+      <pathelement path="${src.dir}/server" />
+      <pathelement path="${src.dir}/embedded" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <pathelement path="${build.classes.dir}/client" /> 
+      <pathelement path="${build.classes.dir}/server" />
+      <pathelement path="${build.classes.dir}/embedded" />
+      <path refid="ivy.path" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}/" /> 
+      <pathelement path="${build.classes.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="init" depends="" />
+
+  <target name="prepare" depends="define-classpaths">
+    <preparedirs />
+  </target> 
+
+  <target name="clean"> 
+    <cleandirs />
+  </target>
+  
+  <target name="compile-java" description="Compiles java source." depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="compile" depends="compile-java" />
+  
+  <target name="jar" description="Builds a jar file" depends="compile">
+    <jarconfs />
+  </target> 
+
+  <target name="checkstyle" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="findbugs" depends="jar">
+    <runfindbugs />
+  </target>
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="client,server,embedded" />
+  </target>
+
+  <target name="jars" depends="jar" />
+
+  <target name="test" depends="compile">
+    <runtestng  />
+  </target>
+
+  <target name="test-coverage" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.transfer.http.*" />
+  </target>
+
+  <target name="all" depends="jars" />
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

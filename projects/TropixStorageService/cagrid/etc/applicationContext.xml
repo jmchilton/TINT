@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:spring="http://msi.umn.edu/cagrid/introduce/interfaces/spring/1.1"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://msi.umn.edu/cagrid/introduce/interfaces/spring/1.1 http://www.msi.umn.edu/tropix/cagrid/spring/schema/1.1/spring.xsd">
+
+  <import resource="classpath:edu/umn/msi/tropix/storage/service/applicationContext.xml" />
+  
+  <spring:implements-for-service implementer="storageService" service="TropixStorage">
+    <spring:interface name="edu.umn.msi.tropix.storage.service.TropixStorageService" />
+  </spring:implements-for-service>
+</beans>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config />
+
+  <bean class="edu.umn.msi.tropix.common.spring.H2DefaultsPropertyPlaceholderConfigurer">
+    <constructor-arg value="jobs" />
+  </bean>
+
+  <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+  <bean id="jobsEntityManagerFactory" class="edu.umn.msi.tropix.common.spring.HibernateEntityManagerFactory">
+    <property name="showSql" value="${jobs.db.showsql}" />
+    <property name="dialect" value="${jobs.db.dialect}" />
+    <property name="persistenceUnitName" value="jobs" />
+    <property name="dataSource" ref="jobsDataSource" />
+    <property name="autoDdl" value="${jobs.db.hbm2ddl}" />
+  </bean>
+  
+  <bean id="jobsDataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="${jobs.db.driver}" />
+    <property name="url" value="${jobs.db.url}" />
+    <property name="username" value="${jobs.db.username}" />
+    <property name="password" value="${jobs.db.password}" />
+  </bean>
+  
+  <bean id="jobsTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="jobsEntityManagerFactory" />
+    <property name="dataSource" ref="jobsDataSource" />
+    <property name="jpaDialect">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+    </property>
+  </bean> 
+  
+  <aop:config>
+    <aop:pointcut id="jobsServiceOperation" expression="execution(* edu.umn.msi.tropix.jobs.activities.impl.ActivityServiceImpl.*(..))" />
+    <aop:advisor advice-ref="jobsServiceTransactionAdvice" pointcut-ref="jobsServiceOperation" />
+  </aop:config>
+
+  <tx:advice id="jobsServiceTransactionAdvice" transaction-manager="jobsTransactionManager">
+    <tx:attributes>
+      <tx:method name="*" />
+    </tx:attributes>
+  </tx:advice>
+
+  <bean id="persistentActivityService" class="edu.umn.msi.tropix.jobs.activities.impl.ActivityServiceImpl" />
+  
+</beans>  

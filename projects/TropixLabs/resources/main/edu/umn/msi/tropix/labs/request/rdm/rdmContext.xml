@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config />
+
+  <bean id="rdmLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton">
+    <property name="haltOnException" value="false" />
+    <property name="waitTime" value="${request.results.frequency}" />
+    <property name="waitTimeUnitAsString" value="MILLISECONDS" />
+  </bean>
+
+  <bean id="rdmLoopingRunnableSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl">
+    <property name="loopingRunnableConfig" ref="rdmLoopingConfig" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.commons.io.impl.DirectoryMonitorImpl" id="requestDirectoryMonitor" scope="singleton">
+    <property name="executor" ref="executorService" />
+    <property name="loopingRunnableSupplier" ref="rdmLoopingRunnableSupplier" />
+    <property name="directory" value="${request.results.dir}" />
+    <property name="fileClosure">
+      <bean class="edu.umn.msi.tropix.labs.requests.rdm.ProcessClosureImpl">
+        <property name="waitTime" value="${request.results.wait}"/> <!-- Hasn't been modified for two minutes -->
+        <property name="processTracker">
+          <bean class="edu.umn.msi.tropix.labs.requests.rdm.InMemoryProcessTrackerImpl" />
+        </property>
+        <property name="uploadClosure">
+          <bean class="edu.umn.msi.tropix.labs.requests.rdm.UploadClosureImpl">
+            <property name="modelStorageDataSupplier">
+              <bean class="edu.umn.msi.tropix.labs.requests.rdm.ModelStorageDataSupplierImpl">
+                <property name="proxySupplier" ref="hostProxySupplier" />
+                <property name="storageServiceUrl" value="${storage.service.url}" />
+                <property name="modelStorageDataFactory" ref="modelStorageDataFactory" />
+              </bean>
+            </property>
+            <property name="requestService" ref="requestService" />
+          </bean>
+        </property>
+      </bean>
+    </property>    
+  </bean>
+
+</beans>

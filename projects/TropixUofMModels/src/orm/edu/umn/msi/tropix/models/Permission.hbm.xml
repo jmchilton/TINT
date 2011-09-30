@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models">
+	<class name="Permission" table="PERMISSION" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the Permission class -->
+		<property name="role" type="string" column="ROLE"/>
+		<!-- Associations mapping for the Permission class -->
+		<set name="groups" table="JOIN_PERMISSION_GROUP" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="PERMISSION_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.Group" column="GROUP_ID" />
+		</set>
+		<set name="users" table="JOIN_PERMISSION_USER" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="PERMISSION_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.User" column="USER_ID" />
+		</set>
+		<set name="objects" table="JOIN_PERMISSION_OBJECT" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="PERMISSION_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.TropixObject" column="OBJECT_ID" />
+		</set>
+		<joined-subclass name="VirtualPermission" table="VIRTUAL_PERMISSION" lazy="true">
+			<key column="PERMISSION_ID" />
+			<!-- Associations mapping for the VirtualPermission class -->
+			<many-to-one name="rootVirtualFolder" class="edu.umn.msi.tropix.models.VirtualFolder" column="ROOT_VIRTUAL_FOLDER_ID" lazy="proxy" />
+		</joined-subclass>
+		<joined-subclass name="Provider" table="PROVIDER" lazy="true">
+			<key column="PERMISSION_ID" />
+			<!-- Attributes mapping for the Provider class -->
+			<property name="catalogId" type="string" column="CATALOG_ID"/>
+			<!-- Associations mapping for the Provider class -->
+			<set name="requests" lazy="true">
+				<cache usage="read-write" />
+				<key column="PROVIDER_ID" />
+				<one-to-many class="edu.umn.msi.tropix.models.Request"/>
+			</set>
+		</joined-subclass>
+		<joined-subclass name="DirectPermission" table="DIRECT_PERMISSION" lazy="true">
+			<key column="PERMISSION_ID" />
+		</joined-subclass>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,921 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<parameterSet xmlns="http://msi.umn.edu/tropix/proteomics/parameters/specification" >
+
+<parameter name="enzyme" default="Trypsin">
+  <domain>
+    <domainElement><value>Trypsin</value></domainElement>
+    <domainElement><value>Arg-C</value></domainElement>
+    <domainElement><value>Asp-N</value></domainElement>
+    <!-- 
+    <domainElement><value>Asp-N_ambic</value></domainElement>
+     -->
+    <domainElement><value>Chymotrypsin</value></domainElement>
+    <domainElement><value>CNBr</value></domainElement>
+    <!-- <domainElement><value>Formic_acid</value></domainElement>  -->
+    <domainElement><value>Lys-C</value></domainElement>
+    <domainElement><value>Lys-C/P</value></domainElement>
+    <domainElement><value>PepsinA</value></domainElement>
+    <!-- 
+    <domainElement><value>Tryp-CNBr</value></domainElement>
+    <domainElement><value>TrypChymo</value></domainElement>
+     -->
+    <domainElement><value>V8-DE</value></domainElement>
+    <domainElement><value>V8-E</value></domainElement>
+    <domainElement><value>No_Enzyme</value></domainElement>
+  </domain>
+</parameter>
+
+<parameter default="0.0">
+  <shortDescription></shortDescription>
+  <nameSet>
+    <name>fixed[</name>
+    <name>fixed]</name>
+    <name>fixedG</name>
+    <name>fixedS</name>
+    <name>fixedP</name>
+    <name>fixedV</name>
+    <name>fixedT</name>
+    <name>fixedC</name>
+    <name>fixedL</name>
+    <name>fixedI</name>
+    <name>fixedX</name>
+    <name>fixedN</name>
+    <name>fixedO</name>
+    <name>fixedB</name>
+    <name>fixedD</name>
+    <name>fixedQ</name>
+    <name>fixedK</name>
+    <name>fixedZ</name>
+    <name>fixedE</name>
+    <name>fixedM</name>
+    <name>fixedH</name>
+    <name>fixedF</name>
+    <name>fixedR</name>
+    <name>fixedY</name>
+    <name>fixedW</name>
+    <name>fixedA</name>
+
+    <name>potential[</name>
+    <name>potential]</name>
+    <name>potentialG</name>
+    <name>potentialS</name>
+    <name>potentialP</name>
+    <name>potentialV</name>
+    <name>potentialT</name>
+    <name>potentialC</name>
+    <name>potentialL</name>
+    <name>potentialI</name>
+    <name>potentialX</name>
+    <name>potentialN</name>
+    <name>potentialO</name>
+    <name>potentialB</name>
+    <name>potentialD</name>
+    <name>potentialQ</name>
+    <name>potentialK</name>
+    <name>potentialZ</name>
+    <name>potentialE</name>
+    <name>potentialM</name>
+    <name>potentialH</name>
+    <name>potentialF</name>
+    <name>potentialR</name>
+    <name>potentialY</name>
+    <name>potentialW</name>
+    <name>potentialA</name>
+    
+    <name>refinePotMod[</name>
+    <name>refinePotMod]</name>
+    <name>refinePotModG</name>
+    <name>refinePotModS</name>
+    <name>refinePotModP</name>
+    <name>refinePotModV</name>
+    <name>refinePotModT</name>
+    <name>refinePotModC</name>
+    <name>refinePotModL</name>
+    <name>refinePotModI</name>
+    <name>refinePotModX</name>
+    <name>refinePotModN</name>
+    <name>refinePotModO</name>
+    <name>refinePotModB</name>
+    <name>refinePotModD</name>
+    <name>refinePotModQ</name>
+    <name>refinePotModK</name>
+    <name>refinePotModZ</name>
+    <name>refinePotModE</name>
+    <name>refinePotModM</name>
+    <name>refinePotModH</name>
+    <name>refinePotModF</name>
+    <name>refinePotModR</name>
+    <name>refinePotModY</name>
+    <name>refinePotModW</name>
+    <name>refinePotModA</name>
+    
+  </nameSet>
+  <validation type="float" />
+</parameter>
+
+
+<parameter name="outputHistogramColumnWidth" default="50">
+<shortDescription></shortDescription>
+<longDescription>
+This parameter sets the number of values in a GAML-type histogram that
+are listed on a single line of output. It can be used to limit the
+length of lines in the output file, although it has no effect on true
+XML parsers.
+</longDescription>
+<validation type="int" minValue="0" />
+</parameter>
+
+
+<parameter name="outputHistograms" default="true">
+<shortDescription></shortDescription>
+<longDescription>When this value is set to yes, the histograms
+containing the statistical information about an spectrum-to-sequence
+assignment are written to the output file. If it is set to no, then
+these histograms are not recorded.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+
+<parameter name="outputMaximumValidExpectationValue" default="1000.0">
+<shortDescription></shortDescription>
+<longDescription>When the output, results value is set to valid, the
+value of this parameter sets the maximum expectation value recorded in
+the output file for a modelling session. All results with expectation
+values less than this value are considered to be statisitically
+significant and are recorded. In the case that output, results value
+is set to stochastic, results with expectation values greater than
+this value are recorded.</longDescription>
+<validation type="float" minValue="0.0" />
+</parameter>
+
+
+
+<parameter name="outputOneSequencePerCopy" default="false">
+<shortDescription></shortDescription>
+<longDescription>Protein sequences are normally stored in the X!
+Tandem output file format, represented in BIOML. If multiple peptides
+from a single protein sequence are found, then that protein sequence
+is by default reported for each peptide. If this parameter is set to
+yes, then the full protein sequence is only recorded for the first
+peptide in a file corresponding to that protein. Subsequent peptides
+only have the protein's unique identifier (UID) recorded. This UID is
+assigned by X! Tandem, based on the ordinal position of the protein in
+a sequence file. For example, if a protein was the 123rd protein read
+from a file during a search, then that protein's UID would be
+123.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="outputPerformance" default="true">
+<shortDescription>When this value is set to yes, all of the modelling session performance parameters supplied by X! TANDEM are written into the XML output file.</shortDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="outputProteins" default="true">
+<shortDescription></shortDescription>
+<longDescription>When this value is set to yes, the BIOML protein
+information associated with a peptide-to-spectrum match are recorded
+in the XML output file. This is the recommended mode of operation for
+X! TANDEM, as it records the version of the protein sequence actually
+used for the identification. Sequence lists generated from database
+systems can change from time-to-time, with the deletion of accession
+numbers and the alteration of protein sequences associated with a
+particular accession number. If the output, sequences value is no,
+then all of the information in the protein node is written, except
+for the full sequence of the protein.
+
+If it is set to no, then the protein nodes are not recorded. The
+recording of the input parameters,performance statistics or other
+types of results are not affected by the value of this
+parameter.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="outputResults" default="all">
+<shortDescription></shortDescription>
+<longDescription>
+The value for this parameter determines which results are written to
+the output file at the end of a modelling session. The three possible
+values cover the most interesting use cases for X! TANDEM, from a
+bioinformatics perspective. The exact form of the reported results
+will depend on the values chosen for other output parameters.
+
+1. all - When this value is set, results are reported for all of the
+spectra that were used in the modelling session. This value is not
+recommended for normal use, as most spectra in a large data set will
+not return useful results. Storing the large volume of purely
+stochastic matches that can results is a waste of resources, for most
+users.  2. valid - When this value is set, results that have an
+expectation value less than output, maximum valid expectation value
+are reported. This setting is of the most general use.  3. stochastic
+- When this value is set, results that have an expectation value
+greater than output, maximum valid expectation value are all
+reported. This is the compliment to the valid set, and it can be
+useful for debugging and bioinformatics purposes.
+</longDescription>
+<domain>
+<domainElement><value>valid</value></domainElement>
+<domainElement><value>stocastic</value></domainElement>
+<domainElement><value>all</value></domainElement>
+</domain>
+<validation />
+</parameter>
+
+<parameter name="outputSortResultsBy" default="protein">
+<shortDescription></shortDescription>
+<longDescription>
+When this value is set to spectrum, the output file contains the
+results of a modelling session in the same order as the spectra were
+recorded in the original spectra file. Each result group is numbered
+with the ordinal position of the spectrum, or the spectrum number
+obtained from the original file (if available).
+
+When this value is set to protein, the output file contains the
+results of a modelling session listed according to a particular
+spectrum's corresponding peptide's position in the most likely protein
+sequence, starting at the N-terminus of the protein. All of the
+peptides associated with a particular protein are list
+sequentially. The most likely protein in the data set is listed first,
+with others listed in order of descending confidence of assignment.
+</longDescription>
+<domain>
+<domainElement><value>protein</value></domainElement>
+<domainElement><value>spectrum</value></domainElement>
+</domain>
+</parameter>
+
+<parameter name="outputSequences" default="true">
+<shortDescription>
+</shortDescription>
+<longDescription>
+When this value is set to yes, the protein sequences associated with a
+peptide-to-spectrum match are recorded in the XML output file. This is
+the recommended mode of operation for X! TANDEM, as it records the
+version of the protein sequence actually used for the
+identification. Sequence lists generated from database systems can
+change from time-to-time, with the deletion of accession numbers and
+the alteration of protein sequences associated with a particular
+accession number. If the output, proteins value is no, then this
+parameter is ignored.
+
+If it is set to no, then these sequences are not recorded. The
+recording of the input parameters,performance statistics or other
+types of results are not affected by the value of this parameter.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="outputSpectra" default="true">
+<shortDescription>
+</shortDescription>
+<longDescription>
+When this value is set to yes, the spectra used in the modelling
+session, are recorded in GAML format in the output XML file. When
+these spectra have been recorded in an output file, the output file
+can be used as an input spectrum source file for further analysis with
+X! TANDEM.
+
+If it is set to no, then these spectra are not recorded. The recording
+of the input parameters,performance statistics or other types of
+results are not affected by the value of this parameter.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="proteinCleavageCTerminalMassChange" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+This value represents the mass added to the C-terminus of a peptide
+after undergoing peptide bond cleavage by a chemical or enzymatic
+reagent, in Daltons. The default value is the mass change associated
+with hydrolytic cleavage in normal water.
+</longDescription>
+<validation type="float" /> <!-- pos or neg values allowed -->
+</parameter>
+
+<parameter name="proteinCleavageNTerminalMassChange" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+This value represents the mass added to the N-terminus of a peptide
+after undergoing peptide bond cleavage by a chemical or enzymatic
+reagent, in Daltons. The default value is the mass change associated
+with hydrolytic cleavage in normal water.
+</longDescription>
+<validation type="float" />
+</parameter>
+
+<parameter name="proteinCleavageSemi" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>
+In real experiments, there are often contaminating proteolytic enzymes
+which will act on proteins in a difficult to predict
+manner. Therefore, the idea of a semi-tryptic digest was developed
+to attempt to compensate for this additional cleavage activity. This
+cleavage type assumes that one of the cleavage sites is tryptic
+([KR]|{P}), but the other site may be at any residue. For example, if
+an expected tryptic peptide has a sequence of TFGQVVAR, then the
+semi-tryptic peptides associated with this sequence would be:
+
+TFGQVVAR
+ FGQVVAR
+  GQVVAR
+   QVVAR
+    VVAR
+     VAR
+      AR
+TFGQVVA
+TFGQVV
+TFGQV
+TFGQ
+TFG
+TF
+
+Tandem has broadened this concept to include any cleavage site
+specification, except for cleavage at any site ([X]|[X]), which
+doesn't require any additional type of cleavage.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="proteinCleavageSite" default="[KR]|{P}">
+<shortDescription>
+</shortDescription>
+<longDescription>
+http://www.thegpm.org/TANDEM/api/pcs.html
+</longDescription>
+<!-- Need regex for this -->
+<validation type="string" />
+</parameter>
+
+<parameter name="proteinCTerminalResidueModificationMass" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+This value represents any additional fixed modification mass added
+only to the C-terminal residue in an intact protein, in Daltons.
+</longDescription>
+<validation type="float" />
+</parameter>
+
+<parameter name="proteinNTerminalResidueModificationMass" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+This value represents any additional fixed modification mass added
+only to the N-terminal residue in an intact protein, in Daltons.
+</longDescription>
+<validation type="float" />
+</parameter>
+
+
+<parameter name="residueModificationMass" default="">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rmm.html</longDescription>
+<validation type="string" />
+</parameter>
+
+<parameter name="residuePotentialModificationMass" default="">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rpmm.html</longDescription>
+<validation type="string" />
+</parameter>
+
+<parameter name="residuePotentialModificationMotif" default="">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rpmmotif.html</longDescription>
+<validation type="string" />
+</parameter>
+
+
+<parameter name="scoringAIons" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>If the value is yes, then peptide sequence a ions are used in the spectrum scoring algorithm.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringBIons" default="true">
+<shortDescription>
+</shortDescription>
+<longDescription>If the value is yes, then peptide sequence b ions are used in the spectrum scoring algorithm.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringCIons" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>If the value is yes, then peptide sequence c ions are used in the spectrum scoring algorithm.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringXIons" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>If the value is yes, then peptide sequence x ions are used in the spectrum scoring algorithm.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringYIons" default="true">
+<shortDescription>
+</shortDescription>
+<longDescription>If the value is yes, then peptide sequence y ions are used in the spectrum scoring algorithm.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringZIons" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>If the value is yes, then peptide sequence z ions are used in the spectrum scoring algorithm.</longDescription>
+<validation type="boolean" />
+</parameter>
+
+
+<parameter name="scoringCyclicPermutation" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>
+X! Tandem performs a detailed statistical analysis on the peptides
+found during a search to determine which results are statistically
+valid. This analysis depends on comparing the best result of a search
+to the distribution of all other peptide sequences that matched the
+parent ion mass tolerance test. While it only takes approximately 300
+peptides to generate a reliable distribution, if a very small sequence
+collection is used, there may be too few matching peptides to generate
+a reliable distribution. If the distribution is too small, default
+values are used to calculate the expectation value for a result.
+
+While the default values are reasonable, they may lead to over or
+under estimation of the true expectation value. To try to generate a
+distribution for very small sequence collections, setting this
+parameter to yes generates a set of cyclic permutations of each
+peptide that falls within the parent ion tolerance. This set of
+peptides, given the sequence YGGFLR would be:
+
+   1. YGGFLR - the initial sequence
+   2. RYGGFL
+   3. LRYGGF
+   4. FLRYGG
+   5. GFLRYG
+   6. GGFLRY
+   7. RLFGGY
+   8. YRLFGG
+   9. GYRLFG
+  10. GGYRLF
+  11. FGGYRL
+  12. LFGGYR
+
+Each of these alternative sequences is scored and used to construct
+the scoring distribution, but they are not stored in the output, even
+if they have better scores than the initial peptide sequence.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringIncludeReverse" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>
+Due to the structure of some older search engines, no statistical
+information is compiled about the validity of the results. As an
+after-the-fact kluge to correct this problem, it has become common
+practice to repeat a search using the same set of protein sequences,
+with the protein sequences altered to be written in reverse order (a
+so-called "reverse database search"). By comparing the scores produced
+by this "reverse" search and the normal search, it is possible to very
+crudely estimate whether a result is potentially a false positive.
+
+The statistical analysis done by X! Tandem makes this type of crude
+estimate unnecessary. However, to make comparisons possible, X! Tandem
+has a protein sequence reverse method built in. When the value of this
+parameter is yes, the protein sequences are first searched normally
+and then reversed in memory and searched again. The tag ":reversed" is
+added to the protein description, so that peptides corresponding to
+reversed sequences can be distinguished in the output. Using this
+feature regularly is not recommended, as it doubles the time required
+to perform a search and the use of reversed searches for validation
+has no general statistical value.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="scoringMaximumMissedCleavageSites" default="1">
+<shortDescription>
+</shortDescription>
+<longDescription>
+When a cleavage reagent (either chemical or enzymatic) is used to
+cleave the peptide backbone of a protein to produce peptides,
+different sites along the backbone will have different reaction rates
+and kinetics. Therefore, there may be some sites that should be
+cleaved by the reagent that are not completely cleaved during the
+course of the experiment. The value of this parameter represents the
+maximum number of missed cleavage sites allowed within a peptide. For
+a specific, aggressive enzyme such as trypsin, the number of missed
+sites will be low: a value of 1 or 2 is appropriate. For a
+non-specific enzyme, such as pepsin, then a value of 50 is more
+appropriate.
+
+The value chosen for this parameter affects the overall speed of the
+calculation. The number of peptides considered for a particular
+protein sequence is linearly proportional to the parameter value, so
+the amount of time necessary for the calculation will vary roughly
+linearly with the value chosen. In practice, TANDEM performs somewhat
+better than linear when doing this type of calculation.
+</longDescription>
+<validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="scoringMinimumIonCount" default="0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+Practically, there is some minimum number of assignable
+sequence-specific ions in a spectrum that is necessary to consider the
+spectrum as a match to a peptide sequence. The value of this parameter
+sets the minumum number of total ions that must be assigned for a
+score to be calculated and stored in the scoring histogram structure
+used by TANDEM to track the statistical nature of the stochastic
+distribution.
+</longDescription>
+<validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="spectrumContrastAngle" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/sca.html</longDescription>
+<validation type="float" minValue="0.0" maxValue="90.0" />
+</parameter>
+
+<parameter name="spectrumDynamicRange" default="1000.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+This parameter is used to normalize the intensity values of fragment
+ions, from spectrum to spectrum. For example, if Drange = 100.0, then
+the intensity of the most intense peak in a spectrum is set to 100,
+and all of the other intensities are linearly scaled to that
+intensity. Any peak with a scaled intensity of less than 1 is rejected
+as being outside of the dynamic range. Therefore, in addition to
+normalizing the spectra, it sets an effective relative threshold for
+peaks.
+</longDescription>
+<validation type="float" minValue="1.0000001"  />
+</parameter>
+
+<parameter name="spectrumFragmentMassError" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/sfme.html</longDescription>
+<validation type="float" minValue="0.0" />
+</parameter>
+
+<parameter name="spectrumFragmentMassErrorUnits" default="Daltons">
+<shortDescription>
+</shortDescription>
+<longDescription>
+</longDescription>
+<domain><domainElement><value>Daltons</value></domainElement><domainElement><value>ppm</value></domainElement></domain>
+<validation />
+</parameter>
+
+<parameter name="spectrumFragmentMassType" default="monoisotopic">
+<shortDescription>
+</shortDescription>
+<longDescription>
+Naturally occuring organic molecules do not have a single value
+corresponding to the mass of the molecule. Because organic molecules
+contain carbon, any collection of molecules will have some probability
+of containing one or more 13C atoms. In mass spectrometry, it is
+common to refer to the weighted average of all possible 13C-containing
+molecular masses as the chemical or average mass of the
+molecule. When this parameter is set to average, this weighted average
+is used to calculate the masses of the fragment ions in a tandem mass
+spectrum.
+
+Most modern mass spectrometers have sufficient mass resolution so that
+the mass of each of the individual 13C-containing species can be
+measured separately. The lowest mass of these peaks will contain only
+12C atoms. This lowest mass peak in the isotopic distribution measured
+is commonly refered to as the monoisotopic mass for the molecule
+(also refered to as the A0 peak). When this parameter is set to
+monoisotopic, this peak is used to define the mass of the fragment
+ions.
+</longDescription>
+<domain><domainElement><value>monoisotopic</value></domainElement><domainElement><value>average</value></domainElement></domain>
+<validation />
+</parameter>
+
+<parameter name="spectrumMinimumFragmentMZ" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+The fragment ion mass spectra produced by peptides contain peaks that
+are sequence-specific and those that are caused by individual amino
+acid residues. The peaks caused by these individual amino acid
+residues tend to be relatively small (m/z &lt; 200) and they do not
+affect the outcome of a search. However, these peaks can be very
+intense, sometimes dwarfing the sequence-specific peaks used by TANDEM
+to discover appropriate model peptide sequences. The value of Mfmin is
+used to remove these intense (but not very useful) peaks, prior to
+normalization. Any peak that does not meet the condition:
+
+m/z > Mfmin
+
+is rejected. 
+</longDescription>
+<validation type="float" minValue="0.0" />
+</parameter>
+
+<parameter name="spectrumMinimumPeaks" default="0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+The MS/MS spectra used in peptide sequence searches are composed of a
+limited number of mass-to-charge ratio:intensity pairs. Many common
+types of mass spectrometer data systems will generate a mass spectrum
+during a chromatographic run, even if the parent ion does not
+fragment. The value of this parameter is used to screen out spectra
+that contain too few fragment ions to be usefully interpreted.
+
+If the total number of mass-to-charge ratio:intensity pairs is a
+particular spectrum is N, then the condition that a spectrum is
+considered to have too few ions to be considered would be:
+
+N &lt; Nmin
+</longDescription>
+<validation type="int" minValue="0" />
+</parameter>
+
+<parameter name="spectrumMinimumParentMH" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+This parameter is used to supress the analysis of spectra that were
+generated by low mass parent ions. Depending on the instrumentation
+and excitation energy used to generate fragment ions, there will be
+some low mass cutoff value, below which there is very little chance of
+generating an interpretable MS/MS spectrum. In many experimental
+conditions, there will also be noise peaks in the parent ion spectrum,
+generated by the ion source and chemical noise. The value selected for
+Mmin is used to reject these spectra.
+</longDescription>
+<validation type="float" minValue="0.0000001" />
+</parameter>
+
+<parameter name="spectrumNeutralLossMass" default="466.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+The value of this parameter is ignored if spectrum, use neutral loss window = yes.
+
+Some types of post-translational or chemical modifications can produce
+intense peaks in a spectrum because of a favoured fragmentation
+mechanism produced by the loss of a stable neutral molecule. These
+neutral loss peaks can be removed from a spectrum by setting
+appropriate values for the spectrum, neutral loss window, Wnl and Mnl
+parameters.
+
+If the spectrum, use neutral loss window value is yes, then any peaks
+with an m/z value that meets the following condition is rejected:
+
+| m/z - Mnl | &lt; Wnl
+
+Any peak that has been removed using this mechanism is reinserted into
+the spectrum before the spectrum is written to the output XML data
+file, even though it was not considered during the peptide modelling
+process.
+</longDescription>
+<validation type="float" />
+</parameter>
+
+<parameter name="spectrumNeutralLossWindow" default="15.0">
+<shortDescription>
+</shortDescription>
+<longDescription>
+Some types of post-translational or chemical modifications can produce
+intense peaks in a spectrum because of a favoured fragmentation
+mechanism produced by the loss of a stable neutral molecule. These
+neutral loss peaks can be removed from a spectrum by setting
+appropriate values for the Wnl and spectrum, neutral loss mass, Mnl
+parameters.
+
+If the spectrum, use neutral loss window value is yes, then any peaks
+with an m/z value that meets the following condition is rejected:
+
+| m/z - Mnl | &lt; Wnl
+
+Any peak that has been removed using this mechanism is reinserted into
+the spectrum before the spectrum is written to the output XML data
+file, even though it was not considered during the peptide modelling
+process.
+</longDescription>
+<validation type="float" minValue="0.000000000001" />
+</parameter>
+
+<parameter name="spectrumParentMonoisotopicMassErrorMinus" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/spmmem.html
+</longDescription>
+<validation type="float" minValue="0.0" />
+</parameter>
+
+<parameter name="spectrumParentMonoisotopicMassErrorPlus" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/spmmep.html
+</longDescription>
+<validation type="float" minValue="0.0" />
+</parameter>
+
+<parameter name="spectrumParentMonoisotopicMassErrorUnits" default="Daltons">
+<shortDescription>
+</shortDescription>
+<longDescription>
+http://www.thegpm.org/TANDEM/api/spmmeu.html
+</longDescription>
+<domain>
+  <domainElement><value>Daltons</value></domainElement>
+  <domainElement><value>ppm</value></domainElement>
+</domain>
+<validation />
+</parameter>
+
+<parameter name="spectrumParentMonoisotopicMassIsotopeError" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>
+When the value for this parameter is yes, the parent ion mass
+tolerance is expanded by opening up multiple tolerance windows
+centered on the first and second 13C isotope peaks for a peptide. This
+behavior is necessary to compensate for the tendency of automated peak
+finding software to return the most intense peak from a cluster of
+isotopes, rather than the all-12C peak. It should only be used if the
+parent ion mass error parameters are set so that the error will be &lt;
+0.5 Da.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="spectrumTotalPeaks" default="50">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/stp.html
+</longDescription>
+<validation type="integer" minValue="1" />
+</parameter>
+
+<parameter name="spectrumUseNeutralLossWindow" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>
+Some types of post-translational or chemical modifications can produce
+intense peaks in a spectrum because of a favoured fragmentation
+mechanism produced by the loss of a stable neutral molecule. These
+neutral loss peaks can be removed from a spectrum by setting
+appropriate values for the spectrum, neutral loss window and spectrum,
+neutral loss mass parameters.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="spectrumUseNoiseSuppression" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>
+X! TANDEM uses several mechanisms to attempt to reduce the number of
+spectra considered in a list of spectra. When this parameter is set to
+yes, spectra that fit the pattern of noise - spectra caused by the
+fragmentation of chemical noise peaks - are rejected without further
+analysis. This feature can be very useful when dealling with large
+amounts of data from automated LC/MS experiments. Some experimentation
+may be required to determine what settings are appropriate for the
+noise detection filters (see the links below). Setting the parameter
+to no skips the noise filters and allows all spectra to be modelled.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+
+<parameter name="spectrumUseContrastAngle" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>When this value is set to yes, contrast angle
+filtering is used to remove similar mass spectra from a spectrum list.
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="spectrumMaximumParentCharge" default="10">
+<shortDescription>
+</shortDescription>
+<longDescription>
+</longDescription>
+<validation type="integer" />
+</parameter>
+
+<parameter name="refine" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/refine.html
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="refineCleavageSemi" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rcsemi.html
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="refineMaximumValidExpectationValue" default="1000.0"> <!--  High value used for scaffold -->
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/refmvev.html
+</longDescription>
+</parameter>
+
+<parameter name="refineModificationMass" default="">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/refmm.html
+</longDescription>
+</parameter>
+
+<parameter name="refinePointMutations" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rpm.html
+</longDescription>
+</parameter>
+
+<parameter name="refinePotentialModificationMass" default="">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/refpmm.html
+</longDescription>
+</parameter>
+
+<parameter name="refinePotentialModificationMotif" default="">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/refpmmotif.html
+</longDescription>
+</parameter>
+
+<parameter name="refineSingleAminoAcidPolymorphisms" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rsaps.html
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="refineSpectrumSynthesis" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rss.html
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="refineUnanticipatedCleavage" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/ruc.html
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="refineUsePotentialModifications" default="false">
+<shortDescription>
+</shortDescription>
+<longDescription>http://www.thegpm.org/TANDEM/api/rupmffr.html
+</longDescription>
+<validation type="boolean" />
+</parameter>
+
+<parameter name="refinePotentialNTerminusModifications" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription></longDescription>
+<validation type="float" />
+</parameter>
+
+<parameter name="refinePotentialCTerminusModifications" default="0.0">
+<shortDescription>
+</shortDescription>
+<longDescription></longDescription>
+<validation type="float" />
+</parameter>
+
+
+</parameterSet>

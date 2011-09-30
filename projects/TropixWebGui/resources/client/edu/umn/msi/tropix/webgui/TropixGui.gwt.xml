@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="webgui"> 
+  <source path="client" />
+  <source path="services" />
+  
+  <!-- TODO: Reimplement iphone someday -->
+  <define-property name="iPhone" values="no" />
+  <property-provider name="iPhone"><![CDATA[ return navigator.userAgent.indexOf('iPhone') > -1 ? 'no' : 'no'; ]]></property-provider>
+
+  <!-- Inherit the core GWT stuff. -->
+  <inherits name="com.google.gwt.json.JSON" />
+  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.inject.Inject"/>
+  
+  <inherits name='com.smartgwt.SmartGwt'/>
+  
+  <inherits name="edu.umn.msi.gwt.AnotherGwtMvc" />
+  
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-INFO" />
+  <set-property name="log_DivLogger" value="DISABLED" />
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-RemoteLogger" />
+  
+  
+  <!-- Other Tropix Modules-->
+  <inherits name="edu.umn.msi.tropix.models.Beans" />
+  <inherits name="edu.umn.msi.tropix.models.proteomics.ProteomicsModels" />
+  <inherits name="edu.umn.msi.tropix.models.utils.TropixModelUtils" />
+  <inherits name="edu.umn.msi.tropix.jobs.activities.Activities" />
+  <inherits name="edu.umn.msi.tropix.client.TropixClient" />
+  <!-- <inherits name="com.google.common.GoogleCollections" /> -->
+  <inherits name="com.google.common.base.Base" />
+  <inherits name="com.google.common.collect.Collect" />
+
+  <!-- GWT Incubator -->
+  <inherits name="com.google.gwt.widgetideas.ProgressBar"/>
+
+  <!--  swf uploader -->
+  <inherits name="org.swfupload.SWFUpload"/>
+
+  <!-- Specify the app entry point class.                   -->
+  <entry-point class="edu.umn.msi.tropix.webgui.client.ExplorerEntryPoint"/>
+
+  <!-- 
+  <replace-with class="edu.umn.msi.tropix.webgui.client.ExplorerIPhone">
+    <when-type-is class="edu.umn.msi.tropix.webgui.client.Explorer"/> 
+    <when-property-is name="iPhone" value="yes"/> 
+  </replace-with>
+  -->
+     
+  <replace-with class="edu.umn.msi.tropix.webgui.client.ExplorerBeanDelegateImpl">
+    <when-type-is class="edu.umn.msi.tropix.webgui.client.Explorer" />
+    <when-property-is name="iPhone" value="no"/>
+  </replace-with>
+
+</module>

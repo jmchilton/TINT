@@ -1,0 +1,54 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <table>
+    <row>
+      <cell><label text="Protein Probability" /></cell>
+      <cell><input widget="textbox" parameter="proteinProbability" width="80" default="0.99" /></cell>
+    
+      <cell><label text="Peptide Probability" /></cell>
+      <cell><input widget="textbox" parameter="peptideProbability" width="80" default="0.95" /></cell>
+    </row>
+    <row>
+      <cell><label text="Minimum Peptide Count" /></cell>
+      <cell><input widget="textbox" parameter="minimumPeptideCount" width="80" default="2" /></cell>
+
+      <cell><label text="Minimum NTT" /></cell>
+      <cell><input widget="textbox" parameter="minimumNTT" width="80" default="1"/></cell>
+    </row>
+    <row>
+      <cell><label text="Connect to NCBI" /></cell>
+      <cell><input widget="checkbox" parameter="connectToNCBI" width="80" default="false"/></cell>
+    </row>
+    <row>
+      <cell><label text="Decoy Prefix" /></cell>
+      <cell><input widget="textbox" parameter="decoyRegex" width="80" default=""/></cell>
+    </row>
+    <row>
+      <cell><label text="Database Accession Rules" /></cell>
+      <cell>
+        <input widget="selection" parameter="databaseType" default="GENERIC">
+          <entries>
+            <entry value="ESTNR" text="EST/NR (NCBI)" />
+            <entry value="IPI" text="IPI (EBI)" />
+            <entry value="SWISSPROT" text="Swiss-Prot (SIB/EBI)"/>
+            <entry value="UNIPROT" text="UniProt/Swiss-Prot (UniProtKB)"/>
+            <entry value="UNIREF" text="UniRef/NREF (UniProt)" />
+            <entry value="ENSEMBL" text="Ensembl (EMBL/EBI)" />
+            <entry value="MSDB" text="MSDB (Proteomics Group)" />
+            <entry value="GENERIC" text="Generic" />
+          </entries>
+        </input>
+      </cell>
+    </row>
+    <row>
+      <cell><label text="Use Charge" /></cell>
+      <cell>
+        <horizontalPanel spacing="3">
+          <entry><input widget="checkbox" parameter="useCharge1" default="true" /></entry>
+          <entry><input widget="checkbox" parameter="useCharge2" default="true" /></entry>
+          <entry><input widget="checkbox" parameter="useCharge3" default="true" /></entry>
+        </horizontalPanel>
+      </cell>
+    </row>
+  </table>
+</formConfiguration>

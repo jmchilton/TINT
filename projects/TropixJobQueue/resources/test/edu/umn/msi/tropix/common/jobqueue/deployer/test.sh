@@ -1,0 +1,1 @@
+FOOmoo -i input.txt

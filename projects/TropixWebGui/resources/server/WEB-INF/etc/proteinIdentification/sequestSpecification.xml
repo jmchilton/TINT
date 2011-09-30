@@ -1,0 +1,262 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<parameterSet xmlns="http://msi.umn.edu/tropix/proteomics/parameters/specification" >
+<parameter name="databaseId" default="">
+  <shortDescription></shortDescription>
+        <domain>
+            <domainElement><display>Human</display><value>/usr/database/HUMAN.fasta</value></domainElement>
+        </domain>
+</parameter>
+<parameter name="enzymeName" default="Trypsin">
+  <domain>
+    <domainElement><value>Trypsin</value></domainElement>
+    <domainElement><value>Arg-C</value></domainElement>
+    <domainElement><value>Asp-N</value></domainElement>
+    <!-- <domainElement><value>Asp-N_ambic</value></domainElement> -->
+    <domainElement><value>Chymotrypsin</value></domainElement>
+    <domainElement><value>CNBr</value></domainElement>
+    <!-- <domainElement><value>Formic_acid</value></domainElement>  -->
+    <domainElement><value>Lys-C</value></domainElement>
+    <domainElement><value>Lys-C/P</value></domainElement>
+    <domainElement><value>PepsinA</value></domainElement>
+    <!-- 
+    <domainElement><value>Tryp-CNBr</value></domainElement>
+    <domainElement><value>TrypChymo</value></domainElement>
+    -->
+    <domainElement><value>V8-DE</value></domainElement>
+    <domainElement><value>V8-E</value></domainElement>
+    <domainElement><value>No_Enzyme</value></domainElement>
+  </domain>
+</parameter>
+  <parameter name="enzymeLimit" default="full">
+  <shortDescription>Enzyme of cleavage agent limit.</shortDescription>
+  <domain>
+    <domainElement><value>full</value></domainElement>
+    <domainElement><value>partial</value></domainElement>
+    <domainElement><value>n</value></domainElement>
+    <domainElement><value>c</value></domainElement>
+    <domainElement><value>none</value></domainElement>            
+  </domain>
+</parameter>
+<parameter name="enzymeCTerm" default="true">
+  <shortDescription></shortDescription> 
+</parameter>
+<parameter name="enzymeCleave" default="KR">
+  <shortDescription>Residues cleaved by the cleavage agent.</shortDescription>
+</parameter>
+<parameter name="enzymeNoCleave" default="">
+  <shortDescription></shortDescription>
+</parameter>
+<parameter name="peptideMassTolerance" default="2.0">
+  <shortDescription>Error tolerance between the measured mass of the spectrum and the predicated mass.</shortDescription>
+  <validation type="float" minValue="0.0" maxValue="2500.00" />
+</parameter>
+<parameter name="peptideMassUnits" default="amu">
+  <shortDescription>Units of peptide mass tolerance.</shortDescription>
+  <domain>
+    <domainElement><value>amu</value></domainElement>
+    <domainElement><value>mmu</value></domainElement>
+    <domainElement><value>ppm</value></domainElement>
+  </domain>
+</parameter>
+<parameter name="fragmentMassTolerance" default="2.0">
+  <shortDescription>Error tolerance between the measured mass of a fragment ion and the predicated mass.</shortDescription>
+  <validation minValue="0.0" maxValue="5.00" type="float" /> <!-- Windows program prevents this from being 0.0, but it doesn't seem to crash sequest and Tim wants it. -->
+</parameter>
+<parameter name="massTypeFragment" default="monoisotopic">
+  <shortDescription></shortDescription>
+  <domain>                
+    <domainElement><value>monoisotopic</value></domainElement>
+    <domainElement><value>average</value></domainElement>
+  </domain>
+</parameter>
+<parameter name="internalCleavageSites" default="2">
+  <shortDescription></shortDescription>
+  <validation type="integer" minValue="0" maxValue="9" />
+</parameter>
+<parameter default="0.0">
+  <shortDescription></shortDescription>
+  <nameSet>
+    <name>addG</name>
+    <name>addS</name>
+    <name>addP</name>
+    <name>addV</name>
+    <name>addT</name>
+    <name>addC</name>
+    <name>addL</name>
+    <name>addI</name>
+    <name>addX</name>
+    <name>addN</name>
+    <name>addO</name>
+    <name>addB</name>
+    <name>addD</name>
+    <name>addQ</name>
+    <name>addK</name>
+    <name>addZ</name>
+    <name>addE</name>
+    <name>addM</name>
+    <name>addH</name>
+    <name>addF</name>
+    <name>addR</name>
+    <name>addY</name>
+    <name>addW</name>
+    <name>addA</name>
+    <name>addJ</name>
+    <name>addU</name>
+    <name>addCTermPeptide</name>
+    <name>addNTermPeptide</name>
+    <name>addCTermProtein</name>
+    <name>addNTermProtein</name>
+  </nameSet>
+  <validation type="float" />
+</parameter>
+<parameter default="">
+  <shortDescription></shortDescription>
+  <nameSet>
+    <name>diffSearch1Residue</name>
+    <name>diffSearch2Residue</name>
+    <name>diffSearch3Residue</name>
+    <name>diffSearch4Residue</name>
+    <name>diffSearch5Residue</name>
+    <name>diffSearch6Residue</name>
+  </nameSet>
+  <validation regex="[A-Z]{0,10}" />
+</parameter>
+<parameter default="0.0">
+  <shortDescription></shortDescription>
+  <nameSet>
+    <name>diffSearch1Value</name>
+    <name>diffSearch2Value</name>
+    <name>diffSearch3Value</name>
+    <name>diffSearch4Value</name>
+    <name>diffSearch5Value</name>
+    <name>diffSearch6Value</name>
+  </nameSet>
+  <validation type="float" />
+</parameter>
+<parameter name="numOutputLines" default="20">
+  <shortDescription></shortDescription>
+  <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="numDescriptionLines" default="20">
+  <shortDescription></shortDescription>
+  <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="numResults" default="500">
+  <shortDescription></shortDescription>
+  <validation type="integer" minValue="1" />
+</parameter>
+<parameter name="showFragmentIons" default="false">
+  <shortDescription></shortDescription>
+  <validation type="boolean" />
+</parameter>
+<parameter name="maxNumDifferentialsPerPeptide" default="3">
+  <shortDescription></shortDescription>
+  <validation type="integer" minValue="0"  />
+</parameter>
+<parameter name="normalizeXCorr" default="false">
+  <shortDescription></shortDescription>
+  <validation type="boolean" />
+</parameter>
+<parameter name="removePrecursorPeak" default="false">
+  <shortDescription></shortDescription>
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionCutoffPercentage" default="0.00">
+  <shortDescription></shortDescription>
+  <validation type="float" minValue="0.00" maxValue="1.0000" />
+</parameter>
+<parameter name="matchPeakCount" default="0">
+ <shortDescription></shortDescription>
+        <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="matchPeakAllowedError" default="1">
+ <shortDescription></shortDescription>
+        <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="matchPeakTolerance" default="1.000">
+ <shortDescription></shortDescription>
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="massTypeParent" default="monoisotopic">
+  <shortDescription></shortDescription>
+       <domain>
+            <domainElement><value>monoisotopic</value></domainElement>
+            <domainElement><value>average</value></domainElement>
+        </domain>
+  <validation />
+</parameter>
+<parameter name="digestMassRangeLower" default="600.0">
+ <shortDescription></shortDescription>
+        <validation type="float" minValue="0" />
+</parameter>
+<parameter name="digestMassRangeUpper" default="3500.0">
+ <shortDescription></shortDescription>
+        <validation type="float" minValue="0" />
+</parameter>
+<parameter name="proteinMassFilterLower" default="0">
+ <shortDescription></shortDescription>
+        <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="proteinMassFilterUpper" default="0">
+ <shortDescription></shortDescription>
+        <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="printDuplicateReferences" default="0">
+ <shortDescription></shortDescription>
+        <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="ionSeriesNA" default="false">
+  <shortDescription></shortDescription>
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionSeriesNB" default="true">
+  <shortDescription></shortDescription>
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionSeriesNY" default="true">
+  <shortDescription></shortDescription>
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionSeriesA" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesB" default="1.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesC" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesD" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesV" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesW" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesX" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesY" default="1.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="ionSeriesZ" default="0.0">
+        <validation type="float" minValue="0.000" />
+</parameter>
+<parameter name="diffSearchN" default="0.0">
+        <validation type="float" />
+</parameter>
+<parameter name="diffSearchC" default="0.0">
+        <validation type="float" />
+</parameter>
+<parameter name="secondaryDatabaseId" default="">
+</parameter>
+<parameter name="nucleotideReadingFrame" default="0">
+        <validation type="integer" minValue="0" />
+</parameter>
+<parameter name="partialSequence" default="">
+</parameter>
+<parameter name="sequenceHeaderFilter" default="">
+</parameter>
+</parameterSet>

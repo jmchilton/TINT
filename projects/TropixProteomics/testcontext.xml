@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:interfaces="http://msi.umn.edu/cagrid/introduce/interfaces/spring/1.1"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://msi.umn.edu/cagrid/introduce/interfaces/spring/1.1 http://www.msi.umn.edu/tropix/cagrid/spring/schema/1.1/spring.xsd">
+
+
+  <interfaces:implements-for-service service="TestServiceJobContext" implementer="omssaService">
+    <interfaces:interface name="edu.umn.msi.tropix.proteomics.service.OmssaJobQueueContext" />
+  </interfaces:implements-for-service>  
+
+  <interfaces:implements-for-service service="TestService" implementer="statusService">
+    <interfaces:interface name="edu.umn.msi.tropix.common.jobqueue.service.StatusService" />
+  </interfaces:implements-for-service>
+
+
+  <bean id="ticketSupplier" class="edu.umn.msi.tropix.common.jobqueue.service.TicketBeanTicketProvider">
+    <property name="ticketBean">
+      <bean class="edu.umn.msi.tropix.common.jobqueue.service.TicketBean">
+        <interfaces:resource-property name="ticket" set-method="set" get-method="get" /> 
+      </bean>
+    </property> 
+  </bean> 
+
+  <bean id="queueStatusBean" class="edu.umn.msi.tropix.common.jobqueue.QueueStatusBeanImpl">
+    <interfaces:metadata service="Omssa" type="QueueStatus" set-method="set" get-method="get" />
+  </bean>
+
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/omssaContext.xml" />
+
+  <bean name="statusService" class="edu.umn.msi.tropix.common.jobqueue.service.impl.StatusServiceImpl">
+    <property name="jobProcessorQueue" ref="jobProcessorQueue" />
+  </bean>
+
+  <bean id="serviceMetadataSetter" class="edu.umn.msi.tropix.common.service.ServiceMetadataSetter" scope="singleton">
+    <property name="serviceMetadataBean">
+      <bean class="edu.umn.msi.tropix.common.service.ServiceMetadataBean">
+        <interfaces:resource-property name="ServiceMetadata" set-method="set" get-method="get" />
+      </bean>
+    </property>
+    <property name="name" value="${omssa.service.name}" />
+  </bean>
+
+
+</beans>

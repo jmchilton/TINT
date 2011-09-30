@@ -1,0 +1,39 @@
+<FindBugsFilter>
+  <Match>
+    <!-- May want to invoke such a constructor during testing
+	 to verify it doesn't throw an exception. So carve out
+	 an exception for tests. -->
+    <Class name="~.*\..*Test" />
+    <Bug pattern="ISC_INSTANTIATE_STATIC_CLASS" />
+  </Match>  
+  <Match>
+    <!-- Certain times anonymous inner classes are more readable than
+         named nested classes. Readability should only be sacrified for 
+         performance if needed. -John
+      -->
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+  </Match>
+  <Match>
+    <!-- The overhead of var.toArray(new String[0]) versus var.toArray(new String[length]) 
+	 is almost certainly marginal and the first can be signficantly more readable if
+	 the name of variable var is long. Readability should be sacraficed for performance
+         only if needed. -->
+    <Bug pattern="ITA_INEFFICIENT_TO_ARRAY" />
+  </Match>
+
+
+  <!-- Constructors not initializing fields is going to happen when 
+       programming with Spring.      
+    -->
+  <Match>
+    <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" />
+  </Match>
+
+  <!-- This is somewhat contensious, but I cannot find a good way to automatically
+       address this problem. I think using the runtime calculation and disabling the warnings
+       in eclipse is the way to go.
+  -->
+  <Match>
+    <Bug pattern="SE_NO_SERIALVERSIONID" />
+  </Match>
+</FindBugsFilter>

@@ -1,0 +1,9 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+<dialog title="Rename" width="200">
+  <entry>
+    <input widget="textbox" parameter="name" width="100%" />
+  </entry>
+  <button>Ok</button>
+</dialog>
+</formConfiguration>

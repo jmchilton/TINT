@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN" "http://www.castor.org/mapping.dtd">
+
+<mapping>
+  <class name="edu.umn.msi.tropix.models.sequest.SequestParameters" identity="id">
+    <map-to xml="SequestParameters" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.sequest" />
+    <field name="enzymeName" type="string">
+      <bind-xml name="enzymeName" node="attribute" />
+    </field>
+    <field name="enzymeLimit" type="string">
+      <bind-xml name="enzymeLimit" node="attribute" />
+    </field>
+    <field name="enzymeCTerm" type="boolean">
+      <bind-xml name="enzymeCTerm" node="attribute" />
+    </field>
+    <field name="enzymeCleave" type="string">
+      <bind-xml name="enzymeCleave" node="attribute" />
+    </field>
+    <field name="enzymeNoCleave" type="string">
+      <bind-xml name="enzymeNoCleave" node="attribute" />
+    </field>
+    <field name="peptideMassTolerance" type="double">
+      <bind-xml name="peptideMassTolerance" node="attribute" />
+    </field>
+    <field name="peptideMassUnits" type="string">
+      <bind-xml name="peptideMassUnits" node="attribute" />
+    </field>
+    <field name="fragmentMassTolerance" type="double">
+      <bind-xml name="fragmentMassTolerance" node="attribute" />
+    </field>
+    <field name="massTypeFragment" type="string">
+      <bind-xml name="massTypeFragment" node="attribute" />
+    </field>
+    <field name="internalCleavageSites" type="integer">
+      <bind-xml name="internalCleavageSites" node="attribute" />
+    </field>
+    <field name="addG" type="double">
+      <bind-xml name="addG" node="attribute" />
+    </field>
+    <field name="addS" type="double">
+      <bind-xml name="addS" node="attribute" />
+    </field>
+    <field name="addP" type="double">
+      <bind-xml name="addP" node="attribute" />
+    </field>
+    <field name="addV" type="double">
+      <bind-xml name="addV" node="attribute" />
+    </field>
+    <field name="addT" type="double">
+      <bind-xml name="addT" node="attribute" />
+    </field>
+    <field name="addC" type="double">
+      <bind-xml name="addC" node="attribute" />
+    </field>
+    <field name="addL" type="double">
+      <bind-xml name="addL" node="attribute" />
+    </field>
+    <field name="addI" type="double">
+      <bind-xml name="addI" node="attribute" />
+    </field>
+    <field name="addX" type="double">
+      <bind-xml name="addX" node="attribute" />
+    </field>
+    <field name="addN" type="double">
+      <bind-xml name="addN" node="attribute" />
+    </field>
+    <field name="addO" type="double">
+      <bind-xml name="addO" node="attribute" />
+    </field>
+    <field name="addB" type="double">
+      <bind-xml name="addB" node="attribute" />
+    </field>
+    <field name="addD" type="double">
+      <bind-xml name="addD" node="attribute" />
+    </field>
+    <field name="addQ" type="double">
+      <bind-xml name="addQ" node="attribute" />
+    </field>
+    <field name="addK" type="double">
+      <bind-xml name="addK" node="attribute" />
+    </field>
+    <field name="addZ" type="double">
+      <bind-xml name="addZ" node="attribute" />
+    </field>
+    <field name="addE" type="double">
+      <bind-xml name="addE" node="attribute" />
+    </field>
+    <field name="addM" type="double">
+      <bind-xml name="addM" node="attribute" />
+    </field>
+    <field name="addH" type="double">
+      <bind-xml name="addH" node="attribute" />
+    </field>
+    <field name="addF" type="double">
+      <bind-xml name="addF" node="attribute" />
+    </field>
+    <field name="addR" type="double">
+      <bind-xml name="addR" node="attribute" />
+    </field>
+    <field name="addY" type="double">
+      <bind-xml name="addY" node="attribute" />
+    </field>
+    <field name="addW" type="double">
+      <bind-xml name="addW" node="attribute" />
+    </field>
+    <field name="addCTermPeptide" type="double">
+      <bind-xml name="addCTermPeptide" node="attribute" />
+    </field>
+    <field name="addNTermPeptide" type="double">
+      <bind-xml name="addNTermPeptide" node="attribute" />
+    </field>
+    <field name="addCTermProtein" type="double">
+      <bind-xml name="addCTermProtein" node="attribute" />
+    </field>
+    <field name="addNTermProtein" type="double">
+      <bind-xml name="addNTermProtein" node="attribute" />
+    </field>
+    <field name="diffSearch1Residue" type="string">
+      <bind-xml name="diffSearch1Residue" node="attribute" />
+    </field>
+    <field name="diffSearch2Residue" type="string">
+      <bind-xml name="diffSearch2Residue" node="attribute" />
+    </field>
+    <field name="diffSearch3Residue" type="string">
+      <bind-xml name="diffSearch3Residue" node="attribute" />
+    </field>
+    <field name="diffSearch4Residue" type="string">
+      <bind-xml name="diffSearch4Residue" node="attribute" />
+    </field>
+    <field name="diffSearch5Residue" type="string">
+      <bind-xml name="diffSearch5Residue" node="attribute" />
+    </field>
+    <field name="diffSearch6Residue" type="string">
+      <bind-xml name="diffSearch6Residue" node="attribute" />
+    </field>
+    <field name="diffSearch1Value" type="double">
+      <bind-xml name="diffSearch1Value" node="attribute" />
+    </field>
+    <field name="diffSearch2Value" type="double">
+      <bind-xml name="diffSearch2Value" node="attribute" />
+    </field>
+    <field name="diffSearch3Value" type="double">
+      <bind-xml name="diffSearch3Value" node="attribute" />
+    </field>
+    <field name="diffSearch4Value" type="double">
+      <bind-xml name="diffSearch4Value" node="attribute" />
+    </field>
+    <field name="diffSearch5Value" type="double">
+      <bind-xml name="diffSearch5Value" node="attribute" />
+    </field>
+    <field name="diffSearch6Value" type="double">
+      <bind-xml name="diffSearch6Value" node="attribute" />
+    </field>
+    <field name="numOutputLines" type="integer">
+      <bind-xml name="numOutputLines" node="attribute" />
+    </field>
+    <field name="numDescriptionLines" type="integer">
+      <bind-xml name="numDescriptionLines" node="attribute" />
+    </field>
+    <field name="numResults" type="integer">
+      <bind-xml name="numResults" node="attribute" />
+    </field>
+    <field name="showFragmentIons" type="boolean">
+      <bind-xml name="showFragmentIons" node="attribute" />
+    </field>
+    <field name="maxNumDifferentialsPerPeptide" type="integer">
+      <bind-xml name="maxNumDifferentialsPerPeptide" node="attribute" />
+    </field>
+    <field name="normalizeXCorr" type="boolean">
+      <bind-xml name="normalizeXCorr" node="attribute" />
+    </field>
+    <field name="removePrecursorPeak" type="boolean">
+      <bind-xml name="removePrecursorPeak" node="attribute" />
+    </field>
+    <field name="ionCutoffPercentage" type="double">
+      <bind-xml name="ionCutoffPercentage" node="attribute" />
+    </field>
+    <field name="matchPeakCount" type="integer">
+      <bind-xml name="matchPeakCount" node="attribute" />
+    </field>
+    <field name="matchPeakAllowedError" type="integer">
+      <bind-xml name="matchPeakAllowedError" node="attribute" />
+    </field>
+    <field name="matchPeakTolerance" type="double">
+      <bind-xml name="matchPeakTolerance" node="attribute" />
+    </field>
+    <field name="massTypeParent" type="string">
+      <bind-xml name="massTypeParent" node="attribute" />
+    </field>
+    <field name="digestMassRangeLower" type="double">
+      <bind-xml name="digestMassRangeLower" node="attribute" />
+    </field>
+    <field name="digestMassRangeUpper" type="double">
+      <bind-xml name="digestMassRangeUpper" node="attribute" />
+    </field>
+    <field name="proteinMassFilterLower" type="integer">
+      <bind-xml name="proteinMassFilterLower" node="attribute" />
+    </field>
+    <field name="proteinMassFilterUpper" type="integer">
+      <bind-xml name="proteinMassFilterUpper" node="attribute" />
+    </field>
+    <field name="printDuplicateReferences" type="integer">
+      <bind-xml name="printDuplicateReferences" node="attribute" />
+    </field>
+    <field name="ionSeriesNA" type="boolean">
+      <bind-xml name="ionSeriesNA" node="attribute" />
+    </field>
+    <field name="ionSeriesNB" type="boolean">
+      <bind-xml name="ionSeriesNB" node="attribute" />
+    </field>
+    <field name="ionSeriesA" type="double">
+      <bind-xml name="ionSeriesA" node="attribute" />
+    </field>
+    <field name="ionSeriesB" type="double">
+      <bind-xml name="ionSeriesB" node="attribute" />
+    </field>
+    <field name="ionSeriesC" type="double">
+      <bind-xml name="ionSeriesC" node="attribute" />
+    </field>
+    <field name="ionSeriesD" type="double">
+      <bind-xml name="ionSeriesD" node="attribute" />
+    </field>
+    <field name="ionSeriesV" type="double">
+      <bind-xml name="ionSeriesV" node="attribute" />
+    </field>
+    <field name="ionSeriesW" type="double">
+      <bind-xml name="ionSeriesW" node="attribute" />
+    </field>
+    <field name="ionSeriesX" type="double">
+      <bind-xml name="ionSeriesX" node="attribute" />
+    </field>
+    <field name="ionSeriesY" type="double">
+      <bind-xml name="ionSeriesY" node="attribute" />
+    </field>
+    <field name="ionSeriesZ" type="double">
+      <bind-xml name="ionSeriesZ" node="attribute" />
+    </field>
+    <field name="diffSearchN" type="double">
+      <bind-xml name="diffSearchN" node="attribute" />
+    </field>
+    <field name="diffSearchC" type="double">
+      <bind-xml name="diffSearchC" node="attribute" />
+    </field>
+    <field name="ionSeriesNY" type="boolean">
+      <bind-xml name="ionSeriesNY" node="attribute" />
+    </field>
+    <field name="secondaryDatabaseId" type="string">
+      <bind-xml name="secondaryDatabaseId" node="attribute" />
+    </field>
+    <field name="nucleotideReadingFrame" type="integer">
+      <bind-xml name="nucleotideReadingFrame" node="attribute" />
+    </field>
+    <field name="partialSequence" type="string">
+      <bind-xml name="partialSequence" node="attribute" />
+    </field>
+    <field name="sequenceHeaderFilter" type="string">
+      <bind-xml name="sequenceHeaderFilter" node="attribute" />
+    </field>
+    <field name="addA" type="double">
+      <bind-xml name="addA" node="attribute" />
+    </field>
+    <field name="addJ" type="double">
+      <bind-xml name="addJ" node="attribute" />
+    </field>
+    <field name="addU" type="double">
+      <bind-xml name="addU" node="attribute" />
+    </field>
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+  </class>
+</mapping>
+

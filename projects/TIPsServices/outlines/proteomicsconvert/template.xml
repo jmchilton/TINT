@@ -1,0 +1,8 @@
+<s:ServiceDescription xmlns:s="gme://gov.nih.nci.cagrid/1/Introduce" xmlns:n="gme://gov.nih.nci.cagrid.introduce/1/Namespace"  
+                      xmlns:service="gme://gov.nih.nci.cagrid.introduce/1/Services"  xmlns:r="gme://gov.nih.nci.cagrid.introduce/1/Resources">
+
+ <n:Namespaces>
+   <n:Namespace generateStubs="false" location="proteomicsConvert.xsd" namespace="http://msi.umn.edu/tropix/proteomics/convert/input" packageName="edu.umn.msi.tropix.proteomics.convert.input" />
+ </n:Namespaces>
+ <service:Services />
+</s:ServiceDescription>

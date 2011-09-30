@@ -1,0 +1,37 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/bowtie"
+      xmlns="http://msi.umn.edu/tropix/webgui/bowtie"
+      elementFormDefault="qualified">
+
+  <xsd:element name="trim3" type="xsd:positiveInteger" />
+  <xsd:element name="trim5" type="xsd:positiveInteger" />
+  <xsd:element name="inputQualities" type="xsd:string" />
+  
+  <xsd:element name="seedMismatches" type="SeedMismatchesType" />
+  <xsd:element name="maxMismatchQuality" type="xsd:nonNegativeInteger" />
+  <xsd:element name="seedLength" type="SeedLengthType" />
+
+  <xsd:element name="minimumInsertionSize" type="xsd:positiveInteger" />
+  <xsd:element name="maximumInsertionSize" type="xsd:positiveInteger" />
+  <xsd:element name="mateOrientations" type="xsd:string" />
+  <xsd:element name="tryHard" type="xsd:boolean" />
+  <xsd:element name="noFw" type="xsd:boolean" />
+  <xsd:element name="noRc" type="xsd:boolean" />
+  
+  <xsd:element name="maxReportedAlignment" type="xsd:positiveInteger" />
+  <xsd:element name="best" type="xsd:boolean" />
+  <xsd:element name="strata" type="xsd:boolean" />
+
+  <xsd:simpleType name="SeedMismatchesType">
+    <xsd:restriction base="xsd:nonNegativeInteger">
+      <xsd:maxInclusive value="4" />
+    </xsd:restriction>
+  </xsd:simpleType>
+        
+  <xsd:simpleType name="SeedLengthType">
+    <xsd:restriction base="xsd:positiveInteger">
+      <xsd:minInclusive value="5" />
+    </xsd:restriction>
+  </xsd:simpleType>
+      
+</xsd:schema>

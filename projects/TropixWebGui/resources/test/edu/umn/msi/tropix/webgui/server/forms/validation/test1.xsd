@@ -1,0 +1,8 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test1"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test1"
+      elementFormDefault="qualified">
+  <xsd:element name="aString" type="xsd:string" />
+  <xsd:element name="aDouble" type="xsd:double" />
+  <xsd:element name="aInt" type="xsd:int" /> 
+</xsd:schema>

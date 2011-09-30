@@ -1,0 +1,77 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+
+<formConfiguration>
+  <table>
+    <row>
+      <cell>
+        <label text="Precursor mass tolerance for grouping" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="precursorMassToleranceForGrouping" width="50" default="1.4" />
+      </cell>
+    </row>
+    <row>
+      <cell>
+        <label text="Allowed intermediate scans for grouping" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="allowedIntermediateScansForGrouping" width="50" default="1" />
+      </cell>
+    </row>
+    <row>      
+      <cell>
+        <label text="Minimum number of grouped scans per DTA file" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="minimumGroupedScansPerDtaFile" width="50" default="1" />
+      </cell>
+    </row>
+    <row>      
+      <cell>
+        <label text="Minimum ions per DTA file" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="minimumIonsPerDtaFile" width="50" default="15" />
+      </cell>  
+    </row>
+    <row>      
+      <cell>
+        <label text="Mass Range" />
+      </cell>
+      <cell>
+        <horizontalPanel>
+          <entry><input widget="textbox" parameter="massRangeLower" width="50" default="500.0" /></entry>
+          <entry><input widget="textbox" parameter="massRangeUpper" width="50" default="3500.0" /></entry>
+        </horizontalPanel>
+      </cell>  
+    </row>
+    <row>
+      <cell>
+        <label text="Use Charge" />
+      </cell>
+      <cell>
+        <input widget="checkbox" parameter="useCharge" default="false" />
+      </cell>
+    </row>
+    <!-- 
+    <row>                
+      <cell>
+        <label text="Minimum signal-to-noise ratio per peak" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="minimumPeakSignalToNoiseRatio" width="50" default="3.0" />
+      </cell>
+    </row>
+    -->
+    <!-- 
+    <row>            
+      <cell>
+        <label text="Minimum major peaks per DTA file" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="minimumMajorPeaksPerDtaFile" width="50" default="5" />
+      </cell>
+    </row>
+    -->
+  </table>
+</formConfiguration>

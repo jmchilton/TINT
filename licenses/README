@@ -1,0 +1,19 @@
+
+caGrid - Certain aspects of this software's build process are inspired
+by caGrid's. The license for caGrid can be found in cagrid_license.txt. 
+
+cacore - This software ships with several caCore SDK projects. The 
+original license for these projects can be found cacore_sdk_license.txt.
+
+globus - This software ships with globus core, which in turn ships
+with many open source libraries. The linceses for these libraries may
+be found in tools/ws-core-4.0.3/share/licenses. The license for globus
+can be found globus_license.txt.
+
+FindBugs - This software ships with findbugs. The license for FindBugs
+can be found in findbugs_license.txt. FindBugs in returns ships with
+several libraries. The license for these can be found in
+tools/findbugs-X.X.X
+
+emma - This software ships with emma, a code coverage tool. The
+license for emma can be found in emma_license.txt. 

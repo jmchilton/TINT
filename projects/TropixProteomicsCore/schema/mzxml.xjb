@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+	  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	  version="2.0">
+  
+  <!-- <bindings schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0/general_types_1.0.xsd" -->
+  <!-- <bindings schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0/general_types_1.0.xsd" -->
+  <bindings schemaLocation="mzXML_3.0_for_jaxb.xsd"
+	    node="/xsd:schema/xsd:complexType[@name='namevalueType']/xsd:simpleContent/xsd:extension/xsd:attribute[@name='value']">
+    <!--node="/xs:schema/xsd:complexType[@name='namevalueType']/xs:simpleContent[0]/xs:extension[0]/xs:attribute[@name='value']"> -->
+    <property name="theValue" />
+  </bindings>
+  
+ 
+  
+  <!-- node="/xsd:schema/xsd:element[@name='msRun']/xsd:complexType/xsd:sequence/xsd:element[@name='parentFile']/xsd:complexType/xsd:simpleContent/xsd:extension[@base='xs:anySimpleType']" > -->
+
+  
+</bindings>		
+

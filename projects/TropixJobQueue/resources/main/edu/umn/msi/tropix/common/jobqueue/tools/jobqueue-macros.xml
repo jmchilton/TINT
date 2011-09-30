@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<antlib>
+	  <macrodef name="build-jobqueue-service">
+	    <attribute name="servicedir" />
+	    <attribute name="servicename" />
+	    <attribute name="servicepackage" />
+	    <attribute name="servicepackagedir" />
+	    <attribute name="servicenamespace" /> 
+	    <attribute name="applicationcontext" />
+	    <attribute name="template" default="" />
+
+	    <attribute name="cagriddir" default="${ext.cagrid.dir}" />
+	    <attribute name="globusdir" default="${ext.globus.dir}" />
+
+	    <element name="lib" optional="false" />
+	    <element name="schema" optional="true" />
+	    <element name="etc" optional="true" />
+	    <sequential>
+	      <mkdir dir="@{servicedir}" />
+	      <echo message="Calling create ant task" />
+          <echo message="Using cagriddir @{cagriddir}" /> 
+	      <java
+	         classname="org.apache.tools.ant.launch.Launcher"
+	         fork="true"
+	         failonerror="true"
+	         dir="@{cagriddir}/projects/introduce"
+	         taskname="startAnt">
+	        <classpath>
+	          <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+	        </classpath>
+	        <arg value="-Dintroduce.skeleton.destination.dir=@{servicedir}" />
+	        <arg value="-Dintroduce.skeleton.service.name=@{servicename}" />
+	        <arg value="-Dintroduce.skeleton.package=@{servicepackage}" />
+	        <arg value="-Dintroduce.skeleton.package.dir=@{servicepackagedir}" />
+	        <arg value="-Dintroduce.skeleton.namespace.domain=@{servicenamespace}"/>
+	        <arg value="-Dintroduce.skeleton.extensions=cagrid_metadata,jobqueue,spring"/>
+	        <arg value="-Dintroduce.skeleton.resource.options=main,singleton,identifiable,resourcePropertyManagement"/>
+	        <arg value="-Dbuild.lib.dir=@{cagriddir}/projects/introduce/build/jars" />
+	        <arg value="-Dext.lib.dir=@{cagriddir}/projects/introduce/ext/dependencies/jars" />
+	        <arg value="-Dextensions.dir=@{cagriddir}/projects/introduce/extensions" />
+	        <arg value="-Dextensions.lib.dir=@{cagriddir}/projects/introduce/extensions/lib" />
+	        <arg value="-Dlib.dir=@{cagriddir}/projects/introduce/lib" />
+	        <arg value="createService"/>
+	      </java>
+
+	      <echo message="Calling post create ant task" />
+
+	      <copy file="@{applicationcontext}" toFile="@{servicedir}/etc/applicationContext.xml" overwrite="true" />
+
+	      <copy file="@{template}" toFile="@{servicedir}/introduce-template.xml" overwrite="true" failonerror="false" />
+
+	      <copy toDir="@{servicedir}/lib" flatten="true">
+	        <lib />
+	      </copy>
+
+	      <copy toDir="@{servicedir}/schema/@{servicename}" flatten="false" failonerror="false" verbose="true">
+	        <!-- HACK: In case schema is empty, must attempt to copy at least one file -->
+	        <fileset file="dummy" />
+	        <schema />
+	      </copy>
+
+	        <copy toDir="@{servicedir}/etc/" flatten="false" failonerror="false" verbose="true">
+	          <!-- HACK: In case etc is empty must attempt to copy at least one file -->
+	          <fileset file="dummy" />
+	          <etc />
+	        </copy>
+
+	        <java
+	           classname="org.apache.tools.ant.launch.Launcher"
+	           fork="true"
+	           failonerror="true"
+	           dir="@{cagriddir}/projects/introduce"
+	           taskname="startAnt">
+	          <classpath>
+	            <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+	          </classpath>
+	          <arg value="-Dintroduce.skeleton.destination.dir=@{servicedir}" />
+	          <arg value="-Dintroduce.skeleton.service.name=@{servicename}" />
+	          <arg value="-Dintroduce.skeleton.package=@{servicepackage}" />
+	          <arg value="-Dintroduce.skeleton.package.dir=@{servicepackagedir}" />
+	          <arg value="-Dintroduce.skeleton.namespace.domain=@{servicenamespace}"/>
+	          <arg value="-Dintroduce.skeleton.extensions=cagrid_metadata,jobqueue,spring"/>
+	          <arg value="-Dintroduce.skeleton.resource.options=main,singleton,identifiable,resourcePropertyManagement"/>
+	          <arg value="-Dbuild.lib.dir=@{cagriddir}/projects/introduce/build/jars" />
+	          <arg value="-Dext.lib.dir=@{cagriddir}/projects/introduce/ext/dependencies/jars" />
+	          <arg value="-Dextensions.dir=@{cagriddir}/projects/introduce/extensions" />
+	          <arg value="-Dextensions.lib.dir=@{cagriddir}/projects/introduce/extensions/lib" />
+	          <arg value="-Dlib.dir=@{cagriddir}/projects/introduce/lib" />
+	          <arg value="postCreateService"/>
+	        </java>
+
+	        <echo message="Resycing Service" />
+
+	        <resyncservice cagriddir="@{cagriddir}" globusdir="@{globusdir}" servicedir="@{servicedir}" />
+
+          <cleanIntroduceBuildFiles dir="@{servicedir}" />
+          <delete>
+            <fileset dir="@{servicedir}/lib" includes="**/*.jar" />
+          </delete>
+          <delete dir="@{servicedir}/build" />          
+	      </sequential>
+	    </macrodef>
+</antlib>	           	

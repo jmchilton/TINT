@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN" "http://www.castor.org/mapping.dtd">
+
+<mapping>
+  <class name="edu.umn.msi.tropix.models.Permission" identity="id">
+    <map-to xml="Permission" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="role" type="string">
+      <bind-xml name="role" node="attribute" />
+    </field>
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="groups" type="edu.umn.msi.tropix.models.Group" collection="collection">
+      <bind-xml name="Group" type="edu.umn.msi.tropix.models.Group" location="groups" node="element" />
+    </field>
+    <field name="users" type="edu.umn.msi.tropix.models.User" collection="collection">
+      <bind-xml name="User" type="edu.umn.msi.tropix.models.User" location="users" node="element" />
+    </field>
+    <field name="objects" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="objects" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.TropixObject" identity="id">
+    <map-to xml="TropixObject" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="name" type="string">
+      <bind-xml name="name" node="attribute" />
+    </field>
+    <field name="description" type="string">
+      <bind-xml name="description" node="attribute" />
+    </field>
+    <field name="creationTime" type="string">
+      <bind-xml name="creationTime" node="attribute" />
+    </field>
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="committed" type="boolean">
+      <bind-xml name="committed" node="attribute" />
+    </field>
+    <field name="deletedTime" type="string">
+      <bind-xml name="deletedTime" node="attribute" />
+    </field>
+    <field name="parentVirtualFolders" type="edu.umn.msi.tropix.models.VirtualFolder" collection="collection">
+      <bind-xml name="VirtualFolder" type="edu.umn.msi.tropix.models.VirtualFolder" location="parentVirtualFolders" node="element" />
+    </field>
+    <field name="permissionChildren" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="permissionChildren" node="element" />
+    </field>
+    <field name="permissionParents" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="permissionParents" node="element" />
+    </field>
+    <field name="parentFolder" type="edu.umn.msi.tropix.models.Folder">
+      <bind-xml name="Folder" type="edu.umn.msi.tropix.models.Folder" location="parentFolder" node="element" />
+    </field>
+    <field name="permissions" type="edu.umn.msi.tropix.models.Permission" collection="collection">
+      <bind-xml name="Permission" type="edu.umn.msi.tropix.models.Permission" location="permissions" node="element" />
+    </field>
+    <field name="studies" type="edu.umn.msi.tropix.models.Study" collection="collection">
+      <bind-xml name="Study" type="edu.umn.msi.tropix.models.Study" location="studies" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.LogMessage" identity="id">
+    <map-to xml="LogMessage" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="user" type="edu.umn.msi.tropix.models.User">
+      <bind-xml name="User" type="edu.umn.msi.tropix.models.User" location="user" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.NoteRevision" identity="id">
+    <map-to xml="NoteRevision" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="creationTime" type="string">
+      <bind-xml name="creationTime" node="attribute" />
+    </field>
+    <field name="contents" type="string">
+      <bind-xml name="contents" node="attribute" />
+    </field>
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="revisionNum" type="integer">
+      <bind-xml name="revisionNum" node="attribute" />
+    </field>
+    <field name="note" type="edu.umn.msi.tropix.models.Note">
+      <bind-xml name="Note" type="edu.umn.msi.tropix.models.Note" location="note" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.PhysicalFile" identity="id">
+    <map-to xml="PhysicalFile" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="size" type="long">
+      <bind-xml name="size" node="attribute" />
+    </field>
+    <field name="hash" type="string">
+      <bind-xml name="hash" node="attribute" />
+    </field>
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.User" identity="id">
+    <map-to xml="User" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="firstName" type="string">
+      <bind-xml name="firstName" node="attribute" />
+    </field>
+    <field name="lastName" type="string">
+      <bind-xml name="lastName" node="attribute" />
+    </field>
+    <field name="cagridId" type="string">
+      <bind-xml name="cagridId" node="attribute" />
+    </field>
+    <field name="email" type="string">
+      <bind-xml name="email" node="attribute" />
+    </field>
+    <field name="phone" type="string">
+      <bind-xml name="phone" node="attribute" />
+    </field>
+    <field name="homeFolder" type="edu.umn.msi.tropix.models.Folder">
+      <bind-xml name="Folder" type="edu.umn.msi.tropix.models.Folder" location="homeFolder" node="element" />
+    </field>
+    <field name="parameters" type="edu.umn.msi.tropix.models.Parameters" collection="collection">
+      <bind-xml name="Parameters" type="edu.umn.msi.tropix.models.Parameters" location="parameters" node="element" />
+    </field>
+    <field name="messages" type="edu.umn.msi.tropix.models.LogMessage" collection="collection">
+      <bind-xml name="LogMessage" type="edu.umn.msi.tropix.models.LogMessage" location="messages" node="element" />
+    </field>
+    <field name="sharedFolders" type="edu.umn.msi.tropix.models.VirtualFolder" collection="collection">
+      <bind-xml name="VirtualFolder" type="edu.umn.msi.tropix.models.VirtualFolder" location="sharedFolders" node="element" />
+    </field>
+    <field name="groups" type="edu.umn.msi.tropix.models.Group" collection="collection">
+      <bind-xml name="Group" type="edu.umn.msi.tropix.models.Group" location="groups" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.GalaxyTool" identity="id">
+    <map-to xml="GalaxyTool" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="name" type="string">
+      <bind-xml name="name" node="attribute" />
+    </field>
+    <field name="description" type="string">
+      <bind-xml name="description" node="attribute" />
+    </field>
+    <field name="revisions" type="edu.umn.msi.tropix.models.GalaxyToolRevision" collection="collection">
+      <bind-xml name="GalaxyToolRevision" type="edu.umn.msi.tropix.models.GalaxyToolRevision" location="revisions" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.FileType" identity="id">
+    <map-to xml="FileType" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="shortName" type="string">
+      <bind-xml name="shortName" node="attribute" />
+    </field>
+    <field name="extension" type="string">
+      <bind-xml name="extension" node="attribute" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.GalaxyToolRevision" identity="id">
+    <map-to xml="GalaxyToolRevision" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="revisionNum" type="long">
+      <bind-xml name="revisionNum" node="attribute" />
+    </field>
+    <field name="xml" type="string">
+      <bind-xml name="xml" node="attribute" />
+    </field>
+    <field name="tool" type="edu.umn.msi.tropix.models.GalaxyTool">
+      <bind-xml name="GalaxyTool" type="edu.umn.msi.tropix.models.GalaxyTool" location="tool" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Group" identity="id">
+    <map-to xml="Group" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="name" type="string">
+      <bind-xml name="name" node="attribute" />
+    </field>
+    <field name="users" type="edu.umn.msi.tropix.models.User" collection="collection">
+      <bind-xml name="User" type="edu.umn.msi.tropix.models.User" location="users" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Run" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Run" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+  </class>
+  <class name="edu.umn.msi.tropix.models.VirtualFolder" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="VirtualFolder" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="root" type="boolean">
+      <bind-xml name="root" node="attribute" />
+    </field>
+    <field name="contents" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="contents" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.BowtieIndex" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="BowtieIndex" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="indexesFile" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="indexesFile" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Study" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Study" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="publishedCitation" type="string">
+      <bind-xml name="publishedCitation" node="attribute" />
+    </field>
+    <field name="contents" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="contents" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.TropixFile" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="TropixFile" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="storageServiceUrl" type="string">
+      <bind-xml name="storageServiceUrl" node="attribute" />
+    </field>
+    <field name="fileId" type="string">
+      <bind-xml name="fileId" node="attribute" />
+    </field>
+    <field name="fileType" type="edu.umn.msi.tropix.models.FileType">
+      <bind-xml name="FileType" type="edu.umn.msi.tropix.models.FileType" location="fileType" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Parameters" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Parameters" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="user" type="edu.umn.msi.tropix.models.User">
+      <bind-xml name="User" type="edu.umn.msi.tropix.models.User" location="user" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.VirtualPermission" identity="id" extends="edu.umn.msi.tropix.models.Permission">
+    <map-to xml="VirtualPermission" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="rootVirtualFolder" type="edu.umn.msi.tropix.models.VirtualFolder">
+      <bind-xml name="VirtualFolder" type="edu.umn.msi.tropix.models.VirtualFolder" location="rootVirtualFolder" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Database" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Database" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="type" type="string">
+      <bind-xml name="type" node="attribute" />
+    </field>
+    <field name="databaseFile" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="databaseFile" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Folder" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Folder" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="contents" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="contents" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Sample" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Sample" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="childSamples" type="edu.umn.msi.tropix.models.Sample" collection="collection">
+      <bind-xml name="Sample" type="edu.umn.msi.tropix.models.Sample" location="childSamples" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Provider" identity="id" extends="edu.umn.msi.tropix.models.Permission">
+    <map-to xml="Provider" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="catalogId" type="string">
+      <bind-xml name="catalogId" node="attribute" />
+    </field>
+    <field name="requests" type="edu.umn.msi.tropix.models.Request" collection="collection">
+      <bind-xml name="Request" type="edu.umn.msi.tropix.models.Request" location="requests" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Analysis" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Analysis" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+  </class>
+  <class name="edu.umn.msi.tropix.models.DirectPermission" identity="id" extends="edu.umn.msi.tropix.models.Permission">
+    <map-to xml="DirectPermission" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+  </class>
+  <class name="edu.umn.msi.tropix.models.Note" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Note" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="revisions" type="edu.umn.msi.tropix.models.NoteRevision" collection="collection">
+      <bind-xml name="NoteRevision" type="edu.umn.msi.tropix.models.NoteRevision" location="revisions" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.ITraqQuantitationTraining" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="ITraqQuantitationTraining" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="runs" type="edu.umn.msi.tropix.models.ProteomicsRun" collection="collection">
+      <bind-xml name="ProteomicsRun" type="edu.umn.msi.tropix.models.ProteomicsRun" location="runs" node="element" />
+    </field>
+    <field name="report" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="report" node="element" />
+    </field>
+    <field name="trainingFile" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="trainingFile" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.Request" identity="id" extends="edu.umn.msi.tropix.models.TropixObject">
+    <map-to xml="Request" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="externalId" type="string">
+      <bind-xml name="externalId" node="attribute" />
+    </field>
+    <field name="requestorId" type="string">
+      <bind-xml name="requestorId" node="attribute" />
+    </field>
+    <field name="serviceId" type="string">
+      <bind-xml name="serviceId" node="attribute" />
+    </field>
+    <field name="contact" type="string">
+      <bind-xml name="contact" node="attribute" />
+    </field>
+    <field name="destination" type="string">
+      <bind-xml name="destination" node="attribute" />
+    </field>
+    <field name="serviceInfo" type="string">
+      <bind-xml name="serviceInfo" node="attribute" />
+    </field>
+    <field name="state" type="string">
+      <bind-xml name="state" node="attribute" />
+    </field>
+    <field name="report" type="string">
+      <bind-xml name="report" node="attribute" />
+    </field>
+    <field name="contents" type="edu.umn.msi.tropix.models.TropixObject" collection="collection">
+      <bind-xml name="TropixObject" type="edu.umn.msi.tropix.models.TropixObject" location="contents" node="element" />
+    </field>
+    <field name="provider" type="edu.umn.msi.tropix.models.Provider">
+      <bind-xml name="Provider" type="edu.umn.msi.tropix.models.Provider" location="provider" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.TissueSample" identity="id" extends="edu.umn.msi.tropix.models.Sample">
+    <map-to xml="TissueSample" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="species" type="string">
+      <bind-xml name="species" node="attribute" />
+    </field>
+    <field name="tissueType" type="string">
+      <bind-xml name="tissueType" node="attribute" />
+    </field>
+    <field name="collectionTime" type="string">
+      <bind-xml name="collectionTime" node="attribute" />
+    </field>
+    <field name="condition" type="string">
+      <bind-xml name="condition" node="attribute" />
+    </field>
+    <field name="proteomicsRuns" type="edu.umn.msi.tropix.models.ProteomicsRun" collection="collection">
+      <bind-xml name="ProteomicsRun" type="edu.umn.msi.tropix.models.ProteomicsRun" location="proteomicsRuns" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.InternalRequest" identity="id" extends="edu.umn.msi.tropix.models.Request">
+    <map-to xml="InternalRequest" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="storageServiceUrl" type="string">
+      <bind-xml name="storageServiceUrl" node="attribute" />
+    </field>
+    <field name="requestServiceUrl" type="string">
+      <bind-xml name="requestServiceUrl" node="attribute" />
+    </field>
+    <field name="destinationFolder" type="edu.umn.msi.tropix.models.Folder">
+      <bind-xml name="Folder" type="edu.umn.msi.tropix.models.Folder" location="destinationFolder" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.ITraqQuantitationAnalysis" identity="id" extends="edu.umn.msi.tropix.models.Analysis">
+    <map-to xml="ITraqQuantitationAnalysis" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="training" type="edu.umn.msi.tropix.models.ITraqQuantitationTraining">
+      <bind-xml name="ITraqQuantitationTraining" type="edu.umn.msi.tropix.models.ITraqQuantitationTraining" location="training" node="element" />
+    </field>
+    <field name="report" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="report" node="element" />
+    </field>
+    <field name="runs" type="edu.umn.msi.tropix.models.ProteomicsRun" collection="collection">
+      <bind-xml name="ProteomicsRun" type="edu.umn.msi.tropix.models.ProteomicsRun" location="runs" node="element" />
+    </field>
+    <field name="output" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="output" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.IdentificationParameters" identity="id" extends="edu.umn.msi.tropix.models.Parameters">
+    <map-to xml="IdentificationParameters" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="type" type="string">
+      <bind-xml name="type" node="attribute" />
+    </field>
+    <field name="parametersId" type="string">
+      <bind-xml name="parametersId" node="attribute" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.BowtieAnalysis" identity="id" extends="edu.umn.msi.tropix.models.Analysis">
+    <map-to xml="BowtieAnalysis" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="databases" type="edu.umn.msi.tropix.models.Database" collection="collection">
+      <bind-xml name="Database" type="edu.umn.msi.tropix.models.Database" location="databases" node="element" />
+    </field>
+    <field name="output" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="output" node="element" />
+    </field>
+    <field name="index" type="edu.umn.msi.tropix.models.BowtieIndex">
+      <bind-xml name="BowtieIndex" type="edu.umn.msi.tropix.models.BowtieIndex" location="index" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.IdentificationAnalysis" identity="id" extends="edu.umn.msi.tropix.models.Analysis">
+    <map-to xml="IdentificationAnalysis" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="identificationProgram" type="string">
+      <bind-xml name="identificationProgram" node="attribute" />
+    </field>
+    <field name="database" type="edu.umn.msi.tropix.models.Database">
+      <bind-xml name="Database" type="edu.umn.msi.tropix.models.Database" location="database" node="element" />
+    </field>
+    <field name="run" type="edu.umn.msi.tropix.models.ProteomicsRun">
+      <bind-xml name="ProteomicsRun" type="edu.umn.msi.tropix.models.ProteomicsRun" location="run" node="element" />
+    </field>
+    <field name="scaffoldAnalyses" type="edu.umn.msi.tropix.models.ScaffoldAnalysis" collection="collection">
+      <bind-xml name="ScaffoldAnalysis" type="edu.umn.msi.tropix.models.ScaffoldAnalysis" location="scaffoldAnalyses" node="element" />
+    </field>
+    <field name="output" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="output" node="element" />
+    </field>
+    <field name="parameters" type="edu.umn.msi.tropix.models.IdentificationParameters">
+      <bind-xml name="IdentificationParameters" type="edu.umn.msi.tropix.models.IdentificationParameters" location="parameters" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.ProteomicsRun" identity="id" extends="edu.umn.msi.tropix.models.Run">
+    <map-to xml="ProteomicsRun" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="tissueSample" type="edu.umn.msi.tropix.models.TissueSample">
+      <bind-xml name="TissueSample" type="edu.umn.msi.tropix.models.TissueSample" location="tissueSample" node="element" />
+    </field>
+    <field name="source" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="source" node="element" />
+    </field>
+    <field name="identificationAnalyses" type="edu.umn.msi.tropix.models.IdentificationAnalysis" collection="collection">
+      <bind-xml name="IdentificationAnalysis" type="edu.umn.msi.tropix.models.IdentificationAnalysis" location="identificationAnalyses" node="element" />
+    </field>
+    <field name="mzxml" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="mzxml" node="element" />
+    </field>
+  </class>
+  <class name="edu.umn.msi.tropix.models.ScaffoldAnalysis" identity="id" extends="edu.umn.msi.tropix.models.Analysis">
+    <map-to xml="ScaffoldAnalysis" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" />
+    <field name="outputs" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="outputs" node="element" />
+    </field>
+    <field name="identificationAnalyses" type="edu.umn.msi.tropix.models.IdentificationAnalysis" collection="collection">
+      <bind-xml name="IdentificationAnalysis" type="edu.umn.msi.tropix.models.IdentificationAnalysis" location="identificationAnalyses" node="element" />
+    </field>
+    <field name="input" type="edu.umn.msi.tropix.models.TropixFile">
+      <bind-xml name="TropixFile" type="edu.umn.msi.tropix.models.TropixFile" location="input" node="element" />
+    </field>
+  </class>
+</mapping>
+

@@ -1,0 +1,27 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-files" />
+  
+  <configurations>
+    <conf name="api" visibility="public" />
+    <conf name="impl" extends="api" visibility="public" />
+    
+    <conf name="test" description="Tests" extends="api,impl" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-files-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-files-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-files-test" type="jar" conf="test" ext="jar" />
+    
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-storage-client" rev="${ivy.project.version}" conf="impl->impls" />
+    <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl->service-impl-dao" />
+  </dependencies>
+
+</ivy-module>

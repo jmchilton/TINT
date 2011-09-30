@@ -1,0 +1,13 @@
+BEGIN IONS
+PEPMASS=462.2
+CHARGE=2+
+TITLE=RawFile: tgriffin_bandh003_020409_t2A1_A2.raw FinneganScanNumber: 2 _sil_
+188.12057 54167.35
+END IONS
+
+BEGIN IONS
+PEPMASS=467.1
+CHARGE=2+
+TITLE=RawFile: tgriffin_bandh003_020409_t2A4.raw FinneganScanNumber: 4 _sil_
+188.12057 54167.35
+END IONS

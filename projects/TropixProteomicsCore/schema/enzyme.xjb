@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+	  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	  version="2.0">
+  
+  <bindings schemaLocation="enzyme.xsd"
+	    node="/xsd:schema/xsd:element[@name='enzymeSet']/xsd:complexType/xsd:sequence/xsd:element[@name='enzyme']">
+    <property name="enzymes" /> 
+  </bindings>
+
+</bindings>		
+

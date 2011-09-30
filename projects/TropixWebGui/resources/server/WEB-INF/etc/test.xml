@@ -1,0 +1,10 @@
+<formConfiguration>
+  <dialog style="67108864">
+    <widgetContainer>
+      <layout><flow /></layout>
+      <entry>
+        <label text="Hello World" />
+      </entry>
+    </widgetContainer>
+  </dialog>
+</formConfiguration>

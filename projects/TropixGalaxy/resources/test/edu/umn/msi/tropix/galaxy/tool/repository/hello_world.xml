@@ -1,0 +1,15 @@
+<tool id="hello_world" name="Hello World" version="0.1.0">
+  <description></description>
+
+  <command interpreter="python">
+    hello_world.py $input $output
+  </command>
+  <inputs>
+    <param name="input" type="text" label="Input" />  
+  </inputs>
+  
+  <outputs>
+    <data format="txt" name="output" />
+  </outputs>
+    
+</tool>

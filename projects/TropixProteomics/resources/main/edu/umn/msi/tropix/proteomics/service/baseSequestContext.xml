@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="sequestConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="sequest" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="sequest" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="sequest.staging.type" value="system" />
+        <entry key="sequest.execution.type" value="system" />
+        <entry key="sequest.allowed.drops" value="0" />
+        <entry key="sequest.output.type" value="STANDARD_OUTPUT" />   
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="sequestIdentificationJobBuilder" class="edu.umn.msi.tropix.proteomics.identification.IdentificationJobProcessorBuilderImpl">
+    <property name="jobProcessorFactory" ref="sequestJobProcessorFactory" />
+  </bean>
+
+  <bean id="sequestJobProcessorFactory" class="edu.umn.msi.tropix.proteomics.sequest.impl.SequestJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="applicationPath">
+      <bean factory-bean="sequestApplicationDeployerProperties" factory-method="get" />
+    </property>
+    <property name="dtaListWriter">
+      <bean class="edu.umn.msi.tropix.proteomics.impl.DTAListWriterImpl" />
+    </property>
+    <property name="includeDta" value="true" />
+    <property name="includeParams" value="true" />
+    <property name="allowedDroppedFiles" value="${sequest.allowed.drops}" />
+    <property name="mzXMLToDtaConverter">
+      <bean class="edu.umn.msi.tropix.proteomics.conversion.impl.MzXMLToDTAConverterStreamingImpl" />
+    </property>
+    <property name="sequestParameterTranslator">
+      <bean class="edu.umn.msi.tropix.proteomics.sequest.SequestBeanParameterTranslator" />
+    </property>
+    <property name="lineCallbackSupplier">
+      <bean class="edu.umn.msi.tropix.proteomics.sequest.impl.SequestLineCallbackSupplierImpl">
+        <property name="sequestOutputType">
+          <bean class="edu.umn.msi.tropix.proteomics.sequest.impl.SequestOutputTypeEnum" factory-method="valueOf">
+            <constructor-arg value="${sequest.output.type}" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+    <property name="credentialedStagingDirectoryFactory" ref="${sequest.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${sequest.execution.type}" />        
+  </bean>
+  
+  <bean id="sequestApplicationDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
+    <property name="properties">
+      <map>
+        <entry key="sequest.path" value="${scaffold.path}" />
+      </map>
+    </property>
+    <property name="deployer">
+      <bean class="edu.umn.msi.tropix.proteomics.sequest.impl.FakeSequestDeployerImpl">
+        <property name="deploymentDirectory" value="file:${user.home}/.tropix/sequest" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="sequestService" class="edu.umn.msi.tropix.proteomics.service.impl.SequestJobQueueContextImpl" parent="queueServiceParent">
+    <property name="identificationJobProcessorBuilder" ref="sequestIdentificationJobBuilder" />
+  </bean>
+
+</beans>

@@ -1,0 +1,68 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test13"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test13"
+      elementFormDefault="qualified">
+  
+  <xsd:element name="theName" type="coolInt" />
+  
+  <xsd:simpleType name="coolInt6">
+    <xsd:restriction base="xsd:int" />
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coolInt3">
+    <xsd:restriction base="xsd:int" />
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="coolInt8">
+    <xsd:restriction base="xsd:int" />
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coolInt5">
+    <xsd:restriction base="xsd:int" />
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coolInt4">
+    <xsd:restriction base="xsd:int">
+      <xsd:minInclusive value="0" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="coolInt2">
+    <xsd:union memberTypes="coolInt3">
+      <xsd:simpleType>
+        <xsd:restriction base="coolInt4">
+          <xsd:minInclusive value="1000" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType>
+        <xsd:union memberTypes="coolInt5 coolInt7" />
+      </xsd:simpleType>
+      <xsd:simpleType>
+        <xsd:union memberTypes="coolInt8" />
+      </xsd:simpleType>
+      <xsd:simpleType>
+        <xsd:union>
+          <xsd:simpleType>
+            <xsd:restriction base="coolInt6">
+              <xsd:minInclusive value="50" />
+            </xsd:restriction>
+          </xsd:simpleType>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:int">
+              <xsd:minInclusive value="100" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:union>
+      </xsd:simpleType>
+    </xsd:union>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coolInt">
+    <xsd:restriction base="coolInt2" />
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coolInt7">
+    <xsd:restriction base="xsd:int" />
+  </xsd:simpleType>
+    
+</xsd:schema>

@@ -1,0 +1,25 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test9"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test9"
+      elementFormDefault="qualified">
+      
+  <xsd:simpleType name="big">
+    <xsd:restriction base="xsd:int">
+      <xsd:minInclusive value="100" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+
+  <xsd:simpleType name="small">
+    <xsd:restriction base="xsd:int">
+      <xsd:maxInclusive value="5" />
+    </xsd:restriction>  
+  </xsd:simpleType>
+
+  
+  <xsd:element name="theName">
+    <xsd:simpleType>
+      <xsd:union memberTypes="big small" />
+    </xsd:simpleType>
+  </xsd:element>
+  
+</xsd:schema>

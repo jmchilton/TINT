@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<!-- Tests that verify components work together properly. -->
+<suite name="Integration and Regression Tests" verbose="1" >
+  <test name="integration">
+    <groups>
+      <run><include name="integration" /></run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.proteomics" />
+    </packages>
+  </test>
+</suite>

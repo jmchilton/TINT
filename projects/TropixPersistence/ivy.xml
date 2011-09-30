@@ -1,0 +1,33 @@
+<?xml version="1.0"?> 
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-persistence" />
+  
+  <configurations>
+    <conf name="dao-api" description="DAO API" visibility="public" />
+    <conf name="dao-impl-hibernate" description="Hibernate Implementation of DAO API" visibility="public" extends="dao-api" />
+    <conf name="service-api" description="Service API" visibility="public" />
+    <conf name="service-impl-dao" description="DAO implementation of Service API" visibility="public" extends="service-api,dao-impl-hibernate" />
+    <conf name="test" description="Integration tests." extends="service-impl-dao,dao-impl-hibernate" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-persistence-stubs" type="jar" conf="service-api" ext="jar" />
+    <artifact name="tropix-persistence-dao-api" type="jar" conf="dao-api" ext="jar" />
+    <artifact name="tropix-persistence-dao-impl-hibernate" type="jar" conf="dao-impl-hibernate" ext="jar" />
+    <artifact name="tropix-persistence-service-api" type="jar" conf="service-api" ext="jar" />
+    <artifact name="tropix-persistence-service-impl-dao" type="jar" conf="service-impl-dao" ext="jar" /> 
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" conf="service-impl-dao->default;test->test" />
+    <dependency org="msi.umn.edu" name="interfaces" rev="1.1" conf="service-api->spring-client" />
+    <dependency org="msi.umn.edu" name="tropix-models" rev="${ivy.project.version}" conf="dao-api->default" />
+    <dependency org="msi.umn.edu" name="tropix-messaging" rev="${ivy.project.version}" conf="service-impl-dao->impl" />
+  </dependencies>
+  
+</ivy-module> 
+ 

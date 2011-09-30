@@ -1,0 +1,10 @@
+Download Jython: http://downloads.sourceforge.net/project/jython/jython/2.5.2/jython_installer-2.5.2.jar
+Download Cheetah: http://pypi.python.org/packages/source/C/Cheetah/Cheetah-2.4.4.tar.gz#md5=853917116e731afbc8c8a43c37e6ddba
+
+java -jar jython_installer-2.5.2.jar  # install to ./jython
+tar xzvf Cheetah-2.4.4.tar.gz
+cd Cheetah-2.4.4/
+../jython/jython setup.py install --install-purelib=../jython/Lib
+cd ../jython
+cp jython.jar jython-tropix.jar
+zip -r jython-tropix.jar Lib

@@ -1,0 +1,41 @@
+=========================================================================
+==  NOTICE file corresponding to the section 4 d of                    ==
+==  the Apache License, Version 2.0,                                   ==
+==  in this case for the Tropix distribution.                          ==
+=========================================================================
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software developed by
+Minnesota Supercomputing Institute - University of Minnesota (http://msi.umn.edu/).
+
+This product includes software developed by 
+TestNG (http://testng.org/).
+
+This produce includes software developed by 
+The Globus Alliance (http://www.globus.org/).
+
+This product includes software developed by
+The caBIG Community (https://cabig.nci.nih.gov/).
+
+This product includes software developed by
+Google (http://www.google.com)
+
+This product includes software developed by
+Oliver Burn (http://checkstyle.sourceforge.net/)
+
+Portions of Ivy were originally developed by
+Jayasoft SARL (http://www.jayasoft.fr/)
+and are licensed to the Apache Software Foundation under the
+"Software Grant License Agreement"
+
+SSH and SFTP support is provided by the JCraft JSch package,
+which is open source software, available under
+the terms of a BSD style license.
+The original software and related information is available
+at http://www.jcraft.com/jsch/. 
+
+This product includes software developed by many other orginizations,
+the open source license for these products can be found in `licenses`
+directory of this distribution or subdirectories thereof.

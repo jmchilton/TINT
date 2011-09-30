@@ -1,0 +1,9 @@
+#!/bin/sh
+
+jar=@JAR_NAME@
+
+app_dir=`dirname "$0"`
+
+cd "$app_dir"
+
+java -jar $jar $*

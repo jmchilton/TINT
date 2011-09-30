@@ -1,0 +1,60 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<parameterSet xmlns="http://msi.umn.edu/tropix/proteomics/parameters/specification" >
+<parameter name="cleavageRules" default="Trypsin/P">
+  <domain>
+    <domainElement><value>Trypsin</value></domainElement>
+    <domainElement><value>Trypsin/P</value></domainElement>
+    <domainElement><value>Chymotrypsin</value></domainElement>
+    <!-- <domainElement><value>TrypChymo</value></domainElement> -->
+    <domainElement><value>Lys-C</value></domainElement>
+    <domainElement><value>Lys-C/P</value></domainElement>
+    <domainElement><value>Asp-N</value></domainElement>
+    <domainElement><value>PepsinA</value></domainElement>
+    <domainElement><value>CNBr</value></domainElement>
+    <!-- <domainElement><value>Formic_acid</value></domainElement> -->
+    <domainElement><value>NoEnzyme</value></domainElement>
+  </domain>  
+</parameter>
+
+<parameter name="fragmentMzTolerance" default="0.5">
+  <validation type="float" />
+</parameter>
+<parameter name="fragmentMzToleranceUnits" default="daltons">
+  <domain>
+    <domainElement><value>daltons</value></domainElement>
+    <domainElement><value>ppm</value></domainElement>
+  </domain>
+</parameter>
+<parameter name="precursorMzTolerance" default="1.25">
+  <validation type="float" />
+</parameter>
+<parameter name="precursorMzToleranceUnits" default="daltons">
+  <domain>
+    <domainElement><value>daltons</value></domainElement>
+    <domainElement><value>ppm</value></domainElement>
+  </domain>
+</parameter>
+<parameter name="numMaxMissedCleavages" default="-1">
+  <validation type="int" />
+</parameter>
+<parameter name="numMinTerminiCleavages" default="2">
+  <validation type="int" />
+</parameter>
+
+<parameter name="deisotopingMode" default="0">
+  <domain>
+    <domainElement><display>No deisotoping</display><value>0</value></domainElement>
+    <domainElement><display>For precursor adjustment</display><value>1</value></domainElement>
+    <domainElement><display>For precursor and scoring</display><value>2</value></domainElement>
+  </domain>
+</parameter>
+<parameter name="isotopeMzTolerance" default="0.25">
+  <validation type="float" />
+</parameter>
+
+<parameter name="staticMods" default="">
+</parameter>
+<parameter name="dynamicMods" default="">
+</parameter>
+
+</parameterSet>

@@ -1,0 +1,6 @@
+<ResearchCenter displayName="" shortName="" xmlns="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.common">
+  <Address country="" locality="" postalCode="" stateProvince="" street1="" street2=""/>
+  <pointOfContactCollection>
+    <PointOfContact affiliation="" email="" firstName="" lastName="" phoneNumber="" role=""/>
+  </pointOfContactCollection>
+</ResearchCenter>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN" "http://www.castor.org/mapping.dtd">
+
+<mapping>
+  <class name="edu.umn.msi.tropix.models.xtandem.XTandemParameters" identity="id">
+    <map-to xml="XTandemParameters" ns-uri="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.xtandem" />
+    <field name="outputHistogramColumnWidth" type="integer">
+      <bind-xml name="outputHistogramColumnWidth" node="attribute" />
+    </field>
+    <field name="outputHistograms" type="boolean">
+      <bind-xml name="outputHistograms" node="attribute" />
+    </field>
+    <field name="outputMaximumValidExpectationValue" type="double">
+      <bind-xml name="outputMaximumValidExpectationValue" node="attribute" />
+    </field>
+    <field name="outputOneSequencePerCopy" type="boolean">
+      <bind-xml name="outputOneSequencePerCopy" node="attribute" />
+    </field>
+    <field name="outputPerformance" type="boolean">
+      <bind-xml name="outputPerformance" node="attribute" />
+    </field>
+    <field name="outputProteins" type="boolean">
+      <bind-xml name="outputProteins" node="attribute" />
+    </field>
+    <field name="outputResults" type="string">
+      <bind-xml name="outputResults" node="attribute" />
+    </field>
+    <field name="outputSortResultsBy" type="string">
+      <bind-xml name="outputSortResultsBy" node="attribute" />
+    </field>
+    <field name="outputSequences" type="boolean">
+      <bind-xml name="outputSequences" node="attribute" />
+    </field>
+    <field name="outputSpectra" type="boolean">
+      <bind-xml name="outputSpectra" node="attribute" />
+    </field>
+    <field name="proteinCleavageCTerminalMassChange" type="double">
+      <bind-xml name="proteinCleavageCTerminalMassChange" node="attribute" />
+    </field>
+    <field name="proteinCleavageNTerminalMassChange" type="double">
+      <bind-xml name="proteinCleavageNTerminalMassChange" node="attribute" />
+    </field>
+    <field name="proteinCTerminalResidueModificationMass" type="double">
+      <bind-xml name="proteinCTerminalResidueModificationMass" node="attribute" />
+    </field>
+    <field name="proteinNTerminalResidueModificationMass" type="double">
+      <bind-xml name="proteinNTerminalResidueModificationMass" node="attribute" />
+    </field>
+    <field name="proteinCleavageSemi" type="boolean">
+      <bind-xml name="proteinCleavageSemi" node="attribute" />
+    </field>
+    <field name="proteinCleavageSite" type="string">
+      <bind-xml name="proteinCleavageSite" node="attribute" />
+    </field>
+    <field name="residueModificationMass" type="string">
+      <bind-xml name="residueModificationMass" node="attribute" />
+    </field>
+    <field name="residuePotentialModificationMass" type="string">
+      <bind-xml name="residuePotentialModificationMass" node="attribute" />
+    </field>
+    <field name="residuePotentialModificationMotif" type="string">
+      <bind-xml name="residuePotentialModificationMotif" node="attribute" />
+    </field>
+    <field name="scoringAIons" type="boolean">
+      <bind-xml name="scoringAIons" node="attribute" />
+    </field>
+    <field name="scoringBIons" type="boolean">
+      <bind-xml name="scoringBIons" node="attribute" />
+    </field>
+    <field name="scoringCIons" type="boolean">
+      <bind-xml name="scoringCIons" node="attribute" />
+    </field>
+    <field name="scoringXIons" type="boolean">
+      <bind-xml name="scoringXIons" node="attribute" />
+    </field>
+    <field name="scoringYIons" type="boolean">
+      <bind-xml name="scoringYIons" node="attribute" />
+    </field>
+    <field name="scoringZIons" type="boolean">
+      <bind-xml name="scoringZIons" node="attribute" />
+    </field>
+    <field name="scoringCyclicPermutation" type="boolean">
+      <bind-xml name="scoringCyclicPermutation" node="attribute" />
+    </field>
+    <field name="scoringIncludeReverse" type="boolean">
+      <bind-xml name="scoringIncludeReverse" node="attribute" />
+    </field>
+    <field name="scoringMaximumMissedCleavageSites" type="integer">
+      <bind-xml name="scoringMaximumMissedCleavageSites" node="attribute" />
+    </field>
+    <field name="scoringMinimumIonCount" type="integer">
+      <bind-xml name="scoringMinimumIonCount" node="attribute" />
+    </field>
+    <field name="spectrumContrastAngle" type="double">
+      <bind-xml name="spectrumContrastAngle" node="attribute" />
+    </field>
+    <field name="spectrumDynamicRange" type="double">
+      <bind-xml name="spectrumDynamicRange" node="attribute" />
+    </field>
+    <field name="spectrumFragmentMassError" type="double">
+      <bind-xml name="spectrumFragmentMassError" node="attribute" />
+    </field>
+    <field name="spectrumFragmentMassErrorUnits" type="string">
+      <bind-xml name="spectrumFragmentMassErrorUnits" node="attribute" />
+    </field>
+    <field name="spectrumFragmentMassType" type="string">
+      <bind-xml name="spectrumFragmentMassType" node="attribute" />
+    </field>
+    <field name="spectrumMinimumFragmentMZ" type="double">
+      <bind-xml name="spectrumMinimumFragmentMZ" node="attribute" />
+    </field>
+    <field name="spectrumMinimumPeaks" type="integer">
+      <bind-xml name="spectrumMinimumPeaks" node="attribute" />
+    </field>
+    <field name="spectrumMinimumParentMH" type="double">
+      <bind-xml name="spectrumMinimumParentMH" node="attribute" />
+    </field>
+    <field name="spectrumNeutralLossMass" type="double">
+      <bind-xml name="spectrumNeutralLossMass" node="attribute" />
+    </field>
+    <field name="spectrumParentMonoisotopicMassErrorMinus" type="double">
+      <bind-xml name="spectrumParentMonoisotopicMassErrorMinus" node="attribute" />
+    </field>
+    <field name="spectrumParentMonoisotopicMassErrorPlus" type="double">
+      <bind-xml name="spectrumParentMonoisotopicMassErrorPlus" node="attribute" />
+    </field>
+    <field name="spectrumParentMonoisotopicMassErrorUnits" type="string">
+      <bind-xml name="spectrumParentMonoisotopicMassErrorUnits" node="attribute" />
+    </field>
+    <field name="spectrumParentMonoisotopicMassIsotopeError" type="boolean">
+      <bind-xml name="spectrumParentMonoisotopicMassIsotopeError" node="attribute" />
+    </field>
+    <field name="spectrumTotalPeaks" type="integer">
+      <bind-xml name="spectrumTotalPeaks" node="attribute" />
+    </field>
+    <field name="spectrumUseNeutralLossWindow" type="boolean">
+      <bind-xml name="spectrumUseNeutralLossWindow" node="attribute" />
+    </field>
+    <field name="spectrumUseNoiseSuppression" type="boolean">
+      <bind-xml name="spectrumUseNoiseSuppression" node="attribute" />
+    </field>
+    <field name="spectrumUseContrastAngle" type="boolean">
+      <bind-xml name="spectrumUseContrastAngle" node="attribute" />
+    </field>
+    <field name="spectrumNeutralLossWindow" type="double">
+      <bind-xml name="spectrumNeutralLossWindow" node="attribute" />
+    </field>
+    <field name="id" type="string">
+      <bind-xml name="id" node="attribute" />
+    </field>
+    <field name="refine" type="boolean">
+      <bind-xml name="refine" node="attribute" />
+    </field>
+    <field name="refineCleavageSemi" type="boolean">
+      <bind-xml name="refineCleavageSemi" node="attribute" />
+    </field>
+    <field name="refineMaximumValidExpectationValue" type="double">
+      <bind-xml name="refineMaximumValidExpectationValue" node="attribute" />
+    </field>
+    <field name="refineModificationMass" type="string">
+      <bind-xml name="refineModificationMass" node="attribute" />
+    </field>
+    <field name="refinePotentialModificationMass" type="string">
+      <bind-xml name="refinePotentialModificationMass" node="attribute" />
+    </field>
+    <field name="refinePotentialModificationMotif" type="string">
+      <bind-xml name="refinePotentialModificationMotif" node="attribute" />
+    </field>
+    <field name="refinePointMutations" type="boolean">
+      <bind-xml name="refinePointMutations" node="attribute" />
+    </field>
+    <field name="refinePotentialNTerminusModifications" type="string">
+      <bind-xml name="refinePotentialNTerminusModifications" node="attribute" />
+    </field>
+    <field name="refinePotentialCTerminusModifications" type="string">
+      <bind-xml name="refinePotentialCTerminusModifications" node="attribute" />
+    </field>
+    <field name="refineSingleAminoAcidPolymorphisms" type="boolean">
+      <bind-xml name="refineSingleAminoAcidPolymorphisms" node="attribute" />
+    </field>
+    <field name="refineSpectrumSynthesis" type="boolean">
+      <bind-xml name="refineSpectrumSynthesis" node="attribute" />
+    </field>
+    <field name="refineUnanticipatedCleavage" type="boolean">
+      <bind-xml name="refineUnanticipatedCleavage" node="attribute" />
+    </field>
+    <field name="refineUsePotentialModifications" type="boolean">
+      <bind-xml name="refineUsePotentialModifications" node="attribute" />
+    </field>
+    <field name="spectrumMaximumParentCharge" type="integer">
+      <bind-xml name="spectrumMaximumParentCharge" node="attribute" />
+    </field>
+  </class>
+</mapping>
+

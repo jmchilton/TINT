@@ -1,0 +1,11 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/inspect/parameters"
+            xmlns="http://msi.umn.edu/tropix/proteomics/inspect/parameters"
+            elementFormDefault="qualified">
+
+  <xsd:element name="InspectParameters" type="InspectParameters" />
+  
+  <xsd:complexType name="InspectParameters">
+  </xsd:complexType>
+  
+</xsd:schema>

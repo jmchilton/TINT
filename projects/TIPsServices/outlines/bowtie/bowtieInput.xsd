@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/genomics/bowtie/input"
+            xmlns="http://msi.umn.edu/tropix/genomics/bowtie/input"
+            elementFormDefault="qualified">
+
+  <xsd:element name="BowtieInput">
+    <xsd:complexType>
+      <xsd:attribute name="inputsFormat" type="xsd:string" />
+      <xsd:attribute name="inputsType" type="xsd:string" />
+      <xsd:attribute name="trim3" type="xsd:int" />
+      <xsd:attribute name="trim5" type="xsd:int" />
+      <xsd:attribute name="inputQualities" type="xsd:string" />
+      <xsd:attribute name="seedMismatches" type="xsd:int" />
+      <xsd:attribute name="maxMismatchQuality" type="xsd:int" />
+      <xsd:attribute name="minimumInsertionSize" type="xsd:int" />
+      <xsd:attribute name="maximumInsertionSize" type="xsd:int" />
+      <xsd:attribute name="mateOrientations" type="xsd:string" />
+      <xsd:attribute name="noFw" type="xsd:boolean" />
+      <xsd:attribute name="noRc" type="xsd:boolean" />
+      <xsd:attribute name="maxReportedAlignment" type="xsd:int" />
+      <xsd:attribute name="best" type="xsd:boolean" />
+      <xsd:attribute name="strata" type="xsd:boolean" />
+      <xsd:attribute name="tryHard" type="xsd:boolean" /> 
+    </xsd:complexType>
+  </xsd:element>
+              
+</xsd:schema>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix Labs" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <property file="${user.home}/.ant-global.properties" />
+
+  <property file="build.properties"/>
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <target name="init" depends="" />
+
+  <target name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/main" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <pathelement path="${build.classes.dir}/main" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}/" /> 
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/main" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="checkstyle" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="prepare" depends="define-classpaths">
+    <preparedirs />
+  </target> 
+
+  <target name="clean"> 
+    <cleandirs />
+  </target>
+  
+  <target name="compile-java" description="Compiles java source." depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="compile" depends="compile-java" />
+  
+  <target name="jar" description="Builds a jar file" depends="compile">
+    <jarconfs />
+  </target> 
+  
+  <target name="jars" depends="jar" />
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="main" />
+  </target>
+
+  <target name="findbugs" depends="jar">
+    <runfindbugs />
+  </target>
+
+  <target name="test" depends="compile">
+    <runtestng  />
+  </target>
+
+  <target name="test-coverage" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.labs.*" />
+  </target>
+
+  <target name="all" depends="jars" />
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

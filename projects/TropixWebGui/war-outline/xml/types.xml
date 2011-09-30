@@ -1,0 +1,5 @@
+<List>
+  <type name="TropixObject" parent="Object" />
+  <type name="TropixFolder" parent="TropixObject" />
+  <type name="Sample" parent="TropixObject" />
+</List>

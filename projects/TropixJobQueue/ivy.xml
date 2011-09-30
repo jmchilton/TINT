@@ -1,0 +1,86 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-jobqueue" />
+  
+  <configurations>
+    <conf name="default" description="" visibility="public" />
+    <conf name="test" description="Tests" extends="default" visibility="public" />
+    <conf name="extension" description="Introduce Extension" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="extension,test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-jobqueue" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-jobqueue-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-jobqueue-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-grid" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-storage-client" conf="test->impls" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="interfaces" rev="1.1" conf="default->spring-client" />
+
+    <!-- Some dependency brought in here has antlr 2.7+ as dependency, which results in a search of each repository, even though
+         antlr 2.7.6 is in the cache. Adding the following dependency prevents this search so the cache works properly when 
+         the cagrid or the Tropix repository is down. -->
+    <!-- <dependency org="antlr" name="antlr" rev="2.7.6" conf="default->default" /> -->
+    <dependency org="org.hibernate" name="hibernate-tools" rev="3.2.0.ga" />
+
+	<!-- 
+    <dependency org="org.hibernate" name="hibernate" rev="3.2.6.ga" />
+    <dependency org="org.hibernate" name="hibernate-entitymanager" rev="3.3.2.ga" />
+    <dependency org="org.hibernate" name="hibernate-tools" rev="3.2.0.ga" />
+    -->
+    <!-- <dependency org="h2database" name="h2" rev="1.0.79" /> -->
+
+	<!-- Need to pull in a hacked version of the already hacked axis. This version updates 
+	org.apache.axis.utils.NSStack to address the bug found here:
+	http://www.mail-archive.com/fx-dev@ws.apache.org/msg00065.html
+	
+	This bug comes into play when interacting with GRAM.NET.
+	
+	Also cryptix32.jar also needs to be updated to deal with GRAM.NET and GRIDFTP.NET. 	
+	 -->
+    <dependency org="globus" name="core-backports" rev="4.0.3" conf="default->default" />
+
+    <!-- Additions to globus core needed for GRAM -->
+    <dependency org="globus" name="delegation" rev="4.0.8" conf="default->service" />
+    <dependency org="globus" name="gram" rev="4.0.8" conf="default->client" />
+    <dependency org="globus" name="rendezvous" rev="4.0.8" conf="default->service" />
+
+    <dependency rev="1.2" org="caGrid" name="service-security-provider" conf="default->client;default->service"/>
+    <dependency rev="1.2" org="caGrid" name="advertisement" conf="default->default"/>
+    <dependency rev="1.2" org="caGrid" name="introduce" conf="extension->extension;default->serviceTools" />
+
+
+    <!--
+    <dependency org="caGrid" name="transfer" rev="1.2" conf="default->client;extension->client" />
+    <dependency org="caGrid" name="metadatautils" rev="1.2" conf="default->default" />
+    <dependency org="caGrid" name="cds" rev="1.2" conf="default->client;extension->client" />
+    -->
+
+    <dependency rev="1.2" org="caGrid" name="core" conf="extension->default"/>
+    <dependency rev="1.2" org="caGrid" name="introduce" conf="extension->extension" />
+    <dependency org="org.jclouds.provider" name="aws-ec2" rev="1.0-beta-9c">
+      <exclude org="org.sonatype.sisu.inject" />
+      <exclude org="asm" />
+      <exclude org="javax.inject" />
+    </dependency>
+    <dependency org="org.jclouds.driver" name="jclouds-log4j" rev="1.0-beta-9c">
+      <exclude org="org.sonatype.sisu.inject" />
+      <exclude org="asm" />
+      <exclude org="javax.inject" />
+    </dependency>
+    <dependency org="org.jclouds.driver" name="jclouds-jsch" rev="1.0-beta-9c">
+      <exclude org="org.sonatype.sisu.inject" />
+      <exclude org="asm" />
+      <exclude org="javax.inject" />
+    </dependency>
+
+
+    <exclude org="antlr" />
+  </dependencies>  
+</ivy-module> 
+ 

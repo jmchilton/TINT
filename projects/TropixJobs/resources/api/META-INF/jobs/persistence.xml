@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+   version="1.0">
+   
+  <persistence-unit name="jobs">
+
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+    <class>edu.umn.msi.tropix.jobs.activities.ActivityContext</class>
+    
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDependency</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.IdList</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.Id</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.StringParameterSet</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.StringParameter</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.ScaffoldSample</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.ScaffoldQuantativeSample</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CommitObjectDescription</class>
+
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateBowtieIndexDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateBowtieAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateDatabaseDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateFolderDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateIdentificationAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateIdentificationParametersDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateIdPickerParametersDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateITraqQuantitationAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateITraqQuantitationTrainingDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateProteomicsRunDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldDriverDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateTissueSampleDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.MergeScaffoldSamplesDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.PollJobDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitBowtieAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitGalaxyDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitGalaxyDescription$PersistentRootInput</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitGalaxyDescription$PersistentInput</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitIdentificationAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitIdPickerAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitITraqQuantitationAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitITraqQuantitationTrainingDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitProteomicsConvertDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitScaffoldAnalysisDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.SubmitThermofinniganRunJobDescription</class>
+    <class>edu.umn.msi.tropix.jobs.activities.descriptions.UploadFileDescription</class>    
+    
+    <properties>
+      <property name="hibernate.archive.autodetection" value="class"/>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
+    </properties>
+  </persistence-unit>
+  
+  
+</persistence>
+

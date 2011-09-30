@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models">
+	<class name="TropixObject" table="TROPIX_OBJECT" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the TropixObject class -->
+		<property name="name" type="string" column="NAME"/>
+		<property name="description" type="string" column="DESCRIPTION"/>
+		<property name="creationTime" type="string" column="CREATION_TIME"/>
+		<property name="committed" type="boolean" column="COMMITTED"/>
+		<property name="deletedTime" type="string" column="DELETED_TIME"/>
+		<!-- Associations mapping for the TropixObject class -->
+		<set name="parentVirtualFolders" table="JOIN_VIRTUAL_FOLDER_OBJECT" lazy="true" inverse="true">
+			<cache usage="read-write" />
+			<key column="OBJECT_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.VirtualFolder" column="VIRTUAl_FOLDER_ID" />
+		</set>
+		<set name="permissionParents" table="JOIN_PERMISSIONS" lazy="true" inverse="false"><cache usage="read-write" /><key column="CHILD_ID" /><many-to-many class="edu.umn.msi.tropix.models.TropixObject" column="PARENT_ID" /></set><set name="permissionChildren" table="JOIN_PERMISSIONS" lazy="true" inverse="true">
+			<cache usage="read-write" />
+			<key column="PARENT_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.TropixObject" column="CHILD_ID" />
+		</set>
+		<many-to-one name="parentFolder" class="edu.umn.msi.tropix.models.Folder" column="FOLDER_ID" lazy="proxy" />
+		<set name="permissions" table="JOIN_PERMISSION_OBJECT" lazy="true" inverse="true">
+			<cache usage="read-write" />
+			<key column="OBJECT_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.Permission" column="PERMISSION_ID" />
+		</set>
+		<set name="studies" table="JOIN_STUDY_TROPIX_OBJECT" lazy="true" inverse="true">
+			<cache usage="read-write" />
+			<key column="OBJECT_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.Study" column="STUDY_ID" />
+		</set>
+		<joined-subclass name="Database" table="DATABASE_TABLE" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Attributes mapping for the Database class -->
+			<property name="type" type="string" column="TYPE"/>
+			<!-- Associations mapping for the Database class -->
+			<many-to-one name="databaseFile" class="edu.umn.msi.tropix.models.TropixFile" column="FILE_ID" unique="true" lazy="false" />
+		</joined-subclass>
+		<joined-subclass name="Parameters" table="PARAMETERS" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Associations mapping for the Parameters class -->
+			<many-to-one name="user" class="edu.umn.msi.tropix.models.User" column="USER_ID" lazy="proxy" />
+			<joined-subclass name="IdentificationParameters" table="IDENTFICATION_PARAMETERS" lazy="true">
+				<key column="PARAMETERS_ID" />
+				<!-- Attributes mapping for the IdentificationParameters class -->
+				<property name="type" type="string" column="TYPE"/>
+				<property name="parametersId" type="string" column="IDENT_PARAMETERS_ID"/>
+				<!-- Associations mapping for the IdentificationParameters class -->
+			</joined-subclass>
+		</joined-subclass>
+		<joined-subclass name="TropixFile" table="FILE" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Attributes mapping for the TropixFile class -->
+			<property name="storageServiceUrl" type="string" column="STORAGE_SERVICE_URL"/>
+			<property name="fileId" type="string" column="FILE_ID"/>
+			<!-- Associations mapping for the TropixFile class -->
+			<many-to-one name="fileType" class="edu.umn.msi.tropix.models.FileType" column="FILE_TYPE_ID" lazy="false" />
+		</joined-subclass>
+		<joined-subclass name="Folder" table="FOLDER" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Associations mapping for the Folder class -->
+			<set name="contents" lazy="true">
+				<cache usage="read-write" />
+				<key column="FOLDER_ID" />
+				<one-to-many class="edu.umn.msi.tropix.models.TropixObject"/>
+			</set>
+		</joined-subclass>
+		<joined-subclass name="Sample" table="SAMPLE" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Associations mapping for the Sample class -->
+			<set name="childSamples" table="JOIN_SAMPLE_SAMPLE" lazy="true">
+				<cache usage="read-write" />
+				<key column="SAMPLE_PARENT_ID" />
+				<many-to-many class="edu.umn.msi.tropix.models.Sample" column="SAMPLE_CHILD_ID" unique="true"/>
+			</set>
+			<joined-subclass name="TissueSample" table="TISSUE_SAMPLE" lazy="true">
+				<key column="SAMPLE_ID" />
+				<!-- Attributes mapping for the TissueSample class -->
+				<property name="species" type="string" column="SPECIES"/>
+				<property name="tissueType" type="string" column="TISSUE_TYPE"/>
+				<property name="collectionTime" type="string" column="COLLECTION_TIME"/>
+				<property name="condition" type="string" column="TISSUE_CONDITION"/>
+				<!-- Associations mapping for the TissueSample class -->
+				<set name="proteomicsRuns" lazy="true">
+					<cache usage="read-write" />
+					<key column="TISSUE_SAMPLE" />
+					<one-to-many class="edu.umn.msi.tropix.models.ProteomicsRun"/>
+				</set>
+			</joined-subclass>
+		</joined-subclass>
+		<joined-subclass name="Run" table="RUN" lazy="true">
+			<key column="OBJECT_ID" />
+			<joined-subclass name="ProteomicsRun" table="PROTEOMICS_RUN" lazy="true">
+				<key column="RUN_ID" />
+				<!-- Associations mapping for the ProteomicsRun class -->
+				<many-to-one name="tissueSample" class="edu.umn.msi.tropix.models.TissueSample" column="TISSUE_SAMPLE" lazy="proxy" />
+				<many-to-one name="source" class="edu.umn.msi.tropix.models.TropixFile" column="SOURCE_ID" unique="true" lazy="false" />
+				<set name="identificationAnalyses" lazy="true">
+					<cache usage="read-write" />
+					<key column="PROTEOMICS_RUN_ID" />
+					<one-to-many class="edu.umn.msi.tropix.models.IdentificationAnalysis"/>
+				</set>
+				<many-to-one name="mzxml" class="edu.umn.msi.tropix.models.TropixFile" column="MZXML_ID" unique="true" lazy="false" />
+			</joined-subclass>
+		</joined-subclass>
+		<joined-subclass name="Analysis" table="ANALYSIS" lazy="true">
+			<key column="OBJECT_ID" />
+			<joined-subclass name="ScaffoldAnalysis" table="SCAFFOLD_ANALYSIS" lazy="true">
+				<key column="ANALYSIS_ID" />
+				<!-- Associations mapping for the ScaffoldAnalysis class -->
+				<many-to-one name="outputs" class="edu.umn.msi.tropix.models.TropixFile" column="OUTPUTS_ID" unique="true" lazy="false" />
+				<set name="identificationAnalyses" table="JOIN_IDENTIFICATION_ANALYSIS_SCAFFOLD_ANALYSIS" lazy="true" inverse="false">
+					<cache usage="read-write" />
+					<key column="SCAFFOLD_ANALYSIS_ID" />
+					<many-to-many class="edu.umn.msi.tropix.models.IdentificationAnalysis" column="IDENTIFICATION_ANALYSIS_ID" />
+				</set>
+				<many-to-one name="input" class="edu.umn.msi.tropix.models.TropixFile" column="INPUT_ID" unique="true" lazy="false" />
+			</joined-subclass>
+			<joined-subclass name="IdentificationAnalysis" table="IDENTIFICATION_ANALYSIS" lazy="true">
+				<key column="ANALYSIS_ID" />
+				<!-- Attributes mapping for the IdentificationAnalysis class -->
+				<property name="identificationProgram" type="string" column="IDENTIFICATION_PROGRAM"/>
+				<!-- Associations mapping for the IdentificationAnalysis class -->
+				<many-to-one name="database" class="edu.umn.msi.tropix.models.Database" column="DATABASE_ID" lazy="false" />
+				<many-to-one name="run" class="edu.umn.msi.tropix.models.ProteomicsRun" column="PROTEOMICS_RUN_ID" lazy="proxy" />
+				<set name="scaffoldAnalyses" table="JOIN_IDENTIFICATION_ANALYSIS_SCAFFOLD_ANALYSIS" lazy="true" inverse="true">
+					<cache usage="read-write" />
+					<key column="IDENTIFICATION_ANALYSIS_ID" />
+					<many-to-many class="edu.umn.msi.tropix.models.ScaffoldAnalysis" column="SCAFFOLD_ANALYSIS_ID" />
+				</set>
+				<many-to-one name="output" class="edu.umn.msi.tropix.models.TropixFile" column="OUTPUT_ID" unique="true" lazy="false" />
+				<many-to-one name="parameters" class="edu.umn.msi.tropix.models.IdentificationParameters" column="PARAMETERS_ID" lazy="proxy" />
+			</joined-subclass>
+			<joined-subclass name="ITraqQuantitationAnalysis" table="ITRAQ_QUANTITATION_ANALYSIS" lazy="true">
+				<key column="ANALYSIS_ID" />
+				<!-- Associations mapping for the ITraqQuantitationAnalysis class -->
+				<many-to-one name="training" class="edu.umn.msi.tropix.models.ITraqQuantitationTraining" column="TRAINING_ID" lazy="proxy" />
+				<many-to-one name="report" class="edu.umn.msi.tropix.models.TropixFile" column="DATA_REPORT_ID" unique="true" lazy="proxy" />
+				<set name="runs" table="JOIN_ITRAQ_QUANTITATION_ANALYSIS_PROTEOMICS_RUN" lazy="true" inverse="false">
+					<cache usage="read-write" />
+					<key column="ITRAQ_QUANTITATION_TRAINING_ID" />
+					<many-to-many class="edu.umn.msi.tropix.models.ProteomicsRun" column="PROTEOMICS_RUN_ID" />
+				</set>
+				<many-to-one name="output" class="edu.umn.msi.tropix.models.TropixFile" column="OUTPUT_ID" unique="true" lazy="false" />
+			</joined-subclass>
+			<joined-subclass name="BowtieAnalysis" table="BOWTIE_ANALYSIS" lazy="true">
+				<key column="ANALYSIS_ID" />
+				<!-- Associations mapping for the BowtieAnalysis class -->
+				<set name="databases" table="JOIN_BOWTIE_ANALYSIS_DATABASE" lazy="true" inverse="false">
+					<cache usage="read-write" />
+					<key column="BOWTIE_ANALYSIS_ID" />
+					<many-to-many class="edu.umn.msi.tropix.models.Database" column="DATABASE_ID" />
+				</set>
+				<many-to-one name="output" class="edu.umn.msi.tropix.models.TropixFile" column="OUTPUT_FILE_ID" unique="true" lazy="proxy" />
+				<many-to-one name="index" class="edu.umn.msi.tropix.models.BowtieIndex" column="BOWTIE_INDEX_ID" lazy="proxy" />
+			</joined-subclass>
+		</joined-subclass>
+		<joined-subclass name="Study" table="STUDY" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Attributes mapping for the Study class -->
+			<property name="publishedCitation" type="string" column="PUBLISHED_CITATION"/>
+			<!-- Associations mapping for the Study class -->
+			<set name="contents" table="JOIN_STUDY_TROPIX_OBJECT" lazy="true" inverse="true">
+				<cache usage="read-write" />
+				<key column="STUDY_ID" />
+				<many-to-many class="edu.umn.msi.tropix.models.TropixObject" column="OBJECT_ID" />
+			</set>
+		</joined-subclass>
+		<joined-subclass name="VirtualFolder" table="VIRTUAL_FOLDER" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Attributes mapping for the VirtualFolder class -->
+			<property name="root" type="boolean" column="ROOT"/>
+			<!-- Associations mapping for the VirtualFolder class -->
+			<set name="contents" table="JOIN_VIRTUAL_FOLDER_OBJECT" lazy="true" inverse="false">
+				<cache usage="read-write" />
+				<key column="VIRTUAl_FOLDER_ID" />
+				<many-to-many class="edu.umn.msi.tropix.models.TropixObject" column="OBJECT_ID" />
+			</set>
+		</joined-subclass>
+		<joined-subclass name="Note" table="NOTE" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Associations mapping for the Note class -->
+			<set name="revisions" lazy="true">
+				<cache usage="read-write" />
+				<key column="NOTE_ID" />
+				<one-to-many class="edu.umn.msi.tropix.models.NoteRevision"/>
+			</set>
+		</joined-subclass>
+		<joined-subclass name="Request" table="REQUEST" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Attributes mapping for the Request class -->
+			<property name="externalId" type="string" column="EXTERNAL_ID"/>
+			<property name="requestorId" type="string" column="REQUESTOR_ID"/>
+			<property name="serviceId" type="string" column="SERVICE_ID"/>
+			<property name="contact" type="string"><column name="CONTACT" sql-type="longtext" /></property>
+			<property name="destination" type="string" column="DESTINATION"/>
+			<property name="serviceInfo" type="string" column="SERVICE_INFO"/>
+			<property name="state" type="string" column="STATE"/>
+			<property name="report" type="string"><column name="REPORT" sql-type="longtext" /></property>
+			<!-- Associations mapping for the Request class -->
+			<set name="contents" lazy="true">
+				<cache usage="read-write" />
+				<key column="REQUEST_ID" />
+				<one-to-many class="edu.umn.msi.tropix.models.TropixObject"/>
+			</set>
+			<many-to-one name="provider" class="edu.umn.msi.tropix.models.Provider" column="PROVIDER_ID" lazy="proxy" />
+			<joined-subclass name="InternalRequest" table="INTERNAL_REQUEST" lazy="true">
+				<key column="REQUEST_ID" />
+				<!-- Attributes mapping for the InternalRequest class -->
+				<property name="storageServiceUrl" type="string" column="STORAGE_SERVICE_URL"/>
+				<property name="requestServiceUrl" type="string" column="REQUEST_SERVICE_URL"/>
+				<!-- Associations mapping for the InternalRequest class -->
+				<many-to-one name="destinationFolder" class="edu.umn.msi.tropix.models.Folder" column="DESTINATION_FOLDER_ID" lazy="proxy" />
+			</joined-subclass>
+		</joined-subclass>
+		<joined-subclass name="BowtieIndex" table="BOWTIE_INDEX" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Associations mapping for the BowtieIndex class -->
+			<many-to-one name="indexesFile" class="edu.umn.msi.tropix.models.TropixFile" column="INDEXES_FILE_ID" unique="true" lazy="false" />
+		</joined-subclass>
+		<joined-subclass name="ITraqQuantitationTraining" table="ITRAQ_QUANTITATION_TRAINING" lazy="true">
+			<key column="OBJECT_ID" />
+			<!-- Associations mapping for the ITraqQuantitationTraining class -->
+			<set name="runs" table="JOIN_ITRAQ_QUANTITATION_TRAINING_PROTEOMICS_RUN" lazy="true" inverse="false">
+				<cache usage="read-write" />
+				<key column="ITRAQ_QUANTITATION_TRAINING_ID" />
+				<many-to-many class="edu.umn.msi.tropix.models.ProteomicsRun" column="PROTEOMICS_RUN_ID" />
+			</set>
+			<many-to-one name="report" class="edu.umn.msi.tropix.models.TropixFile" column="REPORT_ID" unique="true" lazy="proxy" />
+			<many-to-one name="trainingFile" class="edu.umn.msi.tropix.models.TropixFile" column="TRAINING_FILE_ID" unique="true" lazy="false" />
+		</joined-subclass>
+	</class>
+</hibernate-mapping>

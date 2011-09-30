@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix U of M" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <!-- Should define msi.user and ssh.key.file -->
+  <property file="${user.home}/.ant-global.properties" />
+  <property file="${basedir}/build.properties" />
+
+  <property environment="env" />
+  <property name="project.version" value="1.2" />
+  <property name="projects.dir" value="${basedir}/projects" />  
+  <property name="antfiles.dir" value="${basedir}/antfiles" />
+
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="artifacts.dir" value="${build.dir}/artifacts" />
+
+  <property name="build.coverage.dir" value="${build.dir}/coverage" />
+  <property name="build.coverage.src.dir" value="${build.dir}/coverage-src" />
+
+  <property name="antfiles.lib.dir" location="${antfiles.dir}/lib" />
+  
+  <target name="define-ant-tasks" unless="defined.anttasks">
+    <taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="artifact">
+      <classpath>
+        <fileset dir="${ant.library.dir}">
+          <include name="ant.jar" />
+        </fileset>
+        <fileset dir="${antfiles.lib.dir}">
+          <include name="ant-contrib*.jar" />
+        </fileset>
+      </classpath>
+    </taskdef>
+    <property name="defined.anttasks" value="true" />
+  </target>
+
+  <target name="prepare" depends="define-ant-tasks">
+    <mkdir dir="${build.dir}" />
+  </target>
+
+  <target name="set-project-versions" depends="prepare">
+    <fail unless="project.version" message="You must provide a a value for the property [project.version]!" />
+    <echo message="Setting all project versions to version ${project.version}" />
+
+    <ivy:buildlist reference="ivy.project.properties.list" skipbuildwithoutivy="true" ivyfilepath="ivy.xml">
+      <fileset dir="${projects.dir}">
+        <include name="*/project.properties" />
+      </fileset>
+    </ivy:buildlist>
+
+    <for parallel="true" param="project.properties.file" trim="true">
+      <path refid="ivy.project.properties.list" />
+      <sequential>
+        <propertyfile file="@{project.properties.file}">
+          <entry key="project.version" value="${project.version}" />
+        </propertyfile>
+      </sequential>
+    </for>
+  </target>
+
+  <macrodef name="replace-for-each-conf">
+    <attribute name="confs" />
+    <attribute name="marker" />
+    <attribute name="replacement" />
+    <attribute name="file" />
+    <sequential>
+      <for param="conf" trim="true" list="@{confs}">
+	<sequential>
+	  <replaceregexp match="(&lt;\!-- @{marker} --&gt;)" flags="g" replace="@{replacement}\0">
+	    <fileset file="@{file}" />
+	  </replaceregexp>
+	</sequential>
+      </for>
+      <replaceregexp match="(&lt;\!-- @{marker} --&gt;)" flags="g" replace="">
+	<fileset file="@{file}" />
+      </replaceregexp>
+    </sequential>
+  </macrodef>
+
+  <target name="make-project" depends="define-ant-tasks">
+    <input message="project" addproperty="project" />
+    <input message="packagedir" addproperty="packagedir" />
+    <input message="confs" addproperty="confs" />
+    <input message="shortname" addproperty="shortname" />
+    <property name="project.dir" value="${projects.dir}/${project}" />
+    <property name="dollar" value="$" />
+    <copy toDir="${projects.dir}/${project}">
+      <fileset dir="skeleton" excludes="**/.svn/**" />
+    </copy>
+
+    <replace-for-each-conf confs="${confs},test" marker="sources" replacement="&lt;pathelement path=&quot;${dollar}{src.dir}/@{conf}&quot; /&gt;${line.separator}      " file="${project.dir}/build.xml"  />
+    <replace-for-each-conf confs="${confs},test" file="${project.dir}/ivy.xml" marker="artifacts" replacement="&lt;artifact name=&quot;tropix-${shortname}-@{conf}&quot; type=&quot;jar&quot; conf=&quot;@{conf}&quot; ext=&quot;jar&quot; /&gt;${line.separator}    " />
+    <replace-for-each-conf confs="${confs}" file="${project.dir}/build.xml" marker="classes" replacement="&lt;pathelement path=&quot;${dollar}{build.classes.dir}/@{conf}&quot; /&gt;${line.separator}      "  />
+    <replace-for-each-conf confs="${confs}" file="${project.dir}/build.xml" marker="resources" replacement="&lt;pathelement path=&quot;${dollar}{resources.dir}/@{conf}&quot; /&gt;${line.separator}      "  />
+
+    <replace-for-each-conf confs="${confs}" file="${project.dir}/ivy.xml" marker="confs" replacement="&lt;conf name=&quot;@{conf}&quot; extends=&quot;TODO&quot; visibility=&quot;public&quot; /&gt;${line.separator}    " />
+    <replace-for-each-conf confs="${confs},test" file="${project.dir}/.classpath" marker="classpathentries" replacement="&lt;classpathentry kind=&quot;src&quot; path=&quot;src/@{conf}&quot; /&gt;${line.separator}  &lt;classpathentry kind=&quot;src&quot; path=&quot;resources/@{conf}&quot; /&gt;${line.separator}  " />
+
+    <for param="conf" trim="true" list="${confs},test">
+      <sequential>
+	<mkdir dir="${project.dir}/src/@{conf}/${packagedir}" />
+	<mkdir dir="${project.dir}/resources/@{conf}/${packagedir}" />
+      </sequential>
+    </for>
+    <pathconvert property="package" dirsep=".">
+      <path location="${packagedir}"/>
+      <map from="${user.dir}/" to=''/>
+    </pathconvert>
+    <replaceregexp match="@PACKAGE@" flags="g" replace="${package}">
+      <fileset dir="${project.dir}/test" includes="testng.xml" />
+    </replaceregexp>
+    <replaceregexp match="@PROJECT_NAME@" flags="g" replace="${project}">
+      <fileset dir="${project.dir}" includes=".project" />
+    </replaceregexp>
+    <replaceregexp match="@CONFS@" flags="g" replace="${confs},test">
+      <fileset dir="${project.dir}" includes="project.properties" />
+    </replaceregexp>
+    <replaceregexp match="@CONFS@" flags="g" replace="${confs}">
+      <fileset dir="${project.dir}" includes="ivy.xml" />
+    </replaceregexp>
+    <replaceregexp match="@SHORT_NAME@" flags="g" replace="${shortname}">
+      <fileset dir="${project.dir}">
+	<include name="ivy.xml" />
+	<include name="project.properties" />
+      </fileset>
+    </replaceregexp>
+    
+    <echo message="Project ready to go, be sure to tweak your ivy configuration." />
+  </target>
+
+  <target name="init" depends="define-ant-tasks">
+    <for parallel="false" param="project" trim="true" list="${projects.list}">
+      <sequential>
+        <ant inheritAll="false" antfile="${projects.dir}/@{project}/build.xml" target="init" />
+      </sequential>
+    </for>
+  </target>
+
+  
+  <macrodef name="merge-coverage">
+   <sequential>
+     <mkdir dir="${build.coverage.dir}" />
+     <mkdir dir="${build.coverage.src.dir}" />
+     <for parallel="false" param="project" trim="true" list="${projects.list}">
+       <sequential>
+         <copy toDir="${build.coverage.src.dir}" failonerror="false">
+           <fileset dir="${projects.dir}/@{project}/build/coverage-src" />
+         </copy>
+         <mkdir dir="${build.coverage.dir}/@{project}" />
+         <copy toDir="${build.coverage.dir}/@{project}" flatten="true" failonerror="false">
+           <fileset dir="${projects.dir}/@{project}/build" includes="**/*.emma" />
+         </copy>
+       </sequential>
+     </for>
+     <!-- Intialize emma for coverage testing -->
+     <taskdef resource="emma_ant.properties">
+       <classpath>
+         <fileset dir="${basedir}/antfiles/lib">
+           <include name="emma*.jar" />
+         </fileset>
+       </classpath>
+     </taskdef>
+     <emma enabled="true">
+       <report sourcepath="${build.coverage.src.dir}" sort="+block,+name,+method,+class" metrics="method:100,block:90,line:80,class:100">
+         <fileset dir="${build.coverage.dir}" includes="**/*emma" />
+         <txt outfile="${build.coverage.dir}/coverage.txt" depth="package" columns="class,method,block,line,name" />
+         <html outfile="${build.coverage.dir}/coverage.html" depth="method" columns="name,class,method,block,line" />
+       </report>
+     </emma>
+   </sequential>
+ </macrodef>
+
+  <target name="test-coverage" depends="prepare">
+    <for parallel="false" param="project" trim="true" list="${testable.projects.list}">
+      <sequential>
+        <ant inheritAll="false" antfile="${projects.dir}/@{project}/build.xml" target="test-coverage" />
+      </sequential>
+    </for>
+    <merge-coverage />
+  </target>
+
+  <target name="clean" depends="define-ant-tasks">
+    <for-each-project-target target="clean" />
+    <delete dir="build" />
+  </target>
+
+  <target name="update-headers" depends="define-ant-tasks">
+    <for-each-project-target target="update-headers" />
+  </target>
+
+  <target name="publish" depends="define-ant-tasks">
+    <for-each-project-target target="publish" />
+  </target>
+
+  <target name="_dist-wars">
+    <mkdir dir="${artifacts.dir}/wars" />
+    <copy toDir="${artifacts.dir}/wars">
+      <fileset dir="${projects.dir}/TropixStorageService/build/wars" includes="**/*" />
+      <fileset dir="${projects.dir}/TIPsServices/build/wars" includes="**/*" />
+      <fileset dir="${projects.dir}/TropixWebGui/build/wars" includes="**/*" />
+    </copy>
+  </target>
+
+  <target name="dist" depends="clean,prepare">
+    <for-each-project-target target="dist" /> 
+    <mkdir dir="${artifacts.dir}" />
+    <!-- Build merged coverage report and copy it to artifacts directory. -->
+    <merge-coverage />
+    <copy toDir="${artifacts.dir}/coverage">
+      <fileset dir="${build.coverage.dir}" includes="coverage.html, coverage.txt, _files/**" />
+    </copy>
+    <!-- Copy individual coverage reports to artifacts directory. -->
+    <for parallel="false" param="project" trim="true" list="${testable.projects.list}">
+      <sequential>
+        <copy toDir="${artifacts.dir}/coverage/@{project}" failonerror="false">
+          <fileset dir="${projects.dir}/@{project}/build/coverage" includes="coverage.html, coverage.txt, _files/**" />
+        </copy>
+      </sequential>
+    </for>
+    <!-- Copy javadocs into artifacts directory -->
+    <mkdir dir="${artifacts.dir}/doc" />
+    <for parallel="false" param="project" trim="true" list="${projects.list}">
+      <sequential>
+        <copy toDir="${artifacts.dir}/doc/@{project}" failonerror="false">
+          <fileset dir="${projects.dir}/@{project}/build/doc" includes="**" />
+        </copy>
+      </sequential>
+    </for>
+
+    <!-- Build merged jdepend classes dir and analyize -->
+    <for parallel="false" param="project" trim="true" list="${projects.list}">
+      <sequential>
+        <copy toDir="${build.dir}/jdepend-classes" failonerror="false">
+          <fileset dir="${projects.dir}/@{project}/build/jdepend-classes" />
+        </copy>
+      </sequential>
+    </for>
+
+    <jdepend outputfile="${artifacts.dir}/jdepend-report.xml" format="xml" fork="true">
+      <classpath>
+        <fileset dir="${basedir}/antfiles/lib">
+          <include name="jdepend*.jar" />
+        </fileset>
+      </classpath>
+      <classespath>
+        <pathelement location="${build.dir}/jdepend-classes" />
+      </classespath>
+    </jdepend>
+
+    <antcall target="_dist-wars" />    
+  </target>
+
+  <macrodef name="for-each-project-target">
+    <attribute name="list" default="${projects.list}" />
+    <attribute name="target" />
+    <sequential>
+      <for parallel="false" param="project" trim="true" list="@{list}">
+        <sequential>
+          <echo message="Executing target @{target} on @{project}"  />
+          <ant inheritAll="false" antfile="${projects.dir}/@{project}/build.xml" target="@{target}" />
+        </sequential>
+      </for>    
+    </sequential>
+  </macrodef>
+
+  <target name="publish-publically" depends="define-ant-tasks">
+    <for parallel="false" param="project" trim="true" list="${publish.projects.list}">
+      <sequential>
+        <ant inheritAll="false" antfile="${projects.dir}/@{project}/build.xml" target="publish-publically" />
+      </sequential>
+    </for>
+  </target>
+
+
+</project>
+

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/bumbershoot/parameters"
+            xmlns="http://msi.umn.edu/tropix/proteomics/bumbershoot/parameters"
+            elementFormDefault="qualified">
+
+  <xsd:element name="TagParameters" type="TagParameters" />
+  
+  <xsd:element name="MyriMatchParameters" type="MyriMatchParameters" />
+
+  <xsd:attributeGroup name="MsMsSearchParameters">
+    <xsd:attribute name="NumChargeStates" type="xsd:int" default="3" use="optional" />
+    <xsd:attribute name="StartSpectraScanNum" type="xsd:int" default="0" use="optional" />
+    <xsd:attribute name="EndSpectraScanNum" type="xsd:int" default="-1" use="optional" />
+    <xsd:attribute name="UseChargeStateFromMS" type="xsd:boolean" default="false" use="optional" />
+    <xsd:attribute name="DuplicateSpectra" type="xsd:boolean" default="true" use="optional" />
+    <xsd:attribute name="NumIntensityClasses" type="xsd:int" default="1" use="optional" />
+    <xsd:attribute name="AdjustPrecursorMass" type="xsd:boolean" default="false" use="optional" />
+    <xsd:attribute name="MinPrecursorAdjustment" type="xsd:double" default="-2.5" use="optional" /> <!-- daltons -->
+    <xsd:attribute name="MaxPrecursorAdjustment" type="xsd:double" default="2.5" use="optional" />
+    <xsd:attribute name="PrecursorAdjustmentStep" type="xsd:double" default="0.1" use="optional" />
+    <xsd:attribute name="DeisotopingMode" type="xsd:int" default="0" use="optional" /> <!-- 0,1,2 -->
+    <xsd:attribute name="IsotopeMzTolerance" type="xsd:double" default="0.25" use="optional" />
+    <xsd:attribute name="ComplementMzTolerance" type="xsd:double" default="0.5" use="optional" />
+    <xsd:attribute name="StaticMods" type="xsd:string" default="" use="optional" />
+    <xsd:attribute name="DynamicMods" type="xsd:string" default="" use="optional" />
+    <xsd:attribute name="MaxDynamicMods" type="xsd:int" default="2" use="optional" />
+    <xsd:attribute name="MaxResults" type="xsd:int" default="5" use="optional" />
+    <xsd:attribute name="ClassSizeMultiplier" type="xsd:int" default="2" use="optional" />
+    <xsd:attribute name="PrecursorMzTolerance" type="xsd:double" default="1.25" use="optional" />
+    <xsd:attribute name="FragmentMzTolerance" type="xsd:double" default="0.5" use="optional" />
+  </xsd:attributeGroup>
+  
+  <xsd:attributeGroup name="MsMsIdentificationSearchParameters">
+    <xsd:attributeGroup ref="MsMsSearchParameters" />
+    <xsd:attribute name="CleavageRules" type="xsd:string" default="Trypsin/P" use="optional" />
+    <xsd:attribute name="NumMinTerminiCleavages" type="xsd:int" default="2" use="optional" />
+    <xsd:attribute name="NumMaxMissedCleavages" type="xsd:int" default="-1" use="optional" />
+    <xsd:attribute name="UseAvgMassOfSequences" type="xsd:boolean" default="true" use="optional" />
+    <xsd:attribute name="UseSmartPlusThreeModel" type="xsd:boolean" default="true" use="optional" />
+  </xsd:attributeGroup>
+
+  <xsd:complexType name="TagParameters">
+    <xsd:sequence>
+      <xsd:element name="tagReconParameters" type="TagReconParameters" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="direcTagParameters" type="DirecTagParameters" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TagReconParameters">
+    <xsd:attributeGroup ref="MsMsIdentificationSearchParameters" />
+    <xsd:attribute name="NTerminusMzTolerance" type="xsd:double" default="0.75" use="optional" />
+    <xsd:attribute name="CTerminusMzTolerance" type="xsd:double" default="0.5" use="optional" />
+    <xsd:attribute name="FindSequenceVariations" type="xsd:boolean" default="false" use="optional" />
+    <xsd:attribute name="FindUnknownMods" type="xsd:boolean" default="false" use="optional" />
+
+    <xsd:attribute name="BlosumThreshold" type="xsd:double" default="0" use="optional" />
+    <xsd:attribute name="MaxModificationMassPlus" type="xsd:double" default="300.0" use="optional" />
+    <xsd:attribute name="MaxModificationMassMinus" type="xsd:double" default="150.0" use="optional" />
+    <xsd:sequence>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DirecTagParameters">
+    <xsd:attributeGroup ref="MsMsSearchParameters" />
+    <xsd:attribute name="IntensityScoreWeight" type="xsd:double" default="1.0" use="optional" />
+    <xsd:attribute name="MzFidelityScoreWeight" type="xsd:double" default="1.0" use="optional" />
+    <xsd:attribute name="ComplementScoreWeight" type="xsd:double" default="1.0" use="optional" />
+    <xsd:attribute name="TagLength" type="xsd:int" default="3" use="optional" />
+    <xsd:sequence>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="MyriMatchParameters">
+    <xsd:attributeGroup ref="MsMsIdentificationSearchParameters" />
+	  <xsd:attribute name="PrecursorMzToleranceUnits" type="xsd:string" default="daltons" use="optional" />
+	  <xsd:attribute name="FragmentMzToleranceUnits" type="xsd:string" default="daltons" use="optional" />
+    <xsd:attribute name="MinSequenceMass" type="xsd:double" default="0" use="optional" />
+    <xsd:attribute name="MaxSequenceMass" type="xsd:double" default="10000" use="optional" />
+    <xsd:sequence>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

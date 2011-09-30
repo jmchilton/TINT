@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bioml label="test bioml label" xmlns="http://msi.umn.edu/proteomics/bioml">
+  <note type="heading" label="test heading" />
+  <note type="input" label="test heading, param1">param1 value</note>
+</bioml>

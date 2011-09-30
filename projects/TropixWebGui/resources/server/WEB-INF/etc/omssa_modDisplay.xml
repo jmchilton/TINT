@@ -1,0 +1,61 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+<table>
+    <row>
+      <cell>
+        <label text="Modification Type" />
+      </cell>
+      <cell>
+        <input widget="selection" parameter="mod_type" />
+      </cell>
+    </row>
+    <row>
+      <cell>
+        <label text="Mono Mass" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="mono_mass" width="50" default="0.0" />
+      </cell>
+    </row>
+    <row>      
+      <cell>
+        <label text="Average Mass" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="average_mass" width="50" default="0.0" />
+      </cell>
+    </row>
+    <row>      
+      <cell>
+        <label text="n15 Mass" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="n15_mass" width="50" default="0.0" />
+      </cell>  
+    </row>
+    <row>
+      <cell>
+        <label text="Neutral Mono" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="neutral_mono_mass" width="50" default="0.0" />
+      </cell>
+    </row>
+    <row>      
+      <cell>
+        <label text="Neutral Average" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="neutral_average_mass" width="50" default="0.0" />
+      </cell>
+    </row>
+    <row>      
+      <cell>
+        <label text="Neutral n15" />
+      </cell>
+      <cell>
+        <input widget="textbox" parameter="neutral_n15_mass" width="50" default="0.0" />
+      </cell>  
+    </row>
+  </table>
+</formConfiguration>

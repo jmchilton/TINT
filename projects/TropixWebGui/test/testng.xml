@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Webgui Test Suite" verbose="2" >
+  <test name="Coverage">
+    <groups>
+      <run>
+        <include name="unit" />
+        <include name="spring" />        
+      </run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.webgui.*" />
+    </packages>
+ </test>
+</suite>
+

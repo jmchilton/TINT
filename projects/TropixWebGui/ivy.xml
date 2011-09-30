@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
+            xmlns:m="http://ant.apache.org/ivy/maven"
+            >
+
+  <info organisation="msi.umn.edu" module="tropix-web-gui" />
+  <configurations>
+    <conf name="default" description="Default configuration" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="default" visibility="private" />
+  </configurations>
+
+  <publications>
+  </publications>
+
+  <dependencies>
+    <dependency org="org.codehaus.cargo" name="cargo-ant" rev="1.1.2">
+      <exclude org="jdom" />
+      <exclude org="dom4j" />
+      <exclude org="com.sun.xml.bind" />
+      <exclude org="javax.xml.bind" />
+      <exclude org="javax.xml.stream" />
+      <exclude org="xerces" />
+      <exclude org="xml-apis" />
+    </dependency>
+
+    <dependency org="com.google.guava.gwt" name="guava-gwt" rev="r09" />
+    <dependency org="com.google.code.gwt-log" name="gwt-log" rev="3.1.3" />
+    <dependency org="swfupload-gwt" name="swfupload-gwt" rev="1.1" />
+
+    <dependency org="com.google.inject" name="guice" rev="3.0">
+      <exclude org="aopalliance" module="aopalliance" />
+      <exclude org="org.sonatype.sisu.inject" module="cglib" />
+    </dependency>
+    <dependency org="com.google.gwt.inject" name="gin" rev="1.5.0" />
+    
+    <dependency org="msi.umn.edu" name="another-gwt-mvc" rev="1.0" />
+    <dependency org="globus" name="core" rev="4.0.3" />
+    <dependency org="matheclipse.org" name="bliki" rev="3.0.10" />
+    <dependency org="info.minnesotapartnership" name="tropix" rev="1.0" conf="default->catalog-cagrid-client">
+      <exclude org="org.easymock" />
+    </dependency>
+    <dependency org="smartgwt" name="smartgwt" rev="2.4" />
+    <dependency org="msi.umn.edu" name="tropix-jobs" rev="${ivy.project.version}" conf="default->impl" />
+    <dependency org="msi.umn.edu" name="tropix-client" rev="${ivy.project.version}" conf="default->impl" />
+    
+    
+    <dependency org="com.google.gwt" name="gwt-user" rev="2.3.0"/>
+    <dependency org="com.google.gwt" name="gwt-dev" rev="2.3.0"/>
+    <dependency org="com.google.gwt" name="gwt-servlet" rev="2.3.0"/>
+    <dependency org="javax.validation" name="validation-api" rev="1.0.0.GA"> 
+      <artifact name="validation-api"/> 
+      <artifact name="validation-api" m:classifier="sources"/>     
+    </dependency> 
+    
+    <dependency org="google" name="gwt-incubator" rev="revision-1766" />
+    <dependency rev="1.2" org="caGrid" name="core" />
+    <dependency rev="1.2" org="caGrid" name="discovery" />    
+    <dependency rev="1.2" org="caGrid" name="dorian" conf="default->client" />
+    <dependency rev="1.2" org="caGrid" name="metadata" />
+    <dependency rev="1.2" org="caGrid" name="metadatautils" />
+    <dependency rev="1.2" org="caGrid" name="opensaml" />
+    <dependency rev="1.0.4" org="acegisecurity" name="acegisecurity" />
+    <dependency rev="2.1.1" org="apache" name="commons-collections"/>
+    <dependency rev="1.2.1" org="apache" name="commons-fileupload" />
+
+    <dependency rev="1.2" org="gwt-widget" name="gwt-sl" />
+    <dependency rev="2" org="org.json" name="json" />
+    <exclude org="google" module="gwt" />
+
+  </dependencies>
+</ivy-module>
+

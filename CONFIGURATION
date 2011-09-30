@@ -1,0 +1,353 @@
+
+tropix.config.dir=${user.home}/.tropix
+tropix.shortname.config.dir=${tropix.config.dir}/shortname
+
+tomcat -Dtropix.config.dir=C:\etc
+
+
+tropix.client.config.dir - 
+
+authenticationSources.xml - Used to define potential login mechanisms. The following 
+example demonstrates the xml format used.
+
+<authenticationSources xmlns="http://msi.umn.edu/tropix/client/authentication/config">
+  <caGrid title="MSI Ldap"
+          authenticationServiceUrl="https://cagrid-authentication.msi.umn.edu:8443/wsrf/services/cagrid/AuthenticationService"
+          dorianServiceUrl="https://cagrid-dorian.msi.umn.edu:8443/wsrf/services/cagrid/Dorian" />
+  <local />
+</authenticationSources>
+
+This defines two login mechanisms, one that uses a caGrid
+authentication and dorian service titled "MSI Ldap" and another that
+just uses a local authentication mechanism that comes packaged with
+Tint by default. Multiple caGrid entries may appear inside the
+authenticationSources tag, and 0 or 1 local tags. These options will
+be presented to the user in the order they appear in this XML file.
+
+directory-services.properties - This file defines Tropix directory serivces to use if person.source=directoryService.
+Entries in this file should be of the form
+
+INSTITUTION_NAME=DIRECTORY_SERVICE_URL
+
+Whitespace in INSTITUTION_NAME must be escaped with a backslash. Here is an example of this file that we use at MSI:
+
+MSI=https://tropix-services.msi.umn.edu:8443/wsrf/services/cagrid/TropixDirectoryService
+Mayo=https://tropix.mayo.edu:8443/wsrf/services/cagrid/TropixDirectoryService
+
+catalog-services.properties - This file defines a list of catalog services along with their corresponding request service.
+This file must be present if the CATALOG module is loaded. 
+
+Here is an example that we use the MSI, notice how colons are escaped in the catalog service url.
+
+http\://chilton.msi.umn.edu\:8090/wsrf/services/cagrid/TropixCatalogService=https://chilton.msi.umn.edu:8442/wsrf/services/cagrid/TropixRequestService
+https\://tropix.mayo.edu\:8443/wsrf/services/cagrid/TropixCatalogService=https://tropix.mayo.edu:8443/wsrf/services/cagrid/TropixRequestService
+
+deploy.properties file
+
+# Required if person.source=directorySource or if Request module is loaded.
+# A host credential consists of two files a cert file and a key file. The following
+# two settings should be paths to these files
+host.credential.cert=
+host.credential.proxy= 
+
+# person.soruce can be set to local or directoryService. If local is set, the user list
+# used for sharing files is generated from the metadata database. If directoryService is
+# the value, the file ${tropix.client.config.dir}/authentication-services.properties is 
+# used to define directory services that are used to populate this list, and a host credential
+# must be defined via host.credential.prefix to poll these services.
+person.source=local
+
+# Lifetime of generated user proxies (in seconds)
+proxy.lifetime=43200
+
+# Amount of time a user session lasts (in seconds)
+login.timeout=43200
+
+# Lifetime of delegated credential
+delegated.credential.lifetime=300
+
+# Credential delegatation service to use. Credential delegation is not preformed if this 
+# is not specified. The training grid CredentialDelegationService is
+# https://cds.training.cagrid.org:8443/wsrf/services/cagrid/CredentialDelegationService
+cds.service.url= 
+
+# Comma seperated list of grid identities that may resolve delegated credentials
+cds.allowed.parties= 
+
+# caGrid index service used to obtain dynamic service lists.
+index.service.url=http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService
+
+# Comma separated list of extra services to use.
+unindexed.service.urls=
+
+# Comma separated list of services that should not be used
+blocked.service.urls=
+
+# URL of the web container that contains the catalog instance to be
+# writable by this GUI if the CATALOG module is loaded. Catlaog web service APIs
+# will be loaded relative to this url, for instance of local.catalog.host=http://yahoo.com/
+# the Catalog Ontology API is assumed to be at http://yahoo.com/CatalogAPI/services/CatalogOntAPISOAP
+local.catalog.host=http://localhost:8080/
+
+# Required if storage.type=cagrid, it is the url of the default storage
+# service url to use.
+storage.service.url=
+
+# Required if the REQUEST module is loaded.
+request.service.url=
+
+# Comma separated list chosen from the following: SHARING, PROTIP, GENETIP, LOCAL_SEARCH, REQUEST, CATALOG, GRID_SEARCH
+modules=SHARING, LOCAL_SEARCH
+
+metadata.db.url
+metadata.db.driver
+metadata.db.username
+metadata.db.password
+metadata.db.dialect
+metadata.db.hbm2ddl
+metadata.db.showsql
+
+# Can be local or cagrid
+storage.type=local
+
+# Port for embedded Jetty container to handle file transfer if storage.type=lcaol
+httptransfer.server.port=13139
+
+# The local storage mechanism needs your hostname or ip address. Java generally 
+# can determine this but may get it wrong. If this occurs, it can be manually specified
+# via this property.
+hostname=
+
+# If storage.type=local the storage.directory property specifies where
+# to store saved files.
+storage.directory=${tropix.storage.config.dir}/files
+
+# The properties storage.candelete.ids, storage.canread.ids,
+# storage.canwrite.ids can also be specified but these are really
+# only useful in the standalone storage service deployment scenerio.
+
+jobclient.db.url
+jobclient.db.driver
+jobclient.db.username
+jobclient.db.password
+jobclient.db.dialect
+jobclient.db.hbm2ddl
+jobclient.db.showsql
+
+localauthentication.db.url
+localauthentication.db.driver
+localauthentication.db.username
+localauthentication.db.password
+localauthentication.db.dialect
+localauthentication.db.hbm2ddl
+localauthentication.db.showsql
+
+requestaction.db.url
+requestaction.db.driver
+requestaction.db.username
+requestaction.db.password
+requestaction.db.dialect
+requestaction.db.hbm2ddl
+requestaction.db.showsql
+
+Database properties shortname.db.*
+
+# JDBC Url of database to use for this component.
+shortname.db.url=jdbc:h2:${tropix.shortname.config.dir}/db
+
+# Username and password for database
+shortname.db.username=sa
+shortname.db.password=
+
+shortname.db.driver=
+
+
+Common for all analytic services - 
+
+# Name of the service, defaults to "Sequest", "XTandem", etc...
+service.name=
+# Description of the service
+service.description=
+# Path to an XML file describing the research center the service is hosted
+# at as defined in the caGrid service metadata type. An outline of this file
+# is as follows
+# <ResearchCenter displayName="" shortName="" xmlns="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.common">
+#   <Address country="" locality="" postalCode="" stateProvince="" street1="" street2=""/>
+#   <pointOfContactCollection>
+#     <PointOfContact affiliation="" email="" firstName="" lastName="" phoneNumber="" role=""/>
+#   </pointOfContactCollection>
+# </ResearchCenter>
+service.researchcenter.path=
+
+# Comma seperated list of caGrid index services to advertise with
+advertise.index.service.urls=http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService
+
+# Globus is not great at determining the url of container a service is running in so that in may
+# advertise that. By default it assumes http is used and the port is 8080. These should be
+# overridden if this is wrong.
+
+# If specified, it should be http or https. This should be overriden to https if
+# are deploying this service into a Globus secured https container.
+advertise.container.scheme=http
+# Port of web container which hosts this service.
+advertise.container.port=8080
+# In certain cases even the hostname may be incorrect, this property will override that
+advertise.container.hostname=
+# Boolean indicating whether to advertise with index services or not
+advertise.perform=true
+
+# See previous notes.
+host.credential.key=
+host.credential.cert=
+
+# Directory to use for storing staging files, this defaults to java.io.tmpdir which is set by
+# tomcat to be the directory $CATALINA_HOME/temp
+queue.staging.path=${java.io.tmpdir} 
+# boolean to determine if staged files should be deleted be deleted after jobs are complete.
+queue.staging.clean=true
+
+# Many of the services have a property called *.staging.type
+# (e.g. sequest.staging.type, omssa.staging.type), if this is set to
+# gridftp staged files are read and written using gridftp. In that
+# case gridftp.host and gridftp.prot should be set to control which
+# gridftp server these files are sent to.  
+gridftp.host=localhost
+gridftp.port=2811
+
+systemjobqueue.db.url
+systemjobqueue.db.driver
+systemjobqueue.db.username
+systemjobqueue.db.password
+systemjobqueue.db.dialect
+systemjobqueue.db.hbm2ddl
+systemjobqueue.db.showsql
+
+gramjobqueue.db.url
+gramjobqueue.db.driver
+gramjobqueue.db.username
+gramjobqueue.db.password
+gramjobqueue.db.dialect
+gramjobqueue.db.hbm2ddl
+gramjobqueue.db.showsql
+
+# Addintional GRAM properties are available, but are in flux. Further
+# updates will be posted here as we make progress on our GRAM client
+# implementation. GRAM is configured in the Spring XML file
+# edu/umn/msi/tropix/common/jobqueue/execution/gram/context.xml
+# contained in the jar file named tropix-jobqueue.jar, advanced users
+# may inspect this file for more information.
+
+
+scaffold
+
+# This can be system or gridFtp. If this is set to system the files will
+# be written directly to the file system. Otherwise they will be read
+# and written using gridFtp.
+scaffold.staging.type=system
+# This can be system or gram. If this is set to system, Java will be used
+# to manage the execution queue and will system exec calls to launch
+# applications. If this is set to gram, the job queue will be managed by
+# GRAM.
+scaffold.execution.type=system
+# MUST BE SET! Should point to an installed Scaffold executable.
+scaffold.path=
+
+sequest
+
+# This can be system or gridFtp. If this is set to system the files will
+# be written directly to the file system. Otherwise they will be read
+# and written using gridFtp.
+sequest.staging.type=system
+# This can be system or gram. If this is set to system, Java will be used
+# to manage the execution queue and will system exec calls to launch
+# applications. If this is set to gram, the job queue will be managed by
+# GRAM.
+sequest.execution.type=system
+# MUST BE SET! Should point to an installed Sequest executable.
+sequest.path=
+# Number of dta files Sequest is allowed to not process before declaring the
+# job a failure.
+sequest.allowed.drops=0
+# Output format of the sequest logs, these are parsed to determine percent of 
+# job complete. The default should work for sequest28 programs. If sequest27 is
+# executed via PVM this should be set to PVM_OUTPUT.
+sequest.output.type=STANDARD_OUTPUT
+
+
+xtandem
+
+# This can be system or gridFtp. If this is set to system the files will
+# be written directly to the file system. Otherwise they will be read
+# and written using gridFtp.
+xtandem.staging.type=system
+# This can be system or gram. If this is set to system, Java will be used
+# to manage the execution queue and will system exec calls to launch
+# applications. If this is set to gram, the job queue will be managed by
+# GRAM.
+xtandem.execution.type=system
+# If specified, should point to an installed xtandem executable.
+xtandem.path=
+# If specified, should point to an X! Tandem XSL stylesheet to apply to 
+# apply to X! Tandem results. A default will be installed and should likely
+# not be changed because that may make Scaffold unable to parse the results.
+xtandem.xsl.path=
+
+
+rawextract
+
+# This can be system or gridFtp. If this is set to system the files will
+# be written directly to the file system. Otherwise they will be read
+# and written using gridFtp.
+rawextract.staging.type=system
+
+# This can be system or gram. If this is set to system, Java will be used
+# to manage the execution queue and will system exec calls to launch
+# applications. If this is set to gram, the job queue will be managed by
+# GRAM.
+rawextract.execution.type=system
+
+# Path to ReAdW executable or script.
+rawextract.path=
+
+omssa
+
+# This can be system or gridFtp. If this is set to system the files will
+# be written directly to the file system. Otherwise they will be read
+# and written using gridFtp.
+omssa.staging.type=system
+# This can be system or gram. If this is set to system, Java will be used 
+# to manage the execution queue and will system exec calls to launch 
+# applications. If this is set to gram, the job queue will be managed by
+# GRAM.
+omssa.execution.type=system
+
+# Tropix wraps a script around omssa in order format FASTA databases
+# with the formatdb tools distributed with blast. Out of the box,
+# Tropix will attempt to install omssa, blast, and the wrapper
+# script. It will however not create any of those if omssa.path is
+# specified it will use that executable/script. If omssa.path isn't
+# set but blast.home and/or omssa.home are set it will not install
+# those programs but instead wrap the script around executables in
+# those specified directories.
+blast.home
+omssa.home
+omssa.path
+
+bowtie
+
+# This can be system or gridFtp. If this is set to system the files will
+# be written directly to the file system. Otherwise they will be read
+# and written using gridFtp.
+bowtie.staging.type=system
+# This can be system or gram. If this is set to system, Java will be used
+# to manage the execution queue and will system exec calls to launch
+# applications. If this is set to gram, the job queue will be managed by
+# GRAM.
+bowtie.execution.type=system
+# MUST BE SET! Should point to an installed bowtie executable.
+bowtie.path=
+
+
+itraqquantitation
+
+<none>

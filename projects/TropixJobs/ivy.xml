@@ -1,0 +1,26 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-jobs" />
+  
+  <configurations>
+    <conf name="api" description="API" visibility="public" />
+    <conf name="impl" description="Service Based Implementation of API" visibility="public" extends="api" />
+    <conf name="test" description="Integration tests" extends="impl" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-jobs-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-jobs-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-jobs-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <!-- TODO: Investigate eliminating this dependency -->
+    <dependency rev="1.2" org="caGrid" name="core" />
+    <dependency org="msi.umn.edu" name="tropix-files" rev="${ivy.project.version}" conf="impl->impl" />
+    <dependency org="msi.umn.edu" name="tip-services" rev="${ivy.project.version}" conf="impl->default" />
+  </dependencies>  
+</ivy-module>

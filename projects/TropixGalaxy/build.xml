@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix Galaxy" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <property file="build.properties"/>
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="gen.xjc.src.dir" value="${build.dir}/gen-src" />
+  <property name="gen.globus.src.dir" value="${build.dir}/gen-src-axis" />
+
+  <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${build.src.dir}/stubs" />
+      <pathelement path="${src.dir}/client" />
+      <pathelement path="${src.dir}/service" />      
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${build.classes.dir}/stubs" />
+      <pathelement path="${build.classes.dir}/client" />
+      <pathelement path="${build.classes.dir}/service" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}" /> 
+      <pathelement path="${build.classes.dir}/stubs" />
+      <pathelement path="${build.classes.dir}/client" />
+      <pathelement path="${build.classes.dir}/service" />
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/client" />
+      <pathelement path="${resources.dir}/service" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="prepare" description="Sets up various build directories used by other task" depends="define-classpaths">
+    <preparedirs />
+    <mkdir dir="${gen.xjc.src.dir}" />
+    <mkdir dir="${gen.globus.src.dir}" />
+  </target> 
+
+  <target name="define-tasks" depends="prepare">
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" classpathref="raw.ivy.path" />
+  </target>
+
+  <target name="clean" description="Cleans up build directories created by prepare"> 
+    <cleandirs />
+  </target>
+  
+  <target name="gen" depends="prepare,gen-globus,gen-xjc" />
+
+  <target name="gen-globus" depends="prepare">
+    <generate-globus-types globusdir="${ext.globus.dir}" targetdir="${gen.globus.src.dir}" workdir="${build.dir}/axis-tmp">
+      <mappings>
+        <schema path="${schema.dir}/galaxy.xsd" package="edu.umn.msi.tropix.galaxy.tool.cagrid" namespace="http://msi.umn.edu/tropix/galaxy" />
+        <schema path="${schema.dir}/galaxy-inputs.xsd" package="edu.umn.msi.tropix.galaxy.inputs.cagrid" namespace="http://msi.umn.edu/tropix/galaxy/inputs" />
+      </mappings>
+    </generate-globus-types>
+    <cleanGeneratedSource dir="${gen.globus.src.dir}" />
+    <copy toDir="${build.src.dir}/stubs">
+      <fileset dir="${gen.globus.src.dir}" />
+    </copy>
+  </target>
+
+  <target name="gen-xjc" depends="define-tasks">
+    <xjc schema="${schema.dir}/galaxy.xsd" package="edu.umn.msi.tropix.galaxy.tool" destdir="${gen.xjc.src.dir}" binding="${schema.dir}/galaxy.xjb">
+      <produces dir="${gen.xjc.src.dir}/edu/umn/msi/tropix/galaxy/tool" includes="**/*.java" />
+    </xjc>
+    <xjc schema="${schema.dir}/galaxy-inputs.xsd" package="edu.umn.msi.tropix.galaxy.inputs" destdir="${gen.xjc.src.dir}">
+      <produces dir="${gen.xjc.src.dir}/edu/umn/msi/tropix/galaxy/inputs" includes="*.java" />
+    </xjc>
+    <cleanGeneratedSource dir="${gen.xjc.src.dir}" serializable="true" />
+    <copy toDir="${build.src.dir}/stubs">
+      <fileset dir="${gen.xjc.src.dir}" />
+    </copy>
+  </target>
+
+  <target name="compile-java" description="Compiles Java source files" depends="gen">
+    <compileconfs />
+  </target>
+
+  <target name="compile" description="Compiles all code artifacts" depends="compile-java" />
+  
+  <target name="jar" description="Builds jar files" depends="compile">
+    <jarconfs />
+  </target> 
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="stubs,client,service" />
+  </target>
+  
+  <target name="test" description="Runs test cases" depends="compile">
+    <runtestng />
+  </target>
+
+  <target name="test-coverage" description="Runs test cases and produces coverage report" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.galaxy*" />
+  </target>
+
+  <target name="findbugs" description="Runs findbugs on java artifacts" depends="jar">
+    <runfindbugs confs="client,service,test" />
+  </target>
+
+  <target name="checkstyle" description="Runs checkstyle on java source files" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="all" depends="jar" />
+  
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+
+</project>

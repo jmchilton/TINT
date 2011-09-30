@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    // Information from table on page:
+    // http://www.matrixscience.com/help/search_field_help.html
+
+    Trypsin  KR  P  CTERM
+    Arg-C R P CTERM
+    Asp-N BD   NTERM
+    Asp-N_ambic DE   NTERM
+    Chymotrypsin FYWL P CTERM
+    CNBr M   CTERM
+    Formic_acid D   CTERM
+    Lys-C K P CTERM
+    Lys-C/P K   CTERM
+    PepsinA FL   CTERM
+    Tryp-CNBr KRM P CTERM
+    TrypChymo FYWLKR P CTERM
+    Trypsin/P KR   CTERM
+    V8-DE BDEZ P CTERM
+    V8-E EZ P CTERM
+
+-->
+
+<!--
+    https://proteomics.fhcrc.org/CPAS/Wiki/home/FHCRC%20Help/page.view?name=alternate%20enzyme%20parameters
+    * nonspecific - [X]|[X]
+    * trypsin - [KR]|{P}
+    * trypsin_k - [K]|{P}
+    * trypsin_r - [R]|{P}
+    * trypsin/cnbr - [KMR]|{P}
+    * chymotrypsin - [FMWY]|{P}
+    * clostripain - [R]|[X]
+    * iodosobenzoate - [W]|[X]
+    * protein_endopeptidase - [P]|[X]
+    * staph_protease - [E]|[X]
+    * aspn - [X]|[D]
+    * elastase - [AGILV]|{P}
+    * gluc - [DE]|{P}
+    * gluc_bicarb - [E]|{P}
+    * cnbr - [M]|{P}
+    * elastase-tryp-chymo - [AFIKLRVWY]|{P}
+    * chymotryp-modified - [FLWY]|{P}
+    * cyanogen_bromide - [M]|[X]
+-->
+
+<!-- 
+Dropped Asp-N_ambic, Tryp-CNBr, TrypChymo
+
+Changes: Chymotrypsin, CNBr, V8-DE, V8-E
+ -->
+  <!-- <enzyme name="Asp-N_ambic"  doCleave="DE"     doNotCleave=""  term="NTERM" /> -->
+  <!--  <enzyme name="Chymotrypsin" doCleave="FYWL"   doNotCleave="P" term="CTERM" />  -->
+  <!-- <enzyme name="Tryp-CNBr"    doCleave="KRM"    doNotCleave="P" term="CTERM" /> -->
+  <!-- <enzyme name="TrypChymo"    doCleave="FYWLKR" doNotCleave="P" term="CTERM" /> -->
+  <!--  <enzyme name="V8-DE"        doCleave="BDEZ"   doNotCleave="P" term="CTERM" /> -->
+  <!--  <enzyme name="V8-E"         doCleave="EZ"     doNotCleave="P" term="CTERM" /> --><!-- I think this is endoproteinase (glu-c), [E]|{X} -->
+  <!--  <enzyme name="Formic_acid"  doCleave="D"      doNotCleave=""  term="CTERM" pepXmlName="formicacid" /> -->
+
+<enzymeSet xmlns="http://msi.umn.edu/proteomics">
+  <enzyme name="Trypsin"      doCleave="KR"     doNotCleave="P"  term="CTERM" pepXmlName="trypsin" /> <!-- [RK]|{P} -->
+  <enzyme name="Arg-C"        doCleave="R"      doNotCleave="P"  term="CTERM" pepXmlName="argc" /> <!-- [R]|{P} -->
+  <enzyme name="Asp-N"        doCleave="D"      doNotCleave=""   term="NTERM" pepXmlName="aspn" />
+  <enzyme name="Chymotrypsin" doCleave="FMWY"   doNotCleave="P"  term="CTERM" pepXmlName="chymotrypsin" /> 
+  <enzyme name="CNBr"         doCleave="M"      doNotCleave="P"  term="CTERM" pepXmlName="cnbr" />
+  <enzyme name="Lys-C"        doCleave="K"      doNotCleave="P"  term="CTERM" pepXmlName="lysc" /> 
+  <enzyme name="Lys-C/P"      doCleave="K"      doNotCleave=""   term="CTERM" pepXmlName="lysc-p" /> 
+  <enzyme name="PepsinA"      doCleave="FL"     doNotCleave=""   term="CTERM" pepXmlName="pepsina" />
+  <enzyme name="Trypsin/P"    doCleave="KR"     doNotCleave=""   term="CTERM" pepXmlName="stricttrypsin" />
+  <enzyme name="V8-DE"        doCleave="DE"     doNotCleave="P"  term="CTERM" pepXmlName="gluc" />
+  <enzyme name="V8-E"         doCleave="E"      doNotCleave="P"  term="CTERM" pepXmlName="gluc_bicarb" />
+  <enzyme name="No_Enzyme"    doCleave=""       doNotCleave=""   term="NTERM" pepXmlName="nonspecific" />
+</enzymeSet>

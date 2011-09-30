@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+  
+  <context:annotation-config />
+
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="jobsConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="jobs" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="jobs" />
+  </bean>
+
+  <import resource="classpath:edu/umn/msi/tropix/files/context.xml" />
+
+  <import resource="classpath:edu/umn/msi/tropix/jobs/activities/context.xml" />
+
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/client/context.xml" />
+
+  <context:component-scan base-package="edu.umn.msi.tropix.jobs.impl" />
+  
+  <bean id="connectionRepeaterSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.RepeaterSupplierImpl">
+    <property name="maxAttempts" value="-1" />
+    <property name="sleepTimeUnit" value="SECONDS" />
+    <property name="initialSleepDuration" value="20" /> <!-- Start every 20 seconds retry, and then backoff. -->
+    <property name="maxSleepDuration" value="1800" /> <!-- Max sleep time is halt hour -->
+  </bean>
+
+  <bean id="jobContextClientFactory" class="edu.umn.msi.tropix.jobs.services.impl.RepeatingJobContextClientFactoryImpl"  scope="singleton">
+    <property name="baseFactory">
+      <bean class="edu.umn.msi.tropix.jobs.services.impl.JobContextClientFactoryImpl">
+        <property name="jobClientFactoryManager" ref="jobClientFactoryManager" />
+      </bean>
+    </property>
+    <property name="repeaterSupplier" ref="connectionRepeaterSupplier" />
+  </bean>
+  
+  <bean id="statusServiceFactory" class="edu.umn.msi.tropix.jobs.services.impl.StatusServiceFactoryImpl"  scope="singleton">
+    <property name="jobContextClientFactory" ref="jobContextClientFactory" />
+  </bean>
+     
+  <bean id="eventDispatcher" class="edu.umn.msi.tropix.jobs.events.dispatcher.impl.EventDispatcherImpl">
+    <property name="eventHandlers">
+      <list><ref bean="jobsEventHandler" /></list>
+    </property>
+  </bean>  
+  
+  <bean id="eventSupport" class="edu.umn.msi.tropix.jobs.events.impl.EventSupportImpl">
+    <property name="eventDispatcher" ref="eventDispatcher" />
+    <property name="messageSource" ref="jobsMessageSource" />
+  </bean>
+
+  <bean id="jobsMessageSource" class="edu.umn.msi.tropix.common.message.impl.MessageSourceSpringImpl">
+    <property name="basename" value="classpath:edu/umn/msi/tropix/jobs/messages" />
+  </bean>
+
+  <bean id="credentialResourceFactory" class="edu.umn.msi.tropix.grid.credentials.impl.CaGridDelegatedCredentialResourceFactoryImpl">
+    <constructor-arg ref="delegatedCredentialFactory" />
+  </bean>
+
+  <bean id="transferClient" class="edu.umn.msi.tropix.jobs.impl.TransferClientImpl">
+    <property name="credentialResourceFactory" ref="credentialResourceFactory" />
+    <property name="storageDataFactory" ref="persistentStorageDataFactory" />
+  </bean>
+  
+  <!-- Must implement jobUpdateListener, statusServiceFactory -->
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/client/context.xml" /> 
+
+  <!-- Import all base contexts for ProTIP services. -->
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/allServicesContext.xml" />
+
+  <!-- Import all base contexts for GeneTIP services. -->
+  <import resource="classpath:edu/umn/msi/tropix/genomics/service/allServicesContext.xml" />
+  
+  <import resource="classpath:edu/umn/msi/tropix/galaxy/service/baseGalaxyContext.xml" />
+
+</beans>

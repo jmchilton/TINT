@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix Models for the U of M" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+  
+  <property file="project.properties" />
+  <property file="build.properties" />
+  
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="build.sql.dir" value="${build.dir}/sql" />
+
+  <target name="define-classpaths" depends="cache-dependencies">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/beans" />
+      <pathelement path="${src.dir}/sequest-beans" />
+      <pathelement path="${src.dir}/xtandem-beans" />
+      <pathelement path="${src.dir}/utils" />
+    </path>
+    <path id="compile.classpath">
+      <!-- <fileset dir="${basedir}/system/lib" includes="**/*.jar" /> -->
+      <!-- <fileset dir="${jars.dir}" includes="**/*.jar" /> -->
+      <!-- <fileset dir="${ext.dir}" includes="**/*.jar" /> -->
+      <pathelement path="${build.classes.dir}/utils" />
+      <pathelement path="${build.classes.dir}/beans" />
+      <pathelement path="${build.classes.dir}/sequest-beans" />
+      <pathelement path="${build.classes.dir}/xtandem-beans" />
+      <path refid="ivy.path" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}" />
+      <pathelement path="${build.classes.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="compile-java" description="Compiles java source." depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="compile" depends="compile-java" />
+
+  <target name="jar" description="Builds jar files" depends="compile">
+    <jarconfs />
+  </target>
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="utils" />
+  </target>
+
+  <target name="test" description="Runs test cases" depends="compile">
+    <runtestng />
+  </target>
+
+  <target name="test-coverage" description="Runs test cases and produces coverage report" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.models.utils*" />
+  </target>
+
+  <target name="findbugs" description="Runs findbugs on java artifacts" depends="jar">
+    <runfindbugs effort="default" />
+  </target>
+
+  <target name="checkstyle" description="Runs checkstyle on java source files" depends="prepare">
+    <runcheckstyle />
+  </target>
+  
+  <target name="init" />
+  
+  <target name="schemaexport">
+    <taskdef name="schemaexport"
+             classname="org.hibernate.tool.hbm2ddl.SchemaExportTask"
+             classpathref="compile.classpath" />
+    <schemaexport
+       properties="hibernate.properties"
+       quiet="no"
+       text="yes"
+       drop="no"
+       delimiter=";"
+       output="${build.sql.dir}/master.sql">
+      <fileset dir="${src.dir}/orm">
+        <include name="**/*.hbm.xml"/>
+      </fileset>
+      <fileset dir="${src.dir}/sequest-orm">
+        <include name="**/*.hbm.xml" />
+      </fileset>
+      <fileset dir="${src.dir}/xtandem-orm">
+        <include name="**/*.hbm.xml" />
+      </fileset>
+    </schemaexport>
+    <replaceregexp byline="true" 
+                   file="${build.sql.dir}/master.sql"
+                   match="(create table (\w+) .*)"                          
+                   replace="\1 ALTER TABLE \2 ENGINE = INNODB;" />
+  </target>
+
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <target name="prepare" depends="define-classpaths">
+    <preparedirs />   
+    <mkdir dir="${build.sql.dir}" />
+  </target>
+
+  <target name="all" depends="prepare,jar">
+  </target>
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

@@ -1,0 +1,89 @@
+/*******************************************************************************
+ * Copyright 2009 Regents of the University of Minnesota. All rights
+ * reserved.
+ * Copyright 2009 Mayo Foundation for Medical Education and Research.
+ * All rights reserved.
+ *
+ * This program is made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS
+ * OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A
+ * PARTICULAR PURPOSE.  See the License for the specific language
+ * governing permissions and limitations under the License.
+ *
+ * Contributors:
+ * Minnesota Supercomputing Institute - initial API and implementation
+ ******************************************************************************/
+
+package edu.umn.msi.tropix.webgui.client.components.impl;
+
+import java.util.Collection;
+
+import com.google.gwt.user.client.Command;
+import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+
+import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
+import edu.umn.msi.tropix.webgui.client.Resources;
+import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
+import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator.UpdateEvent;
+import edu.umn.msi.tropix.webgui.client.utils.Iterables;
+import edu.umn.msi.tropix.webgui.client.widgets.CanvasWithOpsLayout;
+import edu.umn.msi.tropix.webgui.client.widgets.Form;
+import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
+import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
+import edu.umn.msi.tropix.webgui.services.object.ObjectService;
+
+public class ChangeDescriptionCommandComponentFactoryImpl implements LocationCommandComponentFactory<Command> {
+  private final LocationUpdateMediator updateMediator = LocationUpdateMediator.getInstance();
+
+  public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
+    if(treeItems == null || treeItems.size() != 1) {
+      return false;
+    }
+    final TreeItem item = treeItems.iterator().next();
+    return item instanceof TropixObjectTreeItem && item.getParent() != null;
+  }
+
+  public Command get(final Collection<TreeItem> input) {
+    return new WindowComponent((TropixObjectTreeItem) Iterables.getOnlyElement(input));
+  }
+
+  class WindowComponent extends WindowComponentImpl<Window> {
+
+    WindowComponent(final TropixObjectTreeItem treeItem) {
+      final TextAreaItem textAreaItem = new TextAreaItem("description", "New Description");
+      textAreaItem.setValue(treeItem.getObject().getDescription());
+      textAreaItem.setWidth("*");
+      final Form form = new Form();
+      form.setWidth(350);
+      form.setHeight("*");
+      form.setItems(textAreaItem);
+      form.setColWidths("130", "*");
+      final Button okButton = SmartUtils.getButton("Change Description", Resources.OK, new Command() {
+        public void execute() {
+          ObjectService.Util.getInstance().changeDescription(treeItem.getId(), form.getValueAsString("description"), new AsyncCallbackImpl<Void>() {
+            @Override
+            public void onSuccess(final Void ignore) {
+              updateMediator.onEvent(new UpdateEvent(treeItem.getId(), null));
+            }
+          });
+          get().destroy();
+        }
+      }, 150);
+      final CanvasWithOpsLayout<DynamicForm> layout = new CanvasWithOpsLayout<DynamicForm>(form, okButton);
+      setWidget(PopOutWindowBuilder.titled("Change Description").withIcon(Resources.EDIT).autoSized().withContents(layout).get());
+    }
+  }
+
+}

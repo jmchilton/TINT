@@ -1,0 +1,1 @@
+- After running export-schema, you should change the type of CREDENTIAL in table JOB to LONGTEXT, as well as CONTENTS in NOTE_REVISION, and CONTACT and REPORT in REQUEST

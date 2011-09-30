@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://msi.umn.edu/tropix/proteomics/cagrid/metadata"
+	   elementFormDefault="qualified"
+	   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   xmlns="http://msi.umn.edu/tropix/proteomics/cagrid/metadata" >
+
+  <xs:element name="IdentificationMetadata" type="AvailableIdentificationType" />
+
+  <xs:complexType name="AvailableIdentificationType">
+    <xs:sequence>
+      <xs:element name="applicationName" type="xs:string" />
+      <xs:element name="parameterType" type="ParameterType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="ParameterType">
+     <xs:restriction base="xs:string">
+       <xs:enumeration value="Generic" />
+       <xs:enumeration value="SequestBean" />
+       <xs:enumeration value="XTandemBean" />
+       <xs:enumeration value="MascotBean" />
+       <xs:enumeration value="OmssaXml" />
+       <xs:enumeration value="Phenyx" />
+       <xs:enumeration value="MyriMatch" />
+     </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

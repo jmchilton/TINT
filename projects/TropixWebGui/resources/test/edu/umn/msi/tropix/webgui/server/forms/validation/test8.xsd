@@ -1,0 +1,13 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test8"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test8"
+      elementFormDefault="qualified">
+  <xsd:simpleType name="coolString">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".+hello\s+world.+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:element name="theName" type="coolString" />
+  
+</xsd:schema>

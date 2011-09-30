@@ -1,0 +1,138 @@
+Version 1.0 (October 12, 2008)
+- Initial non-beta release.
+- Add <briefcase_small>.
+- Add <control*>.
+--------------------------------------------------------------------------------
+Version 0.9.4 (August 12, 2008)
+- Add <address_book_blue>.
+- Add <book_brown> and <book_small_brown>.
+- Add <books_brown>.
+- Add <camera_small*>.
+- Add <photo_album_blue>.
+--------------------------------------------------------------------------------
+Version 0.9.3 (August 8, 2008)
+- Update <mail_open*>.
+- Update <media_player*>.
+- Add <media_player_medium*> and <media_player_small*>.
+- Update <media_players*>.
+--------------------------------------------------------------------------------
+Version 0.9.2 (August 6, 2008)
+- Add <blog_blue>.
+- Add <blogs*>.
+- Add <books_stack>.
+- Add <cards_stack>.
+- Add <documents_stack>.
+- Add <folder_open_document_music>, <folder_open_document_music_playlist> and
+  <folder_open_document_text>.
+- Add <folders_stack>.
+- Add <images_stack>.
+- Add <mails_stack>.
+- Add <newspapers*>.
+- Add <sticky_note_text>.
+- Add <sticky_notes_pin>, <sticky_notes_stack> and <sticky_notes_text>.
+- Add <tables_stack>.
+--------------------------------------------------------------------------------
+Version 0.9.1 (August 6, 2008)
+- Add <bandaid*>.
+- Update <card_address>.
+- Update <cards_address>.
+- Add <chain_small>.
+- Add <disk_black> and <disk_small_black>.
+- Add <disks_black>.
+- Add <document_music_playlist>, <document_text_image> and <document_zipper>.
+- Add <layout_join> and <layout_split>.
+- Add <light_bulb_small*>.
+- Add <piano*>.
+--------------------------------------------------------------------------------
+Version 0.9 (August 4, 2008)
+- Update <clock*>.
+- Update <disc*>.
+- Add <film_small>.
+- Update <home*>.
+- Add <home_small>.
+- Add <magnifier_medium*>.
+- Update <mail_open_image>.
+- Add <mail_small>.
+- Add <picture_small*>.
+- Add <pill_small>.
+- Update <sticky_note*>.
+- Add <sticky_note_pin> and <sticky_note_small_pin>.
+--------------------------------------------------------------------------------
+Version 0.8.4 (August 2, 2008)
+- Add <cassette_small>.
+- Update <clipboard_empty>.
+- Add <door*>.
+- Add <heart_small*>.
+- Add <image_small*>.
+- Add <layout*>.
+- Add <magnifier_zoom_actual> and <magnifier_zoom_fit>.
+- Update <table_delete> and <table_insert>.
+- Add <table_delete_column> and <table_insert_column>.
+--------------------------------------------------------------------------------
+Version 0.8.3 (August 1, 2008)
+- Add <color_small>.
+- Add <contrast_small*>.
+- Add <disc_small>.
+- Add <disk_small>.
+- Add <document_horizontal*>.
+- Update <hammer*>.
+- Add <hammer_screwdriver>.
+- Add <magnet_small>.
+- Update <star_small*>.
+- Add <sticky_note_small>.
+- Add <ticket_small>.
+- Add <wall_small*>.
+- Add <wrench_screwdriver>.
+--------------------------------------------------------------------------------
+Version 0.8.2 (July 30, 2008)
+- Add <bell_disable>.
+- Add <camera_black>.
+- Add <cassette*>.
+- Update <clipboard*>.
+- Update <clock*>.
+- Add <clock_frame>.
+- Add <lock_small>.
+- Add <magnet_disable>.
+- Add <printer_small>.
+- Add <wall*>.
+--------------------------------------------------------------------------------
+Version 0.8.1 (July 29, 2008)
+- Add <blog*>.
+- Add <book_small>.
+- Add <bookmark_small>.
+- Add <music_small>.
+- Add <newspaper*>.
+- Add <receipt*>.
+- Add <receipts*>.
+- Rename <tag_blue> to <tag_label>.
+- Delete <tag_gray>, <tag_green>, <tag_orange>, <tag_pink>, <tag_red> and
+  <tag_yellow>.
+- Add <tag_small>.
+- Add <tags_label>.
+--------------------------------------------------------------------------------
+Version 0.8 (July 28, 2008)
+- Update <*shield*>.
+- Add <card_small>.
+- Add <database_small>.
+- Add <document_music> and <document_small>.
+- Update <film*> and <films*>.
+- Update <folder_open_film>.
+- Update <mail_open_film>.
+- Update <socket*>.
+- Update <sort*>.
+- Add <sort_alphabet*>, <sort_date*>, <sort_number*> and <sort_quantity*>.
+--------------------------------------------------------------------------------
+Version 0.7 (July 22, 2008)
+--------------------------------------------------------------------------------
+Version 0.6 (July 14, 2008)
+--------------------------------------------------------------------------------
+Version 0.5 (July 13, 2008)
+--------------------------------------------------------------------------------
+Version 0.4 (July 9, 2008)
+--------------------------------------------------------------------------------
+Version 0.3 (June 29, 2008)
+--------------------------------------------------------------------------------
+Version 0.2 (June 27, 2008)
+--------------------------------------------------------------------------------
+Version 0.1 (June 17, 2008)
+- Initial beta release.

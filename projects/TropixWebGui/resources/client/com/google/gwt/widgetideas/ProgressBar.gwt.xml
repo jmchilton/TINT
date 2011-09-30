@@ -1,0 +1,14 @@
+<module>
+
+    <!--  hack until i18n is added back into users -->
+    <inherits name='com.google.gwt.i18n.I18N'/>
+
+    <!--  As new widgets are created, they should be able to use all of our gwt libraries -->
+    <inherits name="com.google.gwt.user.User"/>
+    <source path="client" defaultexcludes="true">
+      <include name="ProgressBar.java" />
+      <include name="ResizableWidget.java" />
+      <include name="ResizableWidgetCollection.java" />
+    </source>
+    
+</module>

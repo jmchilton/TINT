@@ -1,0 +1,13 @@
+<mzXML xmlns="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0 http://sashimi.sourceforge.net/schema_revision/mzXML_3.0/mzXML_idx_3.0.xsd" >
+ <msRun>
+   <parentFile fileType="processedData" fileSha1="50848a53123bf28ff04fb6e36c29257ce5d6bf2c" fileName="mrr.RAW"/>
+   <dataProcessing>
+     <software type="conversion" name="ReAdW" version="4.0.0(build Jun  3 2008 23:01:30)" />
+    </dataProcessing>
+    <scan peaksCount="55" num="106" msLevel="2"><precursorMz precursorIntensity="1.0" precursorCharge="1">462.48</precursorMz><peaks precision="32" contentType="m/z-int" compressionType="none" compressedLen="440" byteOrder="network">Qw0JRUAKDPxDJvCAP4NK/kM98kpAEZxcQ08Q6EAEbmRDUBoBP9AsaENRFZ5AKhB/Q18jpEDxGUdDYBPKQFUcnUNhIRRAUolEQ2MSmj/xuwNDjJZJP6HQikONP+Y/tyF8Q44I+D+RPGxDkHAVQMrDMEOqh6BCdCwdQ6sMCkLafUZDq4+gQ0dZjkOxj3k/8lS0Q7KPoUBIYcpDswe+P5IeQEOzeZZBD9J7Q7QANUFpwGJDtGmNQZDSRUO5jyQ/kLN7Q8YZNT+RZhZD0QWZQFEBSEPW/xlEstlUQ9d/nUUXUadD19BtQT6ExEPfens/96VMQ+AApT/Y+yA=</peaks></scan>
+     <scan peaksCount="55" num="2026" msLevel="2"><precursorMz precursorIntensity="3.0" precursorCharge="3">961.8482</precursorMz><peaks precision="32" contentType="m/z-int" compressionType="none" compressedLen="2816" byteOrder="network">Qw0JRUAKDPxDJvCAP4NK/kM98kpAEZxcQ08Q6EAEbmRDUBoBP9AsaENRFZ5AKhB/Q18jpEDxGUdDYBPKQFUcnUNhIRRAUolEQ2MSmj/xuwNDjJZJP6HQikONP+Y/tyF8Q44I+D+RPGxDkHAVQMrDMEOqh6BCdCwdQ6sMCkLafUZDq4+gQ0dZjkOxj3k/8lS0Q7KPoUBIYcpDswe+P5IeQEOzeZZBD9J7Q7QANUFpwGJDtGmNQZDSRUO5jyQ/kLN7Q8YZNT+RZhZD0QWZQFEBSEPW/xlEstlUQ9d/nUUXUadD19BtQT6ExEPfens/96VMQ+AApT/Y+yA=</peaks></scan>
+  </msRun>
+  <indexOffset>0</indexOffset> 
+</mzXML>

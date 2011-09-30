@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models">
+	<class name="NoteRevision" table="NOTE_REVISION" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the NoteRevision class -->
+		<property name="creationTime" type="string" column="CREATION_TIME"/>
+		<property name="contents" type="string"><column name="CONTENTS" sql-type="longtext" /></property>
+		<property name="revisionNum" type="integer" column="REVISION_NUM"/>
+		<!-- Associations mapping for the NoteRevision class -->
+		<many-to-one name="note" class="edu.umn.msi.tropix.models.Note" column="NOTE_ID" lazy="proxy" />
+	</class>
+</hibernate-mapping>

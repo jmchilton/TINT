@@ -1,0 +1,416 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<parameterSet xmlns="http://msi.umn.edu/tropix/proteomics/parameters/specification" >
+
+<parameter name="precursorsearchtype" default="monoisotopic">
+  <shortDescription></shortDescription>
+  <domain>                
+    <domainElement><value>monoisotopic</value></domainElement>
+    <domainElement><value>average</value></domainElement>
+    <domainElement><value>mono15</value></domainElement>    
+  </domain>
+</parameter>
+
+<parameter name="ionA" default="false">
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionB" default="true">
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionC" default="false">
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionX" default="false">
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionY" default="true">
+  <validation type="boolean" />
+</parameter>
+<parameter name="ionZ" default="false">
+  <validation type="boolean" />
+</parameter>
+<parameter name="nmethionine" default="true">
+  <validation type="boolean" />
+</parameter>
+
+<parameter name="productsearchtype" default="monoisotopic">
+  <shortDescription></shortDescription>
+  <domain>                
+    <domainElement><value>monoisotopic</value></domainElement>
+    <domainElement><value>average</value></domainElement>
+    <domainElement><value>mono15</value></domainElement>    
+  </domain>
+</parameter>
+
+<parameter name="zdep" default="usefile">
+  <shortDescription></shortDescription>
+  <domain>                
+    <domainElement><value>usefile</value></domainElement>
+    <domainElement><value>userange</value></domainElement>
+    <domainElement><value>calculate</value></domainElement>    
+  </domain>
+</parameter>
+
+<parameter name="singlewin" default="20">
+  <validation type="integer" minValue="1" />
+</parameter>
+<parameter name="doublewin" default="14">
+  <validation type="integer" minValue="1" />
+</parameter>
+
+<parameter name="singlenum" default="2">
+  <validation type="integer" minValue="1" />
+</parameter>
+<parameter name="doublenum" default="2">
+  <validation type="integer" minValue="1" />
+</parameter>
+<parameter name="cutoff" default="100000">
+  <validation type="integer" minValue="1" />
+</parameter>
+<parameter name="cutlo" default="0.0">
+  <validation type="float" minValue="0.0" />
+</parameter>
+<parameter name="cuthi" default="0.2">
+  <validation type="float" minValue="0.0" />
+</parameter>
+<parameter name="cutinc" default="0.0005">
+  <validation type="float" minValue="0.00001" />
+</parameter>
+
+<parameter name="missedcleave" default="2">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="hitlistlen" default="10">
+  <validation type="integer" minValue="1" />
+</parameter>
+
+<parameter name="tophitnum" default="20">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="minhit" default="2">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="minspectra" default="2">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="scale" default="1000">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="maxmods" default="64">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="peptol" default="1.2">
+  <validation type="float" minValue="0.0" />
+</parameter>
+
+<parameter name="msmstol" default="0.5">
+  <validation type="float" minValue="0.0" />
+</parameter>
+
+<parameter name="enzyme" default="trypsin">
+  <domain>
+    <domainElement><value>trypsin</value></domainElement>
+    <domainElement><value>argc</value></domainElement>
+    <domainElement><value>cnbr</value></domainElement>
+    <domainElement><value>chymotrypsin</value></domainElement>
+<!--    <domainElement><value>formicacid</value></domainElement> -->
+    <domainElement><value>lysc</value></domainElement>
+    <domainElement><value>lysc-p</value></domainElement>
+    <domainElement><value>pepsin-a</value></domainElement>
+    <!-- 
+    <domainElement><value>tryp-cnbr</value></domainElement>
+    <domainElement><value>tryp-chymo</value></domainElement>
+     -->
+    <domainElement><value>trypsin-p</value></domainElement>
+    <domainElement><value>whole-protein</value></domainElement>
+    <domainElement><value>aspn</value></domainElement>
+    <domainElement><value>gluc</value></domainElement>
+<!--     <domainElement><value>aspngluc</value></domainElement> -->
+    <domainElement><value>top-down</value></domainElement>
+    <domainElement><value>semi-tryptic</value></domainElement>
+    <domainElement><value>no-enzyme</value></domainElement>
+    <domainElement><value>chymotrypsin-p</value></domainElement>
+    <domainElement><value>aspn-de</value></domainElement>
+    <domainElement><value>gluc-de</value></domainElement>
+    <domainElement><value>none</value></domainElement>
+  </domain>
+</parameter>
+
+<parameter name="mincharge" default="1">
+  <validation type="integer" minValue="1" />
+</parameter>
+
+<parameter name="maxcharge" default="8">
+  <validation type="integer" minValue="1" />
+</parameter>
+
+<parameter name="considermult" default="3">
+  <validation type="integer"  />
+</parameter>
+
+<parameter name="plusone" default="0.95">
+  <validation type="float" />
+</parameter>
+
+<parameter name="maxproductcharge" default="2">
+  <validation type="integer" minValue="0" />
+</parameter>
+
+<parameter name="pseudocount" default="1">
+  <validation type="integer" />
+</parameter>
+
+<parameter name="searchb1" default="false">
+  <validation type="boolean" />
+</parameter>
+
+<parameter name="searchctermproduct" default="true">
+  <validation type="boolean" />
+</parameter>
+
+<parameter name="maxproductions" default="100">
+  <validation type="integer" />
+</parameter>
+
+<parameter name="minnoenzyme" default="4">
+  <validation type="integer" />
+</parameter>
+
+<parameter name="maxnoenzyme" default="40">
+  <validation type="integer" />
+</parameter>
+
+<parameter name="exactmass" default="1446.94">
+  <validation type="float" />
+</parameter>
+
+<parameter name="researchthresh" default="0.01">
+  <validation type="float" />
+</parameter>
+
+<parameter name="subsetthresh" default="0.0">
+  <validation type="float" />
+</parameter>
+
+<parameter name="replacethresh" default="0.0">
+  <validation type="float" />
+</parameter>
+
+<parameter name="precursorcull" default="0">
+  <validation type="float" />
+</parameter>
+
+<parameter name="nocorrelationscore" default="false">
+  <validation type="boolean" />
+</parameter>
+
+<parameter name="probfollowingion" default="0.5">
+  <validation type="float" />
+</parameter>
+
+<parameter name="automassadjust" default="1">
+  <validation type="integer" />
+</parameter>
+
+<parameter default="">
+  <nameSet>
+    <name>fixed</name>
+    <name>variable</name>
+  </nameSet>
+  <domain>
+    <domainElement><value>methylk</value></domainElement>
+    <domainElement><value>oxym</value></domainElement>
+    <domainElement><value>carboxymethylc</value></domainElement>
+    <domainElement><value>carbamidomethylc</value></domainElement>
+    <domainElement><value>deamidationkq</value></domainElement>
+    <domainElement><value>propionamidec</value></domainElement>
+    <domainElement><value>phosphorylations</value></domainElement>
+    <domainElement><value>phosphorylationt</value></domainElement>
+    <domainElement><value>phosphorylationy</value></domainElement>
+    <domainElement><value>ntermmcleave</value></domainElement>
+    <domainElement><value>ntermacetyl</value></domainElement>
+    <domainElement><value>ntermmethyl</value></domainElement>
+    <domainElement><value>ntermtrimethyl</value></domainElement>
+    <domainElement><value>methythiold</value></domainElement>
+    <domainElement><value>methylq</value></domainElement>
+    <domainElement><value>trimethylk</value></domainElement>
+    <domainElement><value>methyld</value></domainElement>
+    <domainElement><value>methyle</value></domainElement>
+    <domainElement><value>ctermpepmethyl</value></domainElement>
+    <domainElement><value>trideuteromethyld</value></domainElement>
+    <domainElement><value>trideuteromethyle</value></domainElement>
+    <domainElement><value>ctermpeptrideuteromethyl</value></domainElement>
+    <domainElement><value>nformylmet</value></domainElement>
+    <domainElement><value>twoamino3oxobutanoicacid</value></domainElement>
+    <domainElement><value>acetylk</value></domainElement>
+    <domainElement><value>ctermamide</value></domainElement>
+    <domainElement><value>bmethylthiold</value></domainElement>
+    <domainElement><value>carbamidomethylk</value></domainElement>
+    <domainElement><value>carbamidometylh</value></domainElement>
+    <domainElement><value>carbamidomethyld</value></domainElement>
+    <domainElement><value>carbamidomethyle</value></domainElement>
+    <domainElement><value>carbamylk</value></domainElement>
+    <domainElement><value>ntermcarbamyl</value></domainElement>
+    <domainElement><value>citrullinationr</value></domainElement>
+    <domainElement><value>cysteicacidc</value></domainElement>
+    <domainElement><value>diiodinationy</value></domainElement>
+    <domainElement><value>dimethylk</value></domainElement>
+    <domainElement><value>dimethylr</value></domainElement>
+    <domainElement><value>ntermpepdimethyl</value></domainElement>
+    <domainElement><value>dihydroxyf</value></domainElement>
+    <domainElement><value>thioacetylk</value></domainElement>
+    <domainElement><value>ntermpeptioacetyl</value></domainElement>
+    <domainElement><value>farnesylationc</value></domainElement>
+    <domainElement><value>formylk</value></domainElement>
+    <domainElement><value>ntermpepformyl</value></domainElement>
+    <domainElement><value>formylkynureninw</value></domainElement>
+    <domainElement><value>phef</value></domainElement>
+    <domainElement><value>gammacarboxyld</value></domainElement>
+    <domainElement><value>gammacarboxyle</value></domainElement>
+    <domainElement><value>geranylgeranylc</value></domainElement>
+    <domainElement><value>ntermpepglucuronylg</value></domainElement>
+    <domainElement><value>glutathionec</value></domainElement>
+    <domainElement><value>glyglyk</value></domainElement>
+    <domainElement><value>guanidinationk</value></domainElement>
+    <domainElement><value>his2asnh</value></domainElement>
+    <domainElement><value>his2asph</value></domainElement>
+    <domainElement><value>ctermpephsem</value></domainElement>
+    <domainElement><value>ctermpephselactm</value></domainElement>
+    <domainElement><value>hydroxykynureninw</value></domainElement>
+    <domainElement><value>hydroxylationd</value></domainElement>
+    <domainElement><value>hydroxylationk</value></domainElement>
+    <domainElement><value>hydroxylationn</value></domainElement>
+    <domainElement><value>hydroxylationp</value></domainElement>
+    <domainElement><value>hydroxylationf</value></domainElement>
+    <domainElement><value>hydroxylationy</value></domainElement>
+    <domainElement><value>iodinationy</value></domainElement>
+    <domainElement><value>kynureninw</value></domainElement>
+    <domainElement><value>lipoylk</value></domainElement>
+    <domainElement><value>ctermpepmeester</value></domainElement>
+    <domainElement><value>meesterd</value></domainElement>
+    <domainElement><value>meestere</value></domainElement>
+    <domainElement><value>meesters</value></domainElement>
+    <domainElement><value>meestery</value></domainElement>
+    <domainElement><value>methylc</value></domainElement>
+    <domainElement><value>methylh</value></domainElement>
+    <domainElement><value>methyln</value></domainElement>
+    <domainElement><value>ntermpepmethyl</value></domainElement>
+    <domainElement><value>methylr</value></domainElement>
+    <domainElement><value>ntermpepmyristoyeylationg</value></domainElement>
+    <domainElement><value>ntermpepmyristoyl4hg</value></domainElement>
+    <domainElement><value>ntermpepmyristoylationg</value></domainElement>
+    <domainElement><value>myristoylationk</value></domainElement>
+    <domainElement><value>ntermformyl</value></domainElement>
+    <domainElement><value>nemc</value></domainElement>
+    <domainElement><value>nipcam</value></domainElement>
+    <domainElement><value>nitrow</value></domainElement>
+    <domainElement><value>nitroy</value></domainElement>
+    <domainElement><value>ctermpepo18</value></domainElement>
+    <domainElement><value>ctermpepdio18</value></domainElement>
+    <domainElement><value>oxyh</value></domainElement>
+    <domainElement><value>oxyw</value></domainElement>
+    <domainElement><value>ppantetheines</value></domainElement>
+    <domainElement><value>palmitoylationc</value></domainElement>
+    <domainElement><value>palmitoylationk</value></domainElement>
+    <domainElement><value>palmitoylations</value></domainElement>
+    <domainElement><value>palmitoylationt</value></domainElement>
+    <domainElement><value>phospholosss</value></domainElement>
+    <domainElement><value>phospholosst</value></domainElement>
+    <domainElement><value>phospholossy</value></domainElement>
+    <domainElement><value>phosphoneutrallossc</value></domainElement>
+    <domainElement><value>phosphoneutrallossd</value></domainElement>
+    <domainElement><value>phosphoneutrallossh</value></domainElement>
+    <domainElement><value>propionylk</value></domainElement>
+    <domainElement><value>ntermpeppropionyl</value></domainElement>
+    <domainElement><value>propionylheavyk</value></domainElement>
+    <domainElement><value>ntermpeppropionylheavy</value></domainElement>
+    <domainElement><value>pyridylk</value></domainElement>
+    <domainElement><value>ntermpeppyridyl</value></domainElement>
+    <domainElement><value>ntermpeppyrocmc</value></domainElement>
+    <domainElement><value>ntermpeppyroe</value></domainElement>
+    <domainElement><value>ntermpeppyroq</value></domainElement>
+    <domainElement><value>pyroglutamicp</value></domainElement>
+    <domainElement><value>spyridylethylc</value></domainElement>
+    <domainElement><value>semetm</value></domainElement>
+    <domainElement><value>sulfationy</value></domainElement>
+    <domainElement><value>suphonem</value></domainElement>
+    <domainElement><value>triiodinationy</value></domainElement>
+    <domainElement><value>trimethylationr</value></domainElement>
+    <domainElement><value>ntermpeptripalmitatec</value></domainElement>
+    <domainElement><value>usermod1</value></domainElement>
+    <domainElement><value>usermod2</value></domainElement>
+    <domainElement><value>usermod3</value></domainElement>
+    <domainElement><value>usermod4</value></domainElement>
+    <domainElement><value>usermod5</value></domainElement>
+    <domainElement><value>usermod6</value></domainElement>
+    <domainElement><value>usermod7</value></domainElement>
+    <domainElement><value>usermod8</value></domainElement>
+    <domainElement><value>usermod9</value></domainElement>
+    <domainElement><value>usermod10</value></domainElement>
+    <domainElement><value>icatlight</value></domainElement>
+    <domainElement><value>icatheavy</value></domainElement>
+    <domainElement><value>camthiopropanoylk</value></domainElement>
+    <domainElement><value>phosphoneutrallosss</value></domainElement>
+    <domainElement><value>phosphoneutrallosst</value></domainElement>
+    <domainElement><value>phosphoetdlosss</value></domainElement>
+    <domainElement><value>phosphoetdlosst</value></domainElement>
+    <domainElement><value>arg-13c6</value></domainElement>
+    <domainElement><value>arg-13c6-15n4</value></domainElement>
+    <domainElement><value>lys-13c6</value></domainElement>
+    <domainElement><value>oxy18</value></domainElement>
+    <domainElement><value>beta-elim-s</value></domainElement>
+    <domainElement><value>beta-elim-t</value></domainElement>
+    <domainElement><value>usermod11</value></domainElement>
+    <domainElement><value>usermod12</value></domainElement>
+    <domainElement><value>usermod13</value></domainElement>
+    <domainElement><value>usermod14</value></domainElement>
+    <domainElement><value>usermod15</value></domainElement>
+    <domainElement><value>usermod16</value></domainElement>
+    <domainElement><value>usermod17</value></domainElement>
+    <domainElement><value>usermod18</value></domainElement>
+    <domainElement><value>usermod19</value></domainElement>
+    <domainElement><value>usermod20</value></domainElement>
+    <domainElement><value>usermod21</value></domainElement>
+    <domainElement><value>usermod22</value></domainElement>
+    <domainElement><value>usermod23</value></domainElement>
+    <domainElement><value>usermod24</value></domainElement>
+    <domainElement><value>usermod25</value></domainElement>
+    <domainElement><value>usermod26</value></domainElement>
+    <domainElement><value>usermod27</value></domainElement>
+    <domainElement><value>usermod28</value></domainElement>
+    <domainElement><value>usermod29</value></domainElement>
+    <domainElement><value>usermod30</value></domainElement>
+    <domainElement><value>sulfinicacid</value></domainElement>
+    <domainElement><value>arg2orn</value></domainElement>
+    <domainElement><value>dehydro</value></domainElement>
+    <domainElement><value>carboxykynurenin</value></domainElement>
+    <domainElement><value>sumoylation</value></domainElement>
+    <domainElement><value>iTRAQ114nterm</value></domainElement>
+    <domainElement><value>iTRAQ114K</value></domainElement>
+    <domainElement><value>iTRAQ114Y</value></domainElement>
+    <domainElement><value>iTRAQ115nterm</value></domainElement>
+    <domainElement><value>iTRAQ115K</value></domainElement>
+    <domainElement><value>iTRAQ115Y</value></domainElement>
+    <domainElement><value>iTRAQ116nterm</value></domainElement>
+    <domainElement><value>iTRAQ116K</value></domainElement>
+    <domainElement><value>iTRAQ116Y</value></domainElement>
+    <domainElement><value>iTRAQ117nterm</value></domainElement>
+    <domainElement><value>iTRAQ117K</value></domainElement>
+    <domainElement><value>iTRAQ117Y</value></domainElement>
+    <domainElement><value>mmts</value></domainElement>
+    <domainElement><value>lys-2H4</value></domainElement>
+    <domainElement><value>lys-13C615N2</value></domainElement>
+    <domainElement><value>hexNAcN</value></domainElement>
+    <domainElement><value>dHexHexNAcN</value></domainElement>
+    <domainElement><value>hexNAcS</value></domainElement>
+    <domainElement><value>hexNAcT</value></domainElement>    
+  </domain>
+  <validation validateAgainstDomain="true" isList="true" />
+</parameter>
+
+</parameterSet>

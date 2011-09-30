@@ -1,0 +1,6 @@
+<FindBugsFilter>
+  <Match>
+    <Class name="edu.umn.msi.tropix.proteomics.conversion.impl.ConversionUtils" />
+    <Bug code="FE" /> <!-- I check total > 0.0, before dividing sum by total, so result will not be NaN. -->
+  </Match>
+</FindBugsFilter>

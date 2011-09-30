@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:gc="http://jmchilton.net/spring/collect/google"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/google.xsd">
+
+  <context:annotation-config/> 
+
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="clientConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="client" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="client" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="person.source" value="local" />
+        <!-- Make sure proxy.lifetime - 2 * (delegated.credential.lifetime - delegation.lifetime) - estimatedMaxJobWaitTime >= login.timeout -->
+        <entry key="proxy.lifetime" value="43200" />
+        <entry key="delegated.credential.lifetime" value="3600" />
+        <entry key="delegation.lifetime" value="3600" />
+        <entry key="login.timeout" value="7200" />
+        <!-- <entry key="index.service.url" value="http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService" /> -->
+        <entry key="index.service.url" value="" />
+        <entry key="unindexed.service.urls" value="" />
+        <entry key="admin.only" value="false" />
+        <entry key="blocked.service.urls" value="" />
+        <entry key="local.catalog.host" value="http://localhost:8080/" />
+      </map>
+    </property>
+  </bean>    
+
+  <!-- Define directory services -->
+  <gc:properties-to-map id="directoryServices" lazy-init="true">
+    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="location" value="file:${tropix.client.config.dir}/directory-services.properties" />
+      <property name="ignoreResourceNotFound" value="true" />
+    </bean>    
+  </gc:properties-to-map>
+
+  <gc:properties-to-map id="catalogToRequestMap" lazy-init="true">
+    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="location" value="file:${tropix.client.config.dir}/catalog-services.properties" />
+      <property name="ignoreResourceNotFound" value="true" />
+    </bean>
+  </gc:properties-to-map>
+  
+  <import resource="classpath:edu/umn/msi/tropix/jobs/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/client/metadata/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/client/authentication/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/client/request/actions/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/grid/impl/gridContext.xml" />
+  
+  <bean id="requestManager" class="edu.umn.msi.tropix.client.request.impl.RequestManagerImpl" scope="singleton">
+    <property name="requestService" ref="requestService" />
+    <property name="fileService" ref="fileService" />
+    <property name="persistentActionManager" ref="persistentActionManager" />
+    <property name="tropixRequestServiceFactory" ref="tropixRequestServiceFactory" />
+    <property name="credentialSupplier" ref="hostProxySupplier" />
+    <property name="requestor">
+      <bean class="edu.umn.msi.tropix.client.request.impl.RequestorImpl">
+        <property name="tropixRequestServiceFactory" ref="tropixRequestServiceFactory" />
+        <property name="credentialSupplier" ref="hostProxySupplier" />
+        <property name="catalogIdToRequestServiceFunction">
+          <gc:map-to-function>
+            <ref bean="catalogToRequestMap" />
+          </gc:map-to-function>
+        </property>
+        <property name="localRequestServiceUrl" value="${request.service.url}" />
+        <property name="storageServiceUrl" value="${storage.service.url}" />
+        <property name="requestService" ref="requestService" />
+      </bean>
+    </property>    
+  </bean>
+
+   <bean id="cachedUserIterableLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton">
+    <property name="haltOnException" value="false" />
+    <property name="waitTime" value="600" />
+    <property name="waitTimeUnitAsString" value="SECONDS" />
+  </bean>
+
+  <bean id="cachedUserIterableLoopingRunnableSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl">
+    <property name="loopingRunnableConfig" ref="cachedUserIterableLoopingConfig" />
+  </bean>
+
+  <bean id="cachedGridUserIterable" class="edu.umn.msi.tropix.common.concurrent.impl.CachedIterableImpl" scope="singleton">
+    <property name="baseIterable" ref="userIterable" />
+    <property name="executor" ref="executorService" />
+    <property name="loopingRunnableSupplier" ref="cachedUserIterableLoopingRunnableSupplier" />
+  </bean>
+
+  <bean id="gridUserMap" class="java.util.concurrent.ConcurrentHashMap">
+    <constructor-arg value="10000" />
+  </bean>
+  
+  <gc:map-to-function id="gridUserFunction">
+    <ref bean="gridUserMap" />
+  </gc:map-to-function>
+  
+  <bean id="directoryServicePersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.TropixDirectoryServicePersonSupplierImpl">
+    <property name="institutionToServiceAddressMap" ref="directoryServices" />
+    <property name="proxySupplier" ref="hostProxySupplier" />
+    <property name="serviceFactory"> 
+      <bean parent="gridServiceFactory">
+        <constructor-arg value="info.minnesotapartnership.tropix.directory.cagrid.client.TropixDirectoryServiceInterfacesClient" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="localPersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.LocalPersonSupplierImpl">
+    <property name="institution" value="Local" />
+    <property name="userService" ref="userService" />
+  </bean>
+  
+  <bean id="userIterable" class="edu.umn.msi.tropix.client.directory.impl.UserIterableImpl">
+    <property name="personSupplier" ref="${person.source}PersonSupplier" />
+    <property name="gridUserMap" ref="gridUserMap" />
+  </bean>
+ 
+  <bean id="cachedIndexServiceUrlSupplierLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton">
+    <property name="haltOnException" value="false" />
+    <property name="waitTime" value="300" />
+    <property name="waitTimeUnitAsString" value="SECONDS" />
+  </bean>
+
+  <bean id="cachedIndexServiceUrlSupplierLoopingRunnableSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl">
+    <property name="loopingRunnableConfig" ref="cachedIndexServiceUrlSupplierLoopingConfig" />
+  </bean>
+ 
+  <bean id="cachedIndexServiceUrlSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.CachedIterableImpl" scope="singleton">
+    <property name="baseIterable" ref="indexServiceUrlSupplier" />
+    <property name="executor" ref="executorService" />
+    <property name="loopingRunnableSupplier" ref="cachedIndexServiceUrlSupplierLoopingRunnableSupplier" />
+  </bean>
+
+  <bean id="indexServiceUrlSupplier" class="edu.umn.msi.tropix.client.services.IndexServiceUrlSupplierImpl">
+    <property name="indexServiceUrl" value="${index.service.url}" />
+  </bean>
+
+  <gc:negate-predicate id="not-blocked-service-predicate">
+    <bean class="edu.umn.msi.tropix.common.collect.Predicates2" factory-method="isIn">
+      <constructor-arg> 
+          <bean class="edu.umn.msi.tropix.common.collect.spring.JmxStringIterable">
+            <property name="contents" value="${blocked.service.urls}" />
+          </bean>
+      </constructor-arg>
+    </bean>
+  </gc:negate-predicate>
+
+  <gc:filter-iterable id="searchUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" /> 
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="TropixSearchService" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+
+  <bean id="cachedCatalogInstanceIterableLoopingRunnableConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton">
+    <property name="haltOnException" value="false" />
+    <property name="waitTime" value="300" />
+    <property name="waitTimeUnitAsString" value="SECONDS" />
+  </bean>
+
+  <bean id="cachedCatalogInstanceIterableLoopingRunnableSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl">
+    <property name="loopingRunnableConfig" ref="cachedCatalogInstanceIterableLoopingRunnableConfig" />
+  </bean>
+  
+  <bean id="cachedCatalogInstanceIterable" class="edu.umn.msi.tropix.common.concurrent.impl.CachedIterableImpl" scope="singleton">
+    <property name="baseIterable" ref="catalogInstanceIterable" />
+    <property name="executor" ref="executorService" />
+    <property name="loopingRunnableSupplier" ref="cachedCatalogInstanceIterableLoopingRunnableSupplier" />
+  </bean>
+  
+  <bean id="tropixCatalogServiceFactory" parent="gridServiceFactory">
+    <constructor-arg value="info.minnesotapartnership.tropix.catalog.cagrid.client.TropixCatalogServiceInterfacesClient" />
+  </bean>
+  
+  <gc:transform-iterable id="catalogInstanceIterable" scope="singleton">
+    <ref bean="catalogUrlSupplier" />
+    <bean class="edu.umn.msi.tropix.client.catalog.impl.GridCatalogInstanceFunctionImpl">
+      <property name="serviceFactory" ref="tropixCatalogServiceFactory" />
+      <property name="proxySupplier" ref="hostProxySupplier" />      
+    </bean>
+  </gc:transform-iterable>
+
+  <bean id="catalogUrlSupplier" factory-bean="catalogToRequestMap" factory-method="keySet" />
+
+  <bean id="catalogClient" class="edu.umn.msi.tropix.client.catalog.impl.CatalogClientImpl" scope="singleton" >
+    <property name="catalogInstanceIterable" ref="cachedCatalogInstanceIterable" />
+  </bean>
+
+  <bean id="localCatalogInstance" class="edu.umn.msi.tropix.labs.catalog.impl.LocalCatalogInstanceImpl" scope="singleton" lazy-init="true">
+    <property name="host" value="${local.catalog.host}" />
+  </bean>
+    
+  <!--  <bean id="tropixSearchServiceFactory" class="edu.umn.msi.tropix.client.search.impl.TropixSearchServiceFactoryImpl" /> -->
+  <bean id="tropixSearchServiceFactory" parent="gridServiceFactory">
+    <constructor-arg value="info.minnesotapartnership.tropix.search.cagrid.client.TropixSearchServiceInterfacesClient" />
+  </bean>
+  
+  <bean id="tropixSearchClient" class="edu.umn.msi.tropix.client.search.impl.TropixSearchClientImpl">
+    <property name="tropixSearchServiceFactory" ref="tropixSearchServiceFactory" /> 
+    <property name="gridUserIterable" ref="cachedGridUserIterable" />
+  </bean>
+  
+  <bean id="serviceUrlIterable" class="edu.umn.msi.tropix.common.collect.UniqueIterable">
+    <constructor-arg>
+      <list>
+        <ref bean="cachedIndexServiceUrlSupplier" />
+        <bean class="edu.umn.msi.tropix.common.collect.spring.JmxStringIterable">
+          <property name="contents" value="${unindexed.service.urls}" />
+        </bean>
+      </list>            
+    </constructor-arg>
+  </bean>
+  
+  <gc:filter-iterable id="rawExtractUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="RawExtract" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <gc:filter-iterable id="identificationUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validNames"><list><value>Sequest</value><value>XTandem</value><value>Omssa</value><value>MyriMatch</value><value>TagRecon</value><value>Inspect</value></list></property>
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <gc:filter-iterable id="scaffoldUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="Scaffold" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <gc:filter-iterable id="idPickerUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="IdPicker" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <gc:filter-iterable id="iTraqQuantitationUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="ITraqQuantitation" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <gc:filter-iterable id="bowtieUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="Bowtie" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <gc:filter-iterable id="proteomicsConvertUrlSupplier" scope="singleton">
+    <ref bean="serviceUrlIterable" />
+    <gc:and-2-predicates>
+      <bean class="edu.umn.msi.tropix.client.services.ServiceNamePredicateImpl">
+        <property name="validName" value="ProteomicsConvert" />
+      </bean>
+      <ref bean="not-blocked-service-predicate" />
+    </gc:and-2-predicates>
+  </gc:filter-iterable>
+
+  <bean id="searchGridServiceSupplier" class="edu.umn.msi.tropix.client.services.GridServiceSupplierImpl" scope="singleton" >
+    <property name="gridServiceClass" value="edu.umn.msi.tropix.client.services.GridService" />
+    <property name="addressesSupplier" ref="searchUrlSupplier" />
+    <property name="gridServiceModifiers">
+      <list>
+        <ref bean="serviceMetadataGridServiceModifier" />
+      </list>
+    </property>
+  </bean>
+
+  
+            
+  <bean id="scaffoldGridServiceModifier" class="edu.umn.msi.tropix.client.services.ScaffoldGridServiceClosureImpl" scope="singleton">
+    <property name="metadataResolver" ref="metadataResolver" />
+  </bean>
+  <bean id="identificationGridServiceModifier" class="edu.umn.msi.tropix.client.services.IdentificationGridServiceClosureImpl" scope="singleton">
+    <property name="metadataResolver" ref="metadataResolver" />
+  </bean>
+  <bean id="queueGridServiceModifier" class="edu.umn.msi.tropix.client.services.QueueGridServiceClosureImpl" scope="singleton">
+    <property name="metadataResolver" ref="metadataResolver" />
+  </bean>
+  <bean id="serviceMetadataGridServiceModifier" class="edu.umn.msi.tropix.client.services.ServiceMetadataGridServiceClosureImpl" scope="singleton">
+    <property name="metadataResolver" ref="metadataResolver" />
+  </bean>
+
+  <bean id="scaffoldGridServiceSupplier" class="edu.umn.msi.tropix.client.services.GridServiceSupplierImpl" scope="singleton" >
+    <property name="gridServiceClass" value="edu.umn.msi.tropix.client.services.ScaffoldGridService" />
+    <property name="addressesSupplier" ref="scaffoldUrlSupplier" />
+    <property name="gridServiceModifiers">
+      <list>
+        <ref bean="serviceMetadataGridServiceModifier" />
+        <ref bean="queueGridServiceModifier" />
+        <ref bean="scaffoldGridServiceModifier" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="identificationGridServiceSupplier" class="edu.umn.msi.tropix.client.services.GridServiceSupplierImpl" scope="singleton" >
+    <property name="gridServiceClass" value="edu.umn.msi.tropix.client.services.IdentificationGridService" />
+    <property name="addressesSupplier" ref="identificationUrlSupplier" />
+    <property name="gridServiceModifiers">
+      <list>
+        <ref bean="serviceMetadataGridServiceModifier" />
+        <ref bean="queueGridServiceModifier" />
+        <ref bean="identificationGridServiceModifier" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="queueGridServiceSupplier" class="edu.umn.msi.tropix.client.services.GridServiceSupplierImpl" abstract="true">
+    <property name="gridServiceClass" value="edu.umn.msi.tropix.client.services.QueueGridService" />
+    <property name="gridServiceModifiers">
+      <list>
+        <ref bean="serviceMetadataGridServiceModifier" />
+        <ref bean="queueGridServiceModifier" />
+      </list>
+    </property>  
+  </bean>
+
+  <bean id="bowtieGridServiceSupplier" parent="queueGridServiceSupplier" scope="singleton" >
+    <property name="addressesSupplier" ref="bowtieUrlSupplier" />
+  </bean>
+ 
+  <bean id="iTraqQuantitationGridServiceSupplier" parent="queueGridServiceSupplier" scope="singleton" >
+    <property name="addressesSupplier" ref="iTraqQuantitationUrlSupplier" />
+  </bean>
+  
+  <bean id="idPickerGridServiceSupplier" parent="queueGridServiceSupplier" scope="singleton" >
+    <property name="addressesSupplier" ref="idPickerUrlSupplier" />
+  </bean>
+
+  <bean id="rawExtractGridServiceSupplier" parent="queueGridServiceSupplier" scope="singleton" >
+    <property name="addressesSupplier" ref="rawExtractUrlSupplier" />
+  </bean>
+  
+  <bean id="proteomicsConvertGridServiceSupplier" parent="queueGridServiceSupplier">
+    <property name="addressesSupplier" ref="proteomicsConvertUrlSupplier" />
+  </bean>
+  
+  <bean id="gridServiceSupplierManager" class="edu.umn.msi.tropix.common.manager.GenericManager">
+    <property name="map">
+      <map>
+        <entry value-ref="rawExtractGridServiceSupplier">
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.RAW_EXTRACT" /></key>
+        </entry>
+        <entry value-ref="idPickerGridServiceSupplier">
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.ID_PICKER" /></key>
+        </entry>
+        <entry value-ref="identificationGridServiceSupplier" >
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.PROTEIN_IDENTIFICATION" /></key>
+        </entry>
+        <entry value-ref="scaffoldGridServiceSupplier" >
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.SCAFFOLD" /></key>
+        </entry>
+        <entry value-ref="searchGridServiceSupplier" >
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.SEARCH" /></key>
+        </entry>
+        <entry value-ref="iTraqQuantitationGridServiceSupplier" >
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.ITRAQ_QUANTIFICATION" /></key>
+        </entry>
+        <entry value-ref="bowtieGridServiceSupplier" >
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.BOWTIE" /></key>
+        </entry>
+        <entry value-ref="proteomicsConvertGridServiceSupplier" >
+          <key><util:constant static-field="edu.umn.msi.tropix.client.services.Constants.PROTEOMICS_CONVERT" /></key>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+</beans>

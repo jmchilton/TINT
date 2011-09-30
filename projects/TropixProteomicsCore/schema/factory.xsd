@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/proteomics/factory/config"
+            xmlns="http://msi.umn.edu/proteomics/factory/config"
+            elementFormDefault="qualified">
+
+  <xsd:element name="factoryConfig">
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="application"    minOccurs="1" maxOccurs="1" type="ApplicationType" />
+	<xsd:element name="applicationParameters" minOccurs="1" maxOccurs="1" type="ApplicationParameters" />
+	<xsd:element name="serviceParameters" minOccurs="1" maxOccurs="1" type="ServiceParameters" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="ApplicationType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="sequest" />
+      <xsd:enumeration value="mascot" />
+      <xsd:enumeration value="xtandem" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="ApplicationParameters">
+    <xsd:all minOccurs="0"> <!-- minOccurs = 0 because don't need to specify params for application not using. -->
+      <xsd:element name="sequestTempDirectoryPath" type="xsd:string" />
+      <xsd:element name="sequestApplicationPath"   type="xsd:string" />
+      <xsd:element name="mascotTempDirectoryPath"  type="xsd:string" />
+      <xsd:element name="mascotApplicationPath"    type="xsd:string" />
+      <xsd:element name="xTandemTempDirectoryPath" type="xsd:string" />
+      <xsd:element name="xTandemApplicationPath"   type="xsd:string" />
+      <xsd:element name="xTandemDefaultsPath"      type="xsd:string" />
+      <xsd:element name="xTandemTaxonomyPath"      type="xsd:string" />
+      <xsd:element name="xTandemXslPath"           type="xsd:string" />
+    </xsd:all>
+  </xsd:complexType>
+  
+  <xsd:complexType name="ServiceParameters">
+    <xsd:all> 
+      <xsd:element name="enzymesPath" type="xsd:string" />
+      <xsd:element name="instrumentsPath" type="xsd:string" />
+      <xsd:element name="unimodPath" type="xsd:string" />
+      <xsd:element name="parametersPath" type="xsd:string" />
+    </xsd:all>
+  </xsd:complexType>
+
+</xsd:schema>
+

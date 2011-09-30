@@ -1,0 +1,48 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <table>
+    <row>
+      <cell><label text="Max result rank" /></cell>
+      <cell><input widget="textbox" parameter="maxResultRank" width="80" default="1" /></cell>
+    
+      <cell><label text="Max FDR Qonvert" /></cell>
+      <cell><input widget="textbox" parameter="maxFDRQonvert" width="80" default="0.25"/></cell>
+    </row>
+    <row>
+      <cell><label text="Max FDR Assemble" /></cell>
+      <cell><input widget="textbox" parameter="maxFDRAssemble" width="80" default="0.05"/></cell>
+
+      <cell><label text="Max FDR Report" /></cell>
+      <cell><input widget="textbox" parameter="maxFDRReport" width="80" default="0.05"/></cell>
+    </row>
+    <row>
+      <cell><label text="Database has decoys" /></cell>
+      <cell><input widget="checkbox" parameter="hasDecoyDatabase" width="80" default="true" /></cell>
+
+      <cell><label text="Decoy prefix" /></cell>
+      <cell><input widget="textbox" parameter="decoyPrefix" width="80" default="rev_" /></cell>
+    </row>
+    <row>
+      <cell><label text="Min distinct peptides" /></cell>
+      <cell><input widget="textbox" parameter="minDistinctPeptides" width="80" default="2"/></cell>
+
+      <cell><label text="Max ambiguous ids" /></cell>
+      <cell><input widget="textbox" parameter="maxAmbiguousIds" width="80" default="2"/></cell>
+    </row>
+    <row>
+      <cell><label text="Min additional peptides" /></cell>
+      <cell><input widget="textbox" parameter="minAdditionalPeptides" width="80" default="1"/></cell>
+      
+      <cell><label text="Normalize Search Scores" /></cell>
+      <cell><input widget="checkbox" parameter="normalizeSearchScores" width="80" default="false"/></cell>
+    </row>
+    <row>
+      <cell><label text="Optimize score weights" /></cell>
+      <cell><input widget="checkbox" parameter="optimizeScoreWeights" width="80" default="false"/></cell>
+
+      <cell><label text="Optimization permutations" /></cell>
+      <cell><input widget="textbox" parameter="optimizeScorePermutations" width="80" default="200"/></cell>      
+    </row>
+    
+  </table>
+</formConfiguration>

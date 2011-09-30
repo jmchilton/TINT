@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://msi.umn.edu/tropix/common/jobqueue/ticket"
+	   elementFormDefault="qualified"
+	   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   xmlns="http://msi.umn.edu/tropix/common/jobqueue/ticket" >
+
+  <xs:element name="Ticket" type="Ticket" />
+
+  <xs:complexType name="Ticket">
+    <xs:attribute name="value" type="xs:string" />
+  </xs:complexType>
+  
+</xs:schema>

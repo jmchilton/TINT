@@ -1,0 +1,64 @@
+package @PACKAGE@.client;
+
+import java.rmi.RemoteException;
+import javax.annotation.Nullable;
+
+import edu.umn.msi.tropix.common.jobqueue.client.JobClientFactory;
+import edu.umn.msi.tropix.common.jobqueue.client.JobClientFactoryComponent;
+import edu.umn.msi.tropix.common.jobqueue.ticket.Ticket;
+import edu.umn.msi.tropix.grid.credentials.Credential;
+
+import org.springframework.stereotype.Component;
+
+import org.apache.axis.types.URI.MalformedURIException;
+
+import org.globus.gsi.GlobusCredential;
+
+import @PACKAGE@.client.*;
+import @PACKAGE@.jobcontext.client.*;
+
+@Component("@PACKAGE@.JobClientFactory") @JobClientFactoryComponent(serviceName = "@SERVICE_NAME@", servicePackage = "@PACKAGE@")
+public class JobClientFactoryImpl implements JobClientFactory {
+
+  public <T> T createJobContext(@Nullable Credential credential, String serviceUrl, Class<T> interfaceClass) {
+    try {
+      @SERVICE_NAME@Client client = new @SERVICE_NAME@Client(serviceUrl, getGlobusCredential(credential));
+      @SERVICE_NAME@JobContextClient jobClient = client.createJob();
+      return (T) new @SERVICE_NAME@JobContextInterfacesClient(jobClient);
+    } catch(MalformedURIException e) {
+      throw new RuntimeException(e);
+    } catch(RemoteException e) {
+      throw new RuntimeException(e);
+    }       
+  }
+  
+  public <T> T getJobClient(@Nullable Credential credential, String serviceUrl, Ticket ticket, Class<T> interfaceClass) {
+    try {
+      @SERVICE_NAME@Client client = new @SERVICE_NAME@Client(serviceUrl, getGlobusCredential(credential));
+      @SERVICE_NAME@JobContextClient jobClient = client.getJob(ticket);
+      return (T) new @SERVICE_NAME@JobContextInterfacesClient(jobClient);        
+    } catch(MalformedURIException e) {
+      throw new RuntimeException(e);
+    } catch(RemoteException e) {
+      throw new RuntimeException(e);
+    }       
+  }
+  
+  public <T> T getServiceClient(@Nullable Credential credential, String serviceUrl, Class<T> interfaceClass) {
+    try {
+      @SERVICE_NAME@InterfacesClient iClient = new @SERVICE_NAME@InterfacesClient(serviceUrl, getGlobusCredential(credential));
+      return (T) iClient;  
+    } catch(MalformedURIException e) {
+      throw new RuntimeException(e);
+    } catch(RemoteException e) {
+      throw new RuntimeException(e);
+    }       
+  }
+
+  @Nullable
+  private GlobusCredential getGlobusCredential(@Nullable Credential credential) {
+    return credential == null ? null : credential.getGlobusCredential();
+  }
+  
+
+}

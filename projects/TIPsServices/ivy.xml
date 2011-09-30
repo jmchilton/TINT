@@ -1,0 +1,76 @@
+<?xml version="1.0"?> 
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tip-services" />
+
+  <configurations>
+    <conf name="default" description="Default configuration" />
+    <conf name="test" description="Test configuration" extends="default" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-proteomics-service-sequest-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-sequest-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-sequest-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-sequest-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-scaffold-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-scaffold-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-scaffold-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-scaffold-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-xtandem-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-xtandem-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-xtandem-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-xtandem-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-rawextract-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-rawextract-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-rawextract-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-rawextract-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-omssa-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-omssa-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-omssa-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-omssa-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-itraqquantitation-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-itraqquantitation-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-itraqquantitation-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-itraqquantitation-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-proteomicsconvert-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-proteomicsconvert-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-proteomicsconvert-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-proteomicsconvert-common" type="jar" conf="default" ext="jar" />  
+    <artifact name="tropix-genomics-service-bowtie-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-genomics-service-bowtie-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-genomics-service-bowtie-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-genomics-service-bowtie-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-myrimatch-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-myrimatch-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-myrimatch-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-myrimatch-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-idpicker-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-idpicker-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-idpicker-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-idpicker-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-tagrecon-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-tagrecon-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-tagrecon-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-tagrecon-common" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-inspect-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-inspect-client" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-inspect-service" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-proteomics-service-inspect-common" type="jar" conf="default" ext="jar" />
+  </publications>
+
+  <dependencies>   
+    <dependency org="msi.umn.edu" name="tropix-galaxy" rev="${ivy.project.version}" conf="default->service;test->test" />
+    <dependency org="msi.umn.edu" name="tropix-proteomics" rev="${ivy.project.version}" conf="default->default;test->test" />
+    <dependency org="caGrid" name="metadatautils" rev="1.2" conf="default->default" />
+    <dependency org="caGrid" name="cds" rev="1.2" conf="default->client" />    
+    <dependency rev="1.2" org="caGrid" name="core" conf="default->default;test->test"/>
+    <dependency rev="1.2" org="caGrid" name="testing" conf="default->system"/>
+    <dependency rev="1.2" org="caGrid" name="transfer" conf="default->service" />      
+  </dependencies>
+
+</ivy-module> 
+ 

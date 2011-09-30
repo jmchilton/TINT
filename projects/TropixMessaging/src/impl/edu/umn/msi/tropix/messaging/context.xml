@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:camel="http://camel.apache.org/schema/spring"       
+       xsi:schemaLocation="http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.5.0.xsd
+http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd      
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd">
+
+  <context:annotation-config />
+  <context:component-scan base-package="edu.umn.msi.tropix.messaging"/>
+
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="messagingConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="messaging" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="messaging" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="messaging.broker.start" value="true" />
+        <entry key="messaging.broker.url" value="tcp://localhost:61610" /> 
+        <entry key="messaging.broker.persist" value="false" />
+      </map>
+    </property>
+  </bean>    
+
+  <amq:connectionFactory id="amqConnectionFactory" brokerURL="${messaging.broker.url}">
+  	<amq:exceptionListener>
+  	  <ref bean="jmsExceptionListener" />
+  	</amq:exceptionListener>
+  </amq:connectionFactory>
+
+  <camel:camelContext id="camel-server">
+    <camel:jmxAgent id="agent" createConnector="true"/>
+  </camel:camelContext>
+
+</beans>

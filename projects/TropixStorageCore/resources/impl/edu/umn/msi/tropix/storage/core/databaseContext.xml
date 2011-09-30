@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config />
+
+  <bean class="edu.umn.msi.tropix.common.spring.H2DefaultsPropertyPlaceholderConfigurer">
+    <constructor-arg value="storage" />
+  </bean>
+
+  <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+  <bean id="storageEntityManagerFactory" class="edu.umn.msi.tropix.common.spring.HibernateEntityManagerFactory">
+    <property name="showSql" value="${storage.db.showsql}" />
+    <property name="dialect" value="${storage.db.dialect}" />
+    <property name="persistenceUnitName" value="storage" />
+    <property name="dataSource" ref="storageDataSource" />
+    <property name="autoDdl" value="${storage.db.hbm2ddl}" />
+  </bean>
+  
+  <bean id="storageDataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="${storage.db.driver}" />
+    <property name="url" value="${storage.db.url}" />
+    <property name="username" value="${storage.db.username}" />
+    <property name="password" value="${storage.db.password}" />
+  </bean>
+  
+  <bean id="storageTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="storageEntityManagerFactory" />
+    <property name="dataSource" ref="storageDataSource" />
+    <property name="jpaDialect">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+    </property>
+  </bean> 
+  
+  <aop:config>
+    <aop:pointcut id="storageServiceOperation" expression="execution(* edu.umn.msi.tropix.storage.core.impl.PersistentFileMapperServiceImpl.*(..))" />
+    <aop:advisor advice-ref="storageServiceTransactionAdvice" pointcut-ref="storageServiceOperation" />
+  </aop:config>
+
+  <tx:advice id="storageServiceTransactionAdvice" transaction-manager="storageTransactionManager">
+    <tx:attributes>
+      <tx:method name="*" />
+    </tx:attributes>
+  </tx:advice>
+
+  <bean id="persistentFileMapperService" class="edu.umn.msi.tropix.storage.core.impl.PersistentFileMapperServiceImpl" />
+
+</beans>

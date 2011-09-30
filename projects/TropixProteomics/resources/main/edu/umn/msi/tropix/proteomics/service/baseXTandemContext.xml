@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="xtandemConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="xtandem" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="xtandem" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="xtandem.staging.type" value="system" />
+        <entry key="xtandem.execution.type" value="system" />   
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="xTandemApplicationDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
+    <property name="properties">
+      <map>
+        <entry key="xtandem.path" value="${xtandem.path}" />
+      </map>
+    </property>
+    <property name="deployer">
+      <bean class="edu.umn.msi.tropix.proteomics.xtandem.impl.XTandemDeployerImpl">
+        <property name="deploymentDirectory" value="file:${tropix.xtandem.config.dir}" />
+      </bean>    
+    </property>
+  </bean>
+  
+  <bean id="xTandemXslDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
+    <property name="properties">
+      <map>
+        <entry key="xtandem.path" value="${xtandem.xsl.path}" />
+      </map>
+    </property>
+    <property name="deployer">
+      <bean class="edu.umn.msi.tropix.proteomics.xtandem.impl.XTandemXslDeployerImpl">
+        <property name="deploymentDirectory" value="file:${tropix.xtandem.config.dir}" />
+      </bean>    
+    </property>
+  </bean>  
+  
+  <bean id="xTandemJobBuilder" class="edu.umn.msi.tropix.proteomics.identification.IdentificationJobProcessorBuilderImpl">
+    <property name="jobProcessorFactory" ref="xTandemJobProcessorFactory" />
+  </bean>
+  
+  <bean id="xTandemJobProcessorFactory" class="edu.umn.msi.tropix.proteomics.xtandem.impl.XTandemJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="applicationPath">
+      <bean factory-bean="xTandemApplicationDeployerProperties" factory-method="get" />
+    </property>
+    <property name="parameterTranslator">
+      <bean class="edu.umn.msi.tropix.proteomics.xtandem.XTandemBeanParameterTranslator">
+        <property name="message" value="*" />
+      </bean>
+    </property>
+    <property name="xslPath">
+      <bean factory-bean="xTandemXslDeployerProperties" factory-method="get" />
+    </property>
+    <property name="credentialedStagingDirectoryFactory" ref="${xtandem.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${xtandem.execution.type}" />    
+  </bean>  
+
+  <bean id="xTandemService" class="edu.umn.msi.tropix.proteomics.service.impl.XTandemJobQueueContextImpl" parent="queueServiceParent">
+    <property name="identificationJobProcessorBuilder" ref="xTandemJobBuilder" />
+  </bean>
+          
+</beans>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="TropixGui" default="compile" basedir=".">
+  <description>
+    Web-based GUI for the MSI/UofM interface to the Tropix project. 
+  </description>
+  
+  <property environment="env" />
+
+  <property file="project.properties" />
+  <property file="build.properties"/>
+  
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="build.war.dir" value="${build.dir}/war" />
+  <property name="build.lib.dir" value="${build.war.dir}/WEB-INF/lib" />
+  <property name="build.www.dir" value="${build.war.dir}/WEB-INF" />
+
+  <property name="gwt.entrypoint.class" value="edu.umn.msi.tropix.webgui.TropixGui" />
+  <property name="war.location" value="${wars.dir}/${deploy.path}.war" />
+
+  <target name="defineClasspaths" depends="prepare">
+    <defineivyclasspath />
+    <!-- GWT Compiler doesn't respect ivy.resolved.artifacts.path, so explictly place GWT sources on classpath -->
+    <path id="gwt.sources.and.libs">
+      <pathelement location="${src.dir}/services" />
+      <pathelement location="${src.dir}/client" />
+      <pathelement location="${resources.dir}/client" />
+      <fileset dir="${ivy.resolved.artifacts.dir}" defaultExcludes="true" includes="**/tropix-*.jar **/*gwt*.jar **/*gin*.jar **/google-collect-src.jar **/*guice*.jar **/junit.jar" />
+    </path>
+    <path id="gwt.compile.classpath">
+      <pathelement location="${build.classes.dir}/services" />
+      <pathelement location="${build.classes.dir}/client" />
+      <path refid="gwt.sources.and.libs" />
+      <fileset dir="${build.lib.dir}" includes="*.jar" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement location="${build.classes.dir}/server" />
+      <path refid="gwt.compile.classpath" />
+      <path refid="ivy.resolved.artifacts.path" />
+    </path>    
+    <path id="run.classpath">
+      <path refid="gwt.sources.and.libs" />
+      <fileset dir="${build.lib.dir}" includes="*.jar" excludes="*test*.jar" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}" />
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement location="${src.dir}/services" />
+      <pathelement location="${src.dir}/test" />
+      <pathelement location="${resources.dir}/test" />
+      <pathelement location="${src.dir}/client" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+  
+  <target name="prepare" depends="resolve-dependencies">
+    <preparedirs />
+    <mkdir dir="${build.war.dir}" />
+    <copy toDir="${build.war.dir}">
+      <fileset dir="${basedir}/war-outline" />
+    </copy>
+    <copy toDir="${build.war.dir}/WEB-INF">
+      <fileset dir="${resources.dir}/server/WEB-INF" includes="**/*" />
+    </copy>
+    <replace dir="${build.war.dir}" token="PROJECT_VERSION" value="${project.version}">
+      <include name="TropixGui.html" />
+    </replace>
+  </target>
+  
+  <target name="clean">
+    <delete dir="${build.dir}" />
+    <delete dir="${ext.dir}" />
+  </target>
+
+  <target name="init" depends="prepare, resolve-dependencies"/>
+
+  <target name="compile-gwt" depends="prepare-libraries,compile-java">
+    <java classpathref="gwt.compile.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="1G" >
+      <arg value="-war" />
+      <arg value="${build.war.dir}" />
+      <arg value="edu.umn.msi.tropix.webgui.TropixGui" />
+    </java>
+  </target>
+
+  <target name="shell_">
+    <java classname="com.google.gwt.dev.DevMode" fork="true" maxmemory="1416M">
+      <classpath>
+        <path refid="run.classpath" />
+      </classpath>
+      <jvmarg value="-XX:MaxPermSize=256m" />
+      <arg value="-war" />
+      <arg value="${build.war.dir}" />
+      <arg value="-noserver" />
+      <arg value="-startupUrl" />
+      <arg value="http://localhost:8080/tint/TropixGui.html" />
+      
+      <arg value="edu.umn.msi.tropix.webgui.TropixGui" />
+    </java>
+  </target>
+
+  <target name="shell" depends="jar, shell_" />
+  
+  <target name="prepare-libraries" depends="prepare"> 
+    <copy todir="${build.lib.dir}" flatten="true" >
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*.jar" />
+    </copy>
+    <delete>
+      <fileset dir="${build.lib.dir}" includes="tropix-webgui-*.jar" />
+    </delete>
+  </target> 
+
+
+  <target name="jar_">
+    <jarconfs />
+    <copy todir="${build.lib.dir}">
+      <fileset dir="${jars.dir}" includes="*.jar" />
+    </copy>
+  </target>
+
+  <target name="jar" depends="compile-java, jar_">
+  </target>
+  
+  <target name="compile-java_">
+    <compileconfs />
+  </target>
+
+  <target name="compile-java" description="Compile web application" depends="prepare,prepare-libraries,defineClasspaths,compile-java_">
+  </target>
+	 
+  <target name="compile" depends="compile-gwt,compile-java" />
+
+  <target name="checkstyle" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="findbugs" depends="compile-java">
+    <runfindbugs>
+      <class location="${build.classes.dir}" />
+    </runfindbugs>
+  </target>
+  
+  <target name="package-war" depends="prepare">
+    <war destfile="${war.location}" basedir="${build.war.dir}" >
+      <lib dir="${build.lib.dir}" />
+      <!--  <zipfileset dir="${build.www.dir}/${gwt.entrypoint.class}" prefix=""  /> -->
+      <!-- WEB-INF's lib and web.xml are included as part of build.lib.dir and the webxml parameter, respectively. -->
+      <!-- <zipfileset dir="${resources.dir}/main" excludes="WEB-INF/web.xml" />-->
+    </war>
+  </target>
+
+
+  <target name="war" depends="compile-gwt,jar,package-war" />
+
+  <target name="test" depends="compile-java">
+    <runtestng file="${test.dir}/testng.xml" />
+  </target>
+
+  <target name="gwt-test_" depends="compile-java" description="Run development mode tests">
+    <mkdir dir="build/reports/htmlunit.dev" />
+    <junit fork="yes" printsummary="yes" haltonfailure="false">
+      <jvmarg line="-Xmx1024m" />
+      <jvmarg value="-Demma.coverage.out.file=${build.coverage.dir}/coverage.emma" />
+      <jvmarg value="-Demma.coverage.out.merge=true" />
+      <sysproperty key="gwt.args" value="-logLevel DEBUG  -out www-test" />
+      <sysproperty key="java.awt.headless" value="true" />
+      <classpath>
+        <path refid="test.classpath" />
+      </classpath>
+      <batchtest todir="build/reports/htmlunit.dev" >
+        <fileset dir="${src.dir}/test" includes="**/*GwtTest.java" />
+      </batchtest>
+      <formatter type="plain" />
+      <formatter type="xml" />
+    </junit>
+  </target>
+
+  <target name="gwt-test" depends="gwt-test_" />
+  
+  <target name="setup-emma">
+    <setupemma filter="+edu.umn.msi.tropix.webgui.*" />
+  </target>
+
+  <target name="test-coverage" depends="compile-java,setup-emma,gwt-test_,test,finish-emma" />
+
+  <target name="finish-emma">
+    <finishemma />
+  </target>
+
+  <target name="all" depends="war" />
+
+  <target name="dist" depends="publish, test-coverage" />
+
+</project>

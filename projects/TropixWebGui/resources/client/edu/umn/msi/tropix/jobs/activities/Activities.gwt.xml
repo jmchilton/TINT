@@ -1,0 +1,4 @@
+<module>
+  <inherits name="edu.umn.msi.tropix.galaxy.TropixGalaxy"/>
+  <source includes="descriptions/*.java" />
+</module>

@@ -1,0 +1,73 @@
+.AboutPanel .PanelLabel * {
+  overflow: visible;
+  text-overflow: inherit;
+}
+
+.SliderPanel {
+  width: 100%;
+  min-height: 416px;
+}
+
+.PanelLabel {
+  padding: 10px;
+  padding-right: 35px;
+  border-bottom: 1px solid rgb(217, 217, 217);
+  table-layout: fixed;
+}
+
+.PanelLabel * {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.PanelLabel table {
+  table-layout: fixed;
+}
+
+.aboutLabel {
+  margin-left: -5px;
+}
+
+.button {
+  height: 29px;
+  line-height: 29px;
+}
+
+.articleContents * {
+  font-size: 11pt;
+  font-weight: normal;
+  white-space: normal;
+}
+
+.header {
+  height: 44px;
+  width: 100%;
+  padding: 10px;
+}
+
+.last {
+  padding-bottom: 14px !important;
+}
+
+.logo {
+  float: left;
+  width: 91px;
+  height: 75px;
+}
+
+.snippit {
+  font-size: 11pt;
+  line-height: 11pt;
+  height: 33pt;
+  padding-left: 4px;
+  white-space: normal;
+}
+
+img {
+  max-width: 95%;
+}
+
+#loading {
+  display: none;
+}

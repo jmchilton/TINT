@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="/home/sdml/cagrid/xtandem/bin/tandem-style.xsl"?>
+<bioml label="parameters" xmlns="http://msi.umn.edu/proteomics/bioml">
+  <note type="input" label="list path, taxonomy information">/project/sequest/tropix/tmp/xtandem/29/taxonomy.xml</note>
+  <note type="input" label="output, histogram column width">50</note>
+  <note type="input" label="output, histograms">yes</note>
+  <note type="input" label="output, maximum valid expectation value">1000.0</note>
+  <note type="input" label="output, message">*</note>
+  <note type="input" label="output, one sequence copy">no</note>
+  <note type="input" label="output, parameters">yes</note>
+  <note type="input" label="output, path">/project/sequest/tropix/tmp/xtandem/29/output.xml</note>
+  <note type="input" label="output, path hashing">no</note>
+  <note type="input" label="output, performance">yes</note>
+  <note type="input" label="output, proteins">yes</note>
+  <note type="input" label="output, results">all</note>
+  <note type="input" label="output, sequences">yes</note>
+  <note type="input" label="output, sort results by">protein</note>
+  <note type="input" label="output, spectra">yes</note>
+  <note type="input" label="output, xsl path">/home/sdml/cagrid/xtandem/bin/tandem-style.xsl</note>
+  <note type="input" label="protein, C-terminal residue modification mass">0.0</note>
+  <note type="input" label="protein, N-terminal residue modification mass">0.0</note>
+  <note type="input" label="protein, cleavage C-terminal mass change">17.002735</note>
+  <note type="input" label="protein, cleavage N-terminal mass change">1.007825</note>
+  <note type="input" label="protein, cleavage semi">no</note>
+  <note type="input" label="protein, cleavage site">[KR]|{P}</note>
+  <note type="input" label="protein, taxon">unspecified</note>
+  <note type="input" label="protein, use annotations">no</note>
+  <note type="input" label="refine">yes</note>
+  <note type="input" label="refine, cleavage semi">no</note>
+  <note type="input" label="refine, maximum valid expectation value">1000.0</note>
+  <note type="input" label="refine, modification mass"></note>
+  <note type="input" label="refine, potential C-terminus modifications">0.0</note>
+  <note type="input" label="refine, potential N-terminus modifications">0.0</note>
+  <note type="input" label="refine, potential modification mass"></note>
+  <note type="input" label="refine, potential modification motif"></note>
+  <note type="input" label="refine, spectrum synthesis">no</note>
+  <note type="input" label="refine, unanticipated cleavage">yes</note>
+  <note type="input" label="refine, use annotations">no</note>
+  <note type="input" label="refine, use potential modifications for full refinement">no</note>
+  <note type="input" label="residue, modification mass"></note>
+  <note type="input" label="residue, potential modification mass">15.994920@M</note>
+  <note type="input" label="residue, potential modification motif"></note>
+  <note type="input" label="scoring, a ions">no</note>
+  <note type="input" label="scoring, b ions">yes</note>
+  <note type="input" label="scoring, c ions">no</note>
+  <note type="input" label="scoring, cyclic permutation">no</note>
+  <note type="input" label="scoring, include reverse">no</note>
+  <note type="input" label="scoring, maximum missed cleavage sites">2</note>
+  <note type="input" label="scoring, minimum ion count">0</note>
+  <note type="input" label="scoring, x ions">no</note>
+  <note type="input" label="scoring, y ions">yes</note>
+  <note type="input" label="scoring, z ions">no</note>
+  <note type="input" label="spectrum, dynamic range">1000.0</note>
+  <note type="input" label="spectrum, fragment mass error">0.5</note>
+  <note type="input" label="spectrum, fragment mass error units">Daltons</note>
+  <note type="input" label="spectrum, fragment mass type">monoisotopic</note>
+  <note type="input" label="spectrum, maximum parent charge">10</note>
+  <note type="input" label="spectrum, minimum fragment mz">0.0</note>
+  <note type="input" label="spectrum, minimum parent m+h">0.0</note>
+  <note type="input" label="spectrum, minimum peaks">0</note>
+  <note type="input" label="spectrum, parent monoisotopic mass error minus">0.01</note>
+  <note type="input" label="spectrum, parent monoisotopic mass error plus">0.01</note>
+  <note type="input" label="spectrum, parent monoisotopic mass error units">Daltons</note>
+  <note type="input" label="spectrum, parent monoisotopic mass isotope error">no</note>
+  <note type="input" label="spectrum, path">/project/sequest/tropix/tmp/xtandem/29/data.mzxml</note>
+  <note type="input" label="spectrum, path type">mzxml</note>
+  <note type="input" label="spectrum, total peaks">50</note>
+  <note type="input" label="spectrum, use contrast angle">no</note>
+  <note type="input" label="spectrum, use neutral loss window">no</note>
+  <note type="input" label="spectrum, use noise suppression">no</note>
+  <note type="input" label="refine, single amino acid polymorphisms">no</note>
+  <note type="input" label="scoring, pluggable scoring">yes</note>
+  <note type="input" label="spectrum, contrast angle">0.0</note>
+  <note type="input" label="spectrum, fragment monoisotopic mass error">0.5</note>
+  <note type="input" label="spectrum, fragment monoisotopic mass error units">Daltons</note>
+  <note type="input" label="spectrum, neutral loss mass">466.0</note>
+  <note type="input" label="spectrum, neutral loss window">15.0</note>
+  <note label="list path, sequence source #1">/project/sequest/tropix/tmp/xtandem/29/db.fasta</note>
+  <note label="modelling, total peptides used">34450287</note>
+  <note label="modelling, total proteins used">76256</note>
+  <note label="modelling, total spectra used">6188</note>
+  <note label="process, start time">2009:08:03:20:09:34</note>
+  <note label="process, version">x! tandem TORNADO (2008.02.01.1)</note>
+  <note label="quality values">559 269 149 115 91 80 74 63 62 50 48 52 51 50 36 28 17 32 28 23</note>
+  <note label="refining, # input models">6985</note>
+  <note label="refining, # input spectra">0</note>
+  <note label="refining, # partial cleavage">0</note>
+  <note label="refining, # point mutations">0</note>
+  <note label="refining, # potential C-terminii">0</note>
+  <note label="refining, # potential N-terminii">0</note>
+  <note label="refining, # unanticipated cleavage">0</note>
+  <note label="timing, initial modelling total (sec)">24.42</note>
+  <note label="timing, initial modelling/spectrum (sec)">0.004</note>
+  <note label="timing, load sequence models (sec)">0.46</note>
+  <note label="timing, refinement/spectrum (sec)">0.039</note>
+</bioml>

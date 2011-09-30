@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="omssaConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="omssa" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="omssa" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="omssa.staging.type" value="system" />
+        <entry key="omssa.execution.type" value="system" />
+        <entry key="blast.home" value="" />   
+        <entry key="omssa.home" value="" />      
+      </map>
+    </property>
+  </bean>  
+
+  <bean id="omssaIdentificationJobBuilder" class="edu.umn.msi.tropix.proteomics.identification.IdentificationJobProcessorBuilderImpl">
+    <property name="jobProcessorFactory" ref="omssaJobProcessorFactory" />
+  </bean>
+  
+  <bean id="omssaScriptDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
+    <property name="properties">
+      <map>
+        <entry key="omssa.path" value="${omssa.path}" />
+      </map>
+    </property>
+    <property name="deployer">
+      <bean class="edu.umn.msi.tropix.proteomics.omssa.impl.OmssaScriptDeployerImpl">
+        <property name="deploymentDirectory" value="file:${tropix.omssa.config.dir}" />
+        <property name="blastHome" value="${blast.home}" />
+        <property name="omssaHome" value="${omssa.home}" />
+      </bean>    
+    </property>
+  </bean>  
+
+  <bean id="omssaJobProcessorFactory" class="edu.umn.msi.tropix.proteomics.omssa.impl.OmssaJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="applicationPath">
+      <bean factory-bean="omssaScriptDeployerProperties" factory-method="get" />
+    </property>
+    <property name="mxXMLToMGFConverter">
+      <bean class="edu.umn.msi.tropix.proteomics.conversion.impl.MzXMLToMGFConverterStreamingImpl" />
+    </property>
+    <property name="credentialedStagingDirectoryFactory" ref="${omssa.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${omssa.execution.type}" />        
+  </bean>  
+  
+  <bean id="omssaService" class="edu.umn.msi.tropix.proteomics.service.impl.OmssaJobQueueContextImpl" parent="queueServiceParent">
+    <property name="identificationJobProcessorBuilder" ref="omssaIdentificationJobBuilder" />
+  </bean>
+          
+</beans>

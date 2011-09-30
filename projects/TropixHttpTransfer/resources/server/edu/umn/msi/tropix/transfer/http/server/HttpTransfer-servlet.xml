@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!-- 
+  
+<servlet>
+<servlet-name>@WEBAPP@</servlet-name>
+<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+<init-param>
+<param-name>contextConfigLocation</param-name>
+<param-value>/WEB-INF/spring/test-servlet.xml
+classpath:edu/umn/msi/tropix/transfer/http/server/HttTransfer-servlet.xml</param-value>
+</init-param>
+<load-on-startup>1</load-on-startup>
+</servlet>  
+  
+   -->
+
+  <bean id="httpTransferController" class="edu.umn.msi.tropix.transfer.http.server.HttpTransferControllerImpl">
+    <property name="fileKeyResolver" ref="fileKeyResolver" />
+  </bean>
+
+  <bean id="url.mapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="urlMap">
+      <map>
+        <entry key="*" value-ref="httpTransferController" />
+      </map>
+    </property>
+  </bean>
+  
+</beans>

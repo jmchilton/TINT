@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
+<web-app>
+  <display-name>TropixGui</display-name>
+
+  <!-- Context Parameters -->
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>/WEB-INF/classes/log4j.properties</param-value>
+  </context-param>
+  <context-param><!-- Location of Spring configuration files -->
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
+  </context-param>
+
+  <!-- Listeners -->
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  <!-- Define listener required by Spring -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+  
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>UploadDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DownloadDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>XmlResourceDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>ServicesDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+    <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServlet</servlet-class>
+    <!-- symbolMaps param provides for stack trace deobfuscation -->
+    <init-param>
+      <param-name>symbolMaps</param-name>
+      <!-- This value assumes a GWT compile with '-deploy war/WEB-INF/deploy/' -->
+      <param-value>WEB-INF/deploy/webgui/symbolMaps/</param-value>
+    </init-param>
+  </servlet>
+
+<servlet-mapping>
+  <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+  <url-pattern>/webgui/gwt-log</url-pattern>
+</servlet-mapping>
+  
+  <!-- Servlet Mappings -->
+  <servlet-mapping>
+    <servlet-name>DownloadDispatcher</servlet-name>
+    <url-pattern>/download/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>UploadDispatcher</servlet-name>
+    <url-pattern>/fileupload</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>XmlResourceDispatcher</servlet-name>
+    <url-pattern>/xml/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ServicesDispatcher</servlet-name>
+    <url-pattern>*.rpc</url-pattern>
+  </servlet-mapping>
+
+  <!-- Filters -->
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>*.rpc</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/xml/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/download/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/fileupload</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>cacheControlFilter</filter-name>
+    <filter-class>edu.umn.msi.tropix.webgui.server.servlet.CacheControlFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>cacheControlFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Welcome files -->
+  <welcome-file-list>
+    <welcome-file>TropixGui.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>

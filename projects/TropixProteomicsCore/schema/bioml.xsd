@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    targetNamespace="http://msi.umn.edu/proteomics/bioml"
+	    xmlns="http://msi.umn.edu/proteomics/bioml"
+	    elementFormDefault="qualified">
+  <xsd:element name="bioml">
+    <xsd:complexType>
+	<xsd:sequence> 
+	  <xsd:element name="note" minOccurs="0" maxOccurs="unbounded" type="Note" />
+	  <xsd:element name="taxon" minOccurs="0" maxOccurs="unbounded" type="Taxon" />
+	</xsd:sequence>
+        <xsd:attribute name="label" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="Taxon">
+    <xsd:sequence>
+      <xsd:element name="file" minOccurs="0" maxOccurs="unbounded" type="File" />
+    </xsd:sequence>
+    <xsd:attribute name="label" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="Note">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+	<xsd:attribute name="type" type="xsd:string" use="required" />
+	<xsd:attribute name="label" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="File">
+    <xsd:attribute name="URL" type="xsd:string" />
+    <xsd:attribute name="format" type="FileFormat" />
+  </xsd:complexType>
+
+
+  <xsd:simpleType name="FileFormat">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="peptide" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  
+  <!-- <xsd:element name="bioml" type="Bioml">
+    <xsd:attribute name="label" type="xsd:string" />
+  </xsd:element>
+  -->
+</xsd:schema>
+

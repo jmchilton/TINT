@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd       
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd">
+  <!-- Test Context overrides property to have broker start automatically-->
+
+  <context:annotation-config />
+  
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="messaging.broker.start" value="true" />
+      </map>
+    </property>
+  </bean>    
+  
+  <import resource="context.xml" />
+
+  <!-- 
+  <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+    <constructor-arg ref="amqConnectionFactory" />
+    <property name="exceptionListener" ref="jmsExceptionListener" />
+    <property name="sessionCacheSize" value="100" />
+  </bean>
+  
+  <bean id="myJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+    <constructor-arg ref="connectionFactory" />
+  </bean>
+
+  <jms:listener-container concurrency="10" >
+    <jms:listener id="QueueListener" destination="Queue.Name" ref="queueListener" />
+  </jms:listener-container> 
+  -->
+
+</beans>

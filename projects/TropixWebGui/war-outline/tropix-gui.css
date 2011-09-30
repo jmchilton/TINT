@@ -1,0 +1,110 @@
+.gwt-ProgressBar-shell {
+  border: 1px solid #777777;
+  background-image: url(images/14tropix_background2bw.png);
+  background-position: bottom center;
+  height: 14pt;
+  width: 100%;
+}
+.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
+  background-image: url(images/14tropix_background2.png);
+  background-position: bottom center;
+  height: 14px;
+}
+.gwt-ProgressBar-shell .gwt-ProgressBar-text {
+  padding: 0px;
+  margin: 0px;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+.tropixForms * {
+  margin: 0px;
+  padding: 0px;
+  font-family: tahoma, verdana, arial, helvetica, sans-serif;
+  font-size: 11px;
+}
+
+.tropixForms-TextBox {
+}
+
+.tropixForms-TextBox-invalid {
+	border: medium solid rgb(195,0,50);
+}
+	
+
+/* -------------------------------------------------------------------------- */
+
+.tropixTree-disabled {
+    background-color: black;
+    filter: alpha(opacity =     20);
+    opacity: .2;
+}
+
+.catalog-title {
+  font-weight : bold;
+  font-size : 125%;
+}
+
+.catalog-link {
+  font-weight : bold;
+  text-decoration: underline;
+  color: blue;
+}
+
+
+
+/* wikitext style is for the body of wiki notes generated from wikitext code.
+   A big goal here is to undo all of the styling built up for smart, etc. Hence
+   a lot of this style is obtained from the default style for HTML 4 as found at
+   http://www.w3.org/TR/CSS2/sample.html
+ */
+
+.wikitext {
+
+}
+
+.wikitext html, .wikitext address, .wikitext blockquote, .wikitext body, .wikitext dd, .wikitext div, .wikitext dl, .wikitext dt, .wikitext fieldset, .wikitext form, .wikitext frame, .wikitext frameset, .wikitext h1, .wikitext h2, .wikitext h3, .wikitext h4, .wikitext h5, .wikitext h6, .wikitext noframes, .wikitext ol, .wikitext p, .wikitext ul, .wikitext center, .wikitext dir, .wikitext hr, .wikitext menu, .wikitext pre   { display: block; }
+.wikitext li { display: list-item; }
+.wikitext head            { display: none }
+.wikitext table           { display: table }
+.wikitext tr              { display: table-row }
+.wikitext thead           { display: table-header-group }
+.wikitext tbody           { display: table-row-group }
+.wikitext tfoot           { display: table-footer-group }
+.wikitext col             { display: table-column }
+.wikitext colgroup        { display: table-column-group }
+.wikitext td, .wikitext th          { display: table-cell }
+.wikitext caption         { display: table-caption }
+.wikitext th              { font-weight: bolder; text-align: center }
+.wikitext caption         { text-align: center } 
+.wikitext h1              { font-size: 2em; margin: .67em 0 }
+.wikitext h2              { font-size: 1.5em; margin: .75em 0 }
+.wikitext h3              { font-size: 1.17em; margin: .83em 0 }
+.wikitext h4, .wikitext p, .wikitext blockquote, .wikitext ul, .wikitext fieldset, .wikitext form, .wikitext ol, .wikitext dl, .wikitext dir, .wikitext menu  { margin: 1.12em 0 }
+.wikitext h5              { font-size: .83em; margin: 1.5em 0 }
+.wikitext h6              { font-size: .75em; margin: 1.67em 0 }
+.wikitext h1, .wikitext h2, .wikitext h3, .wikitext h4,h5, .wikitext h6, .wikitext b, .wikitext strong          { font-weight: bolder }
+.wikitext blockquote      { margin-left: 40px; margin-right: 40px }
+.wikitext i, .wikitext cite, .wikitext em, .wikitext var, .wikitext address    { font-style: italic }
+.wikitext pre, .wikitext tt, .wikitext code, .wikitext kbd, .wikitext samp       { font-family: monospace }
+.wikitext pre             { white-space: pre }
+.wikitext button, .wikitext textarea,input, .wikitext select   { display: inline-block }
+.wikitext big             { font-size: 1.17em }
+.wikitext small, .wikitext sub, .wikitext sup { font-size: .83em }
+.wikitext sub             { vertical-align: sub }
+.wikitext sup             { vertical-align: super }
+.wikitext table           { border-spacing: 2px; }
+.wikitext thead, .wikitext tbody, .wikitext tfoot           { vertical-align: middle }
+.wikitext td, .wikitext th, .wikitext tr      { vertical-align: inherit }
+.wikitext s, .wikitext strike, .wikitext del  { text-decoration: line-through }
+.wikitext hr              { border: 1px inset }
+.wikitext ol, .wikitext ul, .wikitext dir, .wikitext menu, .wikitext dd        { margin-left: 40px }
+.wikitext ol              { list-style-type: decimal }
+.wikitext ol ul, .wikitext ul ol, .wikitext ul ul, .wikitext ol ol    { margin-top: 0; margin-bottom: 0 }
+.wikitext u, .wikitext ins          { text-decoration: underline }
+.wikitext br:before       { content: "\A"; white-space: pre-line }
+.wikitext center          { text-align: center }

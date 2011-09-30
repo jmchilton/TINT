@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="bowtieConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="bowtie" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="bowtie" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="bowtie.staging.type" value="system" />
+        <entry key="bowtie.execution.type" value="system" />
+      </map>
+    </property>
+  </bean>
+    
+  <bean id="bowtieJobProcessorFactory" class="edu.umn.msi.tropix.genomics.bowtie.impl.BowtieJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="applicationPath" value="${bowtie.path}" />
+    <property name="credentialedStagingDirectoryFactory" ref="${bowtie.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${bowtie.execution.type}" />            
+  </bean>
+  
+  <bean id="bowtieService" class="edu.umn.msi.tropix.genomics.service.impl.BowtieJobQueueContextImpl" parent="queueServiceParent">
+    <property name="bowtieJobProcessorFactory" ref="bowtieJobProcessorFactory" />
+  </bean>  
+  
+</beans>

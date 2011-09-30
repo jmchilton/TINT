@@ -1,0 +1,146 @@
+.gwt-ProgressBar-shell {
+  border: 1px solid #777777;
+  background-image: url(images/14tropix_background2bw.png);
+  background-position: bottom center;
+  height: 14pt;
+  width: 100%;
+}
+.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
+  background-image: url(images/14tropix_background2.png);
+  background-position: bottom center;
+  height: 14px;
+}
+.gwt-ProgressBar-shell .gwt-ProgressBar-text {
+  padding: 0px;
+  margin: 0px;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+
+.tableItem {
+  font-size: 14pt;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+
+.icon-email-add {
+  background: url(images/icons/email-add.png) no-repeat;
+}
+
+.icon-date-add {
+  background: url(images/icons/date-add.png) no-repeat;
+}
+
+.icon-contact-add {
+  background: url(images/icons/vcard_add.png) no-repeat;
+}
+
+.icon-shell {
+  background: url(images/icons/shell.gif) no-repeat;
+}
+
+.icon-accordian {
+  background: url(images/icons/accordian.gif) no-repeat;
+}
+
+.icon-add {
+  background: url(images/kurumizawa/action_add.gif) no-repeat;
+}
+
+.icon-remove {
+  background: url(images/kurumizawa/action_remove.gif) no-repeat;	
+} 
+
+.icon-save {
+  background: url(images/kurumizawa/save.gif) no-repeat;	
+}
+
+.icon-edit {
+  background: url(images/kurumizawa/reply.gif) no-repeat;
+}
+
+.icon-folder-open {
+  background: url(images/kurumizawa/folder_open.gif) no-repeat;	
+}
+
+.icon-delete {
+  background: url(images/icons/delete.gif) no-repeat;
+}
+ 
+
+.icon-page {
+  background: url(images/icons/document.gif) no-repeat;
+}
+
+.icon-text {
+  background: url(images/icons/text.gif) no-repeat;
+}
+
+.icon-add-disabled {
+  background: url(images/icons/add.gif) no-repeat -16px 0px;
+}
+
+.icon-delete {
+  background: url(images/icons/delete.gif) no-repeat;
+}
+
+.text {
+  line-height: 135%;
+}
+
+.text,.text p {
+  margin: 4 0px;
+}
+
+.icon-chart {
+  background-image: url(images/icons/chart.png);
+}
+
+.icon-list {
+  background: url(images/icons/list.gif) no-repeat 50% 50%;
+}
+
+.icon-feed {
+  background-image: url(images/icons/feed.gif);
+}
+
+.icon-info {
+  background-image: url(images/icons/information.png);
+}
+
+.icon-info-white {
+  background-image: url(images/icons/information-white.gif);
+}
+
+.icon-music {
+  background-image: url(images/icons/music.png);
+}
+
+.icon-printer {
+  background: url(images/icons/printer.png) no-repeat 50% 50%;
+}
+
+.icon-page-code {
+  background: url(images/icons/icons.png) no-repeat 0px -16px;
+}
+
+.icon-widget {
+  background-image: url(images/icons/icons.png);
+}
+
+.icon-widget-disabled {
+  background: url(images/icons/icons.png) no-repeat -16px 0px;
+}
+
+.icon-tabs {
+  background-image: url(images/icons/tabs.gif);
+}

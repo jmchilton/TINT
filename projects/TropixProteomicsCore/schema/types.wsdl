@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" name="Types" targetNamespace="http://helloworld.cagrid.nci.nih.gov/Types">
+ <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://helloworld.cagrid.nci.nih.gov/Types" elementFormDefault="qualified" attributeFormDefault="unqualified">
+      <import namespace="http://msi.umn.edu/proteomics/bioml" schemaLocation="./bioml.xsd" />
+      <import namespace="http://msi.umn.edu/proteomics/utils/fileSet" schemaLocation="./fileSet.xsd" />
+      <import namespace="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0" schemaLocation="./mzXML_3.0_for_introduce.xsd" />
+      <import namespace="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" schemaLocation="./edu.umn.msi.tropix.models.xsd" />
+      <import namespace="http://msi.umn.edu/tropix/proteomics/cagrid/metadata" schemaLocation="./proteinIdentificationMetadata.xsd" />
+      <import namespace="http://msi.umn.edu/tropix/proteomics/queue/ticket" schemaLocation="./jobQueueTicket.xsd" />
+    </schema>                                                                       
+ </types>
+</definitions>

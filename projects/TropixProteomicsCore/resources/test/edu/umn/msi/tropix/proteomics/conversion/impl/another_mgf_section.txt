@@ -1,0 +1,9 @@
+BEGIN IONS
+PEPMASS=453.737461702821
+CHARGE=2+ and 3+
+TITLE=File: tgriffin_dejon039_8742_Apr19_H_BOC.raw, Sample: Sample001 (sample number 1), Elution: 2.11 min, Period: 1, Cycle(s): 14 (Experiment 1)
+213.23129    107.5555
+242.19019    112.1727
+252.15579    125.9913
+269.07489    113.1567
+295.11404    140.209

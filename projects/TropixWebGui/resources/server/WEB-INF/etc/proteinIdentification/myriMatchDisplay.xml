@@ -1,0 +1,39 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <tabs>
+    <tab name="Basic">
+      <table>
+        <row>
+          <cell><label text="Cleavage Agent" /></cell>
+          <cell><input widget="selection" parameter="cleavageRules" /></cell>
+          <cell><label text="Max Missed Cleavage Sites" /></cell>
+          <cell><input widget="textbox" parameter="numMaxMissedCleavages" width="60"  /></cell>
+        </row>          
+        <row>
+          <cell><label text="Precursor Mz Tolerance" /></cell>
+          <cell><input widget="textbox" parameter="precursorMzTolerance" width="60" /></cell>
+          <cell><label text="Units" /></cell>
+          <cell><input widget="selection" parameter="precursorMzToleranceUnits" /></cell>
+        </row>
+        <row>
+          <cell><label text="Fragment Mz Tolerance" /></cell>
+          <cell><input widget="textbox" parameter="fragmentMzTolerance" width="60" /></cell>
+          <cell><label text="Units" /></cell>
+          <cell><input widget="selection" parameter="fragmentMzToleranceUnits" /></cell>
+        </row>
+        <row>
+          <cell><label text="Deisotoping Mode" /></cell>
+          <cell><input widget="selection" parameter="deisotopingMode" /></cell>
+          <cell><label text="Isotoping Mz Tolerance " /></cell>
+          <cell><input widget="selection" parameter="isotopeMzTolerance" width="60" /></cell>
+        </row>
+        <row>
+          <cell><label text="Static Mods" /></cell>
+          <cell><input widget="textbox" parameter="staticMods" width="60" /></cell>
+          <cell><label text="Dynamic Mods" /></cell>
+          <cell><input widget="textbox" parameter="dynamicMods" width="60" /></cell>
+        </row>
+      </table>
+    </tab>
+  </tabs>
+</formConfiguration>

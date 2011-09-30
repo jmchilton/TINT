@@ -1,0 +1,9 @@
+<s:ServiceDescription xmlns:s="gme://gov.nih.nci.cagrid/1/Introduce" xmlns:n="gme://gov.nih.nci.cagrid.introduce/1/Namespace"  
+                      xmlns:service="gme://gov.nih.nci.cagrid.introduce/1/Services"  xmlns:r="gme://gov.nih.nci.cagrid.introduce/1/Resources">
+
+ <n:Namespaces>
+   <n:Namespace generateStubs="false" location="galaxy.xsd" namespace="http://msi.umn.edu/tropix/galaxy" packageName="edu.umn.msi.tropix.galaxy.tool.cagrid" />
+   <n:Namespace generateStubs="false" location="galaxy-inputs.xsd" namespace="http://msi.umn.edu/tropix/galaxy/inputs" packageName="edu.umn.msi.tropix.galaxy.inputs.cagrid" /> 
+ </n:Namespaces>
+ <service:Services />
+</s:ServiceDescription>

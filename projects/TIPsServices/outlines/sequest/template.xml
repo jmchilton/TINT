@@ -1,0 +1,16 @@
+<s:ServiceDescription xmlns:s="gme://gov.nih.nci.cagrid/1/Introduce" xmlns:n="gme://gov.nih.nci.cagrid.introduce/1/Namespace"  
+                      xmlns:service="gme://gov.nih.nci.cagrid.introduce/1/Services"  xmlns:r="gme://gov.nih.nci.cagrid.introduce/1/Resources">
+ <n:Namespaces>
+   <n:Namespace generateStubs="false" location="edu.umn.msi.tropix.models.sequest.xsd" namespace="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.sequest" packageName="edu.umn.msi.tropix.models.sequest.cagrid" />
+   <n:Namespace generateStubs="false" location="proteinIdentificationMetadata.xsd" namespace="http://msi.umn.edu/tropix/proteomics/cagrid/metadata" 
+                packageName="edu.umn.msi.tropix.proteomics.cagrid.metadata" />
+ </n:Namespaces>
+ <service:Services>
+   <service:Service name="Sequest">
+     <r:ResourcePropertiesList>
+       <r:ResourceProperty qName="id:IdentificationMetadata" description="" fileLocation="" 
+                           populateFromFile="false" register="true" xmlns:id="http://msi.umn.edu/tropix/proteomics/cagrid/metadata"/>
+     </r:ResourcePropertiesList>
+   </service:Service>
+ </service:Services>
+</s:ServiceDescription>

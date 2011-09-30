@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        targetNamespace="http://msi.umn.edu/tropix/storage/core/monitor/config"
+        xmlns="http://msi.umn.edu/tropix/storage/core/monitor/config"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:element name="monitorDirectories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="directory" maxOccurs="unbounded" minOccurs="0" type="Directory" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="Directory">
+    <xs:attribute name="path" type="xs:string" use="required" />
+    <xs:attribute name="sharedFolderName" use="required" />
+  </xs:complexType>
+
+</xs:schema>

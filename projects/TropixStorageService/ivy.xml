@@ -1,0 +1,38 @@
+<?xml version="1.0"?> 
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+
+  <info organisation="msi.umn.edu" module="tropix-storage-service">
+    <description>Tropix Storage Service</description>
+  </info>
+
+  <configurations>
+    <!-- Public configurations. -->    
+    <conf name="client" visibility="public" />
+    <conf name="service" visibility="public" extends="client" />
+    
+    <conf name="test" visibility="public" extends="service" />
+
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+  
+  <publications>
+    <artifact name="tropix-storage-service-server" conf="service" type="jar" />
+    <artifact name="tropix-storage-service-client" conf="client" type="jar" />
+    <artifact name="tropix-storage-service-cagrid-service" conf="service" type="jar" />
+    <artifact name="tropix-storage-service-cagrid-stubs" conf="client" type="jar" />
+    <artifact name="tropix-storage-service-cagrid-client" conf="client" type="jar" />
+    <artifact name="tropix-storage-service-cagrid-common" conf="client" type="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="service->impl" />
+    <dependency org="msi.umn.edu" name="interfaces" rev="1.1" conf="service->spring-client" />
+
+    <dependency rev="1.2" org="caGrid" name="core" conf="client->default;test->test"/>
+    <dependency rev="1.2" org="caGrid" name="testing" conf="test->system"/>
+    <dependency rev="1.2" org="caGrid" name="transfer" conf="client->client;service->service" />
+  </dependencies>
+
+</ivy-module>

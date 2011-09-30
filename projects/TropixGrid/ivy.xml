@@ -1,0 +1,28 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-grid" />
+  
+  <configurations>
+    <conf name="stubs" visibility="public" />
+    <conf name="test" description="Tests" extends="default" visibility="public" />
+    <conf name="default" description="Main" extends="stubs" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-${short.name}" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-${short.name}-stubs" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-${short.name}-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-http-transfer" rev="${ivy.project.version}" conf="default->client" />
+
+    <dependency org="caGrid" name="transfer" rev="1.2" conf="default->client" />
+    <dependency org="caGrid" name="metadatautils" rev="1.2" conf="default->default" />
+    <dependency org="caGrid" name="cds" rev="1.2" conf="default->client" />
+  </dependencies>  
+</ivy-module>

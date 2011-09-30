@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    targetNamespace="http://msi.umn.edu/tropix/proteomics/parameters/specification"
+	    xmlns="http://msi.umn.edu/tropix/proteomics/parameters/specification"
+	    elementFormDefault="qualified">
+
+  <xsd:element name="parameterSet">
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="Parameter" />
+	<xsd:element name="note" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:simpleType name="ParameterName">
+      <xsd:restriction base="xsd:string">
+          <xsd:pattern value="(.)+, (.)" />
+      </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="RelatedSet">
+      <xsd:sequence>
+          <xsd:element name="related" minOccurs="0" maxOccurs="unbounded" type="ParameterName" />
+          <xsd:element name="note" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="MappingSet">
+      <xsd:sequence>
+          <xsd:element name="mapping" minOccurs="0" maxOccurs="unbounded" type="Mapping" />
+          <xsd:element name="note" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+  </xsd:complexType>
+    
+  <xsd:complexType name="Mapping">
+      <xsd:attribute name="parameter" type="xsd:string" use="required" />
+      <xsd:attribute name="application" type="Program" use="required" />
+  </xsd:complexType>    
+  
+   <xsd:simpleType name="Program">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Mascot" />
+      <xsd:enumeration value="Sequest" />
+      <xsd:enumeration value="X! Tandem" />
+    </xsd:restriction>
+  </xsd:simpleType>
+   
+  <xsd:complexType name="NameSet">
+    <xsd:sequence>
+      <xsd:element name="name" minOccurs="0" maxOccurs="unbounded" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Parameter">
+    <xsd:sequence>
+        <xsd:element name="nameSet" type="NameSet" minOccurs="0" maxOccurs="1" />
+    	<xsd:element name="shortDescription" minOccurs="0" maxOccurs="1"
+    		type="xsd:string" /><!-- perhaps for onMouseover description -->
+    	<xsd:element name="longDescription" minOccurs="0" maxOccurs="1"
+    		type="xsd:string" /><!-- prehaps allow html -->
+    	<xsd:element name="technicalDescription" minOccurs="0"
+    		maxOccurs="1" type="xsd:string" /><!-- technical notes for tropix developers -->
+    	<xsd:element name="domain" minOccurs="0" maxOccurs="1"
+    		type="Domain" /><!-- possible allowed values -->
+    	<xsd:element name="validation" minOccurs="0" maxOccurs="1"
+    		type="Validation" /><!-- information used to validate bioml files -->
+    	<xsd:element name="mappings" minOccurs="0" maxOccurs="1"
+    		type="MappingSet" />
+    	<xsd:element name="relateds" minOccurs="0" maxOccurs="1"
+    		type="RelatedSet" />
+    	<xsd:element name="note" type="xsd:string" minOccurs="0"
+    		maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="optional" />           <!-- Actual name of parameter in Bioml file. -->      <!-- one of name or nameGroup should be specified -->
+    <xsd:attribute name="displayName" type="xsd:string" use="optional" />    <!-- Short name to display on website. -->
+    <xsd:attribute name="default" type="xsd:string" use="required" />        <!-- Default value for parameter. -->
+    <xsd:attribute name="type" type="ParameterType" use="required" />
+  </xsd:complexType>
+
+  <xsd:complexType name="Domain">
+    <xsd:sequence>
+      <xsd:element name="domainElement" type="DomainElement" minOccurs="1" maxOccurs="unbounded" />
+      <xsd:element name="note" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DomainElement">
+    <xsd:sequence>
+      <xsd:element name="display" type="xsd:string" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="1" />
+      <xsd:element name="note" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="TypeValidation">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="integer" />
+      <xsd:enumeration value="float" />
+      <xsd:enumeration value="boolean" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ParameterType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="variable" /> <!-- can specify it in BIOML -->
+      <xsd:enumeration value="fixed" />    <!-- fixed parameter -->
+      <xsd:enumeration value="runtime" />  <!-- runtime system must set it (such as input and output files) -->
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="Validation">
+    <xsd:attribute name="validateAgainistDomain" type="xsd:boolean" use="optional" default="true" /> 
+    <xsd:attribute name="minValue" type="xsd:string" use="optional" />
+    <xsd:attribute name="maxValue" type="xsd:string" use="optional" />
+    <xsd:attribute name="regex" type="xsd:string" use="optional" />
+    <xsd:attribute name="type" type="TypeValidation" use="optional" />
+    <xsd:attribute name="isList" type="xsd:boolean" use="optional" default="false" />
+   </xsd:complexType>
+
+</xsd:schema>
+

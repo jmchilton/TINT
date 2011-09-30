@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+	  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	  version="2.0">
+
+  
+  <bindings schemaLocation="pepXML_v114.xsd" 
+    node="//xsd:element[@name='point']/xsd:complexType/xsd:attribute[@name='value']">
+    <property name="theValue" />
+  </bindings>
+  
+  <bindings schemaLocation="pepXML_v114.xsd" 
+    node="//xsd:extension/xsd:attribute[@name='value']">
+    <property name="theValue" />
+  </bindings>
+  
+
+  <bindings schemaLocation="pepXML_v114.xsd" node="/xsd:schema">
+  <globalBindings >
+    <javaType name="java.lang.String" 
+              xmlType="xsd:anySimpleType"
+              parseMethod="javax.xml.bind.DatatypeConverter.parseAnySimpleType" 
+              printMethod="javax.xml.bind.DatatypeConverter.printAnySimpleType" />
+  </globalBindings>
+  </bindings>
+</bindings>		
+

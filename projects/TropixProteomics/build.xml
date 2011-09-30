@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="TropixProteomics" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" >
+  <description>
+  </description>
+
+  <property environment="env" />
+  <property file="project.properties" />
+  <property file="build.properties" />
+  
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="build.scripts.dir" value="${build.dir}/scripts" />
+  <property name="build.scripts.scratch.dir" value="${build.dir}/scripts-scratch" />
+
+  <target name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/main" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <pathelement path="${build.classes.dir}/main" />
+      <pathelement path="${build.classes.dir}/stubs" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}/" />
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/main" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="define-tasks" depends="define-classpaths">
+  </target>
+
+  <target name="test" depends="compile-java,define-tasks">
+    <runtestng file="${test.dir}/testng.xml" />
+  </target>
+
+  <target name="test-coverage" depends="define-tasks,compile-java">
+    <runemma filter="+edu.umn.msi.tropix.proteomics*, -edu.umn.msi.tropix.proteomics.tools*" />
+  </target>  
+
+  <target name="checkstyle">
+    <runcheckstyle />
+  </target>
+
+  <target name="javadoc" depends="prepare" >
+    <dojavadoc confs="main,stubs" />
+  </target>
+  
+  <target name="prepare" depends="define-classpaths">
+    <preparedirs />
+  </target>
+ 	
+  <target name="clean">
+    <cleandirs />
+  </target>
+
+  <target name="compile-java" depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="jar" description="Builds a jar file" depends="compile-java">
+    <jarconfs />
+  </target>
+  
+  <target name="findbugs" depends="jar">
+    <runfindbugs confs="main,test" />
+  </target>
+
+  <target name="init" depends="" />
+
+  <target name="all" depends="jar" />
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

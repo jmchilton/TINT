@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="TransferService" targetNamespace="http://transfer.cagrid.org/TransferService/service" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:binding="http://transfer.cagrid.org/TransferService/bindings" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:import namespace="http://transfer.cagrid.org/TransferService/bindings" location="TransferService_bindings.wsdl"/>
+  <wsdl:service name="TransferService">
+    <wsdl:port name="TransferServicePortTypePort" binding="binding:TransferServicePortTypeSOAPBinding">
+      <soap:address location="http://localhost:8080/wsrf/services/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

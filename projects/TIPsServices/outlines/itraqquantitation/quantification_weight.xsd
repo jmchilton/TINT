@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/weight"
+            xmlns="http://msi.umn.edu/tropix/proteomics/itraqquantitation/weight"
+            elementFormDefault="qualified">
+
+  <xsd:element name="quantificationWeights">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="weight" type="QuantificationWeight" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:complexType name="QuantificationWeight">
+    <xsd:attribute name="intensity" type="xsd:double" use="required" />
+    <xsd:attribute name="weight" type="xsd:double" use="required" />
+  </xsd:complexType>
+
+</xsd:schema>
+

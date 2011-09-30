@@ -1,0 +1,121 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <tabs>
+    <tab name="Basic">
+      <table>
+        <row>
+          <cell><label text="Cleavage Agent" /></cell>
+          <cell><input widget="selection" parameter="enzyme" /></cell>
+          <cell><label text="Max Missed Cleavage Sites" /></cell>
+          <cell><input widget="textbox" parameter="missedcleave" width="60"  /></cell>
+        </row>          
+        <row>
+          <cell><label text="Precursor Mass Error (Da)" /></cell>
+          <cell><input widget="textbox" parameter="peptol" width="60" /></cell>
+          <cell><label text="Precursor Mass Type" /></cell>
+          <cell><input widget="selection" parameter="precursorsearchtype" /></cell>
+        </row>
+        <row>
+          <cell><label text="Product Mass Error (Da)" /></cell>
+          <cell><input widget="textbox" parameter="msmstol" width="60" /></cell>
+          <cell><label text="Product Mass Type" /></cell>
+          <cell><input widget="selection" parameter="productsearchtype" /></cell>
+        </row>
+      </table>
+    </tab>
+    <tab name="Ions">
+      <table>
+        <row>
+          <cell><label text="Score A Ions" /></cell>
+          <cell><input widget="checkbox" parameter="ionA" width="60" /></cell>
+          <cell><label text="Score B Ions" /></cell>
+          <cell><input widget="checkbox" parameter="ionB" width="60"  /></cell>
+        </row>
+        <row>
+          <cell><label text="Score C Ions" /></cell>
+          <cell><input widget="checkbox" parameter="ionC" width="60" /></cell>
+          <cell><label text="Score X Ions" /></cell>
+          <cell><input widget="checkbox" parameter="ionX" width="60" /></cell>
+        </row>
+        <row>
+          <cell><label text="Score Y Ions" /></cell>
+          <cell><input widget="checkbox" parameter="ionY" width="60" /></cell>
+          <cell><label text="Score Z Ions" /></cell>
+          <cell><input widget="checkbox" parameter="ionZ" width="60" /></cell>
+        </row>
+      </table>
+    </tab>
+    <tab name="Mods">
+      <table>
+        <row>
+          <cell><label text="Fixed Modifications" /></cell>
+        </row>
+        <row>
+          <cell><input widget="selection" parameter="fixed" allowMultiple="true" sort="true" /></cell>
+        </row>
+        <row>
+          <cell><label text="Variable Modifications" /></cell>
+        </row>
+        <row>
+          <cell><input widget="selection" parameter="variable" allowMultiple="true" sort="true" /></cell>
+        </row>
+      </table>
+    </tab>
+    <tab name="Other">
+      <table>
+        <row>
+          <cell><label text="Exact Mass" /></cell>
+          <cell><input widget="textbox" parameter="exactmass" width="60" /></cell>
+          <cell><label text="Min Counts Per Precursor Bin" /></cell>
+          <cell><input widget="textbox" parameter="pseudocount" /></cell>
+        </row>
+        <row>
+          <cell><label text="Search C Terminus Ion" /></cell>
+          <cell><input widget="checkbox" parameter="searchctermproduct" /></cell>
+          <cell><label text="Search b1 Product" /></cell>
+          <cell><input widget="checkbox" parameter="searchb1" /></cell>
+        </row>
+      </table>
+    </tab>
+  </tabs>
+</formConfiguration>
+
+<!--
+nmethionine=true
+zdep=usefile
+singlewin=20
+doublewin=14
+singlenum=2
+doublenum=2
+cutoff=100000
+cutlo=0
+cuthi=0.2
+cutinc=0.0005
+missedcleave=2
+hitlistlen=10
+tophitnum=20
+minhit=2
+minspectra=2
+scale=1000
+maxmods=64
+mincharge=1
+maxcharge=8
+considermult=3
+plusone=0.95
+maxproductcharge=2
+pseudocount=1
+searchb1=true
+searchctermproduct=false
+maxproductions=100
+minnoenzyme=4
+maxnoenzyme=40
+exactmass=1446.94
+researchthresh=0.01
+subsetthresh=0
+replacethresh=0
+precursorcull=0
+nocorrelationscore=false
+probfollowingion=0.5
+automassadjust=1
+fixed=methylk,oxym
+-->

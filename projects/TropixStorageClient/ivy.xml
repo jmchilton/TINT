@@ -1,0 +1,32 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-storage-client" />
+  
+  <configurations>
+    <conf name="api" visibility="public" />
+    <conf name="impl" extends="api" visibility="public" />
+    <conf name="impl-http-transfer" extends="impl" visibility="public" />
+    <conf name="impl-cagrid-service" extends="impl" visibility="public" />
+    <conf name="impls" extends="impl-http-transfer,impl-cagrid-service" visibility="public" />
+    <conf name="test" description="Tests" extends="impls" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-storage-client-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-storage-client-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-storage-client-impl-http-transfer" type="jar" conf="impl-http-transfer" ext="jar" />
+    <artifact name="tropix-storage-client-impl-cagrid-service" type="jar" conf="impl-cagrid-service" ext="jar" />
+    <artifact name="tropix-storage-client-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-grid" rev="${ivy.project.version}" conf="api->default" />
+    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="impl-http-transfer->impl" />
+    <dependency org="msi.umn.edu" name="tropix-http-transfer" rev="${ivy.project.version}" conf="impl-http-transfer->embedded" />
+    <dependency org="msi.umn.edu" name="tropix-storage-service" rev="${ivy.project.version}" conf="impl-cagrid-service->client" />
+  </dependencies>  
+
+</ivy-module>

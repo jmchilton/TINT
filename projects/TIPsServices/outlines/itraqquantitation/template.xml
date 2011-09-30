@@ -1,0 +1,12 @@
+<s:ServiceDescription xmlns:s="gme://gov.nih.nci.cagrid/1/Introduce" xmlns:n="gme://gov.nih.nci.cagrid.introduce/1/Namespace"  
+                      xmlns:service="gme://gov.nih.nci.cagrid.introduce/1/Services"  xmlns:r="gme://gov.nih.nci.cagrid.introduce/1/Resources">
+ <n:Namespaces>
+   <n:Namespace generateStubs="false" location="quantification_weight.xsd" namespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/weight" 
+                packageName="edu.umn.msi.tropix.proteomics.itraqquantitation.weight" />
+   <n:Namespace generateStubs="false" location="quantification_options.xsd" namespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/options"
+                packageName="edu.umn.msi.tropix.proteomics.itraqquantitation.options" />
+   <n:Namespace generateStubs="false" location="quantification_training_options.xsd" namespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/training"
+                packageName="edu.umn.msi.tropix.proteomics.itraqquantitation.training" />
+ </n:Namespaces>
+ <service:Services />
+</s:ServiceDescription>

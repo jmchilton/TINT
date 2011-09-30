@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <property file="build.properties"/>
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/api" />
+      <pathelement path="${src.dir}/impl" />
+      <pathelement path="${src.dir}/impl-http-transfer" />
+      <pathelement path="${src.dir}/impl-cagrid-service" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <pathelement path="${build.classes.dir}/api" />
+      <pathelement path="${build.classes.dir}/impl" />
+      <pathelement path="${build.classes.dir}/impl-http-transfer" />
+      <pathelement path="${build.classes.dir}/impl-cagrid-service" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}" /> 
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/api" />
+      <pathelement path="${resources.dir}/impl" />
+      <pathelement path="${resources.dir}/impl-http-transfer" />
+      <pathelement path="${resources.dir}/impl-cagrid-service" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="prepare" description="Sets up various build directories used by other task" depends="define-classpaths">
+    <preparedirs />
+  </target> 
+
+  <target name="clean" description="Cleans up build directories created by prepare"> 
+    <cleandirs />
+  </target>
+  
+  <target name="compile-java" description="Compiles Java source files" depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="compile" description="Compiles all code artifacts" depends="compile-java" />
+  
+  <target name="jar" description="Builds jar files" depends="compile">
+    <jarconfs />
+  </target> 
+  
+  <target name="test" description="Runs test cases" depends="compile">
+    <runtestng />
+  </target>
+
+  <target name="test-coverage" description="Runs test cases and produces coverage report" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.storage.client.*" />
+  </target>
+
+  <target name="findbugs" description="Runs findbugs on java artifacts" depends="jar">
+    <runfindbugs />
+  </target>
+
+  <target name="checkstyle" description="Runs checkstyle on java source files" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="api,impl,impl-http-transfer,impl-cagrid-service" />
+  </target>
+
+  <target name="all" description="Builds all artifacts" depends="jar" />
+
+  <target name="dist" depends="publish,test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

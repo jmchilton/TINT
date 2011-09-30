@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage" xmlns:wsrp="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd" xmlns:wsrlw="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.wsdl" xmlns:wsdlpp="http://www.globus.org/namespaces/2004/10/WSDLPreprocessor" xmlns:gtwsdl1="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ServiceGroup-1.2-draft-01.wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/03/addressing" xmlns:wsntw="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.wsdl" xmlns:wsrbfw="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.wsdl" xmlns:wsrpw="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl" xmlns:wns0="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl" xmlns:wns1="http://security.introduce.cagrid.nci.nih.gov/ServiceSecurity" xmlns:ns4="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata" xmlns:ns3="http://transfer.cagrid.org/Transfer" xmlns:ns2="http://transfer.cagrid.org/TransferService/Context/types" xmlns:ns0="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/types" xmlns:ns1="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.security" name="TropixStorage" targetNamespace="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage">
+  <import namespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl" location="../wsrf/properties/WS-ResourceProperties.wsdl" />
+  <import namespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.wsdl" location="../wsrf/faults/WS-BaseFaults.wsdl" />
+  <import namespace="http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.wsdl" location="../wsrf/notification/WS-BaseN.wsdl" />
+  <import namespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl" location="./../wsrf/properties/WS-ResourceProperties.wsdl" />
+  <import namespace="http://security.introduce.cagrid.nci.nih.gov/ServiceSecurity" location="./ServiceSecurity.wsdl" />
+  <!--============================================================
+
+                      T Y P E S
+                      
+  ============================================================-->
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsrbf="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd" targetNamespace="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage" elementFormDefault="qualified" attributeFormDefault="unqualified">
+      <import namespace="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd" schemaLocation="../wsrf/faults/WS-BaseFaults.xsd" />
+      <import namespace="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata" schemaLocation="./xsd/cagrid/types/caGridMetadata.xsd" />
+      <import namespace="http://transfer.cagrid.org/Transfer" schemaLocation="./caGrid_Transfer.xsd" />
+      <import namespace="http://transfer.cagrid.org/TransferService/Context/types" schemaLocation="./TransferServiceContextTypes.xsd" />
+      <import namespace="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/types" schemaLocation="./TropixStorageTypes.xsd" />
+      <import namespace="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.security" schemaLocation="./xsd/cagrid/types/security/security.xsd" />
+      <element name="DeleteRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="DeleteResponse">
+        <complexType>
+          <sequence>
+            <element name="response" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ExistsRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ExistsResponse">
+        <complexType>
+          <sequence>
+            <element name="response" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PrepareDownloadRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PrepareDownloadResponse">
+        <complexType>
+          <sequence>
+            <element ref="ns2:TransferServiceContextReference" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PrepareUploadRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PrepareUploadResponse">
+        <complexType>
+          <sequence>
+            <element ref="ns2:TransferServiceContextReference" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CanDownloadRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CanDownloadResponse">
+        <complexType>
+          <sequence>
+            <element name="response" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CanUploadRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CanUploadResponse">
+        <complexType>
+          <sequence>
+            <element name="response" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CanDeleteRequest">
+        <complexType>
+          <sequence>
+            <element name="arg1" type="xs:string" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CanDeleteResponse">
+        <complexType>
+          <sequence>
+            <element name="response" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="TropixStorageResourceProperties">
+        <complexType>
+          <sequence>
+            <element ref="ns4:ServiceMetadata" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <!--  place service messages here -->
+  <message name="DeleteRequest">
+    <part name="parameters" element="tns:DeleteRequest" />
+  </message>
+  <message name="DeleteResponse">
+    <part name="parameters" element="tns:DeleteResponse" />
+  </message>
+  <message name="ExistsRequest">
+    <part name="parameters" element="tns:ExistsRequest" />
+  </message>
+  <message name="ExistsResponse">
+    <part name="parameters" element="tns:ExistsResponse" />
+  </message>
+  <message name="PrepareDownloadRequest">
+    <part name="parameters" element="tns:PrepareDownloadRequest" />
+  </message>
+  <message name="PrepareDownloadResponse">
+    <part name="parameters" element="tns:PrepareDownloadResponse" />
+  </message>
+  <message name="PrepareUploadRequest">
+    <part name="parameters" element="tns:PrepareUploadRequest" />
+  </message>
+  <message name="PrepareUploadResponse">
+    <part name="parameters" element="tns:PrepareUploadResponse" />
+  </message>
+  <message name="CanDownloadRequest">
+    <part name="parameters" element="tns:CanDownloadRequest" />
+  </message>
+  <message name="CanDownloadResponse">
+    <part name="parameters" element="tns:CanDownloadResponse" />
+  </message>
+  <message name="CanUploadRequest">
+    <part name="parameters" element="tns:CanUploadRequest" />
+  </message>
+  <message name="CanUploadResponse">
+    <part name="parameters" element="tns:CanUploadResponse" />
+  </message>
+  <message name="CanDeleteRequest">
+    <part name="parameters" element="tns:CanDeleteRequest" />
+  </message>
+  <message name="CanDeleteResponse">
+    <part name="parameters" element="tns:CanDeleteResponse" />
+  </message>
+  <!--============================================================
+
+                       P O R T T Y P E
+                      
+  ============================================================-->
+  <portType name="TropixStoragePortType" wsrp:ResourceProperties="tns:TropixStorageResourceProperties">
+    <operation name="delete">
+      <input message="tns:DeleteRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/DeleteRequest" />
+      <output message="tns:DeleteResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/DeleteResponse" />
+    </operation>
+    <operation name="exists">
+      <input message="tns:ExistsRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/ExistsRequest" />
+      <output message="tns:ExistsResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/ExistsResponse" />
+    </operation>
+    <operation name="prepareDownload">
+      <input message="tns:PrepareDownloadRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/PrepareDownloadRequest" />
+      <output message="tns:PrepareDownloadResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/PrepareDownloadResponse" />
+    </operation>
+    <operation name="prepareUpload">
+      <input message="tns:PrepareUploadRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/PrepareUploadRequest" />
+      <output message="tns:PrepareUploadResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/PrepareUploadResponse" />
+    </operation>
+    <operation name="canDownload">
+      <input message="tns:CanDownloadRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/CanDownloadRequest" />
+      <output message="tns:CanDownloadResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/CanDownloadResponse" />
+    </operation>
+    <operation name="canUpload">
+      <input message="tns:CanUploadRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/CanUploadRequest" />
+      <output message="tns:CanUploadResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/CanUploadResponse" />
+    </operation>
+    <operation name="canDelete">
+      <input message="tns:CanDeleteRequest" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/CanDeleteRequest" />
+      <output message="tns:CanDeleteResponse" wsa:Action="http://msi.umn.edu/tropix/storage/cagrid/TropixStorage/CanDeleteResponse" />
+    </operation>
+    <wsdl:operation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="GetMultipleResourceProperties">
+      <wsdl:input name="GetMultipleResourcePropertiesRequest" message="wsrpw:GetMultipleResourcePropertiesRequest" wsa:Action="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties/GetMultipleResourceProperties" />
+      <wsdl:output name="GetMultipleResourcePropertiesResponse" message="wsrpw:GetMultipleResourcePropertiesResponse" wsa:Action="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties/GetMultipleResourcePropertiesResponse" />
+      <wsdl:fault name="ResourceUnknownFault" message="wsrpw:ResourceUnknownFault" />
+      <wsdl:fault name="InvalidResourcePropertyQNameFault" message="wsrpw:InvalidResourcePropertyQNameFault" />
+    </wsdl:operation>
+    <wsdl:operation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="GetResourceProperty">
+      <wsdl:input name="GetResourcePropertyRequest" message="wsrpw:GetResourcePropertyRequest" wsa:Action="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties/GetResourceProperty" />
+      <wsdl:output name="GetResourcePropertyResponse" message="wsrpw:GetResourcePropertyResponse" wsa:Action="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties/GetResourcePropertyResponse" />
+      <wsdl:fault name="ResourceUnknownFault" message="wsrpw:ResourceUnknownFault" />
+      <wsdl:fault name="InvalidResourcePropertyQNameFault" message="wsrpw:InvalidResourcePropertyQNameFault" />
+    </wsdl:operation>
+    <wsdl:operation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="QueryResourceProperties">
+      <wsdl:input name="QueryResourcePropertiesRequest" message="wsrpw:QueryResourcePropertiesRequest" wsa:Action="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties/QueryResourceProperties" />
+      <wsdl:output name="QueryResourcePropertiesResponse" message="wsrpw:QueryResourcePropertiesResponse" wsa:Action="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties/QueryResourcePropertiesResponse" />
+      <wsdl:fault name="ResourceUnknownFault" message="wsrpw:ResourceUnknownFault" />
+      <wsdl:fault name="InvalidResourcePropertyQNameFault" message="wsrpw:InvalidResourcePropertyQNameFault" />
+      <wsdl:fault name="UnknownQueryExpressionDialectFault" message="wsrpw:UnknownQueryExpressionDialectFault" />
+      <wsdl:fault name="InvalidQueryExpressionFault" message="wsrpw:InvalidQueryExpressionFault" />
+      <wsdl:fault name="QueryEvaluationErrorFault" message="wsrpw:QueryEvaluationErrorFault" />
+    </wsdl:operation>
+    <operation name="getServiceSecurityMetadata">
+      <input message="wns1:GetServiceSecurityMetadataRequest" wsa:Action="http://security.introduce.cagrid.nci.nih.gov/ServiceSecurity/GetServiceSecurityMetadataRequest" />
+      <output message="wns1:GetServiceSecurityMetadataResponse" wsa:Action="http://security.introduce.cagrid.nci.nih.gov/ServiceSecurity/GetServiceSecurityMetadataResponse" />
+    </operation>
+  </portType>
+</definitions>
+

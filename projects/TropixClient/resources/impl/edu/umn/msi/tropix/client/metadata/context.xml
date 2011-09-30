@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:gc="http://jmchilton.net/spring/collect/google"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/google.xsd">
+
+  <context:annotation-config/> 
+
+  <bean id="metadataResolver" class="edu.umn.msi.tropix.client.metadata.impl.DelegatedMetadataResolverImpl">
+    <property name="metadataResolvers">
+      <map>
+        <entry key="http" value-ref="gridMetadataResolver" />
+        <entry key="local" value-ref="localMetadataResolver" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="gridMetadataResolver" class="edu.umn.msi.tropix.client.metadata.impl.MetadataResolverImpl" scope="singleton" />
+
+  <bean id="localMetadataResolver" class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataResolverImpl" />
+
+  <bean id="localQueueStatusMetadataSupplier" class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSupplierImpl">
+    <constructor-arg value="edu.umn.msi.tropix.common.jobqueue.queuestatus.QueueStatus" />
+    <property name="qname" value="{http://msi.umn.edu/tropix/common/jobqueue/queueStatus}QueueStatus" />
+    <property name="objectSupplier">
+      <bean factory-bean="queueStatusBean" factory-method="asSupplier" />
+    </property>
+  </bean> 
+  
+  <bean id="localServiceMetadataSupplier" class="edu.umn.msi.tropix.client.metadata.impl.LocalServiceMetadataSupplierImpl" abstract="true">  
+  </bean>
+
+  <bean id="scaffoldMetadataBean" class="edu.umn.msi.tropix.grid.metadata.service.MetadataBeanImpl">
+  </bean>
+  
+  <bean class="edu.umn.msi.tropix.proteomics.scaffold.impl.ScaffoldMetadataSetter">
+    <property name="metadataBean" ref="scaffoldMetadataBean" />
+    <property name="scaffoldVersion" value="${scaffold.version}" />
+  </bean>
+  
+  <bean id="scaffoldMetadataSupplier" class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSupplierImpl">
+    <constructor-arg value="edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldMetadata" />
+    <property name="qname" value="{http://msi.umn.edu/tropix/proteomics/scaffold/metadata}ScaffoldMetadata" />
+    <property name="metadataBean" ref="scaffoldMetadataBean" /> 
+  </bean>
+
+  <!-- Local Scaffold metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://Scaffold" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local Scaffold" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+        <ref bean="scaffoldMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Local RawExtract metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://RawExtract" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local RAWExtract" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Local ITraqQuantitation metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://ITraqQuantitation" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local ITraq Quantification" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Local Bowtie metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://Bowtie" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local Bowtie" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="identificationMetadataSupplier" class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSupplierImpl" abstract="true">
+    <constructor-arg value="edu.umn.msi.tropix.proteomics.cagrid.metadata.AvailableIdentificationType" />
+    <property name="qname" value="{http://msi.umn.edu/tropix/proteomics/cagrid/metadata}IdentificationMetadata" />
+  </bean>
+
+  <!-- Local Sequest metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://Sequest" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local Sequest" />
+        </bean>
+        <bean parent="identificationMetadataSupplier">
+          <property name="objectUrl" value="classpath:edu/umn/msi/tropix/proteomics/service/Sequest_identificationMetadata.xml" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Local XTandem metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://XTandem" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local X! Tandem" />
+        </bean>
+        <bean parent="identificationMetadataSupplier">
+          <property name="objectUrl" value="classpath:edu/umn/msi/tropix/proteomics/service/XTandem_identificationMetadata.xml" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Local Omssa metadata source -->
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://Omssa" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local OMSSA" />
+        </bean>
+        <bean parent="identificationMetadataSupplier">
+          <property name="objectUrl" value="classpath:edu/umn/msi/tropix/proteomics/service/Omssa_identificationMetadata.xml" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>  
+
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://ProteomicsConvert" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local Proteomics Convert" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://MyriMatch" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local MyriMatch" />
+        </bean>
+        <bean parent="identificationMetadataSupplier">
+          <property name="objectUrl" value="classpath:edu/umn/msi/tropix/proteomics/service/MyriMatch_identificationMetadata.xml" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>  
+
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://IdPicker" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local IDPicker" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://TagRecon" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local TagRecon" />
+        </bean>
+        <bean parent="identificationMetadataSupplier">
+          <property name="objectUrl" value="classpath:edu/umn/msi/tropix/proteomics/service/TagRecon_identificationMetadata.xml" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>  
+
+  <bean class="edu.umn.msi.tropix.client.metadata.impl.LocalMetadataSourceImpl">
+    <constructor-arg value="local://Inspect" />
+    <constructor-arg>
+      <list>
+        <!-- Specify file for service metadata. -->
+        <bean parent="localServiceMetadataSupplier">
+          <constructor-arg value="Local InsPecT" />
+        </bean>
+        <bean parent="identificationMetadataSupplier">
+          <property name="objectUrl" value="classpath:edu/umn/msi/tropix/proteomics/service/Inspect_identificationMetadata.xml" />
+        </bean>
+        <!-- Specify an object supplier for queueStatus metadata -->
+        <ref bean="localQueueStatusMetadataSupplier" />
+      </list>
+    </constructor-arg>
+  </bean>
+  
+</beans>

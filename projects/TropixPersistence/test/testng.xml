@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Integration Suite" verbose="2" >
+  <test name="Integration">
+    <packages>
+      <package name="edu.umn.msi.tropix.persistence.*" />
+    </packages>
+ </test>
+</suite>
+

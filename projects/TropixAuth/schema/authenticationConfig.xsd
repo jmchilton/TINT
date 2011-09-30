@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        targetNamespace="http://msi.umn.edu/tropix/client/authentication/config"
+        xmlns="http://msi.umn.edu/tropix/client/authentication/config"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:element name="authenticationSources">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:group ref="authenticationSource" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:group name="authenticationSource">
+    <xs:choice>
+      <xs:element name="local" type="Local" />
+      <xs:element name="caGrid" type="CaGrid" />        
+    </xs:choice> 
+  </xs:group>
+
+  <xs:complexType name="Local" />
+
+  <xs:complexType name="CaGrid">
+    <xs:attribute name="title" type="xs:string" use="required" />
+    <xs:attribute name="dorianServiceUrl" type="xs:string" use="required" />
+    <xs:attribute name="authenticationServiceUrl" type="xs:string" use="optional" />
+  </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="jobclientConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="jobclient" />
+  </bean>
+  
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="jobclient" />
+  </bean>  
+  
+  <!-- Override points jobUpdateListener, statusServiceFactory, database properties,cds.service.url,delegated.credential.lifetime,cds.allowed.parties -->  
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="cds.service.url" value="" />
+        <entry key="delegated.credential.lifetime" value="3600" />
+        <entry key="delegation.lifetime" value="3600" />
+        <entry key="cds.allowed.parties" value="" />
+      </map>
+    </property>
+  </bean>  
+
+  <!-- Define jobPoller -->
+  <bean id="jobPoller" class="edu.umn.msi.tropix.common.jobqueue.client.persistent.PersistentJobPollerImpl">
+    <property name="failIfCannotPersist" value="false" />
+    <property name="jobUpdateListener" ref="jobUpdateListener" />
+    <property name="jobService" ref="persistentJobService" />
+    <property name="basePoller" ref="basePoller" />
+  </bean>
+
+  <bean id="clientPollingLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig">
+    <property name="waitTime" value="5000" /> <!--  5 second polling interval -->
+  </bean>
+
+  <bean id="basePoller" class="edu.umn.msi.tropix.common.jobqueue.client.impl.PollingJobHandlerImpl">
+    <property name="jobPollingExecutor" ref="executorService" />
+    <property name="loopingRunnableSupplier">
+      <bean class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl">
+        <property name="loopingRunnableConfig" ref="clientPollingLoopingConfig" />
+      </bean>
+    </property>
+    <property name="jobTrackerSupplier">
+      <bean class="edu.umn.msi.tropix.common.jobqueue.client.impl.JobTrackerSupplierImpl">
+        <property name="jobUpdateListener" ref="jobPoller" />
+      </bean>
+    </property>
+    <property name="jobPollingRunnableSupplier">
+      <bean class="edu.umn.msi.tropix.common.jobqueue.client.impl.JobPollingRunnableSupplierImpl" />
+    </property>
+    <property name="statusServiceFactory" ref="statusServiceFactory" />
+  </bean>
+
+  <bean id="cdsAllowedPartiesIterable" class="edu.umn.msi.tropix.common.collect.spring.JmxStringIterable" scope="singleton">
+    <property name="contents" value="${cds.allowed.parties}" />
+  </bean>
+  
+  <bean id="delegatedCredentialFactory" class="edu.umn.msi.tropix.grid.credentials.impl.DelegatedCredentialFactoryGridImpl">
+    <property name="cdsUrl" value="${cds.service.url}" />
+    <property name="allowedPartiesIterable" ref="cdsAllowedPartiesIterable" />
+    <property name="issuedCredentialLifetime" value="${delegated.credential.lifetime}" />
+    <property name="delegationLifetime" value="${delegation.lifetime}" />
+  </bean>
+
+  
+  <!-- Import executorService for launching new threads -->
+  <import resource="classpath:edu/umn/msi/tropix/common/concurrent/impl/executorContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/client/persistent/databaseContext.xml" />
+
+
+</beans>

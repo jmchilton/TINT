@@ -1,0 +1,31 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-http-transfer" />
+  
+  <configurations>
+    <conf name="client" description="Client" visibility="public" />
+    <conf name="server" description="Server" extends="client" visibility="public" />
+    <conf name="embedded" description="Embedded Server using Jetty" visibility="public" extends="server" />
+    <conf name="test" description="Tests" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test,embedded,client,server" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-http-transfer-client" type="jar" conf="client" ext="jar" />
+    <artifact name="tropix-http-transfer-server" type="jar" conf="server" ext="jar" />
+    <artifact name="tropix-http-transfer-embedded" type="jar" conf="embedded" ext="jar" />
+    <artifact name="tropix-http-transfer-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+
+    <dependency rev="4.0" org="apache" name="http-client" conf="client->default" />
+    <dependency rev="3.0" org="apache" name="jarkarta-commons-httpclient" conf="client->default" />
+    <dependency org="org.codehaus" name="jetty" rev="6.1.19" conf="embedded->embedded" />
+  </dependencies>  
+
+</ivy-module> 
+ 

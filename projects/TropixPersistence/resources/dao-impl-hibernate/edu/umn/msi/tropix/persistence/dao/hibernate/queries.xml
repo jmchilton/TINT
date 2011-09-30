@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models">
+  <query name="canModifyProvider"><![CDATA[
+    select count(u)
+    from Provider p
+         left join p.users u
+         left join p.groups g
+         left join g.users gu
+    where 
+        p.catalogId = :providerCatalogId
+      and    
+        (u.cagridId = :userId or gu.cagridId = :userId)
+  ]]></query>
+  <query name="virtualHierarchyCount"><![CDATA[
+    select count(distinct f)
+    from  VirtualFolder f, TropixObject o, VirtualPermission vp 
+    where
+        o.id = :objectId
+      and
+        o member of f.contents
+      and
+        f member of vp.objects
+      and 
+        f.deletedTime is null
+      and 
+        vp.rootVirtualFolder.id = :rootId
+  ]]></query>
+  <query name="objectsInVirtualHierarchy"><![CDATA[
+    select count(distinct o)
+    from VirtualPermission vp
+         left join vp.rootVirtualFolder vf
+         left join vp.objects o
+         left join o.permissions p
+         left join p.users u
+    where
+         u.cagridId = :userId
+       and
+         vf.id = :rootId
+       and 
+         p.role = 'owner'
+  ]]></query>
+  <query name="getSharedFolders"><![CDATA[
+    select distinct f
+    from VirtualFolder f, VirtualPermission vp, User u 
+    where
+        u.cagridId = :userId
+      and
+      	f.root is true
+      and 
+        f member of vp.objects
+      and
+        (
+          (u member of vp.users)
+          or
+          (select count (g) from Group g where u member of g.users and g member of vp.groups) > 0
+        ) 
+  ]]></query>
+  <query name="loadVirtualPermission"><![CDATA[
+    select p 
+    from VirtualPermission p
+         join p.objects o
+    where o.id = :objectId and p.role = :role
+  ]]></query>
+  <query name="loadVirtualPermissions"><![CDATA[
+  select p 
+  from VirtualPermission p
+       join p.objects o
+  where o.id = :objectId
+  ]]></query>
+  <query name="loadRecent"><![CDATA[
+    select o
+    from DirectPermission r
+           inner join r.objects o
+           inner join r.users u
+    where 
+        u.cagridId = :userId
+      and
+        r.role = 'owner'
+      and
+        o.deletedTime is null
+      and
+        o.committed is true
+      and
+          (:allowFolder is true or (o.class is not Folder and o.class is not VirtualFolder))
+      and 
+         (:requireParent is false or (o.parentFolder is not null))       
+    order by o.creationTime desc
+  ]]></query>  
+  <query name="quickSearch"><![CDATA[
+    select distinct o
+    from Permission r
+           join r.objects o
+           left join r.users u
+           left join r.groups g
+           left join g.users gu
+    where 
+        (u.cagridId = :userId or gu.cagridId = :userId)
+      and
+        (
+          (o.description like :query)
+          or
+          (o.name like :query)
+        )
+      and
+        o.deletedTime is null
+      and
+        o.committed is true
+  ]]></query>
+  <query name="baseSearch"><![CDATA[
+    select distinct o2
+    from Permission r
+           join r.objects o
+           left join r.users u
+           left join r.groups g
+           left join g.users gu,
+         TropixObject o2
+    where 
+        (u.cagridId = :userId or gu.cagridId = :userId)
+      and
+        o.deletedTime is null
+      and
+        o.committed is true
+      and
+         o.id = o2.id        
+  ]]></query>
+  <query name="canRead"><![CDATA[
+    select count(*) 
+    from Permission r
+           join r.objects o
+           left join r.users u
+           left join r.groups g
+           left join g.users gu
+    where 
+        o.id = :objectId
+      and 
+        (u.cagridId = :userId or gu.cagridId = :userId)
+  ]]></query>
+  <query name="canEdit"><![CDATA[
+    select count(*)
+    from Permission r
+           join r.objects o
+           left join r.users u
+           left join r.groups g
+           left join g.users gu
+    where 
+        o.id = :objectId
+      and
+        r.role != 'read'
+      and 
+        (u.cagridId = :userId or gu.cagridId = :userId)
+  ]]></query>
+  <query name="getUserDirectRole"><![CDATA[    
+  select p 
+  from DirectPermission p
+       join p.users u
+       join p.objects o
+  where 
+    u.cagridId = :cagridId 
+    and o.id = :objectId
+  ]]></query>  
+  <query name="getGroupDirectRole"><![CDATA[
+  select p 
+  from DirectPermission p
+       join p.groups g
+       join p.objects o
+   where
+     g.id = :groupId 
+     and o.id = :objectId 
+  ]]></query>  
+  <query name="getDirectRoles"><![CDATA[
+  select role 
+  from DirectPermission role
+       join role.objects o
+  where
+    o.id = :objectId
+  ]]></query>  
+  <query name="getRoles"><![CDATA[
+  select role 
+  from Permission role
+       join role.objects o
+  where
+    o.id = :objectId
+  ]]></query>  
+  <query name="getOwner"><![CDATA[  
+  select u
+  from DirectPermission role
+         inner join role.users u
+         inner join role.objects o
+  where 
+      o.id = :objectId 
+    and 
+      role.role='owner' 
+  ]]></query>  
+  <query name="getOwnerId"><![CDATA[
+  select u.cagridId 
+  from DirectPermission role
+         inner join role.users u
+         inner join role.objects o
+  where 
+      o.id = :objectId 
+    and 
+      role.role='owner' 
+  ]]></query>
+  <query name="ownsSharedFolderWithName"><![CDATA[  
+  select count(f) 
+  from VirtualFolder f, 
+       Permission role
+         inner join role.users u
+         inner join role.objects o 
+  where o.id = f.id and u.cagridId = :userId and f.name = :name and role.role = 'owner'
+  ]]></query>
+
+  <query name="getActiveRequests"><![CDATA[  
+  select r
+  from Request r
+         join r.provider p
+         left join p.users u
+         left join p.groups g
+         left join g.users gu 
+  where 
+      (u.cagridId = :userGridId or gu.cagridId = :userGridId) 
+    and 
+      r.state = 'ACTIVE' 
+  ]]></query>
+  <query name="getInternalRequests"><![CDATA[
+  select r
+  from InternalRequest r,
+       DirectPermission role 
+         join role.objects o
+         join role.users u
+       where 
+           u.cagridId = :userGridId
+         and  
+           o.id = r.id
+          and
+          role.role='owner'
+  ]]></query>  
+  <query name="getRunsFromScaffoldAnalysis"><![CDATA[
+  select r
+  from ProteomicsRun r
+        join r.identificationAnalyses i
+        join i.scaffoldAnalyses s
+    where 
+      s.id = :scaffoldId
+  ]]></query>
+  <query name="findTopLevelItems"><![CDATA[
+    select distinct f
+    from VirtualFolder f, 
+         VirtualPermission vp
+           join vp.objects o
+           left join vp.users u
+           left join vp.groups g
+           left join g.users gu 
+    where
+        (u.cagridId = :userId or gu.cagridId = :userId)
+      and
+        f.root is true
+      and 
+        f.id = o.id
+      and 
+        f.deletedTime is null
+  ]]>
+  </query>
+  <query name="findTopLevelItemsWithOwner"><![CDATA[
+    select distinct f
+    from VirtualFolder f, VirtualPermission vp, User u, User owner 
+    where
+        u.cagridId = :userId
+      and
+        f.root is true
+      and 
+        f member of vp.objects
+      and 
+        f.deletedTime is null
+      and
+        (
+          (u member of vp.users)
+          or
+          (select count (g) from Group g where u member of g.users and g member of vp.groups) > 0
+        )     
+      and 
+        owner.cagridId = :ownerId
+      and
+        (
+          (owner member of vp.users)
+          or
+          (select count (g) from Group g where owner member of g.users and g member of vp.groups) > 0
+        )           
+  ]]></query> 
+</hibernate-mapping>

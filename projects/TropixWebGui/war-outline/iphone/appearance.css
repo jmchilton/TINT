@@ -1,0 +1,69 @@
+* {
+  font-family: Helvetica sans-serif;
+  font-weight: bold;
+  font-size: 17pt;
+}
+
+.SliderPanel {
+  background: white;
+}
+
+.PanelLabel {
+  border-bottom: 1px solid rgb(217, 217, 217);
+}
+
+.FeedSelectPanel b {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+}
+
+.backButton {
+    border-width: 0 8px 0 14px;
+    -webkit-border-image: url('iPhoneBackButton.png') 0 8 0 14;
+}
+
+.goButton {
+    border-width: 0 5px;
+    -webkit-border-image: url('iPhoneButton.png') 0 5 0 5;
+}
+
+.button {
+  cursor: pointer;
+  font-size: 10pt;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+.busy {
+  background: url('spinner.gif') no-repeat right !important;
+}
+
+.externalLink {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.hasCommand {
+  background: url('iPhoneArrow.png') no-repeat right;
+  cursor: pointer;
+}
+
+.header {
+  color: white;
+  vertical-align: middle;
+  background: url('iPhoneToolbar.png') #6d84a2 repeat-x;
+}
+
+.logo {
+  background: url('%logo%') no-repeat top left;
+}
+
+.snippit {
+  font-weight: normal;
+}
+
+body {
+  background: url('background.png') silver repeat;
+}
+

@@ -1,0 +1,27 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-storage-core" />
+  
+  <configurations>
+    <conf name="stubs" visibility="public" />
+    <conf name="api"  visibility="public" />
+    <conf name="impl" description="Default" extends="api,stubs" visibility="public" />
+    <conf name="test" description="Tests" extends="impl" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-storage-core-stubs" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-storage-core-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-storage-core-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-storage-core-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl->service-impl-dao" />
+    <dependency org="msi.umn.edu" name="tropix-grid" rev="${ivy.project.version}" />
+  </dependencies>  
+
+</ivy-module>

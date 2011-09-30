@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/persistence/RequestId"
+            xmlns="http://msi.umn.edu/tropix/persistence/RequestId"
+            elementFormDefault="qualified">
+            
+  <xsd:element name="RequestId">
+    <xsd:complexType>
+      <xsd:sequence />
+      <xsd:attribute name="requestExternalId" type="xsd:string" />
+      <xsd:attribute name="requestHostId" type="xsd:string" /> 
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

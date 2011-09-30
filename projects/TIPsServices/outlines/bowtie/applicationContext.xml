@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:interfaces="http://msi.umn.edu/cagrid/introduce/interfaces/spring/1.1"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://msi.umn.edu/cagrid/introduce/interfaces/spring/1.1 http://www.msi.umn.edu/tropix/cagrid/spring/schema/1.1/spring.xsd">
+
+  <!-- Define beans and caGrid mappings here -->
+  <interfaces:implements-for-service service="BowtieJobContext" implementer="bowtieService">
+    <interfaces:interface name="edu.umn.msi.tropix.genomics.service.BowtieJobQueueContext" />
+  </interfaces:implements-for-service>
+
+  <interfaces:implements-for-service service="Bowtie" implementer="statusService">
+    <interfaces:interface name="edu.umn.msi.tropix.common.jobqueue.service.StatusService" />
+  </interfaces:implements-for-service>
+
+  <bean id="queueStatusBean" class="edu.umn.msi.tropix.common.jobqueue.QueueStatusBeanImpl" scope="singleton">
+    <interfaces:metadata service="Bowtie" type="QueueStatus" set-method="set" get-method="get" />
+  </bean>
+
+  <import resource="classpath:edu/umn/msi/tropix/genomics/service/bowtieContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/cagrid/context.xml" />  
+
+</beans>

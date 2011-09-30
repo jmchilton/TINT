@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="idpickerConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="idpicker" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="idpicker" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="idpicker.staging.type" value="system" />
+        <entry key="idpicker.execution.type" value="system" />
+        <entry key="idpicker.home" value="" />         
+      </map>
+    </property>
+  </bean>  
+
+  <bean id="idPickerScriptDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
+    <property name="properties">
+      <map>
+        <entry key="idpicker.script.path" value="${idpicker.script.path}" />
+      </map>
+    </property>
+    <property name="deployer">
+      <bean class="edu.umn.msi.tropix.proteomics.idpicker.impl.IdPickerScriptDeployerImpl">
+        <property name="deploymentDirectory" value="file:${tropix.idpicker.config.dir}" />
+        <property name="idPickerHome" value="${idpicker.home}" />
+      </bean>    
+    </property>
+  </bean>  
+  
+  <bean id="idPickerJobFactory" class="edu.umn.msi.tropix.proteomics.idpicker.impl.IdPickerJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="applicationPath">
+      <bean factory-bean="idPickerScriptDeployerProperties" factory-method="get" />
+    </property>
+    <property name="credentialedStagingDirectoryFactory" ref="${idpicker.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${idpicker.execution.type}" />            
+  </bean>  
+  
+  
+  <bean id="idPickerService" class="edu.umn.msi.tropix.proteomics.service.impl.IdPickerJobQueueContextImpl" parent="queueServiceParent">
+  </bean>
+
+</beans>

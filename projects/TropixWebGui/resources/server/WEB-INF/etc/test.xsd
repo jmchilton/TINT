@@ -1,0 +1,6 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/omssa_mod"
+      xmlns="http://msi.umn.edu/tropix/webgui/omssa_mod"
+      elementFormDefault="qualified">
+  <xsd:element name="test" type="xsd:string" />    
+</xsd:schema>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:IdentificationMetadata xmlns:ns1="http://msi.umn.edu/tropix/proteomics/cagrid/metadata">
+  <ns1:applicationName>MyriMatch</ns1:applicationName>
+  <ns1:parameterType>MyriMatch</ns1:parameterType>
+</ns1:IdentificationMetadata>
+

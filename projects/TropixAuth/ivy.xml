@@ -1,0 +1,34 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-auth" />
+  
+  <configurations>
+    <conf name="api" visibility="public" />
+    <conf name="impl" extends="api" visibility="public" /> 
+    <conf name="test" description="Tests" extends="impl" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-auth-stubs" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-auth-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-auth-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-auth-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-grid" rev="${project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-persistence" rev="${project.version}" />
+
+    <dependency org="org.springframework.security" name="spring-security-web" rev="3.0.3.RELEASE" conf="api->master" />
+    <dependency org="org.springframework.security" name="spring-security-core" rev="3.0.3.RELEASE" conf="api->master" />
+    <dependency org="org.springframework.security" name="spring-security-config" rev="3.0.3.RELEASE" conf="api->master" />
+
+    <dependency rev="1.2" org="caGrid" name="dorian" conf="impl->client" />
+    <dependency rev="1.2" org="caGrid" name="opensaml" conf="impl->default" />
+    <dependency rev="1.2" org="caGrid" name="core" conf="impl->default" />
+  </dependencies>
+
+</ivy-module>

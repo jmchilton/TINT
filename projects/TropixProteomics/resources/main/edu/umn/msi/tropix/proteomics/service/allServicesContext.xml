@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config />
+
+  <!-- Import all base contexts for ProTIP services. -->
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseITraqQuantitationContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseOmssaContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseProteomicsConvertContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseRawExtractContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseScaffoldContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseSequestContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseXTandemContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseMyriMatchContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseIdPickerContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseTagReconContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseInspectContext.xml" />
+  
+</beans>

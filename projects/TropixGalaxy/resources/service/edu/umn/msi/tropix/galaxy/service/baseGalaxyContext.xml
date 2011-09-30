@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="galaxyConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="galaxy" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="galaxy" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="galaxy.staging.type" value="system" />
+        <entry key="galaxy.execution.type" value="system" />
+      </map>
+    </property>
+  </bean>  
+
+  <bean id="toolEvaluator" class="edu.umn.msi.tropix.galaxy.service.ToolEvaluatorImpl" />
+  
+  <bean id="galaxyJobProcessorFactory" class="edu.umn.msi.tropix.galaxy.service.GalaxyJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <constructor-arg>
+      <bean class="edu.umn.msi.tropix.galaxy.service.GalaxyConverterImpl" />
+    </constructor-arg>
+    <constructor-arg ref="toolEvaluator" />
+    <property name="credentialedStagingDirectoryFactory" ref="${galaxy.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${galaxy.execution.type}" />        
+  </bean>  
+  
+  <bean id="galaxyService" class="edu.umn.msi.tropix.galaxy.service.GalaxyJobQueueContextImpl" parent="queueServiceParent">
+    <property name="galaxyJobBuilder" ref="galaxyJobProcessorFactory" />
+  </bean>
+          
+</beans>

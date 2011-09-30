@@ -1,0 +1,119 @@
+Contents of this directory
+
+build.xml - This is the main build file for this software.
+
+antfiles/ - This directory contains files related to the build process
+of this project.
+
+licenses/ - This directory contains licenses of software that is distributed
+with the Tropix source. Licenses for software pulled in via ivy are not in this 
+directory.
+
+projects/ - This directory contains the various projects required to
+build various facets of this software.
+
+eclipse/ - Holds various eclipse settings that can be loaded to apply Tropix
+specific settings to eclipse, such as Tropix coding guidelines.
+
+skeleton/ - Contains a skeleton project structure that should be copied when
+creating a new Tropix subproject.
+
+tools/ - External tools used in the build and deploy process of Tropix.
+  finddugs-***/ - This is a tool for static error checking of Java projects.
+    It is used by the 'findbugs' ant task available in various subprojects of 
+    Tropix.
+  checkstyle-all-***.jar - This jar file contains the checkstyle ant task which
+    is used to verify Tropix style guidelines are being followed.
+  tomcat.zip - Contains a clean distribution of the Apache Tomcat servlet container. This
+    is used in the TIPServices subproject to build war files.
+  ws-core.zip - Contains a clean distribution of Globus core with the appropriate caGrid patches.
+    This is used in the TIPServices subproject to build war files.
+
+Building "Tropix" - 
+
+Building Tropix requires that a valid Java 5+ JDK and Ant 1.7+ be installed and properly configured.
+
+A Java 5+ JDK can be obtained from the following URL: http://java.sun.com/javase/downloads/index.jsp.
+
+Ant 1.7 can be obtained from the following URL: http://ant.apache.org/bindownload.cgi. Ant 1.6.X contains
+memory leaks that will almost certainly prevent Tropix from compiling and should not be used to compile 
+Tropix.
+
+At least two environment variables should be set before building Tropix. 
+
+GLOBUS_LOCATION - This should point to a Globus core distribution as distributed by 
+caGrid, that is ws-core-4.0.3-enum. The distribution is distributed with the tropix source
+and can be found in the tools directory.
+
+--- OPTIONAL -----
+
+Certain build tasks such recreating or resyncing caGrid services (not usually necessary) also
+require caGrid to be installed along with the Spring and Jobs extensions. After this is setup the environment
+variable CAGRID_LOCATION should be configured to point at your caGrid installation.
+
+For information on installing caGrid 1.2, please see http://cagrid.org/display/downloads/caGrid+1.2+Installation+Quickstart.
+Once caGrid 1.2 is installed you can obtain the Spring extension from the caGrid incubator project.
+The incubator project must be checked out of svn from the url https://gforge.nci.nih.gov/svnroot/grid-incubation/trunk/grid-incubation.
+Once you have obtained the project it should be built by running the ant task 'all' from the projects main directory.
+The Spring extension can then be installed by executing the ant task 'installIntroduceExtensions' from the projects/interfaces
+directory. The Jobs extensions can be installed by first building this Tropix distribution 
+and then running the installIntroduceExtensions ant task from the TropixJobQueue project.
+
+------------------
+
+Before building any war deployments, the whole project should be
+compiled. This can done by running the publish ant task from the
+directory containing this file.
+
+The war file for the Tropix web gui can then be created by executing
+the war task from the project `projects/TropixWebGui`. This file will 
+be placed at `projects/TropixWebGui/build/tropix.war`.
+
+The war file for each analytic service can be created by executing the
+appropriate ant task in the project `projects/TIPsServices`. These war
+files will be placed in the directory
+`projects/TIPsServices/build/wars`.  The available ant tasks are
+build-war-X where X can be any of the following:
+sequest,xtandem,omssa,scaffold,rawextract,itraqquantitation,bowtie.
+
+Eclipse -
+
+For Tropix to appear without errors in eclipse all dependencies need
+to be resolved and generated code needs to be created. Executing the
+publish task from the directory containing this file should accomplish
+this task. 
+
+
+For Developers -
+
+Testing - 
+  Testing should performed with TestNG. Test which break into the following
+categories should specified as belonging to a group with the stated name.
+
+-- Unit Tests --
+
+Simple Unit Tests (group - unit):
+  These are simple tests which aim to test at most one class. These tests should
+not have dependencies external to the project.
+  
+Linux Unit Tests (group - linux):
+  These are unit tests which may only be performed on linux machines, because they
+target external OS resources.
+  
+-- Integration Tests Not Requiring External Resources --  
+  
+Spring Integration Tests (group - spring) :  
+  
+Persistence Integration Tests (group - persistence) :  
+  
+-- Integration Tests Required External Resources --
+  
+Integration (group - integration) :  
+  These tests must be performed against specific grid resources or Tropix configuration
+files. For tests only target grid resources (Proxies, CDS, GridFTP), these resources 
+should be loaded from ~/.tropix/test, and which resources are required to be placed in 
+that directory should be documented.
+
+Deployment (group - deployment) :
+  These tests verify the operation of installed components, such as grid services that
+have been stood up. 

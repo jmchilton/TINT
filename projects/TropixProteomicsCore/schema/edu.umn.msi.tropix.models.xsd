@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" targetNamespace="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models" elementFormDefault="qualified">
+  <xs:element name="Sample" type="Sample" />
+  <xs:complexType name="Sample">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence>
+          <xs:element name="childSamples" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="Sample" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ProteomicsRun" type="ProteomicsRun" />
+  <xs:complexType name="ProteomicsRun">
+    <xs:complexContent>
+      <xs:extension base="Run">
+        <xs:sequence>
+          <xs:element name="identificationAnalyses" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="IdentificationAnalysis" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="mzxml" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixFile" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="tissueSample" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TissueSample" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Analysis" type="Analysis" />
+  <xs:complexType name="Analysis">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="IdentificationAnalysis" type="IdentificationAnalysis" />
+  <xs:complexType name="IdentificationAnalysis">
+    <xs:complexContent>
+      <xs:extension base="Analysis">
+        <xs:sequence>
+          <xs:element name="run" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ProteomicsRun" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="parameters" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="IdentificationParameters" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="output" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixFile" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="identificationProgram" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ScaffoldAnalysis" type="ScaffoldAnalysis" />
+  <xs:complexType name="ScaffoldAnalysis">
+    <xs:complexContent>
+      <xs:extension base="Analysis">
+        <xs:sequence>
+          <xs:element name="identificationAnalyses" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="IdentificationAnalysis" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="outputs" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixFile" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="input" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixFile" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="User" type="User" />
+  <xs:complexType name="User">
+    <xs:sequence>
+      <xs:element name="homeFolder" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Folder" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="roles" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="TropixRole" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="parameters" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Parameters" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" />
+    <xs:attribute name="firstName" type="xs:string" />
+    <xs:attribute name="lastName" type="xs:string" />
+    <xs:attribute name="cagridId" type="xs:string" />
+  </xs:complexType>
+  <xs:element name="Run" type="Run" />
+  <xs:complexType name="Run">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Parameters" type="Parameters" />
+  <xs:complexType name="Parameters">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence>
+          <xs:element name="user" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="User" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="IdentificationParameters" type="IdentificationParameters" />
+  <xs:complexType name="IdentificationParameters">
+    <xs:complexContent>
+      <xs:extension base="Parameters">
+        <xs:sequence>
+          <xs:element name="database" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="Database" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" />
+        <xs:attribute name="parametersId" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Database" type="Database" />
+  <xs:complexType name="Database">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence>
+          <xs:element name="databaseFile" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixFile" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ThermofinniganRun" type="ThermofinniganRun" />
+  <xs:complexType name="ThermofinniganRun">
+    <xs:complexContent>
+      <xs:extension base="ProteomicsRun">
+        <xs:sequence>
+          <xs:element name="rawFile" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixFile" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TropixRole" type="TropixRole" />
+  <xs:complexType name="TropixRole">
+    <xs:sequence>
+      <xs:element name="object" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="TropixObject" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="user" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="User" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="role" type="xs:string" />
+    <xs:attribute name="id" type="xs:string" />
+  </xs:complexType>
+  <xs:element name="TropixObject" type="TropixObject" />
+  <xs:complexType name="TropixObject">
+    <xs:sequence>
+      <xs:element name="parentFolder" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Folder" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="roles" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="TropixRole" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="description" type="xs:string" />
+    <xs:attribute name="creationTime" type="xs:string" />
+    <xs:attribute name="id" type="xs:string" />
+  </xs:complexType>
+  <xs:element name="Folder" type="Folder" />
+  <xs:complexType name="Folder">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence>
+          <xs:element name="contents" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="TropixObject" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TropixFile" type="TropixFile" />
+  <xs:complexType name="TropixFile">
+    <xs:complexContent>
+      <xs:extension base="TropixObject">
+        <xs:sequence />
+        <xs:attribute name="storageServiceUrl" type="xs:string" />
+        <xs:attribute name="type" type="xs:string" />
+        <xs:attribute name="fileId" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TissueSample" type="TissueSample" />
+  <xs:complexType name="TissueSample">
+    <xs:complexContent>
+      <xs:extension base="Sample">
+        <xs:sequence>
+          <xs:element name="proteomicsRuns" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ProteomicsRun" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="species" type="xs:string" />
+        <xs:attribute name="tissueType" type="xs:string" />
+        <xs:attribute name="collectionTime" type="xs:string" />
+        <xs:attribute name="condition" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

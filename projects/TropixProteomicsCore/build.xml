@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="TropixProteomics" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" >
+  <description>
+  </description>
+
+  <property environment="env" />
+  <property file="project.properties" />
+  <property file="build.properties" />
+  
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="gen.xjc.dir" value="${build.dir}/gen-src" />
+  <property name="gen.globus.src.dir" value="${build.dir}/gen-src-axis" />
+
+  <target name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/main" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${build.classes.dir}/main" />
+      <pathelement path="${build.classes.dir}/stubs" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}/" />
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/main" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="define-tasks" depends="define-classpaths">
+    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" classpathref="raw.ivy.path" />
+    <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask" classpathref="raw.ivy.path" />
+  </target> 
+
+  <target name="test" depends="compile-java,define-tasks">
+    <runtestng file="${test.dir}/testng.xml" />
+  </target>
+
+  <target name="test-coverage" depends="define-tasks,compile-java">
+    <runemma filter="+edu.umn.msi.tropix.proteomics*, -edu.umn.msi.tropix.proteomics.tools*" />
+  </target>  
+
+  <target name="checkstyle">
+    <runcheckstyle />
+  </target>
+
+  <target name="gen" depends="prepare,gen-globus,gen-xjb" />
+
+  <target name="gen-globus" depends="define-tasks,define-globus-types-task">
+    <echo message="Globus location is ${ext.globus.dir}" />
+    <generate-globus-types globusdir="${ext.globus.dir}" targetdir="${gen.globus.src.dir}" workdir="${build.dir}/axis-tmp">
+      <mappings>
+	<schema path="${schema.dir}/scaffold_metadata.xsd" package="edu.umn.msi.tropix.proteomics.scaffold.metadata" namespace="http://msi.umn.edu/tropix/proteomics/scaffold/metadata" />
+        <schema path="${schema.dir}/proteomicsConvert.xsd" package="edu.umn.msi.tropix.proteomics.convert.input" namespace="http://msi.umn.edu/tropix/proteomics/convert/input" />
+        <schema path="${schema.dir}/OMSSA.xsd" package="gov.nih.nlm.ncbi.omssa" namespace="http://www.ncbi.nlm.nih.gov" />
+        <schema path="${schema.dir}/scaffold.xsd" package="edu.umn.msi.tropix.proteomics.scaffold.input.cagrid" namespace="http://msi.umn.edu/proteomics/scaffold/input" />
+        <schema path="${schema.dir}/bioml.xsd" package="edu.umn.msi.tropix.proteomics.bioml.cagrid" namespace="http://msi.umn.edu/proteomics/bioml" />
+        <schema path="${schema.dir}/mzXML_3.0_for_introduce.xsd" package="net.sourceforge.sashimi.mzxml.v3_0.cagrid" namespace="http://sashimi.sourceforge.net/schema_revision/mzXML_3.0" />
+        <schema path="${schema.dir}/edu.umn.msi.tropix.models.sequest.xsd" package="edu.umn.msi.tropix.models.sequest.cagrid" namespace="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.sequest" />
+        <schema path="${schema.dir}/edu.umn.msi.tropix.models.xtandem.xsd" package="edu.umn.msi.tropix.models.xtandem.cagrid" namespace="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.xtandem" />
+        <schema path="${schema.dir}/proteinIdentificationMetadata.xsd" package="edu.umn.msi.tropix.proteomics.cagrid.metadata" namespace="http://msi.umn.edu/tropix/proteomics/cagrid/metadata" />
+        <schema path="${schema.dir}/bowtieInput.xsd" package="edu.umn.msi.tropix.genomics.bowtie.input" namespace="http://msi.umn.edu/tropix/genomics/bowtie/input" />
+        <schema path="${schema.dir}/quantification_weight.xsd" package="edu.umn.msi.tropix.proteomics.itraqquantitation.weight" 
+                namespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/weight" />
+        <schema path="${schema.dir}/quantification_options.xsd" package="edu.umn.msi.tropix.proteomics.itraqquantitation.options" namespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/options" />
+        <schema path="${schema.dir}/idpicker_parameters.xsd" package="edu.umn.msi.tropix.proteomics.idpicker.parameters" 
+                namespace="http://msi.umn.edu/tropix/proteomics/idpicker/parameters" />
+        <schema path="${schema.dir}/bumbershoot_parameters.xsd" package="edu.umn.msi.tropix.proteomics.bumbershoot.parameters"
+                namespace="http://msi.umn.edu/tropix/proteomics/bumbershoot/parameters" />      	      	
+        <schema path="${schema.dir}/quantification_training_options.xsd" package="edu.umn.msi.tropix.proteomics.itraqquantitation.training" namespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/training" />
+        <schema path="${schema.dir}/inspect_parameters.xsd" package="edu.umn.msi.tropix.proteomics.inspect.parameters" namespace="http://msi.umn.edu/tropix/proteomics/inspect/parameters" />
+        <schema path="${schema.dir}/tpp_parameters.xsd" package="edu.umn.msi.tropix.proteomics.tpp.parameters" namespace="http://msi.umn.edu/tropix/proteomics/tpp/parameters" />
+      </mappings>
+    </generate-globus-types>
+    <cleanGeneratedSource dir="${gen.globus.src.dir}" />
+    <copy toDir="${build.src.dir}/stubs">
+      <fileset dir="${gen.globus.src.dir}" />
+    </copy>
+  </target>
+        
+
+  <target name="gen-xjb" depends="prepare,define-tasks">
+    <xjc schema="schema/enzyme.xsd" package="edu.umn.msi.tropix.proteomics.enzyme" destdir="${gen.xjc.dir}"  binding="schema/enzyme.xjb">
+      <produces dir="${gen.xjc.dir}/edu/umn/msi/tropix/proteomics/enzyme" includes="**/*.java" />
+    </xjc>
+	<xjc schema="schema/pepXML_v114.xsd" package="edu.umn.msi.tropix.proteomics.pepxml" destdir="${gen.xjc.dir}" binding="schema/pepxml.xjb">
+	  <produces dir="${gen.xjc.dir}/edu/umn/msi/tropix/proteomics/pepxml" includes="**/*.java" /> 
+	</xjc>
+    <xjc schema="schema/bioml.xsd" package="edu.umn.msi.tropix.proteomics.bioml" destdir="${gen.xjc.dir}" >
+      <produces dir="${gen.xjc.dir}/edu/umn/msi/tropix/proteomics/bioml" includes="**/*.java" />
+    </xjc>
+    <xjc schema="schema/proteomicsParametersSpecification.xsd" package="edu.umn.msi.tropix.proteomics.parameters.specification" destdir="${gen.xjc.dir}">
+      <produces dir="${gen.xjc.dir}/edu/umn/msi/tropix/proteomics/parameters/specification" includes="**/*.java" />
+    </xjc>
+    <xjc schema="schema/mzXML_3.0_for_jaxb.xsd" package="net.sourceforge.sashimi.mzxml.v3_0" destdir="${gen.xjc.dir}" binding="schema/mzxml.xjb"> 
+      <produces dir="${gen.xjc.dir}/net/sourceforge/sashimi/mzxml/v3_0" includes="**/*.java" />
+    </xjc>
+    <xjc schema="schema/unimod_2.xsd" package="org.unimod" destdir="${gen.xjc.dir}" >
+      <produces dir="${gen.xjc.dir}/org/unimod" includes="**/*.java" />
+    </xjc>
+    <xjc schema="schema/scaffold.xsd" package="edu.umn.msi.tropix.proteomics.scaffold.input" destdir="${gen.xjc.dir}">
+      <produces dir="${gen.xjc.dir}/edu/umn/msi/tropix/proteomics/scaffold/input" includes="**/*.java" />
+    </xjc>
+    <xjc schema="schema/quantification.xsd" package="edu.umn.msi.tropix.proteomics.itraqquantitation.results" destdir="${gen.xjc.dir}">
+      <produces dir="${gen.xjc.dir}/edu/umn/msi/tropix/proteomics/itraqquantitation/results" includes="**/*.java" />
+    </xjc>
+    <cleanGeneratedSource dir="${gen.xjc.dir}" />
+    <copy toDir="${build.src.dir}/stubs">
+      <fileset dir="${gen.xjc.dir}" />
+    </copy>
+  </target>
+
+  <target name="javadoc" depends="prepare, gen" >
+    <dojavadoc confs="main,stubs" />
+  </target>
+  
+  <target name="prepare">
+    <preparedirs />
+    <mkdir dir="${gen.xjc.dir}" />
+    <mkdir dir="${gen.globus.src.dir}" />
+  </target>
+ 	
+  <target name="clean">
+    <cleandirs />
+  </target>
+
+  <target name="compile-java" depends="prepare,gen">
+    <compileconfs />
+  </target>
+
+  <target name="jar" description="Builds a jar file" depends="compile-java">
+    <jarconfs />
+  </target>
+  
+  <target name="findbugs" depends="jar">
+    <runfindbugs confs="main,test" />
+  </target>
+  
+  <target name="compile-scripts" depends="jar,compile-scripts_" />
+  
+  <target name="compile-scripts_">
+    <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.LtqIQuantGui" script="LTQ-iQuant" />
+    <copy tofile="${build.scripts.dir}/README.txt">
+      <fileset file="${basedir}/ltqiquant-README.txt" />
+    </copy> 
+  </target>
+
+  <target name="dist-scripts" depends="compile-scripts">
+    <zip-scripts prefix="LTQ-iQuant" />
+  </target>
+
+  <target name="init" depends="gen" />
+
+  <target name="all" depends="jar" />
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

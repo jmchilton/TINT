@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Unit Test Suite" verbose="2" >
+  <test name="Unit">
+    <groups>
+      <run><include name="unit" /></run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.galaxy.*" />
+    </packages>
+ </test>
+</suite>
+

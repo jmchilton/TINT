@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="requestactionConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="requestaction" />
+  </bean>
+  
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="requestaction" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.H2DefaultsPropertyPlaceholderConfigurer">
+    <constructor-arg value="requestaction" />
+  </bean> 
+  
+  <bean id="requestActionEntityManagerFactory" class="edu.umn.msi.tropix.common.spring.HibernateEntityManagerFactory">
+    <property name="showSql" value="${requestaction.db.showsql}" />
+    <property name="dialect" value="${requestaction.db.dialect}" />
+    <property name="persistenceUnitName" value="requestaction" />
+    <property name="dataSource" ref="requestActionDataSource" />
+    <property name="autoDdl" value="${requestaction.db.hbm2ddl}" />
+  </bean>
+
+  <bean id="requestActionDataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="${requestaction.db.driver}" />  
+    <property name="url" value="${requestaction.db.url}" />
+    <property name="username" value="${requestaction.db.username}" />
+    <property name="password" value="${requestaction.db.password}" />
+  </bean>
+
+  <bean id="requestActionTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="requestActionEntityManagerFactory" />
+    <property name="dataSource" ref="requestActionDataSource" />
+    <property name="jpaDialect">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+    </property>
+  </bean> 
+
+  <aop:config>
+    <aop:pointcut id="requestActionServiceOperation" expression="execution(* edu.umn.msi.tropix.client.request.actions.impl.PersistentActionServiceImpl.*(..))" />
+    <aop:advisor advice-ref="requestActionServiceTransactionAdvice" pointcut-ref="requestActionServiceOperation" />
+  </aop:config>
+
+  <tx:advice id="requestActionServiceTransactionAdvice" transaction-manager="requestActionTransactionManager">
+    <tx:attributes>
+      <tx:method name="*" />
+    </tx:attributes>
+  </tx:advice>
+
+  <bean id="persistentActionService" class="edu.umn.msi.tropix.client.request.actions.impl.PersistentActionServiceImpl" scope="singleton">
+    
+  </bean> 
+</beans>

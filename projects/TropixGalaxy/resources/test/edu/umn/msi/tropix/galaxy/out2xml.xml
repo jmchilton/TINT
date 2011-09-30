@@ -1,0 +1,88 @@
+<tool id="out2xml" name="Out2XML" version="0.1.0">
+  <!-- TODO: wrapper implements xml and xmlext to merge in data from mzML/mzXML file, merge
+       this with metadata or additional parameter.-->
+  <description></description>
+
+  <command interpreter="python">
+    Out2XML_wrapper.py 
+    --input=${input} 
+    --output=${output} 
+    -- 
+    ${hits_to_report} 
+    -E${enzyme}
+    #if $precursor_weight != 'default' 
+    -$precursor_weight
+    #end if
+    #if $maldi.value 
+    -maldi
+    #end if
+    #if $all.value
+    -all
+    #end if
+    #if $pI.value
+    -pI
+    #end if
+  </command>
+
+  <inputs>
+    <param format="seq.zip" name="input" type="data" label="Zipped Sequest Output"/>
+    <param name="hits_to_report" type="select" label="Number of Top Hits to Report">
+      <option value="1" selected="true">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </param>
+    <param name="enzyme" type="select" label="Enzyme">
+      <option value="trypsin" selected="true">trypsin</option>
+      <option value="ralphtrypsin">ralphtrypsin</option>
+      <option value="stricttrypsin">stricttrypsin</option>
+      <option value="argc">argc</option>
+      <option value="aspn">aspn</option>
+      <option value="chymotrypsin">chymotrypsin</option>
+      <option value="cnbr">cnbr</option>
+      <option value="elastase">elastase</option>
+      <option value="formicacid">formicacid</option>
+      <option value="gluc">gluc</option>
+      <option value="gluc_bicarb">gluc_bicarb</option>
+      <option value="iodosobenzoate">iodosobenzoate</option>
+      <option value="lysc">lysc</option>
+      <option value="lysc-p">lysc-p</option>
+      <option value="lysn">lysn</option>
+      <option value="lysn_promisc">lysn_promisc</option>
+      <option value="nonspecific">nonspecific</option>
+      <option value="pepsina">pepsina</option>
+      <option value="protein_endopeptidase">protein_endopeptidase</option>
+      <option value="staph_protease">staph_protease</option>
+      <option value="tca">tca</option>
+      <option value="trypsin/cnbr">trypsin/cnbr</option>
+      <option value="trypsin_gluc">trypsin_gluc</option>
+      <option value="trypsin_k">trypsin_k</option>
+      <option value="trypsin_r">trypsin_r</option>
+    </param>
+    <param name="precursor_weight" type="select" label="Use Precursor Weight">
+      <option value="default" selected="true">As specified via sequest parameters</option>
+      <option value="m">Use monoisotopic precursor weight</option>
+      <option value="a">Use average precursor weight</option>
+    </param>
+    <param name="maldi" type="boolean" label="Maldi Mode" />
+    <param name="all" type="boolean" label="Output All Peptides" />
+    <param name="pI" type="boolean" label="Report Peptide pI's" />    
+  </inputs>
+
+  <outputs>
+    <data format="pep.xml" name="output" />
+  </outputs>
+
+  <requirements>
+    <requirement type="binary">Out2XML</requirement>    
+  </requirements>
+
+  <help>
+  </help>
+</tool>

@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/common/jobqueue/status"
+      xmlns="http://msi.umn.edu/tropix/common/jobqueue/status"
+      elementFormDefault="qualified">
+
+  <xsd:element name="status" type="Status" />    
+  <xsd:complexType name="Status">
+    <xsd:sequence>
+      <xsd:element ref="stage" minOccurs="1" maxOccurs="1" />
+      <xsd:element ref="queuePosition" />
+      <xsd:element name="statusEntry" type="StatusEntry" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="StatusEntry" abstract="true" />
+
+  <xsd:element name="estimatedPendingTime" type="EstimatedPendingTime" />
+  <xsd:complexType name="EstimatedPendingTime">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="xsd:long" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="estimatedExecutionTime" type="EstimatedExecutionTime" />
+  <xsd:complexType name="EstimatedExecutionTime">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="xsd:long" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+    
+  <xsd:element name="percentComplete" type="PercentComplete" />
+  <xsd:complexType name="PercentComplete">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="xsd:double" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="queuePosition" type="QueuePosition" />
+  <xsd:complexType name="QueuePosition">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="xsd:int" />
+        <xsd:attribute name="queueSize" type="xsd:int" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="stage" type="Stage" />
+  <xsd:complexType name="Stage">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="StageEnumeration" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>  
+
+  <xsd:element name="wasCancelled" />
+  <xsd:complexType name="WasCancelled">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="xsd:boolean" minOccurs="1" maxOccurs="1" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="failureDescription" />
+  <xsd:complexType name="FailureDescription">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:attribute name="value" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        <xsd:attribute name="stackTrace" type="xsd:string" minOccurs="0" maxOccurs="1" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="extendedStatusEntry" />
+  <xsd:complexType name="ExtendedStatusEntry">
+    <xsd:complexContent>
+      <xsd:extension base="StatusEntry">
+        <xsd:sequence>
+          <xsd:element name="keyValuePair" type="KeyValuePair" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="KeyValuePair">
+    <xsd:sequence />
+    <xsd:attribute name="key" type="xsd:string" optional="false" />
+    <xsd:attribute name="value" type="xsd:string" optional="false" />
+  </xsd:complexType>
+
+  <xsd:simpleType name="StageEnumeration">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Preprocessing" />
+      <xsd:enumeration value="Pending" />
+      <xsd:enumeration value="Running" />
+      <xsd:enumeration value="Postprocessing" />
+      <xsd:enumeration value="Postprocessed" />
+      <xsd:enumeration value="Transferring" />
+      <xsd:enumeration value="Complete" />
+      <xsd:enumeration value="Failed" />
+      <xsd:enumeration value="Absent" />
+      <!-- The following two are not used, but may be some day -->
+      <xsd:enumeration value="Timedout" />
+      <xsd:enumeration value="Cancelled" />
+    </xsd:restriction>
+  </xsd:simpleType>  
+</xsd:schema>
+

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!-- Import queue stuff -->
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/impl/queueContext.xml" />
+
+   <bean parent="propertiesParent">
+    <property name="locations"><list><value>file:${tropix.simple.config}/deploy.properties</value><value>file:${user.home}/.tropix/simple/deploy.properties</value></list></property>
+  </bean>
+
+  <bean id="executionTimeModel" class="edu.umn.msi.tropix.common.prediction.impl.AverageModelImpl" />
+  
+  <bean id="simpleStagingDirectorySupplier" class="edu.umn.msi.tropix.common.io.impl.StagingDirectorySupplierImpl">
+    <property name="deleteStagedFiles" value="${simple.job.clean}" />
+    <property name="tempDirectoryPath" value="${simple.tmp.dir}" />
+  </bean> 
+  
+  <bean id="simpleJobProcessorFactory" class="edu.umn.msi.tropix.common.jobqueue.jobprocessors.simple.impl.SimpleJobProcessorFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="stagingDirectoryFactory" ref="simpleStagingDirectorySupplier" />
+  </bean>  
+  
+  <alias name="simpleService" alias="jobProcessorCompletionListener" />
+  <alias name="simpleJobProcessorFactory" alias="jobProcessorFactory" />
+
+  <bean id="simpleService" class="edu.umn.msi.tropix.common.jobqueue.jobprocessors.simple.impl.SimpleJobQueueContextImpl" parent="queueServiceParent">
+    <property name="simpleJobProcessorFactory" ref="simpleJobProcessorFactory" />
+  </bean>
+          
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    targetNamespace="http://msi.umn.edu/tropix/contentTree"
+	    xmlns="http://msi.umn.edu/tropix/contentTree"
+	    elementFormDefault="qualified">
+
+  <xsd:element name="root">
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="node" minOccurs="0" maxOccurs="unbounded" type="Node" />
+      </xsd:sequence>
+      <xsd:attribute name="class" type="xsd:string" use="required" />
+      <xsd:attribute name="id" type="RootId" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:complexType name="Node">
+    <xsd:sequence>
+      <xsd:element name="node" minOccurs="0" maxOccurs="unbounded" type="Node" />
+      <xsd:element name="nodeRef" minOccurs="0" maxOccurs="unbounded" type="NodeRef" />
+    </xsd:sequence>
+    <!-- Property name of root class to fetch these children. -->
+    <xsd:attribute name="property" type="xsd:string" use="required" />
+    <!-- Will use bean conventions, if getMethod not supplied. -->
+    <xsd:attribute name="propertyGetMethod" type="xsd:string" use="optional" />
+    <xsd:attribute name="class" type="xsd:string" use="required" />
+    <!-- ids must be unique -->
+    <xsd:attribute name="id" type="xsd:string" use="required" />
+    <xsd:attribute name="selectable" type="xsd:boolean" />
+    <xsd:attribute name="leaf" type="xsd:boolean" />
+  </xsd:complexType>
+
+  <!-- NodeRef can handle recursion just fine, no need for seperate logic like originally believed. -->
+  <xsd:complexType name="NodeRef">
+    <xsd:attribute name="refId" type="xsd:string" />
+  </xsd:complexType>
+
+
+  <xsd:simpleType name="RootId">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="root" />
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>
+

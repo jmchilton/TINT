@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<!--
+ input.12149.12150.1.out
+ TurboSEQUEST - PVM Slave v.27 (rev. 12), (c) 1998-2005
+ Molecular Biotechnology, Univ. of Washington, J.Eng/S.Morgan/J.Yates
+ Licensed to Thermo Electron Corp.
+ 09/18/2007, 12:08 PM, 1.9 sec. on sequest3
+ (M+H)+ mass = 447.60800 ~ 2.0000 (+1), fragment tol = 1.0000 , MONO/MONO
+ total inten = 1354.6, lowest Sp = 2.0, # matched peptides = 32473
+ # amino acids = 52347481, # proteins = 120214, /usr/database/HUMAN.fasta
+ ion series nABY ABCDVWXYZ: 0 1 1 0.0 1.0 0.0 0.0 0.0 0.0 0.0 1.0 0.0
+ display top 10/5, ion % = 0.0, CODE = 001010
+ Enzyme:Trypsin(KR) (2)
+
+  #   Rank/Sp      Id#     (M+H)+    deltCn   XCorr    Sp    Ions   Reference                                                                            Peptide
+                                     -DASHES ON THIS LINE-
+  1.   1 /  8          0  446.24317  0.0000  0.4824    11.9   2/ 6  IPI:IPI00007834.1|SWISS-PROT:Q01484-1|TREMBL:Q7Z307|ENSEMBL:ENSP00000354873     +23  K.CPVK.T
+  2.   2 / 33          0  446.24317  0.1083  0.4302     4.0   2/ 6  IPI:IPI00019848.1|SWISS-PROT:P51610-1|ENSEMBL:ENSP00000309555;ENSP00000359005|R +18  K.APMK.K
+  3.   3 /  5          0  449.24283  0.1118  0.4285    13.2   3/ 6  #REVIPI:IPI00015946.1|SWISS-PROT:Q13892|ENSEMBL:ENSP00000336233|REFSEQ:XP_94451      R.SLVM.-
+  4.   4 / 20          0  447.19080  0.1118  0.4285     8.0   3/ 6  #REVIPI:IPI00386810.1|TREMBL:Q96IM5                                                  R.APEM.-
+  5.   5 / 14          0  447.19866  0.1542  0.4081     9.6   3/ 6  IPI:IPI00442067.1|TREMBL:Q6ZN20                                                      R.GHSF.-
+  6.   6 / 32          0  446.24317  0.1543  0.4080     4.2   1/ 6  IPI:IPI00176696.1|ENSEMBL:ENSP00000348000|REFSEQ:XP_376787                      +30  R.CVPK.G
+  7.   7 /  2          0  446.23577  0.1769  0.3971    21.3   3/ 6  IPI:IPI00456052.2|SWISS-PROT:Q9C030-2|ENSEMBL:ENSP00000369440|REFSEQ:NP_0010038 +5   R.RPSS.-
+  8.   8 /  8          0  446.21801  0.2032  0.3844    11.9   2/ 6  IPI:IPI00012136.1|SWISS-PROT:O00555-1                                           +24  K.CPAR.V
+  9.   9 / 37          0  448.25882  0.2158  0.3783     3.7   2/ 6  #REVIPI:IPI00220473.2|SWISS-PROT:P98194-2|ENSEMBL:ENSP00000329664|REFSEQ:NP_001 +4   R.AVKM.-
+ 10.   9 / 37          0  448.22243  0.2158  0.3783     3.7   2/ 6  #REVIPI:IPI00514869.3|TREMBL:Q5TEF3|ENSEMBL:ENSP00000355875|VEGA:OTTHUMP0000001      R.AVQM.-
+
+ 32.  27 /  1          0  448.25142  0.4206  0.2796    22.0   3/ 6  IPI:IPI00443613.1|TREMBL:Q6ZR68                                                      K.SVRS.-
+
+  1.          0  IPI:IPI00007834.1|SWISS-PROT:Q01484-1|TREMBL:Q7Z307|ENSEMBL:ENSP00000354873 Ta
+  2.          0  IPI:IPI00019848.1|SWISS-PROT:P51610-1|ENSEMBL:ENSP00000309555;ENSP00000359005|
+  3.          0  #REVIPI:IPI00015946.1|SWISS-PROT:Q13892|ENSEMBL:ENSP00000336233|REFSEQ:XP_9445
+  4.          0  #REVIPI:IPI00386810.1|TREMBL:Q96IM5 Tax_Id=9606 RAB7B protein
+  5.          0  IPI:IPI00442067.1|TREMBL:Q6ZN20 Tax_Id=9606 CDNA FLJ16514 fis, clone MESAN2014
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    targetNamespace="http://msi.umn.edu/sequest"
+	    xmlns="http://msi.umn.edu/sequest"
+	    elementFormDefault="qualified">
+
+  <xsd:complexType name="SequestResult">
+    <xsd:sequence>
+      <xsd:element name="resultNum" type="xsd:int" />
+      <xsd:element name="finalRank" type="xsd:int" />
+      <xsd:element name="initialRank" type="xsd:int" />
+      <xsd:element name="id" type="xsd:int" />
+      <xsd:element name="mh" type="xsd:float" />
+      <xsd:element name="deltCn" type="xsd:float" />
+      <xsd:element name="xCorr" type="xsd:float" />
+      <xsd:element name="sp" type="xsd:float" />
+      <xsd:element name="ionNum" type="xsd:int" />
+      <xsd:element name="ionDen" type="xsd:int" />
+      <xsd:element name="reference" type="xsd:string" />
+      <xsd:element name="additional" type="xsd:string" minOccurs="0" />
+      <xsd:element name="peptide" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SequestResultSet">
+    <xsd:sequence>
+      <xsd:element name="results" minOccurs="0" maxOccurs="unbounded" type="SequestResult" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="SequestHeader">
+    <xsd:sequence>
+      <xsd:element name="fileName" type="xsd:string" />
+      <xsd:element name="sequestProcInfo" type="xsd:string" />
+      <xsd:element name="date" type="xsd:string" />
+      <xsd:element name="time" type="xsd:string" />
+      <xsd:element name="runtime" type="xsd:string" />
+      <xsd:element name="hostname" type="xsd:string" />
+      <xsd:element name="massInfo" type="xsd:string" />
+      <xsd:element name="totalInten" type="xsd:float" />
+      <xsd:element name="lowerSp" type="xsd:float" />
+      <xsd:element name="numMatchedPeptides" type="xsd:int" />
+      <xsd:element name="numAminoAcids" type="xsd:int" />
+      <xsd:element name="numProteins" type="xsd:int" />
+      <xsd:element name="fastaFile" type="xsd:string" />
+      <xsd:element name="ionSeries" type="xsd:string" />
+      <xsd:element name="topNum" type="xsd:int" />
+      <xsd:element name="topDen" type="xsd:int" />
+      <xsd:element name="ionPercent" type="xsd:float" />
+      <xsd:element name="code" type="xsd:string" />
+      <xsd:element name="enzyme" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SequestOutput">
+      <xsd:sequence>
+		<xsd:element name="header" type="SequestHeader" />
+		<xsd:element name="resultSet" type="SequestResultSet" /> 
+      </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="sequestOutput" type="SequestOutput" />
+</xsd:schema>
+

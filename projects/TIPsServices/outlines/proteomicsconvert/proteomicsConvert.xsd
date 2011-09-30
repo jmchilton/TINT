@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/convert/input"
+            xmlns="http://msi.umn.edu/tropix/proteomics/convert/input"
+            elementFormDefault="qualified">
+  
+  <xsd:simpleType name="Format">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DTA" /> <!-- Zipped set of Sequest DTA Files -->
+      <xsd:enumeration value="MGF" /> <!-- Mascot Generic Format -->
+      <xsd:enumeration value="MzXML" /> <!-- MzXML Format -->
+      <xsd:enumeration value="MzML" /> <!-- MzML Format -->
+      <xsd:enumeration value="ThermoFinniganRaw" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="ConvertParameters">
+    <xsd:complexType>
+      <xsd:attribute name="inputName" type="xsd:string" />
+      <xsd:attribute name="inputFormat" type="Format" />
+      <xsd:attribute name="outputFormat" type="Format" />
+      <xsd:sequence>
+        <xsd:element name="parameter" type="Parameter" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="Parameter">
+    <xsd:attribute name="name" />
+    <xsd:attribute name="value" />
+  </xsd:complexType>
+
+</xsd:schema>

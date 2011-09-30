@@ -1,0 +1,15 @@
+http\://msi.umn.edu/tropix/storage/cagrid/TropixStorage=edu.umn.msi.tropix.storage.cagrid.stubs
+http\://msi.umn.edu/tropix/storage/cagrid/TropixStorage/bindings=edu.umn.msi.tropix.storage.cagrid.stubs.bindings
+http\://msi.umn.edu/tropix/storage/cagrid/TropixStorage/service=edu.umn.msi.tropix.storage.cagrid.stubs.service
+http\://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl=org.oasis.wsrf.properties
+http\://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl=org.oasis.wsrf.properties
+http\://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl=org.oasis.wsrf.properties
+http\://security.introduce.cagrid.nci.nih.gov/ServiceSecurity=gov.nih.nci.cagrid.introduce.security.stubs
+
+gme\://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata=gov.nih.nci.cagrid.metadata
+http\://transfer.cagrid.org/Transfer=org.cagrid.transfer.descriptor
+http\://transfer.cagrid.org/TransferService/Context/types=org.cagrid.transfer.context.stubs.types
+http\://msi.umn.edu/tropix/storage/cagrid/TropixStorage/types=edu.umn.msi.tropix.storage.cagrid.stubs.types
+gme\://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.security=gov.nih.nci.cagrid.metadata.security
+gme\://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.service=gov.nih.nci.cagrid.metadata.service
+gme\://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.common=gov.nih.nci.cagrid.metadata.common

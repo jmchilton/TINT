@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/persistence/PermissionReport"
+            xmlns="http://msi.umn.edu/tropix/persistence/PermissionReport"
+            elementFormDefault="qualified">
+            
+  <xsd:element name="PermissionReport">
+    <xsd:complexType>
+      <xsd:sequence />
+      <xsd:attribute name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+      <xsd:attribute name="id" type="xsd:string" minOccurs="1" maxOccurs="1" />
+      <xsd:attribute name="permissionSource" type="PermissionSourceType" minOccurs="1" maxOccurs="1" />
+      <xsd:attribute name="permission" type="PermissionType" minOccurs="0" maxOccurs="1" />
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:simpleType name="PermissionSourceType">
+  	<xsd:restriction base="xsd:string">
+  	  <xsd:enumeration value="User" />
+  	  <xsd:enumeration value="Group" />
+  	  <xsd:enumeration value="SharedFolder" />
+  	</xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PermissionType">
+     <xsd:restriction base="xsd:string">
+       <xsd:enumeration value="Read" />
+       <xsd:enumeration value="Write" />
+       <xsd:enumeration value="Owner" />
+     </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

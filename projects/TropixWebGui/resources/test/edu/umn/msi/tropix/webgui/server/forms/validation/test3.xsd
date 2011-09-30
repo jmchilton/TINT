@@ -1,0 +1,11 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/forms/validation/schema/test3"
+      xmlns="http://msi.umn.edu/tropix/forms/validation/schema/test3"
+      elementFormDefault="qualified">
+  <xsd:simpleType name="coolInt">
+    <xsd:restriction base="xsd:int" />  
+  </xsd:simpleType>
+  
+  <xsd:element name="theName" type="coolInt" />
+  
+</xsd:schema>

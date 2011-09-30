@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <property file="build.properties"/>
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="build.war.dir" value="${build.dir}/war" />
+  <property name="build.webinf.dir" value="${build.war.dir}/WEB-INF" />
+  <property name="build.lib.dir" value="${build.webinf.dir}/lib" />
+
+  <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+      <pathelement path="${build.classes.dir}/impl" />
+      <pathelement path="${resources.dir}/impl" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}" /> 
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="prepare" description="Sets up various build directories used by other task" depends="define-classpaths">
+    <preparedirs />
+  </target> 
+
+  <target name="clean" description="Cleans up build directories created by prepare"> 
+    <cleandirs />
+  </target>
+  
+  <target name="compile-java" description="Compiles Java source files" depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="compile" description="Compiles all code artifacts" depends="compile-java" />
+  
+  <target name="jar" description="Builds jar files" depends="compile">
+    <jarconfs />
+  </target> 
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="impl" />
+  </target>
+  
+  <target name="test" description="Runs test cases" depends="compile">
+    <runtestng />
+  </target>
+
+  <target name="test-coverage" description="Runs test cases and produces coverage report" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.*" />
+  </target>
+
+  <target name="findbugs" description="Runs findbugs on java artifacts" depends="jar">
+    <runfindbugs />
+  </target>
+
+  <target name="checkstyle" description="Runs checkstyle on java source files" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+
+  <target name="run" depends="jar">
+    <java classname="edu.umn.msi.tropix.ssh.EntryPoint"
+	  classpathref="test.classpath">
+      <jvmarg value="-Dcom.sun.management.jmxremote" />
+      <jvmarg value="-Dcom.sun.management.jmxremote.port=13590" />
+      <jvmarg value="-Dcom.sun.management.jmxremote.ssl=false" />
+      <jvmarg value="-Dcom.sun.management.jmxremote.authenticate=false" /> 
+    </java>
+  </target>
+
+  <target name="compile-scripts" depends="jar,compile-scripts_" />
+
+  <target name="compile-scripts_">
+    <package-scripts classname="edu.umn.msi.tropix.ssh.EntryPoint" script="tint-ssh" />
+  </target>
+
+  <target name="dist-scripts" depends="compile-scripts">
+    <zip-scripts prefix="tint-ssh" />
+  </target>
+
+  <target name="prepare-war" depends="jar">
+    <copy todir="${build.lib.dir}" flatten="true" >
+      <fileset refid="ivy.fileset" />
+      <fileset dir="${jars.dir}" includes="**/*.jar" />
+      <fileset dir="${ext.globus.dir}/lib" includes="**/*.jar" />
+    </copy>
+
+    <copy todir="${build.webinf.dir}" flatten="false">
+      <fileset dir="${resources.dir}/impl/WEB-INF" />
+    </copy>
+  </target>
+
+  <target name="start-server" depends="prepare-war">
+    <start-jetty port="8181" />
+    <sleep hours="1" />
+  </target>
+  
+  <target name="package-war" depends="prepare-war">
+    <war destfile="${wars.dir}/tint-ssh.war" basedir="${build.war.dir}">
+      <lib dir="${build.lib.dir}" />
+    </war>
+  </target>
+
+  <target name="all" depends="jar" />
+  
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc, dist-scripts" />
+
+</project>

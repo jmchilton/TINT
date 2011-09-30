@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations"><list><value>file:${user.home}/.tropix/test/xtandem.properties</value></list></property>
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
+
+
+<!-- 
+  <bean id="xTandemService" factory-bean="xTandemJobClientFactory" factory-method="createJobContext">
+    <constructor-arg><null /></constructor-arg>
+    <constructor-arg value="${xtandem.service.url}" />
+    <constructor-arg value="edu.umn.msi.tropix.proteomics.service.XTandemJobQueueContext" />
+  </bean>
+
+  <bean name="xTandemJobClientFactory" factory-bean="jobClientFactoryManager" factory-method="getFactory" >
+    <constructor-arg value="XTandem" />
+  </bean>
+
+   -->
+  <!-- 
+  <bean id="statusService" factory-bean="xTandemJobClientFactory" factory-method="getServiceClient">
+    <constructor-arg><null /></constructor-arg>
+    <constructor-arg value="${xtandem.service.url}" />
+    <constructor-arg value="edu.umn.msi.tropix.common.jobqueue.service.StatusService" />
+  </bean>
+  -->
+  
+</beans>  

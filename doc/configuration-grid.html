@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>TINT Deployment Guide</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.1" /><link rel="stylesheet" href="style.css" type="text/css"  /></head><body><div class="article" title="TINT Deployment Guide"><div class="titlepage"><div><div><h2 class="title"><a id="id3395133"></a>TINT Deployment Guide</h2></div><div><div class="author"><h3 class="author"><span class="firstname">John</span> <span class="surname">Chilton</span></h3></div></div><div><p class="pubdate">December 16, 2009</p></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="#id3395266">Prerequisites</a></span></dt><dt><span class="sect1"><a href="#id3395306">Configuration Conventions</a></span></dt><dt><span class="sect1"><a href="#id3395414">Web GUI</a></span></dt><dd><dl><dt><span class="sect2"><a href="#id3395390">Installation</a></span></dt><dt><span class="sect2"><a href="#id3395771">Configuration</a></span></dt></dl></dd><dt><span class="sect1"><a href="#id3396308">Proteomics Analytics (ProTIP)</a></span></dt><dd><dl><dt><span class="sect2"><a href="#id3395887">Installation</a></span></dt><dt><span class="sect2"><a href="#id3395338">Configuration</a></span></dt><dt><span class="sect2"><a href="#id3396729">Shared Configuration</a></span></dt><dt><span class="sect2"><a href="#id3395660">Sequest Configuration</a></span></dt><dt><span class="sect2"><a href="#id3396431">X! Tandem Configuration</a></span></dt><dt><span class="sect2"><a href="#id3397247">OMSSA Configuration</a></span></dt><dt><span class="sect2"><a href="#id3395556">Scaffold Configuration</a></span></dt><dt><span class="sect2"><a href="#id3398176">RawExtract Configuration</a></span></dt><dt><span class="sect2"><a href="#id3398190">ITraq Quantification Configuration</a></span></dt></dl></dd><dt><span class="sect1"><a href="#id3397803">Storage Service</a></span></dt><dd><dl><dt><span class="sect2"><a href="#id3396226">Installation</a></span></dt><dt><span class="sect2"><a href="#id3397848">Configuration</a></span></dt></dl></dd><dt><span class="sect1"><a href="#id3397650">A Final Note</a></span></dt></dl></div><div class="sect1" title="Prerequisites"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id3395266"></a>Prerequisites</h2></div></div></div><p>
+      Every configuration of TINT requires at least two pieces of software 
+      to be installed - a Java 5+ runtime and Apache Tomcat. An up-to-date Java 
+      runtime can be obtained <a class="ulink" href="http://java.sun.com/javase/downloads/index.jsp" target="_top">here</a>.
+      The latest 5.5 branch of Apache Tomcat can be obtained 
+      <a class="ulink" href="http://tomcat.apache.org/download-55.cgi" target="_top">here</a>.
+    </p><p>
+      TINT requires more memory than Tomcat allows by default. 
+      Tomcat should be setup to increase the maximum amount of
+      usable memory to at least 2 GB (or more if available). This can be done by
+      setting the environment variable <code class="literal">CATALINA_OPTS</code> 
+      before starting Tomcat. For instance, to specify 2 GB of memory should 
+      be allowed <code class="literal">CATALINA_OPTS</code> should be set to 
+      <code class="literal">-Xmx2G</code>.
+    </p><p>
+      TINT is tested with Tomcat 5.5, but Tomcat 6 should also 
+      work<span> for
+      the Web GUI and web services (unless Globus secure transport is used.)</span>
+    </p><p>
+      Depending on which components are being deployed
+      additional prerequisites may be necessary. These 
+      will be covered as needed in this document.
+    </p></div><div class="sect1" title="Configuration Conventions"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id3395306"></a>Configuration Conventions</h2></div></div></div><p>
+      All of the files used to configure TINT are located in subdirectories
+      of the directory <code class="literal">.tropix</code> beneath the home directory of the user
+      running Tomcat. If Tomcat is running as the user <code class="literal">mary</code>, then this
+      directory will likely be <code class="literal">C:\Users\mary\.tropix</code> on Windows systems and
+      <code class="literal">/home/mary/.tropix</code> on Linux systems. If this directory is not manually 
+      created before TINT is started, then it will be created on start up.
+    </p><p>
+      The configuration directories for the various components of TINT will be referred to with titles of the form 
+      <code class="literal">tropix.<span class="emphasis"><em>name</em></span>.config.dir</code> which corresponds to
+      the directory <code class="literal">name</code> beneath the <code class="literal">.tropix</code> directory previously described. For instance, the 
+      directory that configures the Web GUI is referred to in this guide as <code class="literal">tropix.client.config.dir</code>. 
+      In the previous example this directory would be <code class="literal">C:\Users\mary\.tropix\client</code> 
+      on Windows systems and <code class="literal">/home/mary/.tropix/client</code> on Linux systems.
+    </p><p>
+      The various components of TINT discussed in this manual have different properties
+      associated with them. These properties are generally read from a file named <code class="literal">deploy.properties</code>
+      in the configuration directory corresponding to that component. For instance <code class="literal">login.timeout</code>
+      is a property of the Web GUI component. To set the <code class="literal">login.timeout</code>
+      property to <code class="literal">1000</code> one would create (or edit) a file named <code class="literal">deploy.properties</code>
+      in the configuration directory <code class="literal">tropix.client.config.dir</code> and add the line 
+      <code class="literal">login.timeout=1000</code> to this file. These <code class="literal">deploy.properties</code> files are
+      Java <a class="ulink" href="http://en.wikipedia.org/wiki/.properties" target="_top">properties file</a>. Each line 
+      should be of the form <code class="literal"><span class="emphasis"><em>property</em></span>=<span class="emphasis"><em>value</em></span></code>.
+    </p><p><span class="emphasis"><em>Warning (Especially for Window's users)</em></span>: The backslash (<code class="literal">\</code>) character is an 
+      escape character in Java properties files. When a backslash should literally appear in a property 
+      value it must be escaped with another backslash. For instance, if one
+      wanted to set the <code class="literal">storage.directory</code> property to <code class="literal">C:\foo\storage</code>, 
+      the line to add to <code class="literal">deploy.properties</code> would be 
+      <code class="literal">storage.directory=C:\\foo\\storage</code>.
+    </p></div><div class="sect1" title="Web GUI"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id3395414"></a>Web GUI</h2></div></div></div><div class="sect2" title="Installation"><div class="titlepage"><div><div><h3 class="title"><a id="id3395390"></a>Installation</h3></div></div></div><p>
+        From the TINT website download the file <code class="literal">tint.war</code>. While Tomcat is not
+        running, place this file in the <code class="literal">webapps</code> directory of your Tomcat
+        distribution.
+      </p><p>
+        Aside - The default URL for TINT will be <code class="literal">http://<span class="emphasis"><em>host</em></span>:<span class="emphasis"><em>port</em></span>/tint</code> 
+        (for instance <code class="literal">http://localhost:8080/tint</code>). If you wish to simplify this URL to
+        <code class="literal">http://<span class="emphasis"><em>host</em></span>:<span class="emphasis"><em>port</em></span>/</code> delete the directory 
+        named <code class="literal">ROOT</code> from the <code class="literal">webapps</code> directory of the Tomcat distribution and rename 
+        <code class="literal">tint.war</code> to <code class="literal">ROOT.war</code>.
+      </p><p>
+        Warning About Firewalls - In addition to opening up a port in your
+        firewall for the Tomcat container, the port 13139 should also be opened<span> unless 
+        a TINT storage web service is going to be deployed</span>. The default TINT
+        deployment launches an embedded Jetty server that operates on port
+        13139 to handle file transfers.
+      </p><p>
+        Starting Tomcat now will start up TINT in its default state. In this
+        state the TINT administrator may login to the site with the username
+        <code class="literal">admin</code> and password <code class="literal">admin</code> 
+        and create other user accounts using the web interface. Users may
+        upload files, create folders, and create wiki notes. Users may share
+        these files with other users in shared folders and may preform searches.
+      </p><p>
+        If caGrid integration and/or access to proteomics tools is desired
+        additional configuration is required.
+      </p></div><div class="sect2" title="Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3395771"></a>Configuration</h3></div></div></div><div class="sect3" title="Common Configuration Properties"><div class="titlepage"><div><div><h4 class="title"><a id="id3395734"></a>Common Configuration Properties</h4></div></div></div><div class="variablelist"><dl><dt><span class="term"><code class="literal">modules</code></span></dt><dd><p>
+                If set, this property should specify a comma separated list of the TINT modules to be activated. These modules are
+                <code class="literal">SHARING</code>, <code class="literal">PROTIP</code>, <code class="literal">GENETIP</code>, <code class="literal">LOCAL_SEARCH</code>, 
+                <code class="literal">REQUEST</code>, <code class="literal">CATALOG</code>, <code class="literal">GRID_SEARCH</code>. Likely combinations
+                to specify are as follows.
+              </p><p>
+                <code class="literal">modules=SHARING, LOCAL_SEARCH</code> - This is the default setting (i.e the
+                property used if the <code class="literal">modules</code> property is not set in <code class="literal">deploy.properties</code>).
+                Under this configuration, users can upload and share files, but no Protip (proteomics) services are enabled.
+              </p><p>
+                <code class="literal">modules=SHARING, LOCAL_SEARCH, PROTIP</code> - This will enable discovery and utilization
+                of ProTIP services.
+              </p><p>
+                <code class="literal">modules=PROTIP</code> - This will enable discovery and utilization
+                of Protip services, but turn off sharing and searching between users.
+              </p><p>
+                Information on other modules is beyond the scope of this document. If there
+                is interest in the functionality they provide please contact the TINT developers.
+              </p></dd><dt><a id="storage.directory"></a><span class="term"><code class="literal">storage.directory</code></span></dt><dd><p>
+                If set, this property specifies where files uploaded to and created by TINT get placed. This defaults to
+                the files directory beneath <code class="literal">tropix.storage.config.dir</code>.
+              </p><p>
+                This property is ignored if the TINT Web GUI is set to target a TINT Storage Service 
+                instead of managing files locally. For more information see <code class="literal"><a class="link" href="#storage.type">storage.type</a></code>.
+              </p></dd><dt><span class="term"><code class="literal">login.timeout</code></span></dt><dd><p>
+                If set, this specifies the amount of time in seconds a user can remain logged in before an automatic 
+                logout is triggered. This defaults to 43200 (12 hours).
+              </p></dd></dl></div></div><div class="sect3" title="Database Properties"><div class="titlepage"><div><div><h4 class="title"><a id="DatabaseProperties"></a>Database Properties</h4></div></div></div><p>
+          Without any configuration, TINT will create many <a class="ulink" href="http://www.h2database.com/" target="_top">H2</a> databases in the 
+          TINT configuration directory for establishing the metadata store, persistent tracking of jobs (both client and service),
+          etc.... H2 is a database engine that runs inside the Java virtual machine like other products
+          such as HSQLDB or Apache Derby.
+        </p><p>
+          Performance is not critical for most of these databases the Java based default databases 
+          work just fine. The one exception to this is the metadata database (due to its complexity and frequency of use).
+          It is recommend that this be configured to target a <a class="ulink" href="www.mysql.com/" target="_top">MySQL</a> database. 
+          The following six parameters must be set when targetting a database other than the default H2 database. 
+          These properties should be set in the <code class="literal">deploy.properties</code> file of the configuration directory
+          <code class="literal">tropix.metadata.config.dir</code>.
+        </p><p>
+          If the TINT Web GUI is going to be configured to target a Storage Service is going to deployed, 
+          an external database such as MySQL <span class="emphasis"><em>must</em></span> be targetted so that both the Web GUI and the 
+          Storage Service can target the same database. 
+        </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">metadata.db.url</code></span></dt><dd><p>If set, this parameter should specify the <a class="ulink" href="http://java.sun.com/javase/technologies/database/" target="_top">JDBC</a> 
+                URL of the database to target. The structure of a JDBC URL varies based on the database engine being targetted. 
+                For instance, if a MySQL database named <code class="literal">tintmetadata</code> is to be targetted
+                where MySQL is running on port <code class="literal">3306</code> of host <code class="literal">localhost</code> then
+                the JDBC URL would be <code class="literal">jdbc:mysql://localhost:3306/tintmetadata</code>.
+              </p></dd><dt><span class="term"><code class="literal">metadata.db.username</code></span></dt><dd><p>Username used to access the database.
+              </p></dd><dt><span class="term"><code class="literal">metadata.db.password</code></span></dt><dd><p>Password used to access the database.
+              </p></dd><dt><span class="term"><code class="literal">metadata.db.dialect</code></span></dt><dd><p>
+                If set, this specifies the Hibernate dialect corresponding to the database engine being targetted. For MySQL this 
+                should be <code class="literal">org.hibernate.dialect.MySQLInnoDBDialect</code>. 
+                <a class="ulink" href="http://www.redhat.com/docs/manuals/jboss/jboss-eap-4.3/doc/hibernate/Hibernate_Reference_Guide/Optional_configuration_properties-SQL_Dialects.html" target="_top">Here</a> 
+                is a list of dialects for other database engines.
+            </p></dd><dt><span class="term"><code class="literal">metadata.db.hbm2ddl</code></span></dt><dd><p>
+                If set, this is the action performed by Hibernate at start up. Possible values are <code class="literal">validate</code>, 
+                <code class="literal">update</code>, <code class="literal">create</code>, and <code class="literal">create-drop</code>. For the typical MySQL 
+                setup this should just be set to <code class="literal">validate</code>.
+              </p></dd><dt><span class="term"><code class="literal">metadata.db.driver</code></span></dt><dd><p>
+                This is the JDBC driver class Java loads to interact with the database. For MySQL this should
+                be set to <code class="literal">com.mysql.jdbc.Driver</code>. For databases other than MySQL and H2, a jar file
+                containing the driver class specified here should be placed in the <code class="literal">shared/lib</code> directory
+                of Apache Tomcat so the class is available at runtime.
+              </p></dd></dl></div><p>
+          For a concrete example, if the user <code class="literal">mary</code> wanted to configure TINT to target a MySQL database 
+          named <code class="literal">tintmetadata</code> that is stored in a MySQL
+          container running on host <code class="literal">localhost</code> under port <code class="literal">3306</code> and
+          she was going to connect to that host using the username <code class="literal">mary</code> and password
+          <code class="literal">pass123</code> she would create a file under her home directory with the path
+          <code class="literal">.tropix/metadata/deploy.properties</code>. She would then populate this file
+          with the following contents.
+        </p><pre class="screen">metadata.db.url=jdbc:mysql://localhost:3306/tintmetadata
+metadata.db.username=mary
+metadata.db.password=pass123
+metadata.db.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+metadata.db.hbm2ddl=validate
+metadata.db.driver=com.mysql.jdbc.Driver</pre><p>
+          When these database setttings are specified, the targetted database must
+          be configured with the correct database structure. A MySQL script to execute
+          to configure a database to hold TINT metadata can be found here. This
+          script can potentially be modified to apply to other database engines.
+        </p></div><div class="sect3" title="caGrid Authentication"><div class="titlepage"><div><div><h4 class="title"><a id="id3396430"></a>caGrid Authentication</h4></div></div></div><p>
+          To allow TINT users to act as caGrid users TINT must be configured to use caGrid authentication mechanisms.
+          This can be accomplished by creating and editing the file <code class="literal">authenticationSources.xml</code> in
+          <code class="literal">tropix.client.config.dir</code>. The structure of this XML file is straight forward. The following 
+          XML is an example of such a files contents.
+        </p><pre class="screen">&lt;authenticationSources 
+     xmlns="http://msi.umn.edu/tropix/client/authentication/config"&gt;
+  &lt;caGrid title="MSI Ldap"
+          authenticationServiceUrl=
+    "https://auth.msi.umn.edu:8443/wsrf/services/cagrid/AuthenticationService"
+          dorianServiceUrl=
+    "https://dorian.msi.umn.edu:8443/wsrf/services/cagrid/Dorian" /&gt;
+&lt;/authenticationSources&gt;</pre><p>
+          When a user attempts to login to TINT they will be presented with a drop down list of authentication
+          sources, one for each caGrid element that appears between the outer <code class="literal">authenticationSources</code>
+          element in this file. The <code class="literal">title</code> attribute specifies a simple description that the TINT
+          user will see in the drop down box. <code class="literal">authenticationServiceUrl</code> and 
+          <code class="literal">dorianServiceUrl</code> should specify the URLs caGrid Authentication and Dorian services
+          used for authentication and proxy creation. Dorian services are also authentication providers so
+          both URLs may be set to the URL of a Dorian service.
+        </p><p>
+          TINT can operate a dual fashion that allows caGrid authentication sources as well as
+          the default local authentication mechanism. This is generally discouraged because 
+          locally authenticated user will not have a grid credential, hence certain services may not work for
+          him or her. To enable this add <code class="literal">&gt;local /&lt;</code> as another child element of the
+          <code class="literal">authenticationSources</code> element.
+        </p></div><div class="sect3" title="Other caGrid Integration Properties"><div class="titlepage"><div><div><h4 class="title"><a id="id3395653"></a>Other caGrid Integration Properties</h4></div></div></div><p>
+          To set any of these remaining properties add them to the <code class="literal">deploy.properties</code> file
+          of <code class="literal">tropix.client.config.dir</code>.
+        </p><div class="variablelist"><dl><dt><a id="hostname"></a><span class="term"><code class="literal">hostname</code></span></dt><dd>
+                If set, this should specify the hostname or IP address of the host machine.
+                If a storage service is <span class="emphasis"><em>not</em></span> configured an embedded Jetty server is used to 
+                transfer files two and from analytical services. For this to work properly
+                TINT must know the hostname or IP address of the host for the Web GUI.
+                Java has some guess of this IP address and this guess is used by default, but unfortunately
+                on certain machines this address is configured incorrectly - instead evaluating to 
+                an IP address that is only valid internally such as <code class="literal">127.0.0.1</code>.
+                Hence this should be specified unless a Storage Service is configured (<code class="literal">storage.type=cagrid</code>).
+            </dd><dt><span class="term"><code class="literal">index.service.url</code></span></dt><dd><p>
+                To enable use of a caGrid Index Service this parameter should be set to the URL 
+                of that Index Service. A common value might be the caGrid training Index Service, this URL is 
+                <code class="literal"><a class="ulink" href="http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService" target="_top">http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService</a></code>.
+              </p><p><a id="serviceurls"></a>
+                The URL for a different target grid can be found in the 
+                <code class="literal">service_urls.properties</code> file for that grid. This 
+                file may be found in the <code class="literal">repository/caGrid/target_grid/[your chosen grid]</code>
+                directory of your caGrid distribution.
+              </p></dd><dt><span class="term"><code class="literal">unindexed.service.urls</code></span></dt><dd><p>
+                TINT maintains a list of services it adds to the list
+                obtained from the Index service (if specified). These extra 
+                services can be specified as a comma separated list via this parameter.
+              </p></dd><dt><span class="term"><code class="literal">blocked.service.urls</code></span></dt><dd><p>
+                If set, this property should be specified as a comma separated list of
+                URLs. Services appearing in this list will <span class="emphasis"><em>NOT</em></span> be 
+                displayed to the user even if they appear in the specified Index Service.
+              </p></dd><dt><span class="term"><code class="literal">proxy.lifetime</code></span></dt><dd><p>
+                Lifetime in seconds of proxies requested from configured Dorian services. 
+                This defaults to 43200 (12 hours).
+              </p></dd><dt><a id="storage.type"></a><span class="term"><code class="literal">storage.type</code></span></dt><dd><p>
+                Set this property to <code class="literal">cagrid</code> to specify that files should be stored
+                and transferred via a TINT Storage Service. 
+              </p><p>
+                Employing a Storage Service ensures that all data that is transferred to and from 
+                analytical services is done so over a Globus secured https protocol. 
+                This also unfortunately increases the complexity 
+                of a TINT deployment. A storage service URL must be specified and a Credential
+                Delegation Service (CDS) must be configured so that analytical services can be permitted
+                to act as the submitting user when transferring data. The CDS in turn requires that
+                the Web GUI and any analytical service it interacts with be configured with host credentials. 
+                Finally, a list of these host identities for trusted analytical services must be configured.
+                This last requirement severely limits the usefulness of the Index Service because
+                the static nature of this list clashes with the otherwise useful dynamic nature of 
+                the Index service.
+              </p></dd><dt><span class="term"><code class="literal">storage.service.url</code></span></dt><dd><p>
+                This property specifies the URL of the TINT Storage Service that should be used
+                if the property <code class="literal">storage.type</code> is set to <code class="literal">cagrid</code>.
+              </p><p>
+                If the TINT Storage Service is deployed using a WAR file as described in this document
+                into a Tomcat container configured with Globus security on host <code class="literal">foo.edu</code> 
+                using the default port of 8443, this URL would be
+                <code class="literal">https://foo.edu:8443/caGridTransfer/services/cagrid/TropixStorage</code>.
+              </p></dd><dt><span class="term"><code class="literal">host.credential.cert</code>, </span><span class="term"><code class="literal">host.credential.key</code></span></dt><dd><p>
+                Operations such as creating delegated credentials require the Web GUI 
+                to have a host credential. Such host credentials can be configured with
+                this parameter. If set, these two parameters should specify the
+                absolute path to the certificate and key of a host credential. Information on
+                obtaining a host credential can be found
+                <a class="ulink" href="http://cagrid.org/display/cagrid13tutorials/Obtain+Host+Credentials" target="_top">here</a>
+              </p></dd><dt><span class="term"><code class="literal">delegated.credential.lifetime</code></span></dt><dd><p>
+                If set, this should specify the lifetime in seconds of a delegated credential. This defaults to 300 (5 minutes).
+              </p></dd><dt><span class="term"><code class="literal">cds.service.url</code></span></dt><dd><p>
+                If set, this should specify the URL of a trusted 
+                <a class="ulink" href="http://cagrid.org/display/cds13/Home" target="_top">Credential Delegation Service (CDS)</a>.
+                If this is set, TINT will create a delegated credential reference before submitting jobs
+                and fetching results that will allow the target analytical service to act the user. This 
+                is necessary if a TINT Storage Service is being targetted (<code class="literal">storage.type=cagrid</code>).
+                A common value for this property might the URL for the CDS service deployed on the caGrid traning
+                grid - this URL is <code class="literal">https://cds.training.cagrid.org:8443/wsrf/services/cagrid/CredentialDelegationService</code>.
+                The URL for a particular target grid can be found in the <code class="literal">service_urls.properties</code> file
+                for that grid as discussed <a class="link" href="#serviceurls">previously</a>.
+              </p></dd><dt><span class="term"><code class="literal">cds.allowed.parties</code></span></dt><dd><p>
+                This should be set if <code class="literal">cds.service.url</code> is set. This should be a comma separated 
+                list of all of the grid identities that are allowed to receive delegated credentials. For instance 
+                if the Web GUI should create delegated credentials for analytical services that have grid identities of 
+                <code class="literal">/C=US/OU=MSI/CN=host/h1.edu</code> and <code class="literal">/C=US/OU=MSI/CN=host/h2.edu</code>, then
+                this parameter should be set as follows:
+              </p><pre class="screen">cds.allowed.parties=/C=US/OU=MSI/CN=host/h1.edu,/C=US/OU=MSI/CN=host/h2.edu</pre><p>
+                Note: Sometimes grid identities appear with commas between the different parts of the identity (e.g. 
+                <code class="literal">C=US,OU=MSI,CN=host/h1.edu</code> instead of <code class="literal">/C=US/OU=MSI/CN=host/h1.edu</code>). 
+                The form with commas should not be used in this list. Any commas should be replaced with backslashes so 
+                the identity is in the same form as the examples shown above.
+              </p><p>
+                The grid identity for a particular certificate can be found using the Globus tool <code class="literal">grid-cert-info</code>
+                found in <code class="literal">bin</code> of the Globus distribution that is installed as part installing
+                caGrid. To use this program simply execute from the commmand line with parameters <code class="literal">-file /path/to/cert</code>.
+              </p></dd></dl></div></div></div></div><div class="sect1" title="Proteomics Analytics (ProTIP)"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id3396308"></a>Proteomics Analytics (ProTIP)</h2></div></div></div><p>
+      There are currently 6 proteomics tools that may be integrated with TINT.
+    </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">Sequest</code></span></dt><dd><p>
+            <a class="ulink" href="http://fields.scripps.edu/sequest/" target="_top">http://fields.scripps.edu/sequest/</a>
+          </p></dd><dt><span class="term"><code class="literal">X! Tandem</code></span></dt><dd><p>
+            <a class="ulink" href="http://www.beavisinformatics.com/TANDEM/" target="_top">http://www.beavisinformatics.com/TANDEM/</a>
+          </p></dd><dt><span class="term"><code class="literal">OMSSA</code></span></dt><dd><p>
+            <a class="ulink" href="http://pubchem.ncbi.nlm.nih.gov/omssa/" target="_top">http://pubchem.ncbi.nlm.nih.gov/omssa/</a>
+          </p></dd><dt><span class="term"><code class="literal">Scaffold</code></span></dt><dd><p>
+            <a class="ulink" href="http://www.proteomesoftware.com/" target="_top">http://www.proteomesoftware.com/</a>
+          </p></dd><dt><span class="term"><code class="literal">iTraq Quantification</code></span></dt><dd><p>
+            This is a tool developed at the University of Minnesota that performs
+            iTraq quantification on Sequest runs post procecessed through Scaffold.
+          </p></dd><dt><span class="term"><code class="literal">RAW Extraction</code></span></dt><dd><p>
+            This is an abstraction over two different tools for converting 
+            Thermo Finnigan RAW files into MzXML files. Either can be
+            targetted using this component.
+          </p></dd></dl></div><div class="sect2" title="Installation"><div class="titlepage"><div><div><h3 class="title"><a id="id3395887"></a>Installation</h3></div></div></div><p>
+        The various ProTIP services can be installed from WAR files. On the TINT website two
+        WAR files can be found for each service, one suitable for deployment into a stock
+        Tomcat container and one suitable for deployment into a Tomcat container configured
+        with Globus security. The installation process for these services is similar to that 
+        of the TINT Web GUI. Obtain the WAR file corresponding to the TINT service you desire from the
+        TINT website, drop that file in the <code class="literal">webapp</code> directory of your Tomcat container,
+        configure the service, and finally start up Tomcat.
+      </p></div><div class="sect2" title="Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3395338"></a>Configuration</h3></div></div></div><p>
+        Each service type has its own configuration directory. These are of the form
+        <code class="literal">tropix.<span class="emphasis"><em>servicetype</em></span>.config.dir</code>,
+        where <code class="literal"><span class="emphasis"><em>servicetype</em></span></code> can be <code class="literal">sequest</code>, 
+        <code class="literal">xtandem</code>, <code class="literal">omssa</code>, <code class="literal">scaffold</code>, 
+        <code class="literal">rawextract</code>, or <code class="literal">itraqquantitation</code>. Note we use the
+        term quantification in certain places and quantitation in others, sorry 
+        for this confusion, be careful to follow this manual carefully when either term 
+        is referenced.
+      </p><p>
+        The remainder of this section discusses various properties that may
+        (or must) be set via the <code class="literal">deploy.properties</code> file in the respective
+        configuration directory.
+      </p></div><div class="sect2" title="Shared Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3396729"></a>Shared Configuration</h3></div></div></div><p>
+        The properties in this subsection can be set for each service.
+      </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">advertise.container.hostname</code></span></dt><dd>
+            If set, this should specify the hostname or IP address of the host machine.
+            This is used when registering this service with the caGrid Index Service. Setting
+            this property is not necessary if <code class="literal">advertise.perform=false</code>.
+            Java has some guess of this IP address and this guess is used by default, but unfortunately
+            on certain machines this address is configured incorrectly - instead evaluating to 
+            an IP address that is only valid internally such as <code class="literal">127.0.0.1</code>.
+          </dd><dt><span class="term"><code class="literal">advertise.index.service.urls</code></span></dt><dd>
+            If set, this property should specify a comma separated list of the URLs of the caGrid Index Services
+            to register this service with. By default, the caGrid training Index Service is used. This can
+            be overridden with this parameter or disabled with <code class="literal">advertise.perform</code>.
+          </dd><dt><span class="term"><code class="literal">advertise.perform</code></span></dt><dd>
+            Set this property to <code class="literal">false</code> to disable Index Service registration.
+          </dd><dt><span class="term"><code class="literal">advertise.container.port</code></span></dt><dd>
+            If a grid service is being deployed into a Tomcat container configured to run on a port
+            other than <code class="literal">8080</code> for normal Tomcat containers or 8443 for secured
+            containers this property must specify that port. This corrects 
+            the URL that the service registers with the Index Services specified via 
+            <code class="literal">advertise.index.service.urls</code>.
+          </dd><dt><span class="term"><code class="literal">host.credential.cert</code>, </span><span class="term"><code class="literal">host.credential.key</code></span></dt><dd><p>
+              If set, these two parameters must specify the fully qualified path to the certificate
+              and key of the host credential to be used for this service. This host credential is needed
+              resolve delegated credential references with a CDS. Setting these is necessary if clients
+              to this service will be using the Storage Service to transfer data. The host identity of
+              this credential should also be added to the <code class="literal">cds.allowed.parties</code> property
+              of Web GUIs submitting jobs to this service.
+            </p></dd><dt><span class="term"><code class="literal">queue.staging.path</code></span></dt><dd><p>
+              Each job must be staged before execution. This involves creating a directory for the 
+              external program to run in and setting up various input files. This property controls 
+              the directory in which these staged directories will be created. This defaults to whatever
+              the Java system property <code class="literal">java.io.tmpdir</code> resolves to, which will likely
+              be <code class="literal">CATALINA_HOME/temp</code> (i.e. the temp directory of your Tomcat container).
+            </p></dd><dt><span class="term"><code class="literal">queue.staging.clean</code></span></dt><dd><p>
+              This can be set to <code class="literal">true</code> or <code class="literal">false</code> and controls whether 
+              staged files are deleted after they are no longer needed. This defaults to 
+              <code class="literal">false</code>, but it can be set to <code class="literal">true</code> if there are configuration 
+              problems that need to be debugged.
+            </p></dd><dt><span class="term"><code class="literal">service.name</code></span></dt><dd><p>
+              If set, this overrides the name of the service that gets publicized in the service metadata.
+            </p></dd><dt><span class="term"><code class="literal">service.researchcenter.path</code></span></dt><dd><p>
+              Part of the metadata exposed for caGrid services is a description of the
+              research center hosting the service. TINT services leave this metadata empty
+              by default but this behavior can be overridden with this parameter. 
+              To set this metadata copy the following XML fragment into a file,
+              fill in the empty XML attributes, and set the 
+              <code class="literal">service.researchcenter.path</code> property to the fully qualified
+              path of this newly created XML file.
+            </p><pre class="screen">&lt;ResearchCenter displayName="" shortName="" 
+    xmlns="gme://caGrid.caBIG/1.0/gov.nih.nci.cagrid.metadata.common"&gt;
+  &lt;Address country="" locality="" postalCode="" 
+           stateProvince="" street1="" street2=""/&gt;
+  &lt;pointOfContactCollection&gt;
+    &lt;PointOfContact affiliation="" email="" firstName="" 
+                    lastName="" phoneNumber="" role=""/&gt;
+  &lt;/pointOfContactCollection&gt;
+&lt;/ResearchCenter&gt;</pre></dd></dl></div></div><div class="sect2" title="Sequest Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3395660"></a>Sequest Configuration</h3></div></div></div><div class="variablelist"><dl><dt><span class="term"><code class="literal">sequest.path</code></span></dt><dd><p>
+              This must be set. It should be set to the fully qualified path of a Sequest executable.
+            </p></dd><dt><span class="term"><code class="literal">sequest.output.type</code></span></dt><dd><p>
+              If set, this parameter controls how Sequest logs are parsed to determine job progress.
+              This defaults to <code class="literal">STANDARD_OUTPUT</code>, which corresponds to the
+              output Sequest 28, if the PVM version of Sequest 27 is used this parameter should
+              be set to <code class="literal">PVM_OUTPUT</code>.
+            </p></dd></dl></div></div><div class="sect2" title="X! Tandem Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3396431"></a>X! Tandem Configuration</h3></div></div></div><p>
+        X! Tandem is distributed as part of the TINT distribution and will be configured automatically.
+        These parameters are only necessary if you want to point TINT at a manually installed version
+        of X! Tandem.
+      </p><p>
+        <span class="emphasis"><em>Ubuntu Linux Users:</em></span> Due to library incompatibilities the
+        version of X! Tandem that is bundled with ProTIP will not work out of the box on Ubuntu Linux systems.
+        X! Tandem can be manually installed and targetted with the <code class="literal">xtandem.path</code> parameter mentioned
+        below. The latest version of X! Tandem for various operating systems can be downloaded 
+        <a class="ulink" href="ftp://ftp.thegpm.org/projects/tandem/source/" target="_top">here</a>. Alternatively, the
+        version of X! Tandem that is bundled with ProTIP will work in Ubuntu if a
+        a symbolic link is created via the following command 
+        <code class="literal">sudo ln -s /usr/lib/libexpat.so /usr/lib/libexpat.so.0</code>
+        and <code class="literal">libstdc++</code> is installed. A <code class="literal">.deb</code> package 
+        for <code class="literal">libstdc++5</code> can be found 
+        <a class="ulink" href="http://packages.debian.org/lenny/i386/libstdc++5/download" target="_top">here</a>. 
+        <code class="literal">.deb</code> files can be installed via the command 
+        <code class="literal">sudo dpkg -i /path/to/file</code>.
+      </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">xtandem.path</code></span></dt><dd><p>
+              If set, this should be set to the fully qualified path of an X! Tandem executable.
+            </p></dd><dt><span class="term"><code class="literal">xtandem.xsl.path</code></span></dt><dd><p>
+              If set, this should be set to the fully qualified path of the XSL file to apply to X! Tandem
+              output files. Scaffold requires that the XSL file to use is the one named <code class="literal">tandem-style.xsl</code>
+              in the <code class="literal">bin</code> directory of the X! Tandem distribution.
+            </p></dd></dl></div></div><div class="sect2" title="OMSSA Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3397247"></a>OMSSA Configuration</h3></div></div></div><p>
+        Like X! Tandem, OMSSA is distributed with TINT and will be installed automatically. Because OMSSA
+        does not accept FASTA files directly, TINT targets a script that wraps OMSSA and the BLAST tool 
+        <code class="literal">formatdb</code>. <code class="literal">formatdb</code> is required to convert FASTA files into 
+        a format consumable by OMSSA.
+      </p><p>
+        There are three parameters involved in the above process that can be overridden. The wrapper script is automatically
+        created if <code class="literal">omssa.path</code> is not set. If <code class="literal">omssa.path</code> is not set and the script
+        is created, it will attempt to read <code class="literal">omssa.home</code> and <code class="literal">blast.home</code>. These should
+        point to the directory which contains the omssa and blast distributions respectively. Both of these parameters
+        are also optional and these programs will be automatically installed for your platform if needed.
+      </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">omssa.path</code></span></dt><dd><p>
+              If set, this should be set to the fully qualified path of the wrapper script for OMSSA and BLAST.
+            </p></dd><dt><span class="term"><code class="literal">omssa.home</code></span></dt><dd><p>
+              If set, this should be set to the fully qualified path of an OMSSA installation.
+            </p></dd><dt><span class="term"><code class="literal">blast.home</code></span></dt><dd><p>
+              If set, this should be set to the fully qualified path of a BLAST installation.
+            </p></dd></dl></div></div><div class="sect2" title="Scaffold Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3395556"></a>Scaffold Configuration</h3></div></div></div><p>
+        To integrate Scaffold with TINT, you will need to purchase a license and install ScaffoldBatch from Proteome Software.
+        Information related to purchasing ScaffoldBatch can be found 
+        <a class="ulink" href="http://www.proteomesoftware.com/Proteome_software_prod_Scaffold_purchase.html" target="_top">here</a>.
+      </p><p>
+        Be sure that ScaffoldBatch has been activated with a working key before TINT is started. This
+        can be done by starting ScaffoldBatch from the command-line without any parameters. You will
+        then be prompted for a license key.
+      </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">scaffold.path</code></span></dt><dd><p>
+              This must be set. This should be set to the fully qualified path of a Scaffold Batch executable.
+            </p></dd></dl></div></div><div class="sect2" title="RawExtract Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3398176"></a>RawExtract Configuration</h3></div></div></div><p>
+        This component can be used to wrap external programs that convert Thermo Finnigan .RAW files 
+        into MzXML files. Currently two tools are supported - ReAdW and msconvert. Both of these
+        are part of the <a class="ulink" href="http://tools.proteomecenter.org/wiki/index.php?title=Main_Page" target="_top">Transproteomics 
+        Pipeline (TPP)</a>.
+      </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">rawextract.path</code></span></dt><dd><p>
+              If set, this should be set to the fully qualified path of either the <code class="literal">msconvert.exe</code> 
+              or <code class="literal">ReAdW.exe</code> executable.
+            </p><p>
+              If this parameter is not set and TINT is running in a Windows environment, <code class="literal">ReAdW.exe</code> 
+              will be installed and targetted automatically. This requires that Thermo's Xcalibur software has been 
+              previously installed and the DLL file <code class="literal">XRawfile2.dll</code>
+              is available to <code class="literal">ReAdW.exe</code>. For more information see 
+              <a class="ulink" href="http://tools.proteomecenter.org/wiki/index.php?title=Software:ReAdW" target="_top">this page</a>.
+            </p><p>
+              If this parameter is not set and TINT is running in a Linux environment, <code class="literal">ReAdW.exe</code> will be extracted 
+              into the directory <code class="literal">tropix.rawextract.config.dir</code> as well as a script that uses
+              <a class="ulink" href="http://www.winehq.org/" target="_top">Wine</a> to call <code class="literal">ReAdW.exe</code>. For this script
+              to work, Wine should be installed and Thermo's Xcalibur software should be installed inside of Wine.
+            </p><p>
+              The process of installing Xcalibur under Wine is likely going to vary based on the 
+              version of Wine and Xcalibur being used. At MSI, we were able to install Xcalibur 2.0.7
+              with the stock version of wine for Ubuntu 9.10. To install this simply install wine
+              (<code class="literal">sudo apt-get install wine</code>), navigate to the <code class="literal">Xcalibur 2.0.X</code> directory of
+              the Xcalibur CDROM (<code class="literal">cd /media/cdrom/Xcalibur\ 2.0.7</code>), launch <code class="literal">setup.exe</code>
+              (<code class="literal">wine setup.exe</code>) and select all of the default options in the graphical installer that is launched.
+            </p></dd></dl></div></div><div class="sect2" title="ITraq Quantification Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3398190"></a>ITraq Quantification Configuration</h3></div></div></div><p>
+        No additional configuration is necessary.
+      </p></div></div><div class="sect1" title="Storage Service"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id3397803"></a>Storage Service</h2></div></div></div><div class="sect2" title="Installation"><div class="titlepage"><div><div><h3 class="title"><a id="id3396226"></a>Installation</h3></div></div></div><p>
+        Unlike the other WAR files discussed so far the WAR file for the Storage Service 
+        may only be deployed into a Tomcat container with 
+        Globus security configured. The easiest way to install and configure such a 
+        container is to use the caGrid installer. TINT currently supports only caGrid 1.2, 
+        information on installing caGrid 1.2 can be found 
+        <a class="ulink" href="http://wiki.cagrid.org/display/downloads/caGrid+1.2+Installation+Quickstart" target="_top">here</a>.
+      </p><p>
+        Once the a secure container has been configured, the Storage Service may be installed
+        via the WAR file <code class="literal">caGridTransfer.war</code>, available on the TINT website. 
+        Once this WAR files has been downloaded, the Storage Service can be installed just like
+        all of the other TINT components. Move the WAR file into the <code class="literal">webapp</code> 
+        directory of the destination Tomcat container, configure the service, and start up Tomcat.
+      </p><p>
+        Unlike the other TINT WAR files, <code class="literal">caGridTransfer.war</code> must not be renamed. The
+        storage service currently can only be installed in the <code class="literal">caGridTransfer</code> webapp directory of 
+        its Tomcat container.
+      </p></div><div class="sect2" title="Configuration"><div class="titlepage"><div><div><h3 class="title"><a id="id3397848"></a>Configuration</h3></div></div></div><p>
+        The Storage Service has only a few interesting configuration parameters. It
+        shares these parameters with the TINT Web GUI.
+      </p><p>
+        A metadata database must be configured. This should be configured in the
+        <code class="literal">deploy.properties</code> file of <code class="literal">tropix.metadata.config.dir</code>
+        just like the Web GUI. The properties to be place in this file were
+        <a class="link" href="#DatabaseProperties" title="Database Properties">previously documented here</a>.
+      </p><p>If a <code class="literal">deploy.properties</code> file exists in <code class="literal">tropix.storage.config.dir</code>
+        the storage service attempts to read the property <code class="literal">storage.directory</code>. 
+        This property and its default value is documented <a class="link" href="#storage.directory">here</a>. 
+        Note that the Storage Service reads this property from the directory <code class="literal">tropix.storage.config.dir</code> 
+        instead of <code class="literal">tropix.client.config.dir</code> like the Web GUI uses.
+      </p></div></div><div class="sect1" title="A Final Note"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id3397650"></a>A Final Note</h2></div></div></div><p>
+      Additional components are available for TINT that are beyond the scope
+      of this document. These include components for searching and
+      downloading data over caGrid, advertising and requesting lab services
+      over caGrid, and integration with Globus GRAM services. The
+      deployment process for these services is a bit rougher and the
+      applicability more narrow, but if you are interested in deploying
+      these components please contact the Tropix developers for more information.
+    </p></div></div></body></html>

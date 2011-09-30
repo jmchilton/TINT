@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Functional Test Suite" verbose="2" >
+  <test name="Functional">
+    <groups>
+      <run>
+      </run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.webgui.functional" />
+    </packages>
+ </test>
+</suite>
+

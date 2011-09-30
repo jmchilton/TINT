@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://msi.umn.edu/tropix/proteomics/scaffold/metadata"
+     elementFormDefault="qualified"
+     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     xmlns="http://msi.umn.edu/tropix/proteomics/scaffold/metadata" >
+
+  <xs:element name="ScaffoldMetadata" type="ScaffoldMetadata" />
+
+  <xs:complexType name="ScaffoldMetadata">
+    <xs:sequence>
+      <xs:element name="scaffoldVersion" type="ScaffoldVersion" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="ScaffoldVersion">
+     <xs:restriction base="xs:string">
+       <xs:enumeration value="V2" />
+       <xs:enumeration value="V3" />
+     </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

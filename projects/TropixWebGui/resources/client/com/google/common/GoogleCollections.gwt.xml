@@ -1,0 +1,14 @@
+<module>
+  <source path="base" defaultexcludes="true">
+    <include name="Supplier.java" />
+    <include name="Predicate.java" />
+    <include name="Function.java" />
+    <include name="Objects.java" />
+    <include name="Preconditions.java" />
+  </source>
+  <source path="collect" defaultexcludes="true">
+    <include name="AbstractIterator.java" />
+    <include name="UnmodifiableIterator.java" />
+    <include name="PeekingIterator.java" />
+  </source>
+</module>

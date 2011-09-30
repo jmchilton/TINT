@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+  
+  <!-- Import database queue for persisting job queue -->
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/execution/gram/databaseContext.xml" />
+  
+  <!-- TODO: Make defaults null -->
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="gram.service.address" value="https://localhost:8443/wsrf/services/ManagedJobFactoryService" />
+        <entry key="gram.cpusperhost" value="1" />
+        <entry key="gram.hostcount" value="1" /> 
+        <entry key="gram.memory" value="1000" /> <!-- Measured in Mb -->
+        <entry key="gram.max.time" value="30" /> <!-- Measured in minutes -->
+        <entry key="gram.targetdotnet" value="false" />
+      </map>
+    </property>
+  </bean>  
+  
+  
+  <bean id="gramStateExecutionJobQueueObserver" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramStateExecutionJobQueueObserverImpl" scope="singleton" lazy-init="true">
+    <property name="gramExecutionJobService" ref="gramExecutionJobService" />
+  </bean>
+
+  <bean id="gramJobResolver" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramJobResolverImpl" scope="singleton" lazy-init="true">
+    <property name="gramJobFactory" ref="gramJobFactory" />
+  </bean>
+
+  <bean id="gramStateResolver" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramExecutionStateResolverImpl" scope="singleton" lazy-init="true">
+    <property name="gramJobResolver" ref="gramJobResolver" />
+  </bean>
+  
+  <bean id="gramJobFactory" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramJobFactoryGridImpl" scope="singleton" lazy-init="true">
+  	 <property name="targetGramDotNet" value="${gram.targetdotnet}" />
+  </bean>
+
+  <bean id="gramJobPoller" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramJobPollerImpl" scope="singleton" lazy-init="true">
+    <property name="executor" ref="executorService" />
+    <property name="loopingRunnableSupplier" ref="gramPollingLoopingRunnableSupplier" />
+    <property name="gramStateResolver" ref="gramStateResolver" />
+    <property name="executionJobQueueObserver" ref="gramExecutionJobQueueObserver" />
+  </bean>
+
+   <bean id="gramPollingLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton" lazy-init="true" >
+    <property name="haltOnException" value="false" />
+    <property name="waitTime" value="15" />
+    <property name="waitTimeUnitAsString" value="SECONDS" />
+  </bean>
+
+  <bean id="gramPollingLoopingRunnableSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl" scope="singleton" lazy-init="true" >
+    <property name="loopingRunnableConfig" ref="gramPollingLoopingConfig" />
+  </bean>
+  
+  <bean id="gramJobDescriptionTransformer" class="edu.umn.msi.tropix.common.jobqueue.description.JobDescriptionTransformerImpl" scope="singleton" lazy-init="true" />
+  
+  <bean id="gramJobSubmitter" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramJobSubmitterImpl" scope="singleton" lazy-init="true">
+    <property name="jobDescriptionTransformer" ref="gramJobDescriptionTransformer" />
+    <property name="serviceAddress" value="${gram.service.address}" /> 
+    <property name="gramJobFactory" ref="gramJobFactory" />
+  </bean>
+    
+
+  <bean id="gramDefaultsClosure" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramDefaultsClosureImpl" scope="singleton" lazy-init="true">
+    <property name="cpusPerHost" value="${gram.cpusperhost}" />
+    <property name="hostCount" value="${gram.hostcount}" />
+    <property name="memory" value="${gram.memory}" />
+    <property name="maxTime" value="${gram.max.time}" />
+  </bean>
+  
+  <bean id="gramExecutionJobQueueObserver" class="edu.umn.msi.tropix.common.jobqueue.execution.DelegatingExecutionJobQueueObserverImpl" scope="singleton" lazy-init="true">
+    <property name="observers">
+      <list>
+        <ref bean="executionStateChangeObserver" />
+        <ref bean="loggingExecutionJobQueueObserver" />
+        <ref bean="gramStateExecutionJobQueueObserver" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="gramExecutionJobQueue" class="edu.umn.msi.tropix.common.jobqueue.execution.gram.GramExecutionJobQueueImpl" scope="singleton" lazy-init="true" >
+    <property name="executionJobQueueObserver" ref="gramExecutionJobQueueObserver" />
+    <property name="gramExecutionJobService" ref="gramExecutionJobService" />
+    <property name="gramJobSubmitter" ref="gramJobSubmitter" />
+    <property name="gramJobResolver" ref="gramJobResolver" />
+    <property name="gramJobPoller" ref="gramJobPoller" />
+    <property name="defaultsClosure" ref="gramDefaultsClosure" />
+  </bean>
+</beans>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <context:annotation-config/>
+
+  <!-- Import executorService for launching new threads -->
+  <import resource="classpath:edu/umn/msi/tropix/common/concurrent/impl/executorContext.xml" />
+
+  <!-- Import gridContext for delegatedCredentialResolver -->
+  <import resource="classpath:edu/umn/msi/tropix/grid/impl/gridContext.xml" />
+
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/recovererContext.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/completionListenerContext.xml" />
+
+  <!-- Import staging directories -->
+  <import resource="classpath:edu/umn/msi/tropix/grid/io/context.xml" />
+  
+  <import resource="classpath:edu/umn/msi/tropix/common/jobqueue/execution/context.xml" />
+
+  <bean id="propertiesParent" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" abstract="true">
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
+  
+  <bean id="statusModifierManager" class="edu.umn.msi.tropix.common.jobqueue.status.StatusModifierManagerImpl" />
+
+  <bean id="jobProcessorQueue" class="edu.umn.msi.tropix.common.jobqueue.impl.JobProcessorQueueImpl" scope="singleton">
+    <property name="executor" ref="executorService" />
+    <property name="executionJobQueue" ref="executionJobQueue" />
+    <property name="timer" ref="timer" />
+    <property name="statusModifier" ref="statusModifierManager" />
+    <property name="jobProcessorRecoverer" ref="jobProcessorRecoverer" />
+    <property name="jobProcessorPostProcessedListener" ref="jobProcessorPostProcessedListener" />
+    <property name="queueStatusBean" ref="queueStatusBean" />
+    <property name="ticketSupplier">
+      <bean class="edu.umn.msi.tropix.common.jobqueue.impl.TicketSupplierImpl" />
+    </property>
+    <property name="pausableStateTracker" ref="queueStateTracker" />
+    <property name="queueStageTracker" ref="queueStageTracker" />
+  </bean>
+      
+  <bean id="queueStageTracker" class="edu.umn.msi.tropix.common.jobqueue.impl.QueueStageTrackerImpl" scope="singleton">
+  </bean>    
+    
+  <bean id="queueStateTracker" class="edu.umn.msi.tropix.common.concurrent.impl.PausableStateTrackerImpl">
+    <property name="id" value="Job Queue State Tracker" />
+  </bean>
+
+  <bean id="statusService" class="edu.umn.msi.tropix.common.jobqueue.service.impl.StatusServiceImpl">
+    <property name="jobProcessorQueue" ref="jobProcessorQueue" />
+  </bean>
+  
+  <bean id="credentialResourceResolver" class="edu.umn.msi.tropix.grid.credentials.impl.CredentialResourceResolverImpl">
+    <constructor-arg ref="delegatedCredentialResolver" />
+  </bean>
+
+  <bean id="queueServiceParent" abstract="true">
+    <property name="transferContextsFactory" ref="transferResourceContextFactory" />
+    <property name="executor" ref="executorService" /> <!-- Don't want to use deamon threads here. -->
+    <property name="jobProcessorQueue" ref="jobProcessorQueue" />
+    <property name="ticketSupplier" ref="ticketSupplier" />
+    <property name="credentialResourceResolver" ref="credentialResourceResolver" />
+    <property name="timer" ref="timer" />
+  </bean>
+
+  <bean id="jobProcessorFactoryParent" abstract="true">
+    <property name="disposableResourceTrackerSupplier">
+      <bean class="edu.umn.msi.tropix.common.jobqueue.jobprocessors.DisposableResourceTrackerSupplierImpl">
+        <property name="disposableResourceFactory">
+          <bean class="edu.umn.msi.tropix.common.io.impl.FileDisposableResourceFactory" factory-method="getFileFunction" />
+        </property>
+      </bean>
+    </property>
+  </bean>  
+  
+</beans>

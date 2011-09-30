@@ -1,0 +1,10 @@
+
+Import build.properties before anything else.
+
+Import project.properties which includes at least : project.version
+
+
+Tasks - 
+
+init - Produces all source artifacts so project can be viewed in eclipse
+all - Builds all ivy artifacts

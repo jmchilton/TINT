@@ -1,0 +1,27 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/omssa_mod"
+      xmlns="http://msi.umn.edu/tropix/webgui/omssa_mod"
+      elementFormDefault="qualified">
+      
+  <xsd:element name="mod_type" type="xsd:string" />
+  
+  <xsd:element name="mono_mass" type="xsd:double" />        
+  <xsd:element name="average_mass" type="xsd:double" />        
+  <xsd:element name="n15_mass" type="xsd:double" />        
+  
+  <xsd:element name="neutral_mono_mass" type="xsd:double" />        
+  <xsd:element name="neutral_average_mass" type="xsd:double" />        
+  <xsd:element name="neutral_n15_mass" type="xsd:double" />        
+
+  <xsd:element name="neutral" type="xsd:boolean" />
+    
+  <xsd:element name="residues">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:pattern value="[a-zA-Z]*"></xsd:pattern>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:element>
+  
+  
+</xsd:schema>

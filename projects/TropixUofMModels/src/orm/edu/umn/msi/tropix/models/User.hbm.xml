@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models">
+	<class name="User" table="USER" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the User class -->
+		<property name="firstName" type="string" column="FIRST_NAME"/>
+		<property name="lastName" type="string" column="LAST_NAME"/>
+		<property name="cagridId" type="string" column="CAGRID_ID"/>
+		<property name="email" type="string" column="EMAIL"/>
+		<property name="phone" type="string" column="PHONE"/>
+		<!-- Associations mapping for the User class -->
+		<many-to-one name="homeFolder" class="edu.umn.msi.tropix.models.Folder" column="HOME_FOLDER_ID" unique="true" lazy="proxy" />
+		<set name="parameters" lazy="true">
+			<cache usage="read-write" />
+			<key column="USER_ID" />
+			<one-to-many class="edu.umn.msi.tropix.models.Parameters"/>
+		</set>
+		<set name="messages" lazy="true">
+			<cache usage="read-write" />
+			<key column="USER_ID" />
+			<one-to-many class="edu.umn.msi.tropix.models.LogMessage"/>
+		</set>
+		<set name="sharedFolders" table="JOIN_USER_SHARED_FOLDER" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="USER_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.VirtualFolder" column="VIRTUAL_FOLDER_ID" />
+		</set>
+		<set name="groups" table="JOIN_USER_GROUP" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="USER_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.Group" column="GROUP_ID" />
+		</set>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,27 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/scaffold"
+      xmlns="http://msi.umn.edu/tropix/webgui/scaffold"
+      elementFormDefault="qualified">
+
+  <xsd:element name="proteinProbability" type="probability" />
+  <xsd:element name="peptideProbability" type="probability" />
+  <xsd:element name="minimumPeptideCount" type="xsd:nonNegativeInteger" />
+  <xsd:element name="minimumNTT" type="xsd:nonNegativeInteger" />
+  
+  <xsd:element name="useCharge1" type="xsd:boolean" />
+  <xsd:element name="useCharge2" type="xsd:boolean" />
+  <xsd:element name="useCharge3" type="xsd:boolean" />
+
+  <xsd:element name="connectToNCBI" type="xsd:boolean" />
+  
+  <xsd:element name="decoyRegex" type="xsd:string" />
+
+  <xsd:simpleType name="probability">
+    <xsd:restriction base="xsd:double">
+      <xsd:minInclusive value="0.0" />
+      <xsd:maxInclusive value="1.0" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  
+</xsd:schema>

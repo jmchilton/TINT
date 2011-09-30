@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/proteomics/itraqquantitation/results"
+            xmlns="http://msi.umn.edu/tropix/proteomics/itraqquantitation/results"
+            elementFormDefault="qualified">
+
+  <xsd:element name="quantificationResults">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="ratioLabel" type="RatioLabel" minOccurs="1" maxOccurs="unbounded" />
+        <xsd:element name="protein" type="Protein" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:complexType name="Protein">
+    <xsd:sequence>
+      <xsd:element name="ratio" type="Ratio" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="numSequences" type="xsd:int" use="required" />
+    <xsd:attribute name="numPeptides" type="xsd:int" use="required" />
+  </xsd:complexType>
+
+  <xsd:attributeGroup name="RatioLabelAttributes">
+    <xsd:attribute name="numeratorLabel" type="xsd:string" use="required" />
+    <xsd:attribute name="denominatorLabel" type="xsd:string" use="required" />
+  </xsd:attributeGroup>
+
+  <xsd:complexType name="RatioLabel">
+    <xsd:attributeGroup ref="RatioLabelAttributes" />
+  </xsd:complexType>
+
+
+  <xsd:complexType name="Ratio">
+    <xsd:attributeGroup ref="RatioLabelAttributes" />
+    <xsd:attribute name="method" type="xsd:string" use="required" />
+    <xsd:attribute name="ratio" type="xsd:double" use="required" />
+    <xsd:attribute name="pValue" type="xsd:double" use="optional" />
+  </xsd:complexType>
+
+</xsd:schema>
+

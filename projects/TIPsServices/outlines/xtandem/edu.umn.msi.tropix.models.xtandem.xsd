@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.xtandem" targetNamespace="gme://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models.xtandem" elementFormDefault="qualified">
+  <xs:element name="XTandemParameters" type="XTandemParameters" />
+  <xs:complexType name="XTandemParameters">
+    <xs:sequence />
+    <xs:attribute name="outputHistogramColumnWidth" type="xs:integer" />
+    <xs:attribute name="outputHistograms" type="xs:boolean" />
+    <xs:attribute name="outputMaximumValidExpectationValue" type="xs:double" />
+    <xs:attribute name="outputOneSequencePerCopy" type="xs:boolean" />
+    <xs:attribute name="outputPerformance" type="xs:boolean" />
+    <xs:attribute name="outputProteins" type="xs:boolean" />
+    <xs:attribute name="outputResults" type="xs:string" />
+    <xs:attribute name="outputSortResultsBy" type="xs:string" />
+    <xs:attribute name="outputSequences" type="xs:boolean" />
+    <xs:attribute name="outputSpectra" type="xs:boolean" />
+    <xs:attribute name="proteinCleavageCTerminalMassChange" type="xs:double" />
+    <xs:attribute name="proteinCleavageNTerminalMassChange" type="xs:double" />
+    <xs:attribute name="proteinCTerminalResidueModificationMass" type="xs:double" />
+    <xs:attribute name="proteinNTerminalResidueModificationMass" type="xs:double" />
+    <xs:attribute name="proteinCleavageSemi" type="xs:boolean" />
+    <xs:attribute name="proteinCleavageSite" type="xs:string" />
+    <xs:attribute name="residueModificationMass" type="xs:string" />
+    <xs:attribute name="residuePotentialModificationMass" type="xs:string" />
+    <xs:attribute name="residuePotentialModificationMotif" type="xs:string" />
+    <xs:attribute name="scoringAIons" type="xs:boolean" />
+    <xs:attribute name="scoringBIons" type="xs:boolean" />
+    <xs:attribute name="scoringCIons" type="xs:boolean" />
+    <xs:attribute name="scoringXIons" type="xs:boolean" />
+    <xs:attribute name="scoringYIons" type="xs:boolean" />
+    <xs:attribute name="scoringZIons" type="xs:boolean" />
+    <xs:attribute name="scoringCyclicPermutation" type="xs:boolean" />
+    <xs:attribute name="scoringIncludeReverse" type="xs:boolean" />
+    <xs:attribute name="scoringMaximumMissedCleavageSites" type="xs:integer" />
+    <xs:attribute name="scoringMinimumIonCount" type="xs:integer" />
+    <xs:attribute name="spectrumContrastAngle" type="xs:double" />
+    <xs:attribute name="spectrumDynamicRange" type="xs:double" />
+    <xs:attribute name="spectrumFragmentMassError" type="xs:double" />
+    <xs:attribute name="spectrumFragmentMassErrorUnits" type="xs:string" />
+    <xs:attribute name="spectrumFragmentMassType" type="xs:string" />
+    <xs:attribute name="spectrumMinimumFragmentMZ" type="xs:double" />
+    <xs:attribute name="spectrumMinimumPeaks" type="xs:integer" />
+    <xs:attribute name="spectrumMinimumParentMH" type="xs:double" />
+    <xs:attribute name="spectrumNeutralLossMass" type="xs:double" />
+    <xs:attribute name="spectrumParentMonoisotopicMassErrorMinus" type="xs:double" />
+    <xs:attribute name="spectrumParentMonoisotopicMassErrorPlus" type="xs:double" />
+    <xs:attribute name="spectrumParentMonoisotopicMassErrorUnits" type="xs:string" />
+    <xs:attribute name="spectrumParentMonoisotopicMassIsotopeError" type="xs:boolean" />
+    <xs:attribute name="spectrumTotalPeaks" type="xs:integer" />
+    <xs:attribute name="spectrumUseNeutralLossWindow" type="xs:boolean" />
+    <xs:attribute name="spectrumUseNoiseSuppression" type="xs:boolean" />
+    <xs:attribute name="spectrumUseContrastAngle" type="xs:boolean" />
+    <xs:attribute name="spectrumNeutralLossWindow" type="xs:double" />
+    <xs:attribute name="id" type="xs:string" />
+    <xs:attribute name="refine" type="xs:boolean" />
+    <xs:attribute name="refineCleavageSemi" type="xs:boolean" />
+    <xs:attribute name="refineMaximumValidExpectationValue" type="xs:double" />
+    <xs:attribute name="refineModificationMass" type="xs:string" />
+    <xs:attribute name="refinePotentialModificationMass" type="xs:string" />
+    <xs:attribute name="refinePotentialModificationMotif" type="xs:string" />
+    <xs:attribute name="refinePointMutations" type="xs:boolean" />
+    <xs:attribute name="refinePotentialNTerminusModifications" type="xs:string" />
+    <xs:attribute name="refinePotentialCTerminusModifications" type="xs:string" />
+    <xs:attribute name="refineSingleAminoAcidPolymorphisms" type="xs:boolean" />
+    <xs:attribute name="refineSpectrumSynthesis" type="xs:boolean" />
+    <xs:attribute name="refineUnanticipatedCleavage" type="xs:boolean" />
+    <xs:attribute name="refineUsePotentialModifications" type="xs:boolean" />
+    <xs:attribute name="spectrumMaximumParentCharge" type="xs:integer" />
+  </xs:complexType>
+</xs:schema>
+

@@ -1,0 +1,357 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <tabs>
+  <tab name="Protein">
+    <table>
+      <row>
+        <cell><label text="Cleavage Agent" /></cell>
+        <cell><input widget="selection" parameter="enzyme" /></cell>
+        <cell><label text="Cleavage Semi" /></cell>
+        <cell><input widget="checkbox" parameter="proteinCleavageSemi" /></cell>
+      </row>
+      <row>
+        <cell><label text="Cleavage C-Terminal Mass Change" /></cell>
+        <cell><input widget="textbox" parameter="proteinCleavageCTerminalMassChange" width="60"  /></cell>
+        <cell><label text="Cleavage N-Terminal Mass Change" /></cell>
+        <cell><input widget="textbox" parameter="proteinCleavageNTerminalMassChange"  width="60"  /></cell>
+      </row>
+      <row>
+        <cell><label text="C-Terminal Residue Modification Mass" /></cell>
+        <cell><input widget="textbox" parameter="proteinCTerminalResidueModificationMass"  width="60"  /></cell>
+        <cell><label text="N-Terminal Residue Modification Mass" width="60"  /></cell>
+        <cell><input widget="textbox" parameter="proteinNTerminalResidueModificationMass" width="60" /></cell>
+      </row>
+      <row>
+        <cell><label text="Cyclic Permutations" /></cell>
+        <cell><input widget="checkbox" parameter="scoringCyclicPermutation" /></cell>
+        <cell><label text="Include Reverse" /></cell>
+        <cell><input widget="checkbox" parameter="scoringIncludeReverse" /></cell>
+      </row>
+      <row>
+        <cell><label text="Max Missed Cleavage Sites" /></cell>
+        <cell><input widget="textbox" parameter="scoringMaximumMissedCleavageSites" width="60"  /></cell>
+      </row>
+      </table>
+  </tab>
+  <tab name="Spectrum">
+    <table>
+      <row>
+        <cell><label text="Fragment Mass Error" /></cell>
+        <cell><input widget="textbox" parameter="spectrumFragmentMassError" width="60" /></cell>
+        <cell><label text="Framment Mass Error Units" /></cell>
+        <cell><input widget="selection" parameter="spectrumFragmentMassErrorUnits" /></cell>
+      </row>
+      <row>
+        <cell><label text="Fragment Mass Error Type" /></cell>
+        <cell><input widget="selection" parameter="spectrumFragmentMassType" /></cell>
+        <cell><label text="Parent Mass Isotope Error " /></cell>
+        <cell><input widget="checkbox" parameter="spectrumParentMonoisotopicMassIsotopeError" /></cell>
+      </row>
+      <row>
+        <cell><label text="Parent Mass Error Plus" /></cell>
+        <cell><input widget="textbox" parameter="spectrumParentMonoisotopicMassErrorPlus" width="60"  /></cell>
+        <cell><label text="Parent Mass Error Minus" /></cell>
+        <cell><input widget="textbox" parameter="spectrumParentMonoisotopicMassErrorMinus" width="60" /></cell>
+      </row>      
+      <row>
+        <cell><label text="Parent Mass Error Units" /></cell>
+        <cell><input widget="selection" parameter="spectrumParentMonoisotopicMassErrorUnits" width="60"  /></cell>
+        <cell><label text="Use Neutral Loss Window" /></cell>
+        <cell><input widget="checkbox" parameter="spectrumUseNeutralLossWindow"  /></cell>
+      </row>      
+      <row>
+        <cell><label text="Neutral Loss Window (if used)" /></cell>
+        <cell><input widget="textbox" parameter="spectrumNeutralLossWindow" width="60" /></cell>
+        <cell><label text="Neutral Loss Mass (if used)" /></cell>
+        <cell><input widget="textbox" parameter="spectrumNeutralLossMass" width="60" /></cell>
+      </row>
+      <row>
+        <cell><label text="Use Contrast Angle" /></cell>
+        <cell><input widget="checkbox" parameter="spectrumUseContrastAngle" /></cell>
+        <cell><label text="Contrast Angle (if used)" /></cell>
+        <cell><input widget="textbox" parameter="spectrumContrastAngle" width="60" /></cell>
+      </row>
+      <row>
+        <cell><label text="Maximum Parent Charge" /></cell>
+        <cell><input widget="textbox" parameter="spectrumMaximumParentCharge" width="60" /></cell>
+      </row>      
+      </table>
+  </tab>
+  <tab name="Ions">
+    <table>
+      <row>
+        <cell><label text="Score A Ions" /></cell>
+        <cell><input widget="checkbox" parameter="scoringAIons" width="60" /></cell>
+        <cell><label text="Score B Ions" /></cell>
+        <cell><input widget="checkbox" parameter="scoringBIons" width="60"  /></cell>
+     </row>
+     <row>
+        <cell><label text="Score C Ions" /></cell>
+        <cell><input widget="checkbox" parameter="scoringCIons" width="60" /></cell>
+        <cell><label text="Score X Ions" /></cell>
+        <cell><input widget="checkbox" parameter="scoringXIons" width="60" /></cell>
+     </row>
+     <row>
+        <cell><label text="Score Y Ions" /></cell>
+        <cell><input widget="checkbox" parameter="scoringYIons" width="60" /></cell>
+        <cell><label text="Score Z Ions" /></cell>
+        <cell><input widget="checkbox" parameter="scoringZIons" width="60" /></cell>
+      </row>
+     </table>
+  </tab>
+
+  <tab name="Mods">
+    <tooltip>Fixed Modifications</tooltip>     
+    <table>
+    <row>
+      <cell><label text="A" /></cell>
+      <cell><input widget="textbox" parameter="fixedA" width="50" /></cell>
+      <cell><label text="C" /></cell>
+      <cell><input widget="textbox" parameter="fixedC" width="50" /></cell> 
+      <cell><label text="D" /></cell>
+      <cell><input widget="textbox" parameter="fixedD" width="50" /></cell>
+      <cell><label text="E" /></cell>
+      <cell><input widget="textbox" parameter="fixedE" width="50" /></cell>
+      <cell><label text="F" /></cell>
+      <cell><input widget="textbox" parameter="fixedF" width="50" /></cell> 
+    </row>
+    <row>
+      <cell><label text="G" /></cell>
+      <cell><input widget="textbox" parameter="fixedG" width="50" /></cell>
+      <cell><label text="H" /></cell>
+      <cell><input widget="textbox" parameter="fixedH" width="50" /></cell>
+      <cell><label text="I" /></cell>
+      <cell><input widget="textbox" parameter="fixedI" width="50" /></cell> 
+      <cell><label text="K" /></cell>
+      <cell><input widget="textbox" parameter="fixedK" width="50" /></cell>  
+      <cell><label text="L" /></cell>
+      <cell><input widget="textbox" parameter="fixedL" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="M" /></cell>
+      <cell><input widget="textbox" parameter="fixedM" width="50" /></cell>
+      <cell><label text="N" /></cell>
+      <cell><input widget="textbox" parameter="fixedN" width="50" /></cell>
+      <cell><label text="O" /></cell>
+      <cell><input widget="textbox" parameter="fixedO" width="50" /></cell> 
+      <cell><label text="P" /></cell>
+      <cell><input widget="textbox" parameter="fixedP" width="50" /></cell>
+      <cell><label text="Q" /></cell>
+      <cell><input widget="textbox" parameter="fixedQ" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="R" /></cell>
+      <cell><input widget="textbox" parameter="fixedR" width="50" /></cell> 
+      <cell><label text="S" /></cell>
+      <cell><input widget="textbox" parameter="fixedS" width="50" /></cell>
+      <cell><label text="T" /></cell>
+      <cell><input widget="textbox" parameter="fixedT" width="50" /></cell>
+      <cell><label text="V" /></cell>
+      <cell><input widget="textbox" parameter="fixedV" width="50" /></cell>
+      <cell><label text="W" /></cell>
+      <cell><input widget="textbox" parameter="fixedW" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="X" /></cell>
+      <cell><input widget="textbox" parameter="fixedX" width="50" /></cell>
+      <cell><label text="Y" /></cell>
+      <cell><input widget="textbox" parameter="fixedY" width="50" /></cell>
+      <cell><label text="N-Term" /></cell>
+      <cell><input widget="textbox" parameter="fixed[" width="50" /></cell>
+      <cell><label text="C-Term" /></cell>
+      <cell><input widget="textbox" parameter="fixed]" width="50" /></cell>
+    </row>        
+    </table>
+  </tab>
+
+  <tab name="Pot Mods">
+    <tooltip>Potential Modifications</tooltip>     
+    <table>
+    <row>
+      <cell><label text="A" /></cell>
+      <cell><input widget="textbox" parameter="potentialA" width="50" /></cell>
+      <cell><label text="C" /></cell>
+      <cell><input widget="textbox" parameter="potentialC" width="50" /></cell> 
+      <cell><label text="D" /></cell>
+      <cell><input widget="textbox" parameter="potentialD" width="50" /></cell>
+      <cell><label text="E" /></cell>
+      <cell><input widget="textbox" parameter="potentialE" width="50" /></cell>
+      <cell><label text="F" /></cell>
+      <cell><input widget="textbox" parameter="potentialF" width="50" /></cell> 
+    </row>
+    <row>
+      <cell><label text="G" /></cell>
+      <cell><input widget="textbox" parameter="potentialG" width="50" /></cell>
+      <cell><label text="H" /></cell>
+      <cell><input widget="textbox" parameter="potentialH" width="50" /></cell>
+      <cell><label text="I" /></cell>
+      <cell><input widget="textbox" parameter="potentialI" width="50" /></cell> 
+      <cell><label text="K" /></cell>
+      <cell><input widget="textbox" parameter="potentialK" width="50" /></cell>  
+      <cell><label text="L" /></cell>
+      <cell><input widget="textbox" parameter="potentialL" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="M" /></cell>
+      <cell><input widget="textbox" parameter="potentialM" width="50" /></cell>
+      <cell><label text="N" /></cell>
+      <cell><input widget="textbox" parameter="potentialN" width="50" /></cell>
+      <cell><label text="O" /></cell>
+      <cell><input widget="textbox" parameter="potentialO" width="50" /></cell> 
+      <cell><label text="P" /></cell>
+      <cell><input widget="textbox" parameter="potentialP" width="50" /></cell>
+      <cell><label text="Q" /></cell>
+      <cell><input widget="textbox" parameter="potentialQ" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="R" /></cell>
+      <cell><input widget="textbox" parameter="potentialR" width="50" /></cell> 
+      <cell><label text="S" /></cell>
+      <cell><input widget="textbox" parameter="potentialS" width="50" /></cell>
+      <cell><label text="T" /></cell>
+      <cell><input widget="textbox" parameter="potentialT" width="50" /></cell>
+      <cell><label text="V" /></cell>
+      <cell><input widget="textbox" parameter="potentialV" width="50" /></cell>
+      <cell><label text="W" /></cell>
+      <cell><input widget="textbox" parameter="potentialW" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="X" /></cell>
+      <cell><input widget="textbox" parameter="potentialX" width="50" /></cell>
+      <cell><label text="Y" /></cell>
+      <cell><input widget="textbox" parameter="potentialY" width="50" /></cell>
+      <cell><label text="N-Term" /></cell>
+      <cell><input widget="textbox" parameter="potential[" width="50" /></cell>
+      <cell><label text="C-Term" /></cell>
+      <cell><input widget="textbox" parameter="potential]" width="50" /></cell>
+    </row>        
+    </table>
+  </tab>
+  
+  <tab name="Refinement">
+    <tooltip>Refinement</tooltip>     
+    <table>
+    <row>
+      <cell><label text="Use Refinement" /></cell>
+      <cell><input widget="checkbox" parameter="refine" /></cell>
+      <cell><label text="Point Mutations" /></cell>
+      <cell><input widget="checkbox" parameter="refinePointMutations" /></cell>
+    </row>
+    <row>
+      <cell><label text="Cleavage Semi" /></cell>
+      <cell><input widget="checkbox" parameter="refineCleavageSemi" /></cell>
+      <cell><label text="Test for SAPS" /></cell>
+      <cell><input widget="checkbox" parameter="refineSingleAminoAcidPolymorphisms" /></cell>
+    </row>
+    <row>
+      <cell><label text="Spectrum Synthesis" /></cell>
+      <cell><input widget="checkbox" parameter="refineSpectrumSynthesis" /></cell>
+      <cell><label text="Unanticipated Cleavage" /></cell>
+      <cell><input widget="checkbox" parameter="refineUnanticipatedCleavage" /></cell>
+    </row>
+    <row>
+      <cell><label text="Maximum Expectation Value" /></cell>
+      <cell><input widget="textbox" parameter="refineMaximumValidExpectationValue" width="50" /></cell>
+    </row>
+    </table>
+  </tab>
+
+  <tab name="Refine Mods">
+    <tooltip>Refinement Potential Modifications</tooltip>     
+    <table>
+    <row>
+      <cell><label text="A" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModA" width="50" /></cell>
+      <cell><label text="C" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModC" width="50" /></cell> 
+      <cell><label text="D" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModD" width="50" /></cell>
+      <cell><label text="E" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModE" width="50" /></cell>
+      <cell><label text="F" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModF" width="50" /></cell> 
+    </row>
+    <row>
+      <cell><label text="G" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModG" width="50" /></cell>
+      <cell><label text="H" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModH" width="50" /></cell>
+      <cell><label text="I" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModI" width="50" /></cell> 
+      <cell><label text="K" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModK" width="50" /></cell>  
+      <cell><label text="L" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModL" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="M" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModM" width="50" /></cell>
+      <cell><label text="N" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModN" width="50" /></cell>
+      <cell><label text="O" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModO" width="50" /></cell> 
+      <cell><label text="P" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModP" width="50" /></cell>
+      <cell><label text="Q" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModQ" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="R" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModR" width="50" /></cell> 
+      <cell><label text="S" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModS" width="50" /></cell>
+      <cell><label text="T" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModT" width="50" /></cell>
+      <cell><label text="V" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModV" width="50" /></cell>
+      <cell><label text="W" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModW" width="50" /></cell>
+    </row>
+    <row>
+      <cell><label text="X" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModX" width="50" /></cell>
+      <cell><label text="Y" /></cell>
+      <cell><input widget="textbox" parameter="refinePotModY" width="50" /></cell>
+      <cell><label text="N-Term" /></cell>
+      <cell><input widget="textbox" parameter="refinePotMod[" width="50" /></cell>
+      <cell><label text="C-Term" /></cell>
+      <cell><input widget="textbox" parameter="refinePotMod]" width="50" /></cell>
+    </row>        
+    </table>
+  </tab>
+
+  <!-- TO ADD: residuePotentialModificationMotif -->
+  
+  <!-- 
+        <cell><label text="Minimum Ion Count" /></cell>
+        <cell><input widget="textbox" parameter="scoringMinimumIonCount" /></cell>
+
+        <cell><label text="Use Noise Suppression" /></cell>
+        <cell><input widget="checkbox" parameter="spectrumUseNoiseSuppression" /></cell>
+
+      <row>
+        <cell><label text="Dynamic Range" /></cell>
+        <cell><input widget="textbox" parameter="spectrumDynamicRange" /></cell>
+        <cell><label text="Minimum Fragment MZ" /></cell>
+        <cell><input widget="textbox" parameter="spectrumMinimumFragmentMZ" /></cell>
+      </row>      
+
+
+      <row>
+        <cell><label text="Minimum Parent MH" /></cell>
+        <cell><input widget="textbox" parameter="spectrumMinimumParentMH" /></cell>
+        <cell><label text="Minimum Peaks" /></cell>
+        <cell><input widget="textbox" parameter="spectrumMinimumPeaks" /></cell>
+      </row>
+
+  <tab name="Output">
+    <table>
+      <row>
+        <cell><label text="Histogram Column Width" /></cell>
+        <cell><input widget="textbox" parameter="outputHistogramColumnWidth" /></cell>
+      </row>
+    </table>
+  </tab>
+   -->  
+  </tabs>
+</formConfiguration>

@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="TIPServices" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors">
+  <description>
+  </description>
+
+  <!-- Should define msi.user and ssh.key.file -->
+  <property file="${user.home}/.ant-global.properties" />
+
+  <property file="build.properties"/>	
+  <property file="project.properties" />
+  <property environment="env" />
+  
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="outlines.dir" value="${basedir}/outlines" />
+  <property name="wars.dir" value="${build.dir}/wars" />
+
+  <target name="precreate" depends="cache-dependencies">
+    <taskdef resource="edu/umn/msi/tropix/common/jobqueue/tools/jobqueue-macros.xml" classpathref="raw.ivy.path"> <!-- loaderref="artifact"> -->
+    </taskdef>
+  </target>
+
+  <property name="cagrid.dir" value="${basedir}/cagrid" />
+  <property name="build.cagrid.dir" value="${build.dir}/cagrid" />
+
+  <property name="cagrid.sequest.build.lib" value="${build.cagrid.dir}/sequest/build/lib" />
+  <property name="cagrid.scaffold.build.lib" value="${build.cagrid.dir}/scaffold/build/lib" />
+  <property name="cagrid.xtandem.build.lib" value="${build.cagrid.dir}/xtandem/build/lib" />
+  <property name="cagrid.rawextract.build.lib" value="${build.cagrid.dir}/rawextract/build/lib" />
+  <property name="cagrid.omssa.build.lib" value="${build.cagrid.dir}/omssa/build/lib" />
+  <property name="cagrid.itraqquantitation.build.lib" value="${build.cagrid.dir}/itraqquantitation/build/lib" />
+  <property name="cagrid.bowtie.build.lib" value="${build.cagrid.dir}/bowtie/build/lib" />
+  <property name="cagrid.proteomicsconvert.build.lib" value="${build.cagrid.dir}/proteomicsconvert/build/lib" />
+  <property name="cagrid.galaxy.build.lib" value="${build.cagrid.dir}/galaxy/build/lib" />
+  <property name="cagrid.myrimatch.build.lib" value="${build.cagrid.dir}/myrimatch/build/lib" />
+  <property name="cagrid.idpicker.build.lib" value="${build.cagrid.dir}/idpicker/build/lib" />
+  <property name="cagrid.tagrecon.build.lib" value="${build.cagrid.dir}/tagrecon/build/lib" />
+  <property name="cagrid.inspect.build.lib" value="${build.cagrid.dir}/inspect/build/lib" />
+
+  <property name="services" value="sequest,scaffold,xtandem,rawextract,omssa,itraqquantitation,bowtie,proteomicsconvert,galaxy,myrimatch,idpicker,tagrecon,inspect" />
+
+  <target name="init" depends="" />
+
+  <macrodef name="prepare-cagrid-directories">
+    <attribute name="name" />
+    <sequential>
+      <unzip-service name="@{name}" />
+      <mkdir dir="${build.cagrid.dir}/@{name}/lib" />
+      <build-ivy-jar name="cagrid-dependencies-@{name}" jarfile="${build.cagrid.dir}/@{name}/lib/ivy-dependencies.jar" />
+      <copy todir="${build.cagrid.dir}/@{name}/lib" flatten="true">
+        <restrict>
+          <fileset refid="ivy.fileset"/>
+          <rsel:or>
+            <rsel:name name="*caGrid*" />
+            <rsel:name name="*jdom*" />
+          </rsel:or>
+        </restrict>
+      </copy>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="generate-stubs">
+    <attribute name="name" />
+    <sequential>
+      <ant antfile="${build.cagrid.dir}/@{name}/build.xml" target="stubs" inheritAll="false" dir="${build.cagrid.dir}/@{name}">
+        <property name="env.GLOBUS_LOCATION" value="${ext.globus.dir}" />
+        <property name="ext.globus.dir" value="${ext.globus.dir}" />
+        <property name="deploy.dir" value="${ext.globus.dir}" />
+      </ant>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="prepare-cagrid">
+    <attribute name="name" />
+    <sequential>
+      <prepare-cagrid-directories name="@{name}" />
+      <generate-stubs name="@{name}" />
+    </sequential>
+  </macrodef>
+
+  <macrodef name="unzip-service">
+    <attribute name="name" />
+    <sequential>
+      <delete failonerror="false" dir="${build.cagrid.dir}/@{name}" />
+      <mkdir dir="${build.cagrid.dir}/@{name}" />
+      <unzip src="${cagrid.dir}/@{name}.zip" dest="${build.cagrid.dir}/@{name}" />
+    </sequential>
+  </macrodef>
+
+  <macrodef name="zip-service">
+    <attribute name="name" />
+    <sequential>
+      <delete file="${cagrid.dir}/@{name.zip}" quiet="true" />
+      <zip destfile="${cagrid.dir}/@{name}.zip"
+           basedir="${build.cagrid.dir}/@{name}"
+           excludes="build/**,lib/**" />
+    </sequential>
+  </macrodef>
+
+  <macrodef name="recreate">
+    <attribute name="name" />
+    <attribute name="servicename" />
+    <attribute name="servicepackage" />
+    <attribute name="servicepackagedir" />
+    <attribute name="servicenamespace" />
+    <sequential>
+      <delete dir="${build.cagrid.dir}/@{name}" />
+      <build-jobqueue-service
+         servicedir="${build.cagrid.dir}/@{name}"
+         servicename="@{servicename}"
+         servicepackage="@{servicepackage}"
+         servicepackagedir="@{servicepackagedir}" 
+         servicenamespace="@{servicenamespace}" 
+         template="${outlines.dir}/@{name}/template.xml"
+         applicationcontext="${outlines.dir}/@{name}/applicationContext.xml">
+        <lib>
+          <fileset refid="${ivy.fileset}" />
+          <fileset dir="${jars.dir}" includes="**/*.jar" />
+        </lib>
+        <schema>
+          <fileset dir="${outlines.dir}/@{name}" includes="**/*.xsd" />
+        </schema>
+      </build-jobqueue-service>
+      <zip-service name="@{name}" />
+    </sequential>
+  </macrodef>
+	
+  <target name="recreate-cagrid-sequest" depends="precreate">
+    <recreate
+       name="sequest"
+       servicename="Sequest"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.sequest"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/sequest" 
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/Sequest" />
+  </target>
+
+  <target name="recreate-cagrid-myrimatch" depends="precreate">
+    <recreate
+       name="myrimatch"
+       servicename="MyriMatch"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.myrimatch"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/myrimatch"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/MyriMatch" />
+  </target>
+
+
+  <target name="recreate-cagrid-tagrecon" depends="precreate">
+    <recreate
+       name="tagrecon"
+       servicename="TagRecon"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.tagrecon"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/tagrecon"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/TagRecon" />
+  </target>
+
+  <target name="recreate-cagrid-inspect" depends="precreate">
+    <recreate
+       name="inspect"
+       servicename="Inspect"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.inspect"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/inspect"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/Inspect" />
+  </target>
+
+  <target name="recreate-cagrid-idpicker" depends="precreate">
+    <recreate 
+       name="idpicker" 
+       servicename="IdPicker" 
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.idpicker" 
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/idpicker" 
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/IdPicker" />
+  </target>
+
+  <target name="recreate-cagrid-xtandem" depends="precreate">
+    <delete dir="${build.cagrid.dir}/xtandem" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/xtandem"
+       servicename="XTandem"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.xtandem"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/xtandem"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/XTandem"
+       template="${outlines.dir}/xtandem/template.xml"
+       applicationcontext="${outlines.dir}/xtandem/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/xtandem" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="xtandem" />
+  </target>
+
+  <target name="recreate-cagrid-omssa" depends="precreate">
+    <delete dir="${build.cagrid.dir}/omssa" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/omssa"
+       servicename="Omssa"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.omssa"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/omssa"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/Omssa"
+       template="${outlines.dir}/omssa/template.xml"
+       applicationcontext="${outlines.dir}/omssa/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/omssa" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="omssa" />
+  </target>
+
+  <target name="recreate-cagrid-scaffold" depends="precreate">
+    <delete dir="${build.cagrid.dir}/scaffold" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/scaffold"
+       servicename="Scaffold"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.scaffold"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/scaffold"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/Scaffold"
+       template="${outlines.dir}/scaffold/template.xml"
+       applicationcontext="${outlines.dir}/scaffold/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/scaffold" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="scaffold" />
+  </target>
+
+  <target name="recreate-cagrid-bowtie" depends="precreate">
+    <delete dir="${build.cagrid.dir}/bowtie" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/bowtie"
+       servicename="Bowtie"
+       servicepackage="edu.umn.msi.tropix.genomics.cagrid.bowtie"
+       servicepackagedir="edu/umn/msi/tropix/genomics/cagrid/bowtie"
+       servicenamespace="http://msi.umn.edu/tropix/genomics/cagrid/Bowtie"
+       template="${outlines.dir}/bowtie/template.xml"
+       applicationcontext="${outlines.dir}/bowtie/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/bowtie" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="bowtie" />
+  </target>
+
+  <target name="recreate-cagrid-proteomicsconvert" depends="precreate">
+    <delete dir="${build.cagrid.dir}/proteomicsconvert" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/proteomicsconvert"
+       servicename="ProteomicsConvert"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.proteomicsconvert"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/proteomicsconvert"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/ProteomicsConvert"
+       template="${outlines.dir}/proteomicsconvert/template.xml"
+       applicationcontext="${outlines.dir}/proteomicsconvert/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/proteomicsconvert" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="proteomicsconvert" />
+  </target>
+
+  <target name="recreate-cagrid-rawextract" depends="precreate">
+    <delete dir="${build.cagrid.dir}/rawextract" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/rawextract"
+       servicename="RawExtract"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.rawextract"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/rawextract"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/RawExtract"
+       template="${outlines.dir}/rawextract/template.xml"
+       applicationcontext="${outlines.dir}/rawextract/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+    </build-jobqueue-service>
+    <zip-service name="rawextract" />
+  </target>
+
+
+  <target name="recreate-cagrid-itraqquantitation" depends="precreate">
+    <delete dir="${build.cagrid.dir}/itraqquantitation" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/itraqquantitation"
+       servicename="ITraqQuantitation"
+       servicepackage="edu.umn.msi.tropix.proteomics.cagrid.itraqquantitation"
+       servicepackagedir="edu/umn/msi/tropix/proteomics/cagrid/itraqquantitation"
+       servicenamespace="http://msi.umn.edu/tropix/proteomics/cagrid/ITraqQuantitation"
+       template="${outlines.dir}/itraqquantitation/template.xml"
+       applicationcontext="${outlines.dir}/itraqquantitation/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/itraqquantitation" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="itraqquantitation" />
+  </target>
+
+  <target name="recreate-cagrid-galaxy" depends="precreate">
+    <delete dir="${build.cagrid.dir}/galaxy" />
+    <build-jobqueue-service
+       servicedir="${build.cagrid.dir}/galaxy"
+       servicename="Galaxy"
+       servicepackage="edu.umn.msi.tropix.galaxy.cagrid"
+       servicepackagedir="edu/umn/msi/tropix/galaxy/cagrid"
+       servicenamespace="http://msi.umn.edu/tropix/galaxy/cagrid/Galaxy"
+       template="${outlines.dir}/galaxy/template.xml"
+       applicationcontext="${outlines.dir}/galaxy/applicationContext.xml">
+      <lib>
+        <fileset refid="ivy.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
+      </lib>
+      <schema>
+        <fileset dir="${outlines.dir}/galaxy" includes="**/*.xsd" />
+      </schema>
+    </build-jobqueue-service>
+    <zip-service name="galaxy" />
+  </target>
+
+  <target name="build-war-itraqquantitation" depends="prepare-cagrid-itraqquantitation">
+    <build-war name="itraqquantitation" />
+  </target>
+
+  <target name="build-war-proteomicsconvert" depends="prepare-cagrid-proteomicsconvert">
+    <build-war name="proteomicsconvert" />
+  </target>
+
+  <target name="build-war-rawextract" depends="prepare-cagrid-rawextract">
+    <build-war name="rawextract" />
+  </target>
+
+  <target name="build-war-xtandem" depends="prepare-cagrid-xtandem">
+    <build-war name="xtandem" />
+  </target>
+
+  <target name="build-war-sequest" depends="prepare-cagrid-sequest">
+    <build-war name="sequest" />
+  </target>
+
+  <target name="build-war-omssa" depends="prepare-cagrid-omssa">
+    <build-war name="omssa" />
+  </target>
+
+  <target name="build-war-scaffold" depends="prepare-cagrid-scaffold">
+    <build-war name="scaffold" />
+  </target> 
+
+  <target name="build-war-bowtie" depends="prepare-cagrid-bowtie">
+    <build-war name="bowtie" />
+  </target>
+
+  <target name="build-war-galaxy" depends="prepare-cagrid-galaxy">
+    <build-war name="galaxy" />
+  </target>
+
+  <target name="build-war-myrimatch" depends="prepare-cagrid-myrimatch">
+    <build-war name="myrimatch" />
+  </target>
+
+  <target name="build-war-idpicker" depends="prepare-cagrid-idpicker">
+    <build-war name="idpicker" />
+  </target>
+
+  <target name="build-war-tagrecon" depends="prepare-cagrid-tagrecon">
+    <build-war name="tagrecon" />
+  </target>
+
+  <target name="build-war-inspect" depends="prepare-cagrid-inspect">
+    <build-war name="inspect" />
+  </target>
+
+  <target name="recreate-cagrid" depends="recreate-cagrid-sequest, recreate-cagrid-xtandem,recreate-cagrid-scaffold,recreate-cagrid-omssa,recreate-cagrid-rawextract,recreate-cagrid-itraqquantitation,recreate-cagrid-bowtie,recreate-cagrid-proteomicsconvert, recreate-cagrid-galaxy, recreate-cagrid-myrimatch, recreate-cagrid-idpicker, recreate-cagrid-inspect, recreate-cagrid-tagrecon" />
+
+  <target name="prepare-cagrid-sequest" depends="prepare" >
+    <prepare-cagrid name="sequest" />
+  </target>
+  
+  <target name="prepare-cagrid-scaffold" depends="prepare">
+    <prepare-cagrid name="scaffold" />
+  </target>
+
+  <target name="prepare-cagrid-xtandem" depends="prepare">
+    <prepare-cagrid name="xtandem" />
+  </target>
+
+  <target name="prepare-cagrid-omssa" depends="prepare">
+    <prepare-cagrid name="omssa" />
+  </target>
+
+  <target name="prepare-cagrid-rawextract" depends="prepare">
+    <prepare-cagrid name="rawextract" />
+  </target>
+
+  <target name="prepare-cagrid-itraqquantitation" depends="prepare">
+    <prepare-cagrid name="itraqquantitation" />
+  </target>
+
+  <target name="prepare-cagrid-bowtie" depends="prepare">
+    <prepare-cagrid name="bowtie" />
+  </target>
+
+  <target name="prepare-cagrid-proteomicsconvert" depends="prepare">
+    <prepare-cagrid name="proteomicsconvert" />
+  </target>
+
+  <target name="prepare-cagrid-galaxy" depends="prepare">
+    <prepare-cagrid name="galaxy" />
+  </target>
+  
+  <target name="prepare-cagrid-myrimatch" depends="prepare">
+    <prepare-cagrid name="myrimatch" />
+  </target>
+
+  <target name="prepare-cagrid-idpicker" depends="prepare">
+    <prepare-cagrid name="idpicker" />
+  </target>
+
+  <target name="prepare-cagrid-tagrecon" depends="prepare">
+    <prepare-cagrid name="tagrecon" />
+  </target>
+
+  <target name="prepare-cagrid-inspect" depends="prepare">
+    <prepare-cagrid name="inspect" />
+  </target>
+  
+  <macrodef name="compile-cagrid">
+    <attribute name="name" />
+    <sequential>
+      <ant antfile="${build.cagrid.dir}/@{name}/build.xml" target="jars" inheritAll="false" dir="${build.cagrid.dir}/@{name}">
+        <property name="env.GLOBUS_LOCATION" value="${ext.globus.dir}" />
+        <property name="ext.globus.dir" value="${ext.globus.dir}" />
+        <property name="deploy.dir" value="${ext.globus.dir}" />
+      </ant>
+    </sequential>
+  </macrodef>
+
+  <target name="compile-cagrid-sequest" depends="prepare-cagrid-sequest">
+    <compile-cagrid name="sequest" />
+  </target>
+
+  <target name="compile-cagrid-scaffold" depends="prepare-cagrid-scaffold">
+    <compile-cagrid name="scaffold" />
+  </target>
+
+  <target name="compile-cagrid-xtandem" depends="prepare-cagrid-xtandem">
+    <compile-cagrid name="xtandem" />
+  </target>
+
+  <target name="compile-cagrid-omssa" depends="prepare-cagrid-omssa">
+    <compile-cagrid name="omssa" />
+  </target>
+
+  <target name="compile-cagrid-rawextract" depends="prepare-cagrid-rawextract">
+    <compile-cagrid name="rawextract" />
+  </target>
+
+  <target name="compile-cagrid-itraqquantitation" depends="prepare-cagrid-itraqquantitation">
+    <compile-cagrid name="itraqquantitation" />
+  </target>
+
+  <target name="compile-cagrid-bowtie" depends="prepare-cagrid-bowtie">
+    <compile-cagrid name="bowtie" />
+  </target>
+
+  <target name="compile-cagrid-proteomicsconvert" depends="prepare-cagrid-proteomicsconvert">
+    <compile-cagrid name="proteomicsconvert" />
+  </target>
+
+  <target name="compile-cagrid-galaxy" depends="prepare-cagrid-galaxy">
+    <compile-cagrid name="galaxy" />
+  </target>
+
+  <target name="compile-cagrid-myrimatch" depends="prepare-cagrid-myrimatch">
+    <compile-cagrid name="myrimatch" />
+  </target>
+
+  <target name="compile-cagrid-idpicker" depends="prepare-cagrid-idpicker">
+    <compile-cagrid name="idpicker" />
+  </target>
+
+  <target name="compile-cagrid-tagrecon" depends="prepare-cagrid-tagrecon">
+    <compile-cagrid name="tagrecon" />
+  </target>
+
+  <target name="compile-cagrid-inspect" depends="prepare-cagrid-inspect">
+    <compile-cagrid name="inspect" />
+  </target>
+
+  <target name="prepare-cagrid" depends="prepare">
+    <for list="${services}" param="service" parallel="true">
+      <sequential>
+        <prepare-cagrid name="@{service}" />
+      </sequential>
+    </for>
+  </target>
+
+  <target name="compile-cagrid" depends="prepare">
+    <for list="${services}" param="service" parallel="true" threadCount="${build.threads}"> <!-- 4 seemed optimal, but was running out of memory in Windows -->
+      <sequential>
+        <prepare-cagrid name="@{service}" />
+        <compile-cagrid name="@{service}" />
+      </sequential>
+    </for>
+  </target>
+
+  <target name="build-war" depends="prepare-cagrid">
+    <for list="${services}" param="service" parallel="true" threadCount="${build.threads}">
+      <sequential>
+        <antcall target="build-war-@{service}" />
+        <!--<build-war name="@{service}" /> -->
+      </sequential>
+    </for>
+  </target>
+
+  <target name="prepare-directories">
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${wars.dir}" />
+    <mkdir dir="${ext.dir}" />
+    <mkdir dir="${jars.dir}" />
+  </target>
+
+  <target name="prepare" depends="cache-dependencies,check-globus,prepare-directories" />
+ 	
+  <target name="clean">
+    <delete dir="${ext.dir}" />
+    <delete dir="${build.dir}" />
+  </target>
+
+  <target name="all" depends="pre.publish" />
+
+
+  <macrodef name="copy-libs">
+    <attribute name="modulename" />
+    <attribute name="servicename" />
+    <attribute name="conf" />
+    <sequential>
+      <copy file="${build.cagrid.dir}/@{conf}/build/lib/@{servicename}-client.jar" tofile="${jars.dir}/tropix-@{modulename}-client.jar" />
+      <copy file="${build.cagrid.dir}/@{conf}/build/lib/@{servicename}-common.jar" tofile="${jars.dir}/tropix-@{modulename}-common.jar" />
+      <copy file="${build.cagrid.dir}/@{conf}/build/lib/@{servicename}-stubs.jar" tofile="${jars.dir}/tropix-@{modulename}-stubs.jar" />
+      <copy file="${build.cagrid.dir}/@{conf}/build/lib/@{servicename}-service.jar" tofile="${jars.dir}/tropix-@{modulename}-service.jar" />
+    </sequential>
+  </macrodef>
+
+  <target name="copy-cagrid-libs_">
+    <copy-libs modulename="proteomics-service-sequest" servicename="Sequest" conf="sequest" />
+    <copy-libs modulename="proteomics-service-scaffold" servicename="Scaffold" conf="scaffold" />
+    <copy-libs modulename="proteomics-service-xtandem" servicename="XTandem" conf="xtandem" />
+    <copy-libs modulename="proteomics-service-rawextract" servicename="RawExtract" conf="rawextract" />
+    <copy-libs modulename="proteomics-service-omssa" servicename="Omssa" conf="omssa" />
+    <copy-libs modulename="proteomics-service-itraqquantitation" servicename="ITraqQuantitation" conf="itraqquantitation" />
+    <copy-libs modulename="proteomics-service-proteomicsconvert" servicename="ProteomicsConvert" conf="proteomicsconvert" />
+    <copy-libs modulename="genomics-service-bowtie" servicename="Bowtie" conf="bowtie" />
+    <copy-libs modulename="galaxy-service" servicename="Galaxy" conf="galaxy" />
+    <copy-libs modulename="proteomics-service-myrimatch" servicename="MyriMatch" conf="myrimatch" />
+    <copy-libs modulename="proteomics-service-idpicker" servicename="IdPicker" conf="idpicker" />
+    <copy-libs modulename="proteomics-service-tagrecon" servicename="TagRecon" conf="tagrecon" />
+    <copy-libs modulename="proteomics-service-inspect" servicename="Inspect" conf="inspect" />
+  </target>
+  
+  <target name="pre.publish" depends="compile-cagrid,copy-cagrid-libs_">
+  </target>
+
+  <target name="dist" depends="publish, build-war" />
+  
+</project>

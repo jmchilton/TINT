@@ -1,0 +1,36 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-ssh-server" />
+  
+  <configurations>
+    <conf name="default" description="Default" visibility="public" />
+    <conf name="test" description="Tests" extends="default" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-ssh-server-impl" type="jar" conf="default" ext="jar" />
+    <artifact name="tropix-ssh-server-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="org.codehaus.cargo" name="cargo-ant" rev="1.1.2">
+      <exclude org="jdom" />
+      <exclude org="dom4j" />
+      <exclude org="com.sun.xml.bind" />
+      <exclude org="javax.xml.bind" />
+      <exclude org="javax.xml.stream" />
+      <exclude org="xerces" />
+      <exclude org="xml-apis" />
+    </dependency>
+
+    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${project.version}" conf="default->impl;test->test" />
+<!--    <dependency org="msi.umn.edu" name="tropix-storage-client" rev="${project.version}" conf="test->test" /> -->
+    <dependency org="msi.umn.edu" name="tropix-auth" rev="${project.version}" conf="default->impl" />
+    <dependency org="org.apache.sshd" name="apache-sshd" rev="0.6.0-SNAPSHOT" />
+    <dependency org="com.jcraft" name="jsch" rev="0.1.44-1" />
+  </dependencies>  
+
+</ivy-module>

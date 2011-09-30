@@ -1,0 +1,6 @@
+http\://msi.umn.edu/proteomics/bioml=edu.umn.msi.tropix.proteomics.bioml.cagrid
+http\://msi.umn.edu/proteomics/utils/fileSet=edu.umn.msi.tropix.common.io.fileset.cagrid
+http\://sashimi.sourceforge.net/schema_revision/mzXML_3.0=net.sourceforge.sashimi.mzxml.v3_0.cagrid
+gme\://edu.umn.msi.tropix/0.1/edu.umn.msi.tropix.models=edu.umn.msi.tropix.models.cagrid
+http\://msi.umn.edu/tropix/proteomics/cagrid/metadata=edu.umn.msi.tropix.proteomics.cagrid.metadata
+http\://msi.umn.edu/tropix/proteomics/queue/ticket=edu.umn.msi.tropix.proteomics.queue.ticket

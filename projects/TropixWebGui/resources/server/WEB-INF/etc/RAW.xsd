@@ -1,0 +1,23 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="http://msi.umn.edu/tropix/webgui/RAW"
+      xmlns="http://msi.umn.edu/tropix/webgui/RAW"
+      elementFormDefault="qualified">
+
+  <xsd:element name="precursorMassToleranceForGrouping" type="positiveDouble" />
+  <xsd:element name="minimumPeakSignalToNoiseRatio" type="positiveDouble" />
+
+  <xsd:element name="massRangeLower" type="positiveDouble" />
+  <xsd:element name="massRangeUpper" type="positiveDouble" />
+  <xsd:element name="minimumMajorPeaksPerDtaFile" type="xsd:positiveInteger" />
+  <xsd:element name="minimumGroupedScansPerDtaFile" type="xsd:nonNegativeInteger" />
+  <xsd:element name="minimumIonsPerDtaFile" type="xsd:nonNegativeInteger" />
+  <xsd:element name="allowedIntermediateScansForGrouping" type="xsd:nonNegativeInteger" />  
+  <xsd:element name="useCharge" type="xsd:boolean" />
+
+  <xsd:simpleType name="positiveDouble">
+    <xsd:restriction base="xsd:double">
+      <xsd:minExclusive value="0.0" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+</xsd:schema>

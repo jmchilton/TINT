@@ -1,0 +1,27 @@
+<ns1:Deployment deploymentPrefix="cagrid" serviceDeploymentDirName="cagrid_TransferService" serviceName="TransferService" xsi:type="ns1:Deployment" xmlns:ns1="gme://gov.nih.nci.cagrid.introduce/1/Deployment" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <Jars xsi:type="ns1:Jars">
+  <Jar location="." name="caGrid-ServiceSecurityProvider-client-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="commons-codec-1.3.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-metadata-security-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="globus_wsrf_mds_aggregator_stubs.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-advertisement-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-Transfer-common-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-Introduce-serviceTools-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="globus_wsrf_servicegroup_stubs.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-Transfer-service-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="ivy-1.2.xml" xsi:type="ns1:Jar"/>
+  <Jar location="." name="castor-0.9.9.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-ServiceSecurityProvider-common-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-metadata-common-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-Transfer-client-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-Transfer-tests-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-ServiceSecurityProvider-service-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-ServiceSecurityProvider-stubs-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="jdom-1.0.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="globus_wsrf_servicegroup.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-core-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="caGrid-Transfer-stubs-1.2.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="commons-httpclient-3.0.jar" xsi:type="ns1:Jar"/>
+  <Jar location="." name="globus_wsrf_mds_aggregator.jar" xsi:type="ns1:Jar"/>
+ </Jars>
+</ns1:Deployment>

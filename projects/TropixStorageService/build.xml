@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="Tropix Storage" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors">
+  <description>
+  </description>
+
+  <property environment="env" />
+  <property file="build.properties" />
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <property name="cagrid.dir" value="${basedir}/cagrid" />
+  <property name="build.cagrid.dir" value="${build.dir}/cagrid" />
+ 
+  <target name="prepare" depends="define-classpaths">
+    <preparedirs />
+  </target>
+
+  <target name="prepare-introduce" depends="jar">
+    <copy todir="${cagrid.dir}/lib" flatten="true">
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*.jar" />
+      <fileset dir="${jars.dir}" includes="**/*.jar" />
+    </copy>
+  </target>
+
+  <target name="clean-introduce">
+    <delete>
+      <fileset dir="${cagrid.dir}/lib" includes="**/*.jar" />
+    </delete>
+    <delete dir="${cagrid.dir}/build" />
+  </target>
+
+  <target name="resync-cagrid" depends="jar,prepare-introduce">
+    <resyncservice cagriddir="${ext.cagrid.dir}" globusdir="${ext.globus.dir}" servicedir="${cagrid.dir}" />
+    <resyncservice cagriddir="${ext.cagrid.dir}" globusdir="${ext.globus.dir}" servicedir="${cagrid.dir}" />
+    <antcall target="clean-introduce" />
+    <cleanGeneratedSource dir="${cagrid.dir}/src" />
+    <cleanIntroduceBuildFiles dir="${cagrid.dir}" />
+  </target>
+  
+  <target name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="build.classpath">
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+      <pathelement path="${build.classes.dir}/client" />
+      <pathelement path="${build.classes.dir}/server" />
+    </path>
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/server" />
+      <pathelement path="${src.dir}/client" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${build.classes.dir}/server" />
+      <pathelement path="${build.classes.dir}/client" />
+      <fileset dir="${jars.dir}" includes="tropix-storage-service-cagrid-*" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}/" />
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+  
+  <target name="compile" depends="prepare">
+    <compileconfs />
+  </target>
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="client,server" />
+  </target>
+
+  <target name="checkstyle" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="findbugs" depends="jar">
+    <runfindbugs />
+  </target>
+  
+  <target name="jar" description="Builds a jar file" depends="compile">
+    <jarconfs />
+  </target>
+  
+  <target name="prepare-cagrid" depends="prepare">
+    <delete dir="${build.cagrid.dir}" />
+    <copy todir="${build.cagrid.dir}">
+      <fileset dir="${cagrid.dir}" />
+    </copy>
+    <build-ivy-jar name="cagrid-dependencies-storage" jarfile="${build.cagrid.dir}/lib/ivy-dependencies.jar" />
+    <copy todir="${build.cagrid.dir}/lib" flatten="true">
+      <restrict>
+        <fileset refid="ivy.fileset"/>
+        <rsel:or>
+          <rsel:name name="*caGrid*" />
+          <rsel:name name="*jdom*" />
+        </rsel:or>
+      </restrict>
+    </copy>
+    <!--
+    <copy todir="${build.cagrid.dir}/lib" flatten="true">
+      <fileset refid="ivy.fileset" />
+    </copy>
+    -->
+  </target>
+  
+  <target name="generate-stubs" depends="prepare-cagrid">
+    <ant antfile="${build.cagrid.dir}/build.xml" target="stubs" inheritAll="false" dir="${build.cagrid.dir}">
+      <property name="ext.globus.dir" value="${ext.globus.dir}" />
+      <property name="deploy.dir" value="${ext.globus.dir}" />
+    </ant>
+    <cleanGeneratedSource dir="${build.cagrid.dir}/build/stubs-TropixStorage/src" />
+  </target>
+  
+  <target name="jar-cagrid" depends="jar,prepare-cagrid">
+    <copy todir="${build.cagrid.dir}/lib" flatten="true">
+      <fileset dir="${jars.dir}" includes="**/*.jar" />
+    </copy>
+    <ant antfile="${build.cagrid.dir}/build.xml" target="jars" inheritAll="false" dir="${build.cagrid.dir}">
+      <property name="env.GLOBUS_LOCATION" value="${ext.globus.dir}" />
+      <property name="ext.globus.dir" value="${ext.globus.dir}" />
+      <property name="deploy.dir" value="${ext.globus.dir}" />
+    </ant>
+    <cleanGeneratedSource dir="${build.cagrid.dir}/build/stubs-TropixStorage/src" />
+    
+    <copy file="${build.cagrid.dir}/build/lib/TropixStorage-client.jar"  tofile="${jars.dir}/tropix-storage-service-cagrid-client.jar" />
+    <copy file="${build.cagrid.dir}/build/lib/TropixStorage-common.jar"  tofile="${jars.dir}/tropix-storage-service-cagrid-common.jar" />
+    <copy file="${build.cagrid.dir}/build/lib/TropixStorage-stubs.jar"   tofile="${jars.dir}/tropix-storage-service-cagrid-stubs.jar"/>
+    <copy file="${build.cagrid.dir}/build/lib/TropixStorage-service.jar" tofile="${jars.dir}/tropix-storage-service-cagrid-service.jar" />
+  </target>
+
+  <target name="war" depends="jar-cagrid">
+    <build-war name="caGridTransfer" cagridproj="${build.cagrid.dir}" types="transfer">
+      <extra>
+        <fileset dir="${basedir}/war-files" includes="**/*" />
+      </extra>
+    </build-war>
+  </target>
+
+  <target name="test" depends="compile,resolve-dependencies">
+    <runtestng />
+  </target>
+
+  <target name="test-coverage" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.storage.*" />
+  </target>
+
+  <target name="init" depends="generate-stubs" />
+
+  <target name="clean">
+    <cleandirs />
+  </target>
+  
+  <target name="all" depends="jar-cagrid" />
+  
+  <target name="dist" depends="publish, war, test-coverage, findbugs, checkstyle, javadoc" />
+
+</project>

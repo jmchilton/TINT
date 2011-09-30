@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/proteomics/scaffold/config"
+            xmlns="http://msi.umn.edu/proteomics/scaffold/config"
+            elementFormDefault="qualified">
+
+  <xsd:element name="scaffoldConfig">
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="scaffoldPath" minOccurs="1" maxOccurs="1" type="xsd:string" />
+	<xsd:element name="scaffoldTempDirectory" minOccurs="1" maxOccurs="1" type="xsd:string" />
+	<xsd:element name="scaffoldKeyPath" minOccurs="0" maxOccurs="1" type="xsd:string" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
+

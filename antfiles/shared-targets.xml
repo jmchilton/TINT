@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Shared Ant Definitions" xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+    Shared ant definitions.
+  </description>
+
+  <property environment="env" />
+
+  <dirname property="shared.antfiles.dir" file="${shared-targets.file}" />
+  <property file="${shared.antfiles.dir}/shared.properties" />
+
+  <!-- Shared Tasks -->
+
+  <!-- Initialize ant-contrib tasks. -->
+  <taskdef resource="net/sf/antcontrib/antlib.xml"> <!-- loaderref="artifact"> -->
+    <classpath>
+      <fileset dir="${shared.antfiles.lib.dir}">
+        <include name="ant-contrib*.jar" />
+      </fileset>
+    </classpath>
+  </taskdef>
+  
+  <taskdef resource="checkstyletask.properties" classpath="${shared.tools.dir}/checkstyle-all-5.1.jar"/>
+
+  <macrodef name="runcheckstyle">
+    <attribute name="build" default="${build.dir}" />
+    <attribute name="src" default="${src.dir}" />
+    <sequential>
+      <checkstyle config="${shared.antfiles.dir}/style.xml" failOnViolation="false">
+        <fileset dir="@{src}" includes="**/*.java"/>
+        <formatter type="xml" toFile="@{build}/checkstyle-result.xml"/>
+        <property key="java.header" file="${shared.licenses.dir}/${license.type}_header.txt" />
+        <property key="suppressions" value="${shared.antfiles.dir}/suppressions.xml" />
+      </checkstyle>
+    </sequential>
+  </macrodef>
+
+
+  <target name="update-headers">
+    <loadfile property="javaheader" srcFile="${shared.licenses.dir}/${license.type}_header.txt"/>
+    <replaceregexp match="(/\*.*\*/.*)??^package " flags="sm"
+                   replace="${javaheader}${line.separator}package ">
+      <fileset dir="${src.dir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </replaceregexp>
+  </target>
+
+  <if>
+    <isset property="env.FINDBUGS_HOME" />
+    <then>
+      <property name="ext.findbugs.dir" value="${env.FINDBUGS_HOME}" />
+    </then>
+    <else>
+      <property name="ext.findbugs.dir" value="${shared.tools.dir}/findbugs-1.3.7" />
+    </else>
+  </if>
+
+  <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+    <classpath>
+      <fileset dir="${ext.findbugs.dir}" includes="**/*.jar" />
+    </classpath>
+  </taskdef>
+  
+  <macrodef name="runfindbugs">
+    <attribute name="output" default="xml" />
+    <attribute name="build" default="${build.dir}" />
+    <attribute name="classpath" default="compile.classpath" />
+    <attribute name="effort" default="min" />
+    <attribute name="confs" default="${confs}" />
+    <sequential>
+      <mkdir dir="@{build}/findbugs-classes" />
+      <mkdir dir="@{build}/findbugs-src" />
+      <for list="@{confs}" param="conf" parallel="true">
+	      <sequential>
+	        <copy toDir="@{build}/findbugs-classes">
+	          <fileset dir="${build.classes.dir}/@{conf}" />
+	        </copy>
+	        <copy toDir="@{build}/findbugs-src">
+            <fileset dir="${src.dir}/@{conf}" />
+            <fileset dir="${build.src.dir}/@{conf}" />
+	        </copy>
+	      </sequential>	
+      </for>
+      <!-- Reduced error to min, was running out of heap space on hudson server -->
+      <findbugs home="${ext.findbugs.dir}" output="@{output}" outputFile="@{build}/findbugs.@{output}" reportLevel="low" effort="@{effort}" excludeFilter="${shared.antfiles.dir}/findbugs_global_excludes.xml" jvmargs="-Xmx512m">
+	      <class location="@{build}/findbugs-classes" />
+	      <sourcePath path="@{build}/findbugs-src" />
+        <auxClasspath refid="@{classpath}" />
+      </findbugs>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="runtestng">
+    <attribute name="classpath" default="test.classpath" />
+    <attribute name="output" default="${testng.report.dir}" />
+    <attribute name="file" default="${testng.conf}" />
+    <attribute name="emma" default="${build.coverage.dir}/coverage.emma" />
+    <sequential>
+      <if>
+	<isset property="test.pattern" />
+	<then>
+	  <testng annotations="JDK" classpathref="@{classpath}" outputDir="@{output}">
+	    <classfileset dir="${build.classes.dir}/test/" includes="**/${test.pattern}.class" />
+	    <jvmarg value="-Demma.coverage.out.file=@{emma}" />
+	    <jvmarg value="-Demma.coverage.out.merge=true" />
+	  </testng>
+	</then>
+	<else>
+	  <for list="@{file}" param="thisfile" parallel="false">
+	    <sequential>
+	      <testng annotations="JDK" classpathref="@{classpath}" outputDir="@{output}">
+		<xmlfileset file="@{thisfile}" />
+		<jvmarg value="-Demma.coverage.out.file=@{emma}" />
+		<jvmarg value="-Demma.coverage.out.merge=true" />
+	      </testng>
+	    </sequential>
+	  </for>
+	</else>
+      </if>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="dojdepend">
+    <attribute name="classpath" default="test.classpath" />
+    <sequential>
+      <delete dir="${build.jdepend.classes.dir}" />
+      <copy-classes dest="${build.jdepend.classes.dir}" />
+      <jdepend outputfile="${build.dir}/jdepend-report.xml" format="xml" fork="true">
+        <classpath>
+          <fileset dir="${shared.antfiles.lib.dir}">
+            <include name="jdepend*.jar" />
+          </fileset>
+        </classpath>
+        <classespath>
+          <pathelement location="${build.jdepend.classes.dir}" />
+        </classespath>
+      </jdepend>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="preparedirs">
+    <sequential>
+      <mkdir dir="${build.dir}" />
+      <mkdir dir="${jars.dir}" />
+      <mkdir dir="${wars.dir}" />
+      <mkdir dir="${build.classes.dir}" />
+      <mkdir dir="${build.src.dir}" />
+      <mkdir dir="${build.classpaths.dir}" />
+      <for list="${confs}" param="conf">
+	      <sequential>
+	        <mkdir dir="${build.classes.dir}/@{conf}" />
+	        <mkdir dir="${build.src.dir}/@{conf}" />
+	      </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+
+
+  <macrodef name="build-ivy-jar">
+    <attribute name="name" />
+    <attribute name="jarfile" />
+    <sequential>
+      <if>
+        <not>
+          <isset property="@{name}" />
+        </not>
+        <then>
+          <echo message="Name @{name} jarfile @{jarfile}" />
+          <manifestclasspath property="@{name}" jarfile="@{jarfile}" maxParentLevels="50">
+            <classpath>
+              <fileset refid="ivy.fileset" />
+            </classpath>
+          </manifestclasspath>
+        </then>
+      </if>
+      <jar jarfile="@{jarfile}">
+        <manifest>
+      	  <attribute name="Class-Path" value="${@{name}}" />
+        </manifest>
+  	  </jar>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="defineivyclasspath">
+    <sequential>
+      <if>
+        <or>
+          <os family="windows" />
+        </or>
+        <then>
+          <mkdir dir="${build.dir}" />
+          <mkdir dir="${build.classpaths.dir}" />
+          <build-ivy-jar name="ivy.internal.resolved.artifacts" jarfile="${build.classpaths.dir}/ivy-resolved-artifacts.jar" />
+          <path id="ivy.path">
+            <pathelement location="${build.classpaths.dir}/ivy-resolved-artifacts.jar" />
+          </path>
+        </then>
+        <else>
+          <path id="ivy.path">
+            <path refid="raw.ivy.path" />
+          </path>
+        </else>
+      </if>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="cleandirs">
+    <sequential>
+      <delete dir="${ext.dir}" />
+      <delete dir="${build.dir}" />
+    </sequential>
+  </macrodef>
+
+  <!-- This copies class files that are not stubs and not test 
+       classes into the specified directory. -->
+  <macrodef name="copy-classes">
+    <attribute name="dest" />
+    <sequential>
+      <for list="${confs}" param="conf">
+        <sequential>
+          <if>
+            <not>
+              <or>
+                <equals arg1="@{conf}" arg2="stubs" />
+                <equals arg1="@{conf}" arg2="test" />
+              </or>
+            </not>
+          <then>
+            <copy toDir="@{dest}">
+              <fileset dir="${build.classes.dir}/@{conf}" />
+            </copy>
+          </then>
+          </if>
+        </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="preparetestclasses">
+    <sequential>
+      <delete dir="${build.test.classes.dir}" />
+      <copy-classes dest="${build.test.classes.dir}" />
+    </sequential>
+  </macrodef>
+    
+  <macrodef name="jarconf">
+    <attribute name="conf" />
+    <attribute name="suffix" default="-@{conf}" />
+    <attribute name="jar" default="tropix-${short.name}@{suffix}.jar" />
+    <sequential>
+      <jar destfile="${jars.dir}/@{jar}" basedir="${build.classes.dir}/@{conf}">
+	      <fileset dir="${resources.dir}/@{conf}" />
+	      <fileset dir="${src.dir}/@{conf}" />
+	      <fileset dir="${build.src.dir}/@{conf}" />
+      </jar>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="compileconf">
+    <attribute name="conf" />
+    <sequential>
+      <compile-java destdir="${build.classes.dir}/@{conf}">
+	      <src path="${src.dir}/@{conf}" />
+	      <src path="${build.src.dir}/@{conf}" />
+	      <classpath refid="compile.classpath" />
+      </compile-java>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="compileconfs">
+    <sequential>
+      <for list="${confs}" param="conf">
+	      <sequential>
+	        <compileconf conf="@{conf}" />
+	      </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+    
+  <macrodef name="jarconfs">
+    <sequential>
+      <for list="${confs}" param="conf" parallel="true">
+	      <sequential>
+	        <if>
+	          <equals arg1="@{conf}" arg2="main" />
+	          <then>
+	            <jarconf conf="@{conf}" suffix="" />
+	          </then>
+	          <else>
+	            <jarconf conf="@{conf}" />
+	          </else>
+	        </if>
+	      </sequential>
+      </for>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="dojavadoc">
+    <attribute name="confs" />
+    <sequential>
+      <mkdir dir="${build.dir}/doc-src" />
+      <for list="${confs}" param="conf">
+	<sequential>
+	  <copy toDir="${build.dir}/doc-src">
+            <fileset dir="${src.dir}/@{conf}" />
+            <fileset dir="${build.src.dir}/@{conf}" />
+	  </copy>
+	</sequential>
+      </for>
+      <javadoc destdir="${build.doc.dir}">
+	<packageset dir="${build.dir}/doc-src" />
+	<classpath refid="compile.classpath" />
+      </javadoc>
+      <delete dir="${build.dir}/doc-src" />
+    </sequential>
+  </macrodef>
+    
+  <macrodef name="setupemma">
+    <attribute name="coveragedir" default="${build.coverage.dir}" />
+    <attribute name="classesdir" default="${build.test.classes.dir}" />
+    <attribute name="filter" />
+    <sequential>
+      <preparetestclasses />
+      <delete dir="@{coveragedir}" />
+      <mkdir dir="@{coveragedir}" />
+      <emma enabled="true" verbosity="verbose">
+        <instr instrpath="@{classesdir}" mode="overwrite" metadatafile="@{coveragedir}/metadata.emma">
+          <filter value="@{filter}" />
+        </instr>
+      </emma>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="finishemma">
+    <attribute name="coveragedir" default="${build.coverage.dir}" />
+    <attribute name="confs" default="${confs}" />
+    <attribute name="coverage.src.dir" default="${build.dir}/coverage-src" />
+    <sequential>
+      <for list="@{confs}" param="conf" parallel="true">
+	<sequential>
+	  <copy toDir="@{coverage.src.dir}">
+	    <fileset dir="${src.dir}/@{conf}" />
+	  </copy>	  
+	</sequential>
+      </for>
+      <emma enabled="true" verbosity="trace2">
+        <report sourcepath="@{coverage.src.dir}" sort="+block,+name,+method,+class" metrics="method:100,block:90,line:80,class:100">
+          <fileset dir="${build.coverage.dir}">
+            <include name="*.emma" />
+          </fileset>
+          <txt outfile="${build.coverage.dir}/coverage.txt" depth="method" columns="class,method,block,line,name" />
+          <xml outfile="${build.coverage.dir}/coverage.xml" depth="method" />
+          <html outfile="${build.coverage.dir}/coverage.html" depth="method" columns="name,class,method,block,line" />
+        </report>
+      </emma>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="runemma">
+    <attribute name="filter" />
+    <attribute name="file" default="${testng.conf}" />
+    <sequential>
+      <setupemma filter="@{filter}" />
+      <runtestng file="@{file}" />
+      <finishemma />
+    </sequential>
+  </macrodef>
+
+  <!-- Initialize ivy tasks. -->    
+  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+    <classpath>
+      <fileset dir="${shared.antfiles.lib.dir}">
+        <include name="ivy*.jar" />
+      </fileset>
+    </classpath>
+  </taskdef>
+      
+  <!-- Initialize testng for testing -->
+  <taskdef resource="testngtasks" >
+    <classpath>
+      <fileset dir="${shared.antfiles.lib.dir}">
+        <include name="testng*.jar" />
+      </fileset>
+    </classpath>
+  </taskdef>
+  
+      <!-- Intialize emma for coverage testing -->
+      <taskdef resource="emma_ant.properties">
+        <classpath>
+          <fileset dir="${shared.antfiles.lib.dir}">
+            <include name="emma*.jar" />
+          </fileset>
+        </classpath>
+      </taskdef>
+      
+      <!-- Initialize interfaces extension ant tasks -->
+      <typedef resource="edu/umn/msi/cagrid/introduce/interfaces/client/ant/types.xml">
+        <classpath>
+          <fileset dir="${shared.antfiles.lib.dir}">
+            <include name="interfacesExtension-client*.jar" />
+        </fileset>
+        </classpath>
+      </typedef>
+
+      <macrodef name="copy-tomcat">
+        <attribute name="parent" />
+        <sequential>
+          <mkdir dir="@{parent}/tomcat" />
+          <download-tomcat />
+          <copy todir="@{parent}/tomcat">
+            <fileset dir="${shared.tools.dir}/tomcat" />
+          </copy>
+        </sequential>
+      </macrodef>
+
+    
+      <macrodef name="copy-globus">
+        <attribute name="parent" />
+        <sequential>
+          <mkdir dir="@{parent}/ws-core" />
+          <download-globus />
+          <copy todir="@{parent}/ws-core">
+            <fileset dir="${shared.tools.dir}/ws-core" />
+          </copy>
+        </sequential>
+      </macrodef>
+
+      <macrodef name="build-war">
+        <attribute name="name" />
+        <attribute name="cagridproj" default="${build.cagrid.dir}/@{name}" />
+        <attribute name="scratch" default="${build.dir}/war-scratch/@{name}" />
+        <attribute name="types" default="insecure,secure" />
+        <attribute name="dest" default="${wars.dir}" />
+        <attribute name="globus" default="@{scratch}/ws-core" />
+        <attribute name="tomcat" default="@{scratch}/tomcat" />
+        <element name="extra" optional="true" />
+        <sequential>
+          <copy-globus parent="@{scratch}" />
+          <copy-tomcat parent="@{scratch}" />
+          <ant antfile="@{cagridproj}/build.xml" target="deployGlobus" inheritAll="false" dir="@{cagridproj}">
+            <property name="env.GLOBUS_LOCATION" value="${ext.globus.dir}" />
+            <property name="deploy.dir" value="@{globus}" />
+            <property name="ext.globus.dir" value="@{globus}" />
+            <property name="tomcat.dir" value="@{tomcat}" />
+          </ant>
+          <ant antfile="@{globus}/share/globus_wsrf_common/tomcat/tomcat.xml" target="deploySecureTomcat" inheritAll="false" dir="@{globus}/share/globus_wsrf_common/tomcat">
+          	<property name="env.GLOBUS_LOCATION" value="${ext.globus.dir}" />
+            <property name="deploy.dir" value="@{globus}" />
+            <property name="ext.globus.dir" value="@{globus}" />
+            <property name="tomcat.dir" value="@{tomcat}" />
+          </ant>
+          <!-- Copy common globus jars in case this isn't deployed into Globus configured tomcat. -->
+          <copy toDir="@{tomcat}/webapps/wsrf/WEB-INF/lib">
+            <fileset dir="@{tomcat}/common/lib" includes="*.jar" />
+          </copy>
+          <!-- If ivy-dependencies.jar is WEB-INF/lib, replace with actual dependencies. -->
+          <available file="@{tomcat}/webapps/wsrf/WEB-INF/lib/ivy-dependencies.jar" property="ivy.dependencies.jar.present" />
+          <if>
+            <isset property="ivy.dependencies.jar.present" />
+            <then>
+              <echo message="Replacing ivy-dependencies.jar with actual dependencies." />
+              <delete file="@{tomcat}/webapps/wsrf/WEB-INF/lib/ivy-dependencies.jar" />
+              <copy todir="@{tomcat}/webapps/wsrf/WEB-INF/lib/" flatten="true">
+                 <fileset refid="ivy.fileset" />
+              </copy>
+            </then>
+          </if>
+          <copy toDir="@{tomcat}/webapps/wsrf/"  failonerror="false" overwrite="true">
+            <fileset file="dummy" /> <!-- Ensures this is not empty -->
+            <extra />
+          </copy>
+          <for list="@{types}" param="type" parallel="false">
+            <sequential>
+              <mkdir dir="@{dest}/@{type}" />
+              <copy tofile="@{tomcat}/webapps/wsrf/WEB-INF/classes/log4j.properties" file="${shared.tools.dir}/cagrid-log4j.properties" overwrite="true" />
+              <copy tofile="@{tomcat}/webapps/wsrf/WEB-INF/web.xml" file="${shared.tools.dir}/web-@{type}.xml" overwrite="true" />
+              <if>
+                <equals arg1="@{type}" arg2="insecure" />
+                <then>
+                  <zip zipfile="@{dest}/@{type}/@{name}.war" basedir="@{tomcat}/webapps/wsrf" />
+                  <!-- If it is some sort of secure war, cog-jglobus will be common/lib and must
+                       be excludes or a bizzare class cast exception occurs. -->
+                </then>
+                <else>
+                  <zip zipfile="@{dest}/@{type}/@{name}.war" basedir="@{tomcat}/webapps/wsrf" excludes="**/cog-jglobus*.jar" />
+                </else>
+              </if>
+            </sequential>
+          </for>
+        </sequential>
+      </macrodef>
+
+      <!-- Shared properties -->
+
+
+      <!-- Initialize globus properties required for caGrid services -->
+      <if>
+        <and>
+          <isset property="env.GLOBUS_LOCATION"/>
+          <not>
+            <equals arg1="${env.GLOBUS_LOCATION}" arg2="" />
+          </not>
+        </and>
+        <then>
+          <property name="ext.globus.dir" value="${env.GLOBUS_LOCATION}" />          
+        </then>
+      </if>
+      
+      <!-- Initialize ext.cagrid.dir, required for resyncing caGrid services -->
+      <if>
+        <isset property="env.CAGRID_LOCATION" />
+        <then>
+          <property name="ext.cagrid.dir" value="${env.CAGRID_LOCATION}" />
+        </then>
+      </if>
+
+      <!-- Ivy properties. -->
+      <property name="ivy.project.version" value="latest.integration" />
+
+      <property name="integration.repository.dir" location="${shared.antfiles.dir}/../integration-repository" />
+     
+      <!-- Directory to put loccated artifacts into, by convention this is the ext.dir -->
+      <property name="ivy.resolved.artifacts.dir" location="${ext.dir}" />
+      <!-- Pattern used to determine where to place resolved dependencies -->
+      <property name="ivy.resolved.artifacts.pattern" value="${ivy.resolved.artifacts.dir}/dependencies/[conf]/[type]s/[originalname](.[ext])" />
+
+
+      <!-- Directory generated artifacts is found in, by convention this is the build directory. -->
+      <property name="ivy.generated.artifacts.dir" location="${build.dir}" />
+      <!-- Pattern used to locate generated artifacts -->
+      <property name="ivy.generated.artifacts.pattern" value="${ivy.generated.artifacts.dir}/[type]s/[artifact].[ext]" />
+
+      <!-- Ivy configurations to resolve, by convention each project has a private all configuration 
+           that extends all other configurations. -->
+      <property name="ivy.resolve.configurations" value="all" />
+      
+      <!-- Ivy artifact types to fetch, by default only jars are fetched. -->
+      <property name="ivy.resolve.type" value="jar" />
+
+      <!-- Ivy xml file -->
+      <property name="ivy.xml.file" location="ivy.xml" />
+
+      <!-- Ivy setup -->
+      <ivy:settings id="ivy.instance" file="${shared.antfiles.dir}/ivysettings-eclipse.xml" />
+
+      <ivy:info file="${ivy.xml.file}" />
+
+   
+
+  <!-- Ivy targets. -->
+  <target name="cache-dependencies">
+    <ivy:resolve />
+    <ivy:cachefileset setid="ivy.fileset" />
+	  <ivy:cachepath pathid="raw.ivy.path" />
+    <if>	
+      <isset property="confs" />
+      <then>
+        <for list="@{confs}" param="conf" parallel="true">
+          <sequential>
+            <ivy:cachefileset setid="ivy.@{conf}.fileset" />
+            <ivy:cachepath pathid="ivy.@{conf}.path" />
+          </sequential>
+        </for>
+      </then>
+    </if>
+    <defineivyclasspath />
+  </target>
+  
+  <!-- Deprecated! -->
+  <target name="resolve-dependencies" description="This target is used to resolve the project's dependencies, and copy them locally" depends="cache-dependencies">
+    <ivy:retrieve conf="${ivy.resolve.configurations}" pattern="${ivy.resolved.artifacts.pattern}" sync="true" type="${ivy.resolve.type}" />
+  </target>
+
+  <macrodef name="print-classpath">
+    <attribute name="classpathref" />
+    <sequential>
+      <property name="@{classpathref}.as.property" refid="@{classpathref}" />
+      <echo message="Classpath @{classpathref} is ${@{classpathref}.as.property}" />
+    </sequential>
+  </macrodef>
+  
+  <target name="print-classpath" description="Prints Ivy classpath" depends="resolve-dependencies">
+    <defineivyclasspath />
+    <property name="ivy.classpath.as.property" refid="ivy.path"/>
+    <echo message="Ivy classpath is ${ivy.classpath.as.property}" />
+  </target>
+
+  <target name="report-dependencies" depends="cache-dependencies">
+    <ivy:report todir="${ivy.resolved.artifacts.dir}" graph="false" />
+  </target>
+
+  <target name="publish" depends="all">
+    <ivy:publish pubrevision="${project.version}" resolver="default" update="true" overwrite="true">
+      <artifacts pattern="${ivy.generated.artifacts.pattern}" />
+    </ivy:publish>
+  </target>
+
+  <target name="define-globus-types-task" depends="check-globus">
+    <typedef name="typeartifacts" classname="edu.umn.msi.cagrid.introduce.interfaces.client.ant.PrepareTypeArtifactsTask">
+      <classpath>
+        <fileset dir="${shared.antfiles.lib.dir}">
+          <include name="interfacesExtension-client*.jar" />
+        </fileset>
+      </classpath>
+    </typedef>
+    <typedef name="schema" classname="edu.umn.msi.cagrid.introduce.interfaces.client.ant.PrepareTypeArtifactsTask$Schema">
+      <classpath>
+        <fileset dir="${shared.antfiles.lib.dir}">
+          <include name="interfacesExtension-client*.jar" />
+        </fileset>
+      </classpath>
+  </typedef>  
+
+  </target>
+
+  <macrodef name="generate-globus-types">
+    <attribute name="globusdir"/>
+    <attribute name="workdir" />
+    <attribute name="targetdir" />
+    <attribute name="extransexcludes" default="" />
+    <element name="mappings" />
+    <sequential>
+      <mkdir dir="@{workdir}" />
+      <typeartifacts wsdlFile="@{workdir}/types.wsdl" namespaceMappingFile="@{workdir}/namespace2package.mappings-imported">
+        <mappings />
+      </typeartifacts>
+      <concat destfile="@{workdir}/namespace2package.mappings">
+        <filelist dir="@{globusdir}/share/globus_wsrf_core" files="NStoPkg.properties"/>
+        <filelist dir="@{workdir}" files="namespace2package.mappings-imported"/>
+      </concat>
+      <ant antfile="@{globusdir}/share/globus_wsrf_tools/build-stubs.xml" target="generateStubs" inheritall="false">
+        <property name="deploy.dir" location="@{globusdir}" />
+        <property name="mapping.file" location="@{workdir}/namespace2package.mappings" />
+        <property name="source.stubs.dir" location="@{workdir}" />
+        <property name="target.stubs.dir" location="@{targetdir}" />
+        <property name="wsdl.file" value="types.wsdl" />
+        <property name="ns.excludes" value="-x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ServiceGroup-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ServiceGroup-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.wsdl -x http://schemas.xmlsoap.org/ws/2004/04/trust -x http://schemas.xmlsoap.org/ws/2002/12/policy -x http://schemas.xmlsoap.org/ws/2002/07/utility -x http://schemas.xmlsoap.org/ws/2004/04/sc -x http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd -x http://www.w3.org/2000/09/xmldsig# -x http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd -x http://schemas.xmlsoap.org/ws/2004/09/enumeration @{extransexcludes}" />
+      </ant>
+    </sequential>
+  </macrodef>
+
+
+
+  <!-- check targets -->
+
+  <macrodef name="download-globus">
+    <sequential>
+      <available file="${shared.tools.dir}/ws-core" property="shared.globus.dir.exists" />
+      <if>
+        <not>
+          <isset property="shared.globus.dir.exists" />
+        </not>
+        <then>
+          <echo message="Downloading globus core" />
+          <get src="${globus.url}" dest="${shared.tools.dir}/ws-core.zip" />
+          <unzip src="${shared.tools.dir}/ws-core.zip" dest="${shared.tools.dir}" />
+          <move file="${shared.tools.dir}/ws-core-4.0.3" toFile="${shared.tools.dir}/ws-core" />
+        </then>
+      </if>      
+    </sequential>
+  </macrodef>
+
+  <macrodef name="download-tomcat">
+    <sequential>
+      <available file="${shared.tools.dir}/tomcat" property="shared.tomcat.dir.exists" />
+      <if>
+        <not>
+          <isset property="shared.tomcat.dir.exists" />
+        </not>
+        <then>
+          <echo message="Downloading Tomcat from ${tomcat.url}" />
+          <get src="${tomcat.url}" dest="${shared.tools.dir}/tomcat.zip" />
+          <unzip src="${shared.tools.dir}/tomcat.zip" dest="${shared.tools.dir}" />
+          <move file="${shared.tools.dir}/apache-tomcat-5.5.20" tofile="${shared.tools.dir}/tomcat" />
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
+  
+  <target name="check-globus">
+    <if>
+      <and>
+        <isset property="env.GLOBUS_LOCATION"/>
+        <not>
+          <equals arg1="${env.GLOBUS_LOCATION}" arg2="" />
+        </not>
+      </and>
+      <then>
+        <echo message="Setting globus location environment variable specified ${env.GLOBUS_LOCATION}" />
+        <property name="ext.globus.dir" value="env.GLOBUS_LOCATION" />
+      </then>
+      <elseif>
+        <not>
+          <isset property="ext.globus.dir" />
+        </not>
+        <then>
+          <download-globus />
+          <echo message="Setting ext.globus.dir to ${shared.tools.dir}/ws-core" />
+          <property name="ext.globus.dir" value="${shared.tools.dir}/ws-core" />
+          <echo message="ext.globus.dir is ${ext.globus.dir}" />
+        </then>
+      </elseif>
+    </if>
+      <property name="build.stubs" location="build-stubs.xml" />
+      <property name="schema.src" location="${ext.globus.dir}/share/schema" />
+      <property name="build.packages" location="${ext.globus.dir}/share/globus_wsrf_common/build-packages.xml" />
+      <property name="GT4.ns.excludes" value="-x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ServiceGroup-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ServiceGroup-1.2-draft-01.wsdl -x http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd -x http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.wsdl -x http://schemas.xmlsoap.org/ws/2004/04/trust -x http://schemas.xmlsoap.org/ws/2002/12/policy -x http://schemas.xmlsoap.org/ws/2002/07/utility -x http://schemas.xmlsoap.org/ws/2004/04/sc -x http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd -x http://www.w3.org/2000/09/xmldsig# -x http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd -x http://schemas.xmlsoap.org/ws/2004/09/enumeration" />    
+    
+  <path id="ext.globus.classpath">
+    <fileset dir="${ext.globus.dir}/lib" includes="addressing*.jar" />
+    <fileset dir="${ext.globus.dir}/lib" includes="commons-collections*.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_transfer_service.jar" />
+    <pathelement location="${ext.globus.dir}/lib/naming-common.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_test_interop.jar" />
+    <pathelement location="${ext.globus.dir}/lib/axis.jar" />
+    <pathelement location="${ext.globus.dir}/lib/commons-digester.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_transfer_stubs_java.jar" />
+    <pathelement location="${ext.globus.dir}/lib/naming-factory.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_registry.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_test_interop_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/axis-url.jar" />
+    <pathelement location="${ext.globus.dir}/lib/commons-discovery.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_transfer_test.jar" />
+    <pathelement location="${ext.globus.dir}/lib/naming-java.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_registry_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_test.jar" />
+    <pathelement location="${ext.globus.dir}/lib/bootstrap.jar" />
+    <pathelement location="${ext.globus.dir}/lib/commons-logging.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_usage_core.jar" />
+    <pathelement location="${ext.globus.dir}/lib/naming-resources.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_samples_authzService.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_test_unit.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cog-axis.jar" />
+    <pathelement location="${ext.globus.dir}/lib/concurrent.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_usage_packets_common.jar" />
+    <pathelement location="${ext.globus.dir}/lib/opensaml.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_samples_authzService_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_test_unit_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cog-jglobus.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cryptix32.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_wsrf_tools_test.jar" />
+    <pathelement location="${ext.globus.dir}/lib/puretls.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_samples_counter.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_tools.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cog-tomcat.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cryptix-asn1.jar" />
+    <pathelement location="${ext.globus.dir}/lib/jaxrpc.jar" />
+    <pathelement location="${ext.globus.dir}/lib/resolver.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_samples_counter_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wss4j.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cog-url.jar" />
+    <pathelement location="${ext.globus.dir}/lib/cryptix.jar" />
+    <fileset dir="${ext.globus.dir}/lib" includes="jce*.jar" />
+    <pathelement location="${ext.globus.dir}/lib/saaj.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_samples_mgmt.jar" />
+    <pathelement location="${ext.globus.dir}/lib/xalan.jar" />
+    <pathelement location="${ext.globus.dir}/lib/commonj.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_resolution_service.jar" />
+    <pathelement location="${ext.globus.dir}/lib/jgss.jar" />
+    <pathelement location="${ext.globus.dir}/lib/servlet.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_samples_mgmt_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/xercesImpl.jar" />
+    <pathelement location="${ext.globus.dir}/lib/commons-beanutils.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_resolution_stubs_java.jar" />
+    <pathelement location="${ext.globus.dir}/lib/junit.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsdl4j.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_core_stubs.jar" />
+    <pathelement location="${ext.globus.dir}/lib/xml-apis.jar" />
+    <fileset dir="${ext.globus.dir}/lib" includes="commons-cli*.jar" />
+    <pathelement location="${ext.globus.dir}/lib/globus_resolution_test.jar" />
+    <fileset dir="${ext.globus.dir}/lib" includes="log4j*.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_common.jar" />
+    <pathelement location="${ext.globus.dir}/lib/wsrf_provider_jce.jar" />
+    <pathelement location="${ext.globus.dir}/lib/xmlsec.jar" />
+  </path>    
+  </target>
+
+  <target name="checkCaGrid">
+    <condition property="cagrid.not.found">
+      <or>
+        <not>
+          <isset property="ext.cagrid.dir" />
+        </not>
+        <equals arg1="${ext.cagrid.dir}" arg2="" />
+      </or>
+    </condition>
+    <fail message="caGrid installation is not set in either CAGRID_LOCATION or ext.cagrid.dir" if="cagrid.not.found" />
+    <echo message="caGrid: ${ext.cagrid.dir}" />
+  </target> 
+
+
+  <macrodef name="cleanGeneratedSource">
+    <attribute name="serializable" default="false" />
+    <attribute name="dir" />
+    <sequential>
+      <if>
+        <equals arg1="@{serializable}" arg2="true" />
+        <then>
+          <replaceregexp flags="s">
+            <regexp pattern="public ([^\{]*)\{" />
+            <substitution expression="/* CHECKSTYLE:OFF */@SuppressWarnings(&quot;all&quot;) public \1 implements java.io.Serializable {" />
+            <fileset dir="@{dir}" includes="**/*java" />
+          </replaceregexp>          
+        </then>
+        <else>
+          <replaceregexp flags="m">
+            <regexp pattern="^public(.*)$" />
+            <substitution expression="/* CHECKSTYLE:OFF */@SuppressWarnings(&quot;all&quot;) public\1" />
+            <fileset dir="@{dir}" includes="**/*java" />
+          </replaceregexp>
+        </else>
+      </if>
+      <!--
+      <replace dir="@{dir}">
+        <include name="**/*.java" />
+        <replacetoken><![CDATA[
+public]]></replacetoken>
+        <replacevalue><![CDATA[
+/* CHECKSTYLE:OFF */@SuppressWarnings("all") public]]></replacevalue>
+      </replace>
+      -->
+      <replace dir="@{dir}">
+        <include name="**/package-info.java" />
+        <replacetoken><![CDATA[
+package]]></replacetoken>
+        <replacevalue><![CDATA[
+/* CHECKSTYLE:OFF */package]]></replacevalue>
+      </replace>        
+    </sequential>
+  </macrodef>
+
+  <macrodef name="cleanIntroduceBuildFiles">
+    <attribute name="dir" />
+    <sequential>
+      <replace file="@{dir}/build.xml">
+        <replacefilter token="javac srcdir" value="javac target=&quot;${javac.target}&quot; fork=&quot;true&quot; srcdir" />
+      </replace>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="compile-java">
+    <attribute name="destdir" />
+    <element name="javac-elements" implicit="true" />
+    <sequential>
+      <javac debug="true" debuglevel="lines,vars,source" target="${javac.target}" destdir="@{destdir}" fork="true" >
+        <javac-elements />
+      </javac>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="build-script">
+    <attribute name="classname" />
+    <attribute name="script" />
+    <attribute name="build.classpath" default="compile.classpath" />
+    <sequential>
+      <java classname="edu.umn.msi.tropix.common.tools.BuildManifest" classpathref="@{build.classpath}">
+        <arg value="${build.scripts.dir}" />
+	<arg value="${build.scripts.scratch.dir}/@{classname}-manifest" />
+        <arg value="@{classname}" />
+      </java>
+      <copy file="${script.template.file}" toFile="${build.scripts.dir}/@{script}" />
+      <replace file="${build.scripts.dir}/@{script}" token="@JAR_NAME@" value="@{script}.jar" />
+      <chmod file="${build.scripts.dir}/@{script}" perm="u+x" />
+      <jar destfile="${build.scripts.dir}/@{script}.jar" manifest="${build.scripts.scratch.dir}/@{classname}-manifest" />
+    </sequential>
+  </macrodef>
+
+  <macrodef name="start-jetty">
+    <attribute name="port" />
+    <sequential>
+      <taskdef resource="cargo.tasks" classpathref="test.classpath" />
+      <!-- TODO: Create property -->
+      <delete dir="${build.dir}/test-tropix-config-dir" />
+      <mkdir dir="${build.dir}/test-tropix-config.dir" />
+
+      <cargo containerId="jetty7x" output="build/jetty.log" log="build/cargo.log" action="start" timeout="0">
+	<zipUrlInstaller
+	    installUrl="http://download.eclipse.org/jetty/7.2.2.v20101205/dist/jetty-distribution-7.2.2.v20101205.tar.gz"
+	    downloadDir="${build.dir}/downloads"
+	    extractDir="${build.dir}/extracts" />
+	<sysproperty key="tropix.config.dir" value="${build.dir}/test-tropix-config-dir"/>
+	<!-- Don't redownload artifacts -->
+	<sysproperty key="tropix.repository.config.dir" value="${user.home}/.tropix/repository" />
+	<sysproperty key="java.endorsed.dirs" value="${env.JAVA_HOME}/jre/lib/endorsed:${env.JAVA_HOME}/lib/endorsed" />
+	<sysproperty key="java.ext.dirs" value="${env.JAVA_HOME}/jre/lib/ext:${env.JAVA_HOME}/lib/ext" />
+	<configuration>
+	  <property name="cargo.servlet.port" value="@{port}"/>
+	  <property name="cargo.logging" value="medium"/>
+	  <deployable type="war" file="${build.war.dir}">
+	  </deployable>
+	</configuration>
+      </cargo>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="zip-scripts">
+    <attribute name="prefix" />
+    <sequential>
+      <zip destfile="${build.dir}/@{prefix}.zip">
+	<zipfileset dir="${build.scripts.dir}" prefix="@{prefix}" />
+      </zip>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="package-scripts">
+    <attribute name="classname" />
+    <attribute name="script" />
+    <attribute name="build.classpath" default="compile.classpath" />
+    <sequential>
+      <mkdir dir="${build.scripts.dir}" />
+      <mkdir dir="${build.scripts.scratch.dir}" />
+      <mkdir dir="${build.scripts.dir}/lib" />
+
+      <copy todir="${build.scripts.dir}/lib" flatten="true">
+	<fileset refid="ivy.fileset" />
+	<fileset dir="${jars.dir}" includes="**/*.jar" />
+      </copy>
+
+      <copy todir="${build.scripts.dir}" flatten="false">
+	<fileset dir="${shared.licenses.dir}" includes="**/*" />
+      </copy>
+      
+      <copy todir="${build.scripts.dir}">
+	<fileset file="${notice.file}" />
+	<fileset file="${license.file}" />
+      </copy>
+
+      <build-script classname="@{classname}" script="@{script}" />
+      
+    </sequential>    
+  </macrodef>
+
+  <!-- globus core classpath -->
+  <!--  <fileset dir="${ext.globus.dir}/lib" includes="*.jar" /> might cover more version of globus, but globus
+       fills with junk as services get deployed causing conflicting versions of jars to stick around which gets difficult to 
+       debug. The jars listed here are only those that appear in a fresh install of Globus 4.0.3 with enum patch.
+   -->
+
+
+  
+</project>

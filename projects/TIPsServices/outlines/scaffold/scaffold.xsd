@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/proteomics/scaffold/input"
+            xmlns="http://msi.umn.edu/proteomics/scaffold/input"
+            elementFormDefault="qualified">
+  <xsd:element name="Scaffold">
+    <xsd:complexType>
+        <xsd:sequence>
+            <xsd:element name="Experiment" type="Experiment" />
+        </xsd:sequence>       
+    </xsd:complexType>
+  </xsd:element>
+    
+  <xsd:complexType name="Experiment">
+      <xsd:sequence>
+        <xsd:element name="FastaDatabase" type="FastaDatabase" minOccurs="1" maxOccurs="unbounded" />
+        <!-- leave modifications out for now. -->
+        <xsd:element name="BiologicalSample" type="BiologicalSample" minOccurs="1" maxOccurs="unbounded" />
+        <xsd:element name="DisplayThresholds" type="DisplayThresholds" minOccurs="1" maxOccurs="unbounded" />
+        <xsd:element name="Export" type="Export" minOccurs="1" maxOccurs="unbounded" />
+        <!-- leaving out custom thresholds for now. -->
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+      <xsd:attribute name="description" type="xsd:string" use="optional" />
+      <xsd:attribute name="load" type="xsd:string" use="optional" />
+      <xsd:attribute name="peakListGenerator" type="xsd:string" use="optional" />
+      <xsd:attribute name="peakListGeneratorVersion" type="xsd:string" use="optional" />
+      <xsd:attribute name="peakListDeisotoped" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="password" type="xsd:string" use="optional" />
+      <xsd:attribute name="protectThresholds" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="protectDisplaySettings" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="protectExportSpectra" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="analyzeWithTandem" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="connectToNCBI" type="xsd:boolean" use="optional" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="QuantitativeModel">
+    <xsd:sequence>
+      <xsd:element name="QuantitativeSample" type="QuantitativeSample" minOccurs="1" maxOccurs="unbounded" />
+      <xsd:element name="PurityCorrection" minOccurs="1" maxOccurs="1" type="xsd:string" />
+    </xsd:sequence>
+    <xsd:attribute name="type" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="QuantitativeSample">
+    <xsd:attribute name="name" type="xsd:string" />
+    <xsd:attribute name="category" type="xsd:string" />
+    <xsd:attribute name="description" type="xsd:string" />
+    <xsd:attribute name="primary" type="xsd:boolean" />
+    <xsd:attribute name="reporter" type="xsd:string" />
+  </xsd:complexType>
+
+
+  <xsd:complexType name="FastaDatabase">
+      <xsd:attribute name="id" type="xsd:string" use="required" />
+      <xsd:attribute name="path" type="xsd:string" use="required" />
+      <xsd:attribute name="databaseAccessionRegEx" type="xsd:string" use="optional" />
+      <xsd:attribute name="databaseDescriptionRegEx" type="xsd:string" use="optional" />
+      <xsd:attribute name="decoyProteinRegEx" type="xsd:string" use="optional" />
+      <xsd:attribute name="name" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="BiologicalSample">
+      <xsd:sequence>
+        <xsd:element name="QuantitativeModel" type="QuantitativeModel" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="InputFile" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="analyzeAsMudpit" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="database" type="xsd:string" use="required" />
+      <xsd:attribute name="name" type="xsd:string" use="optional" />
+      <xsd:attribute name="category" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="DisplayThresholds">
+    <xsd:sequence>
+      <xsd:element name="MascotThresholds" type="MascotThresholds" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="SequestThresholds" type="SequestThresholds" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="TandemThresholds" type="TandemThresholds" minOccurs="0" maxOccurs="1" />            
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:string" use="required" />
+    <xsd:attribute name="name" type="xsd:string" use="optional" />
+    <xsd:attribute name="proteinProbability" type="xsd:float" use="optional" />
+    <xsd:attribute name="minimumPeptideCount" type="xsd:int" use="optional" />
+    <xsd:attribute name="peptideProbability" type="xsd:float" use="optional" />
+    <xsd:attribute name="minimumNTT" type="xsd:int" use="optional" />
+    <xsd:attribute name="useCharge" type="xsd:string" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="SequestThresholds">
+    <xsd:attribute name="xCorrs" type="xsd:string" use="optional" />
+    <xsd:attribute name="deltaCn" type="xsd:float" use="optional" />
+  </xsd:complexType>
+
+  <xsd:complexType name="MascotThresholds">
+    <xsd:attribute name="ionMinusIdentityScore" type="xsd:int" use="optional" />
+    <xsd:attribute name="ionScores" type="xsd:string" use="optional" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="TandemThresholds">
+    <xsd:attribute name="logExpectScores" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+  <xsd:simpleType name="ExportType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="sfd" />
+      <xsd:enumeration value="protxml" />
+      <xsd:enumeration value="sf3" />
+      <xsd:enumeration value="spectrum-report" />
+      <xsd:enumeration value="statistics" />
+      <xsd:enumeration value="peptide-report" />
+      <xsd:enumeration value="protein-report" />
+      <xsd:enumeration value="experiment-report" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="Export">
+      <xsd:attribute name="type" type="ExportType" use="required" />
+      <xsd:attribute name="path" type="xsd:string" use="required" />
+      <xsd:attribute name="thresholds" type="xsd:string" use="required" />
+      <xsd:attribute name="displayBioSamples" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="experimentDisplayType" type="xsd:string" use="optional" />
+      <xsd:attribute name="saveFrozen" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="uploadToTranche" type="xsd:boolean" use="optional" />
+      <xsd:attribute name="trancheTitle" type="xsd:string" use="optional" />
+      <xsd:attribute name="trancheFilePassword" type="xsd:string" use="optional" />
+  </xsd:complexType>
+
+</xsd:schema>
+

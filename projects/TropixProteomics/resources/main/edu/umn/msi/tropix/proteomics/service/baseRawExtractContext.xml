@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <context:annotation-config/> 
+  
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="rawextractConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="rawextract" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="rawextract" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="rawextract.staging.type" value="system" />
+        <entry key="rawextract.produces.mzxml" value="true" />     
+        <entry key="rawextract.execution.type" value="system" />   
+      </map>
+    </property>
+  </bean>
+
+  <import resource="classpath:edu/umn/msi/tropix/proteomics/rawextract/deployerContext.xml" />
+
+  <bean id="rawExtractJobFactory" class="edu.umn.msi.tropix.proteomics.rawextract.impl.RawExtractJobFactoryImpl" parent="jobProcessorFactoryParent">
+    <property name="dtaToMzXMLConverter">
+      <bean class="edu.umn.msi.tropix.proteomics.conversion.impl.DTAToMzXMLConverterImpl" />
+    </property>
+    <property name="applicationPath">
+      <bean factory-bean="rawExtractApplicationDeployerProperties" factory-method="get" />
+    </property>
+    <property name="producesMzxml" value="${rawextract.produces.mzxml}" />
+    <property name="credentialedStagingDirectoryFactory" ref="${rawextract.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="executionType" value="${rawextract.execution.type}" />
+  </bean>  
+  
+  <bean id="rawExtractService" class="edu.umn.msi.tropix.proteomics.service.impl.RawExtractJobQueueContextImpl" parent="queueServiceParent">
+    <property name="rawExtractJobBuilder" ref="rawExtractJobFactory" />
+  </bean>
+          
+</beans>

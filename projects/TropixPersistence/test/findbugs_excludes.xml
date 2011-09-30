@@ -1,0 +1,4 @@
+<FindBugsFilter>
+  <Package name="edu.umn.msi.tropix.persistence.service.jobinfo" />
+  <Package name="edu.umn.msi.tropix.persistence.service.permission" />
+</FindBugsFilter>

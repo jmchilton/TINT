@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://msi.umn.edu/tropix/common/jobqueue/queueStatus"
+            xmlns="http://msi.umn.edu/tropix/common/jobqueue/queueStatus"
+            elementFormDefault="qualified">
+
+  <xsd:element name="QueueStatus" type="QueueStatus" />
+
+  <xsd:complexType name="QueueStatus">
+    <xsd:sequence>
+      <xsd:element name="size" type="xsd:int" />
+      <xsd:element name="active" type="xsd:boolean" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>            

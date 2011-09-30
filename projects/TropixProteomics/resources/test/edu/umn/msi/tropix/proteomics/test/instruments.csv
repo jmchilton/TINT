@@ -1,0 +1,27 @@
+// Data obtained from http://www.matrixscience.com/help/search_field_help.html
+ ,Default,ESI QUAD TOF,MALDI TOF PSD,ESI TRAP,ESI QUAD,ESI FTICR,MALDI TOF TOF,ESI 4 SECT,FTMS ECD,ETD TRAP,MALDI QUAD TOF,MALDI QIT TOF
+1+ fragments,X,X,X,X,X,X,X,X,X,X,X,X
+2+ fragments if precursor 2+ or higher,X,X, ,X,X,X, ,X,X,X,X, 
+2+ fragments if precursor 3+ or higher, , , , , , , , , , , , 
+Immonium ions, , ,X, , , ,X,X, , ,X,X
+a series ions,X, ,X, , , ,X,X, , , ,X
+a-NH3 if fragment includes RKNQ,X, ,X, , , ,X, , , , ,X
+a-H2O if fragment includes STED, , ,X, , , ,X, , , , ,X
+b series ions,X,X,X,X,X,X,X,X, , ,X,X
+b-NH3 if fragment includes RKNQ,X,X,X,X,X,X,X,X, , ,X,X
+b-H2O if fragment includes STED, ,X,X,X,X,X,X,X, , ,X,X
+c series ions, , , , , , , , ,X,X, , 
+x series ions, , , , , , , , , , , , 
+y series ions,X,X,X,X,X,X,X,X,X,X,X,X
+y-NH3 if fragment includes RKNQ,X,X, ,X,X,X,X, , , ,X,X
+y-H2O if fragment includes STED, ,X, ,X,X,X,X, , , ,X,X
+z series ions, , , , , , , ,X, , , , 
+z+H series ions, , , , , , , , ,X,X, , 
+z+2H series ions, , , , , , , , ,X,X, , 
+internal yb < 700 Da, , , , , , ,X,X, , ,X,X
+internal ya < 700 Da, , , , , , ,X,X, , ,X,X
+y or y++ must be significant, , , , , , , , , , , , 
+y or y++ must be top scoring series, , , , , , , , , , , , 
+d or d' series ions, , , , , , ,X, , , , , 
+v series ions, , , , , , ,X, , , , , 
+w or w' series ions, , , , , , ,X, , , , , 

@@ -1,0 +1,40 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-messaging" />
+  
+  <configurations>
+    <conf name="api" visibility="public" />
+    <conf name="impl" extends="api" visibility="public" /> 
+    <conf name="test" description="Tests" extends="impl" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-messaging-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-messaging-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-messaging-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    <dependency org="javax.jms" name="com.springsource.javax.jms" rev="1.1.0" conf="impl->runtime"/>
+    <dependency org="org.springframework" name="org.springframework.jms" rev="${spring.version}" conf="impl->runtime" />
+    <dependency org="org.apache.activemq" name="activemq-core" rev="5.5.0" conf="impl->default">
+      <exclude org="org.springframework" />
+    </dependency>
+
+    <dependency org="org.apache.xbean" name="xbean-spring" rev="3.8" conf="impl->master" />
+    <dependency org="org.apache.activemq" name="activemq-camel" rev="5.5.0" conf="impl->master" />
+     <dependency org="org.apache.camel" name="camel-jms" rev="2.8.0" conf="impl->runtime,master">
+      <exclude org="org.springframework" />
+    </dependency>
+    
+    <dependency org="org.apache.camel" name="camel-spring" rev="2.8.0" conf="impl->runtime,master">
+      <exclude org="org.springframework" />
+    </dependency>
+
+  </dependencies>
+
+</ivy-module>

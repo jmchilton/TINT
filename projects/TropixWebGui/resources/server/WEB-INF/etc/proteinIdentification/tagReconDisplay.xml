@@ -1,0 +1,59 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <tabs>
+    <tab name="Basic">
+      <table>
+        <row>
+          <cell><label text="Cleavage Agent" /></cell>
+          <cell><input widget="selection" parameter="cleavageRules" /></cell>
+          <cell><label text="Max Missed Cleavage Sites" /></cell>
+          <cell><input widget="textbox" parameter="numMaxMissedCleavages" width="60"  /></cell>
+        </row>          
+        <row>
+          <cell><label text="Precursor Mz Tolerance" /></cell>
+          <cell><input widget="textbox" parameter="precursorMzTolerance" width="60" /></cell>
+          <cell><label text="Fragment Mz Tolerance" /></cell>
+          <cell><input widget="textbox" parameter="fragmentMzTolerance" width="60" /></cell>
+        </row>
+        <row>
+          <cell><label text="Deisotoping Mode" /></cell>
+          <cell><input widget="selection" parameter="deisotopingMode" /></cell>
+          <cell><label text="Isotoping Mz Tolerance " /></cell>
+          <cell><input widget="textbox" parameter="isotopeMzTolerance" width="60" /></cell>
+        </row>
+        <row>
+          <cell><label text="Static Mods" /></cell>
+          <cell><input widget="textbox" parameter="staticMods" width="60" /></cell>
+          <cell><label text="Dynamic Mods" /></cell>
+          <cell><input widget="textbox" parameter="dynamicMods" width="60" /></cell>
+        </row>
+      </table>
+    </tab>
+    <tab name="DirecTag">
+      <table>
+        <row>
+          <cell><label text="Intensity Score Weight" /></cell>
+          <cell><input widget="textbox" parameter="intensityScoreWeight" width="60" /></cell>
+          <cell><label text="Mz Fidelity Score Weight" /></cell>
+          <cell><input widget="textbox" parameter="mzFidelityScoreWeight" width="60" /></cell>
+        </row>
+        <row>
+          <cell><label text="Complement Score Weight" /></cell>
+          <cell><input widget="textbox" parameter="complementScoreWeight" width="60" /></cell>
+          <cell><label text="Tag Length" /></cell>
+          <cell><input widget="textbox" parameter="tagLength" width="60" /></cell>
+        </row>
+      </table>
+    </tab>
+    <tab name="TagRecon">
+      <table>
+        <row>
+          <cell><label text="N-Terminus Mz Tolerance" /></cell>
+          <cell><input widget="textbox" parameter="nTerminusMzTolerance" width="60" /></cell>
+          <cell><label text="C-Terminus Mz Tolerance" /></cell>
+          <cell><input widget="textbox" parameter="cTerminusMzTolerance" width="60" /></cell>
+        </row>
+      </table>
+    </tab>
+  </tabs>
+</formConfiguration>

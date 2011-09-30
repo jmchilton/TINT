@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Persistence Test Suite" verbose="2" >
+  <test name="Persistence Test">
+    <groups>
+      <run><include name="persistence" /></run>
+    </groups>
+    <packages>
+      <package name="edu.umn.msi.tropix.common.jobqueue.*" />
+   </packages>
+ </test>
+</suite>
+

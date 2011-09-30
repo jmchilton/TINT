@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<project name="Tropix Grid Utils" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+
+  <property file="build.properties"/>
+  <property file="project.properties" />
+
+  <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
+  <import file="${shared-targets.file}" />
+
+  <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies,check-globus">
+    <path id="source.classpath">
+      <pathelement path="${src.dir}/main" />
+    </path>
+    <path id="compile.classpath">
+      <pathelement path="${java.class.path}"/>
+      <pathelement path="${build.classes.dir}/stubs" />
+      <pathelement path="${build.classes.dir}/main" />
+      <path refid="ivy.path" />
+      <path refid="ext.globus.classpath" />
+    </path>
+    <path id="test.classpath">
+      <pathelement path="${build.test.classes.dir}" /> 
+      <pathelement path="${build.classes.dir}/test" />
+      <pathelement path="${resources.dir}/main" />
+      <pathelement path="${resources.dir}/test" />
+      <path refid="compile.classpath" />
+    </path>
+  </target>
+
+  <target name="prepare" description="Sets up various build directories used by other task" depends="define-classpaths">
+    <preparedirs />
+  </target> 
+
+  <target name="clean" description="Cleans up build directories created by prepare"> 
+    <cleandirs />
+  </target>
+
+  <target name="setup-stubs" depends="prepare">
+    <copy todir="${build.src.dir}/stubs">
+      <fileset dir="${basedir}/transfer-stubs" />
+      <fileset dir="${basedir}/credential-stubs" />
+    </copy>
+    <cleanGeneratedSource dir="${build.src.dir}/stubs" />
+  </target>
+
+  <target name="init" depends="setup-stubs" />
+  
+  <target name="compile-java" description="Compiles Java source files" depends="setup-stubs">
+    <compileconfs />
+  </target>
+
+  <target name="compile" description="Compiles all code artifacts" depends="compile-java" />
+  
+  <target name="jar" description="Builds jar files" depends="compile">
+    <jarconfs />
+  </target> 
+  
+  <target name="test" description="Runs test cases" depends="compile">
+    <runtestng />
+  </target>
+
+  <target name="javadoc" depends="prepare">
+    <dojavadoc confs="stubs, main" />
+  </target>
+
+  <target name="test-coverage" description="Runs test cases and produces coverage report" depends="compile">
+    <runemma filter="+edu.umn.msi.tropix.grid.*" />
+  </target>
+
+  <target name="findbugs" description="Runs findbugs on java artifacts" depends="jar">
+    <runfindbugs confs="main,test" />
+  </target>
+
+  <target name="checkstyle" description="Runs checkstyle on java source files" depends="prepare">
+    <runcheckstyle />
+  </target>
+
+  <target name="all" description="Builds all artifacts" depends="jar" />
+
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  
+</project>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-labs" />
+  
+  <configurations>
+    <conf name="main" description="main" visibility="public" />
+    <conf name="test" description="Unit Tests" extends="main" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-labs" type="jar" conf="main" ext="jar" />
+    <artifact name="tropix-labs-test" type="jar" conf="test" ext="jar" />
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="main->service-impl-dao" />
+    <dependency org="msi.umn.edu" name="tropix-jobqueue" rev="${ivy.project.version}" conf="main->default" />
+    <dependency org="msi.umn.edu" name="tropix-storage-client" rev="${ivy.project.version}" conf="main->impls" />
+    <dependency org="net.sf.jpoller" name="jpoller"  rev="1.5.2" conf="main->default" />
+    <dependency org="edu.mayo" name="bobcat-legacy-api" rev="1.0" conf="main->default" />
+  </dependencies>  
+</ivy-module>

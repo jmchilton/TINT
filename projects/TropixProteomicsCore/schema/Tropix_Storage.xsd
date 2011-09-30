@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+	targetNamespace="http://storage.grid.tropix.mayo.edu/types"
+	xmlns:catr="http://transfer.cagrid.org/TransferService/Context/types"
+	xmlns:cds="http://cds.gaards.cagrid.org/CredentialDelegationService/DelegatedCredential/types"
+	xmlns:tns="http://storage.grid.tropix.mayo.edu/types"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	
+	<import namespace="http://transfer.cagrid.org/TransferService/Context/types"
+		schemaLocation="./TransferServiceContextTypes.xsd">
+	</import>
+	
+	<import namespace="http://cds.gaards.cagrid.org/CredentialDelegationService/DelegatedCredential/types"
+		schemaLocation="./DelegatedCredentialTypes.xsd">
+	</import>
+	
+	<xs:complexType name="UploadRequest">
+		<xs:sequence/>
+		<xs:attribute name="dataSize" type="long"/>
+		<xs:attribute name="metadataQName" type="string"/>
+		<xs:attribute name="metadataValue" type="string"/>
+	</xs:complexType>
+	
+	<xs:element name="UploadRequest" type="tns:UploadRequest"/>
+	
+	<xs:complexType name="UploadResponse">
+		<xs:sequence>
+			<xs:element ref="catr:TransferServiceContextReference"/>
+		</xs:sequence>
+		<xs:attribute name="dataIdentifier" type="string"/>
+	</xs:complexType>
+	
+	<xs:element name="UploadResponse" type="tns:UploadResponse"/>
+	
+	<xs:complexType name="DownloadRequest">
+		<xs:sequence/>
+		<xs:attribute name="dataIdentifier" type="string"/>
+	</xs:complexType>
+	
+	<xs:element name="DownloadRequest" type="tns:DownloadRequest"/>
+	
+	<xs:complexType name="DownloadResponse">
+		<xs:sequence>
+			<xs:element ref="catr:TransferServiceContextReference"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="DownloadResponse" type="tns:DownloadResponse"/>
+	
+	<xs:complexType name="TransferRequest">
+		<xs:sequence>
+			<xs:element ref="cds:DelegatedCredentialReference"/>
+		</xs:sequence>
+		<xs:attribute name="dataIdentifier" type="string"/>
+		<xs:attribute name="storageServiceUrl" type="anyURI"/>
+		
+	</xs:complexType>
+	
+	<xs:element name="TransferRequest" type="tns:TransferRequest"/>
+	
+	<xs:complexType name="TransferResponse">
+		<xs:sequence>
+			<xs:element ref="catr:TransferServiceContextReference"/>
+		</xs:sequence>
+		<xs:attribute name="dataIdentifier" type="string"/>
+	</xs:complexType>
+	
+	<xs:element name="TransferResponse" type="tns:TransferResponse"/>
+
+</schema>

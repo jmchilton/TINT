@@ -1,0 +1,38 @@
+<?xml version="1.0"?> 
+
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-models" />
+  
+  <configurations>
+    <conf name="core" description="Core models" visibility="public" />
+    <conf name="sequest" description="Sequest Parameter Model" visibility="public" />
+    <conf name="xtandem" description="X! Tandem Parameter Model" visibility="public" />
+    <conf name="default" description="All models and helpers" visibility="public" extends="core,sequest,xtandem" />
+    <conf name="all" description="All Dependencies" extends="default" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-models-beans" type="jar" conf="core" ext="jar" />
+    <artifact name="tropix-models-orm" type="jar" conf="core" ext="jar" />
+    <artifact name="tropix-models-xml" type="jar" conf="core" ext="jar" />
+    <artifact name="tropix-models-utils" type="jar" conf="core" ext="jar" />
+
+    <artifact name="tropix-models-sequest-beans" type="jar" conf="sequest" ext="jar" />
+    <artifact name="tropix-models-sequest-orm" type="jar" conf="sequest" ext="jar" />
+    <artifact name="tropix-models-sequest-xml" type="jar" conf="sequest" ext="jar" />
+    
+    <artifact name="tropix-models-xtandem-beans" type="jar" conf="xtandem" ext="jar" />
+    <artifact name="tropix-models-xtandem-orm" type="jar" conf="xtandem" ext="jar" />
+    <artifact name="tropix-models-xtandem-xml" type="jar" conf="xtandem" ext="jar" />
+  </publications>
+
+  <dependencies>
+    <dependency org="com.google.guava" name="guava" rev="r09"/>
+    <dependency org="cacore" name="client" rev="4.0" />
+    <dependency org="log4j" name="log4j" rev="1.2.16" />
+    <dependency org="org.testng" name="testng" rev="5.7" />
+    <dependency org="net.sf.emma" name="emma" rev="3.0.0" />
+  </dependencies>  
+</ivy-module>

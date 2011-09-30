@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models.xtandem">
+	<class name="XTandemParameters" table="X_TANDEM_PARAMETERS" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="PARAMETERS_ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the XTandemParameters class -->
+		<property name="outputHistogramColumnWidth" type="integer" column="OUTPUT_HISTOGRAM_COLUMN_WIDTH"/>
+		<property name="outputHistograms" type="boolean" column="OUTPUT_HISTOGRAMS"/>
+		<property name="outputMaximumValidExpectationValue" type="double" column="OUTPUT_MAXIMUM_VALID_EXPECTATION_VALUE"/>
+		<property name="outputOneSequencePerCopy" type="boolean" column="OUTPUT_ONE_SEQUENCE_PER_COPY"/>
+		<property name="outputPerformance" type="boolean" column="OUTPUT_PERFORMANCE"/>
+		<property name="outputProteins" type="boolean" column="OUTPUT_PROTEINS"/>
+		<property name="outputResults" type="string" column="OUTPUT_RESULTS"/>
+		<property name="outputSortResultsBy" type="string" column="OUTPUT_SORT_RESULTS_BY"/>
+		<property name="outputSequences" type="boolean" column="OUTPUT_SEQUENCES"/>
+		<property name="outputSpectra" type="boolean" column="OUTPUT_SPECTRA"/>
+		<property name="proteinCleavageCTerminalMassChange" type="double" column="PROTEIN_CLEAVAGE_C_TERMINAL_MASS_CHANGE"/>
+		<property name="proteinCleavageNTerminalMassChange" type="double" column="PROTEIN_CLEAVAGE_N_TERMINAL_MASS_CHANGE"/>
+		<property name="proteinCTerminalResidueModificationMass" type="double" column="PROTEIN_C_TERMINAL_RESIDUE_MODIFICATION_MASS"/>
+		<property name="proteinNTerminalResidueModificationMass" type="double" column="PROTEIN_N_TERMINAL_RESIDUE_MODIFICATION_MASS"/>
+		<property name="proteinCleavageSemi" type="boolean" column="PROTEIN_CLEAVAGE_SEMI"/>
+		<property name="proteinCleavageSite" type="string" column="PROTEIN_CLEAVAGE_SITE"/>
+		<property name="residueModificationMass" type="string" column="RESIDUE_MODIFICATION_MASS"/>
+		<property name="residuePotentialModificationMass" type="string" column="RESIDUE_POTENTIAL_MODIFICATION_MASS"/>
+		<property name="residuePotentialModificationMotif" type="string" column="RESIDUE_POTENTIAL_MODIFICATION_MOTIF"/>
+		<property name="scoringAIons" type="boolean" column="SCORING_A_IONS"/>
+		<property name="scoringBIons" type="boolean" column="SCORING_B_IONS"/>
+		<property name="scoringCIons" type="boolean" column="SCORING_C_IONS"/>
+		<property name="scoringXIons" type="boolean" column="SCORING_X_IONS"/>
+		<property name="scoringYIons" type="boolean" column="SCORING_Y_IONS"/>
+		<property name="scoringZIons" type="boolean" column="SCORING_Z_IONS"/>
+		<property name="scoringCyclicPermutation" type="boolean" column="SCORING_CYCLIC_PERMUTATION"/>
+		<property name="scoringIncludeReverse" type="boolean" column="SCORING_INCLUDE_REVERSE"/>
+		<property name="scoringMaximumMissedCleavageSites" type="integer" column="SCORING_MAXIMUM_MISSED_CLEAVAGE_SITES"/>
+		<property name="scoringMinimumIonCount" type="integer" column="SCORING_MINIMUM_ION_COUNT"/>
+		<property name="spectrumContrastAngle" type="double" column="SPECTRUM_CONTRAST_ANGLE"/>
+		<property name="spectrumDynamicRange" type="double" column="SPECTRUM_DYNAMIC_RANGE"/>
+		<property name="spectrumFragmentMassError" type="double" column="SPECTRUM_FRAGMENT_MASS_ERROR"/>
+		<property name="spectrumFragmentMassErrorUnits" type="string" column="SPECTRUM_FRAGMENT_MASS_ERROR_UNITS"/>
+		<property name="spectrumFragmentMassType" type="string" column="SPECTRUM_FRAGMENT_MASS_TYPE"/>
+		<property name="spectrumMinimumFragmentMZ" type="double" column="SPECTRUM_MINIMUM_FRAGMENT_M_Z"/>
+		<property name="spectrumMinimumPeaks" type="integer" column="SPECTRUM_MINIMUM_PEAKS"/>
+		<property name="spectrumMinimumParentMH" type="double" column="SPECTRUM_MINIMUM_PARENT_M_H"/>
+		<property name="spectrumNeutralLossMass" type="double" column="SPECTRUM_NEUTRAL_LOSS_MASS"/>
+		<property name="spectrumParentMonoisotopicMassErrorMinus" type="double" column="SPECTRUM_PARENT_MONOISOTOPIC_MASS_ERROR_MINUS"/>
+		<property name="spectrumParentMonoisotopicMassErrorPlus" type="double" column="SPECTRUM_PARENT_MONOISOTOPIC_MASS_ERROR_PLUS"/>
+		<property name="spectrumParentMonoisotopicMassErrorUnits" type="string" column="SPECTRUM_PARENT_MONOISOTOPIC_MASS_ERROR_UNITS"/>
+		<property name="spectrumParentMonoisotopicMassIsotopeError" type="boolean" column="SPECTRUM_PARENT_MONOISOTOPIC_MASS_ISOTOPE_ERROR"/>
+		<property name="spectrumTotalPeaks" type="integer" column="SPECTRUM_TOTAL_PEAKS"/>
+		<property name="spectrumUseNeutralLossWindow" type="boolean" column="SPECTRUM_USE_NEUTRAL_LOSS_WINDOW"/>
+		<property name="spectrumUseNoiseSuppression" type="boolean" column="SPECTRUM_USE_NOISE_SUPPRESSION"/>
+		<property name="spectrumUseContrastAngle" type="boolean" column="SPECTRUM_USE_CONTRAST_ANGLE"/>
+		<property name="spectrumNeutralLossWindow" type="double" column="SPECTRUM_NEUTRAL_LOSS_WINDOW"/>
+		<property name="refine" type="boolean" column="REFINE"/>
+		<property name="refineCleavageSemi" type="boolean" column="REFINE_CLEAVAGE_SEMI"/>
+		<property name="refineMaximumValidExpectationValue" type="double" column="REFINE_MAXIMUM_EXPECTATION_VALUE"/>
+		<property name="refineModificationMass" type="string" column="REFINE_MODIFICATION_MASS"/>
+		<property name="refinePotentialModificationMass" type="string" column="REFINE_POTENTIAL_MODIFICATION_MASS"/>
+		<property name="refinePotentialModificationMotif" type="string" column="REFINE_POTENTIAL_MODIFICATION_MOTIF"/>
+		<property name="refinePointMutations" type="boolean" column="REFINE_POINT_MUTATIONS"/>
+		<property name="refinePotentialNTerminusModifications" type="string" column="REFINE_POTENTIAL_N_TERMINUS_MODIFICATIONS"/>
+		<property name="refinePotentialCTerminusModifications" type="string" column="REFINE_POTENTIAL_C_TERMINUS_MODIFICATIONS"/>
+		<property name="refineSingleAminoAcidPolymorphisms" type="boolean" column="REFINE_SINGLE_AMINO_ACID_POLYMORPHISMS"/>
+		<property name="refineSpectrumSynthesis" type="boolean" column="REFINE_SPECTRUM_SYNTHESIS"/>
+		<property name="refineUnanticipatedCleavage" type="boolean" column="REFINE_UNANTICIPATED_CLEAVAGE"/>
+		<property name="refineUsePotentialModifications" type="boolean" column="REFINE_USE_POTENTIAL_MODIFICATIONS"/>
+		<property name="spectrumMaximumParentCharge" type="integer" column="SPECTRUM_MAXIMUM_PARENT_CHARGE"/>
+	</class>
+</hibernate-mapping>

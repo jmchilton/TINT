@@ -1,0 +1,34 @@
+<tool id="decoy_fasta" name="Create Decoy Database" version="0.1.0">
+  <description>Creates a decoy search database by adding reverse
+  sequences to an existing database.</description>
+
+  <command>
+    decoyFASTA ${input} ${output} ${include_original} -t${frequency} ${tag}
+    #for $extra_tag in $extra_tags
+    -t${extra_tag.frequency} ${extra_tag.tag} 
+    #end for
+  </command>
+
+  <inputs>
+    <param format="fasta" name="input" type="data" label="FASTA Input" />
+    <param name="include_original" type="boolean" truevalue="" falsevalue="-no_orig" label="Include original entries in output database" checked="True" />
+    <param name="tag" type="text" value="decoy_" label="Decoy Prefix"/>
+    <param name="frequency" type="integer" value="1" label="Decoy Frequency" />
+    <repeat name="extra_tags" title="Additional Decoy Tags">
+      <param name="tag" type="text" value="decoy_" label="Decoy Prefix"/>
+      <param name="frequency" type="integer" value="1" label="Decoy Frequency" />
+    </repeat>
+  </inputs>
+
+  <outputs>
+    <data format="fasta" name="output" />
+  </outputs>
+
+  <requirements>
+    <requirement type="binary">decoyFASTA</requirement>    
+  </requirements>
+
+  <help>
+
+  </help>
+</tool>

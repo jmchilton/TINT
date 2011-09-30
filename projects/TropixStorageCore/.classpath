@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="resources/impl"/>
+	<classpathentry kind="src" path="src/impl"/>
+	<classpathentry kind="src" path="resources/test"/>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="src" path="src/api"/>
+	<classpathentry kind="src" path="resources/api"/>
+	<classpathentry kind="src" path="build/src/stubs"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/addressing-1.0.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/axis-url.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/axis.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/bootstrap.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cog-axis.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cog-jglobus.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cog-tomcat.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cog-url.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commonj.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commons-beanutils.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commons-cli-2.0.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commons-collections-3.0.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commons-digester.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commons-discovery.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/commons-logging.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/concurrent.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cryptix-asn1.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cryptix.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/cryptix32.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_resolution_service.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_resolution_stubs_java.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_resolution_test.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_transfer_service.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_transfer_stubs_java.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_transfer_test.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_usage_core.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_usage_packets_common.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/globus_wsrf_tools_test.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/jaxrpc.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/jce-jdk13-125.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/jgss.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/junit.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/log4j-1.2.8.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/naming-common.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/naming-factory.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/naming-java.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/naming-resources.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/opensaml.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/puretls.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/resolver.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/saaj.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/servlet.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsdl4j.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_common.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_registry_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_registry.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_samples_authzService_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_samples_authzService.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_samples_counter_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_samples_counter.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_samples_mgmt_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_samples_mgmt.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_core.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_provider_jce.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_test_interop_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_test_interop.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_test_unit_stubs.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_test_unit.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_test.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wsrf_tools.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/wss4j.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xalan.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xml-apis.jar"/>
+	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xmlsec.jar"/>
+  <classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=all&amp;ivySettingsPath=%24%7Bworkspace_loc%3ATropixUofM%2Fantfiles%2Fivysettings-eclipse.xml%7D&amp;loadSettingsOnDemand=false&amp;propertyFiles=%24%7Bworkspace_loc%3ATropixUofM%2Fantfiles%2Fivysettings.properties%7D&amp;acceptedTypes=jar%2Cbundle%2Cejb%2Cmaven-plugin&amp;sourceTypes=source&amp;javadocTypes=javadoc&amp;sourceSuffixes=-source%2C-sources%2C-src&amp;javadocSuffixes=-javadoc%2C-javadocs%2C-doc%2C-docs&amp;alphaOrder=false&amp;resolveInWorkspace=true&amp;resolveBeforeLaunch=false"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,15 @@
+<s:ServiceDescription xmlns:s="gme://gov.nih.nci.cagrid/1/Introduce" xmlns:n="gme://gov.nih.nci.cagrid.introduce/1/Namespace"  
+                      xmlns:service="gme://gov.nih.nci.cagrid.introduce/1/Services"  xmlns:r="gme://gov.nih.nci.cagrid.introduce/1/Resources">
+ <n:Namespaces>
+   <n:Namespace generateStubs="false" location="scaffold.xsd" namespace="http://msi.umn.edu/proteomics/scaffold/input" packageName="edu.umn.msi.tropix.proteomics.scaffold.input.cagrid" />
+   <n:Namespace generateStubs="false" location="scaffold_metadata.xsd" namespace="http://msi.umn.edu/tropix/proteomics/scaffold/metadata" packageName="edu.umn.msi.tropix.proteomics.scaffold.metadata" />
+ </n:Namespaces>
+ <service:Services>
+   <service:Service name="Scaffold">
+     <r:ResourcePropertiesList>
+       <r:ResourceProperty qName="sm:ScaffoldMetadata" description="" fileLocation="" 
+                           populateFromFile="false" register="true" xmlns:sm="http://msi.umn.edu/tropix/proteomics/scaffold/metadata" />
+     </r:ResourcePropertiesList>
+   </service:Service>
+ </service:Services>
+</s:ServiceDescription>

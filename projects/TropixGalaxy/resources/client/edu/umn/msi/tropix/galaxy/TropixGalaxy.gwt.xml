@@ -1,0 +1,10 @@
+<module>
+  <source path="inputs">
+   <exclude name="ObjectFactory.java" />
+   <exclude name="cagrid/**" />
+  </source>
+  <source path="tool">
+   <exclude name="ObjectFactory.java" />
+   <exclude name="cagrid/**" />
+  </source>
+</module>

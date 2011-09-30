@@ -1,0 +1,7 @@
+<FindBugsFilter>
+  <Package name="edu.umn.msi.tropix.jobqueue.simplejobdescription" />
+  <Package name="edu.umn.msi.tropix.common.jobqueue.queuestatus" />
+  <Package name="edu.umn.msi.tropix.common.jobqueue.ticket" />
+  <Package name="edu.umn.msi.tropix.common.jobqueue.status" />
+  
+</FindBugsFilter>

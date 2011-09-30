@@ -1,0 +1,5 @@
+Things to do before releasing to the public:
+
+Add EPL header and UofM copyright to each source file.
+
+Test ext.globus.dir defaults properly.

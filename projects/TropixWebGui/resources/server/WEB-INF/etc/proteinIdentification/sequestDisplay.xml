@@ -1,0 +1,288 @@
+<?xml version="1.0"  encoding="UTF-8" standalone="yes"?>
+<formConfiguration>
+  <tabs>
+  <tab name="I">
+    <tooltip>General parameters (1 / 2)</tooltip>
+    <verticalPanel>
+      <entry>
+    <table>
+    <row>
+      <cell ><label  text="Peptide Tolerance" /></cell>
+      <cell><input widget="textbox" parameter="peptideMassTolerance" width="60" /></cell>
+      <cell><info  parameter="peptideMassTolerance" /></cell>
+    </row>
+    <row>  
+      <cell ><label  text="Peptide Units" /></cell>
+      <cell><input widget="selection" parameter="peptideMassUnits" /></cell>
+      <cell><info  parameter="peptideMassUnits" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Fragment Tolerance" /></cell>
+      <cell><input widget="textbox" parameter="fragmentMassTolerance" width="60" /></cell>
+      <cell><info  parameter="fragmentMassTolerance" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Fragment Type" /></cell>
+      <cell><input widget="selection" parameter="massTypeFragment" /></cell>
+      <cell><info  parameter="massTypeFragment" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Parent Type" /></cell>
+      <cell><input widget="selection" parameter="massTypeParent" /></cell>
+      <cell><info  parameter="massTypeParent" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Max Cleavage Sites" /></cell>
+       <cell><input widget="textbox" parameter="internalCleavageSites" width="15" /></cell>
+       <cell><info  parameter="internalCleavageSites" /></cell> 
+    </row>
+    </table>
+    </entry>
+      <entry>
+    <table>
+    <row>
+    <cell ><label  text="Enzyme Name" /></cell>
+    <cell><input widget="selection" parameter="enzymeName" /></cell>
+    <cell ><label  text="Enzyme Limit" /></cell>
+    <cell><input widget="selection" parameter="enzymeLimit"  /></cell>
+    </row>
+    </table>
+      </entry>
+    </verticalPanel>
+  </tab>
+
+  <tab name="II">
+    <tooltip>General parameters (2 / 2)</tooltip>
+    <table>
+    <row>
+      <cell ><label  text="Scored Results" /></cell>
+      <cell><input widget="textbox" parameter="numResults" width="50" /></cell>
+      <cell><info  parameter="numResults" /></cell>
+      
+      <cell ><label  text="Remove Precursor" /></cell>
+      <cell><input widget="checkbox" parameter="removePrecursorPeak" /></cell>
+      <cell><info  parameter="removePrecursorPeak" /></cell>
+         
+    </row>
+    <row>
+      <cell ><label  text="Output Lines" /></cell>
+      <cell><input widget="textbox" parameter="numOutputLines" width="50"/></cell>
+      <cell><info  parameter="numOutputLines" /></cell>
+      
+      <cell ><label  text="Ion Cutoff %" /></cell>
+      <cell><input widget="textbox" parameter="ionCutoffPercentage" width="50" /></cell>
+      <cell><info  parameter="ionCutoffPercentage" /></cell>
+            
+    </row>
+    <row>
+      <cell ><label  text="Description Lines" /></cell>
+      <cell><input widget="textbox" parameter="numDescriptionLines" width="50"/></cell>
+      <cell><info  parameter="numDescriptionLines" /></cell>
+      
+      <cell ><label  text="Peak Count" /></cell>
+      <cell><input widget="textbox" parameter="matchPeakCount" width="50" /></cell>
+      <cell><info  parameter="matchPeakCount" /></cell>      
+    </row>
+    <row>
+      <cell ><label  text="Show Fragment Ions" /></cell>
+      <cell><input widget="checkbox" parameter="showFragmentIons" /></cell>
+      <cell><info  parameter="showFragmentIons" /></cell>
+
+      <cell ><label  text="Peak Allowed Error" /></cell>
+      <cell><input widget="textbox" parameter="matchPeakAllowedError" width="50" /></cell>
+      <cell><info   parameter="matchPeakAllowedError" /></cell>      
+    </row>
+    <row>
+      <cell ><label  text="Output Duplicates" /></cell>
+      <cell><input widget="textbox" parameter="printDuplicateReferences" width="30" /></cell>
+      <cell><info  parameter="printDuplicateReferences" /></cell>
+      
+      <cell ><label  text="Peak Tolerance" /></cell>
+      <cell><input widget="textbox" parameter="matchPeakTolerance" width="50" /></cell>
+      <cell><info  parameter="matchPeakTolerance" /></cell>      
+    </row>
+    <row>
+      <cell ><label  text="Differentials Per Peptide" /></cell>
+      <cell><input widget="textbox" parameter="maxNumDifferentialsPerPeptide" width="15" /></cell>
+      <cell><info  parameter="maxNumDifferentialsPerPeptide" /></cell>
+      
+      <cell ><label  text="Digest Mass Range" /></cell>
+      <cell><input widget="textbox" parameter="digestMassRangeLower" width="50" /></cell>
+      <cell><input widget="textbox" parameter="digestMassRangeUpper" width="50" /></cell>      
+    </row>
+    <row>
+      <cell ><label  text="Normalize xcorr" /></cell>
+      <cell><input widget="checkbox" parameter="normalizeXCorr" /></cell>
+      <cell><info parameter="normalizeXCorr" /></cell>
+      
+      <cell ><label  text="Protein Mass Filter" /></cell>
+      <cell><input widget="textbox" parameter="proteinMassFilterLower" width="50" /></cell>
+      <cell><input widget="textbox" parameter="proteinMassFilterUpper" width="50" /></cell>       
+    </row>
+    </table>
+  </tab>
+  
+  <tab name="Ions">
+    <tooltip>Configure Ion Series</tooltip>
+    <table>
+    <row>
+      <cell ><label  text="A" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesA" width="60" /></cell>
+      <cell ><label  text="B" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesB" width="60" /></cell>
+      <cell ><label  text="C" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesC" width="60" /></cell>       
+      <cell ><label  text="D" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesD" width="60" /></cell>
+      <cell ><label  text="V" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesV" width="60" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="W" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesW" width="60" /></cell>       
+      <cell ><label  text="X" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesX" width="60" /></cell>
+      <cell ><label  text="Y" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesY" width="60" /></cell>
+      <cell ><label  text="Z" /></cell>
+      <cell><input widget="textbox" parameter="ionSeriesZ" width="60" /></cell>       
+    </row>
+    <row>
+      <cell ><label  text="nA" /></cell>
+      <cell><input widget="checkbox" parameter="ionSeriesNA" /></cell>
+      <cell ><label  text="nB" /></cell>
+      <cell><input widget="checkbox" parameter="ionSeriesNB" /></cell>
+      <cell ><label  text="nY" /></cell>
+      <cell><input widget="checkbox" parameter="ionSeriesNY" /></cell>      
+    </row>
+  </table>
+  </tab>
+
+
+  <tab name="Fixed Mods.">
+    <tooltip>Fixed Modifications</tooltip>
+    <table>     
+    <row>
+      <cell ><label  text="A" /></cell>
+      <cell><input widget="textbox" parameter="addA" width="50" /></cell>
+      <cell ><label  text="B" /></cell>
+      <cell><input widget="textbox" parameter="addB" width="50" /></cell>
+      <cell ><label  text="C" /></cell>
+      <cell><input widget="textbox" parameter="addC" width="50" /></cell> 
+      <cell ><label  text="D" /></cell>
+      <cell><input widget="textbox" parameter="addD" width="50" /></cell>
+      <cell ><label  text="C-term (Peptide)" /></cell>
+      <cell><input widget="textbox" parameter="addCTermPeptide" width="50" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="E" /></cell>
+      <cell><input widget="textbox" parameter="addE" width="50" /></cell>
+      <cell ><label  text="F" /></cell>
+      <cell><input widget="textbox" parameter="addF" width="50" /></cell> 
+      <cell ><label  text="G" /></cell>
+      <cell><input widget="textbox" parameter="addG" width="50" /></cell>
+      <cell ><label  text="H" /></cell>
+      <cell><input widget="textbox" parameter="addH" width="50" /></cell>
+      <cell ><label  text="C-term (Protein)" /></cell>
+      <cell><input widget="textbox" parameter="addCTermProtein" width="50" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="I" /></cell>
+      <cell><input widget="textbox" parameter="addI" width="50" /></cell> 
+      <cell ><label  text="J" /></cell>
+      <cell><input widget="textbox" parameter="addJ" width="50" /></cell>
+      <cell ><label  text="K" /></cell>
+      <cell><input widget="textbox" parameter="addK" width="50" /></cell>  
+      <cell ><label  text="L" /></cell>
+      <cell><input widget="textbox" parameter="addL" width="50" /></cell>
+      <cell ><label  text="N-term (Peptide)" /></cell>
+      <cell><input widget="textbox" parameter="addNTermPeptide" width="50" /></cell>     
+    </row>
+    <row>
+      <cell ><label  text="M" /></cell>
+      <cell><input widget="textbox" parameter="addM" width="50" /></cell>
+      <cell ><label  text="N" /></cell>
+      <cell><input widget="textbox" parameter="addN" width="50" /></cell>
+      <cell ><label  text="O" /></cell>
+      <cell><input widget="textbox" parameter="addO" width="50" /></cell> 
+      <cell ><label  text="P" /></cell>
+      <cell><input widget="textbox" parameter="addP" width="50" /></cell>
+      <cell ><label  text="N-term (Protein)" /></cell>
+      <cell><input widget="textbox" parameter="addNTermProtein" width="50" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Q" /></cell>
+      <cell><input widget="textbox" parameter="addQ" width="50" /></cell>
+      <cell ><label  text="R" /></cell>
+      <cell><input widget="textbox" parameter="addR" width="50" /></cell> 
+      <cell ><label  text="S" /></cell>
+      <cell><input widget="textbox" parameter="addS" width="50" /></cell>
+      <cell ><label  text="T" /></cell>
+      <cell><input widget="textbox" parameter="addT" width="50" /></cell>
+      <cell ><label  text="U" /></cell>
+      <cell><input widget="textbox" parameter="addU" width="50" /></cell> 
+    </row>
+    <row>
+      <cell ><label  text="V" /></cell>
+      <cell><input widget="textbox" parameter="addV" width="50" /></cell>
+      <cell ><label  text="W" /></cell>
+      <cell><input widget="textbox" parameter="addW" width="50" /></cell>
+      <cell ><label  text="X" /></cell>
+      <cell><input widget="textbox" parameter="addX" width="50" /></cell>
+      <cell ><label  text="Y" /></cell>
+      <cell><input widget="textbox" parameter="addY" width="50" /></cell>
+      <cell ><label  text="Z" /></cell>
+      <cell><input widget="textbox" parameter="addZ" width="50" /></cell>
+    </row>
+    </table>        
+  </tab>
+  <tab name="Var. Mods.">
+    <tooltip>Variable Modifications</tooltip>
+    <table>
+    <row>
+      <cell ><label  text="Residues" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch1Residue" width="60" /></cell>
+      <cell ><label  text="Value" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch1Value" width="60" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Residues" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch2Residue" width="60" /></cell>
+      <cell ><label  text="Value" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch2Value" width="60" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Residues" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch3Residue" width="60" /></cell>
+      <cell ><label  text="Value" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch3Value" width="60" /></cell>
+    </row>
+
+    <row>
+      <cell ><label  text="Residues" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch4Residue" width="60" /></cell>
+      <cell ><label  text="Value" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch4Value" width="60" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Residues" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch5Residue" width="60" /></cell>
+      <cell ><label  text="Value" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch5Value" width="60" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="Residues" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch6Residue" width="60"/></cell>
+      <cell ><label  text="Value" /></cell>
+      <cell><input widget="textbox" parameter="diffSearch6Value" width="60" /></cell>
+    </row>
+    <row>
+      <cell ><label  text="C-term" /></cell>
+      <cell><input widget="textbox" parameter="diffSearchC" width="60" /></cell>
+      <cell ><label  text="N-term" /></cell>
+      <cell><input widget="textbox" parameter="diffSearchN" width="60" /></cell>
+    </row>
+    </table>
+  </tab>
+  </tabs>
+</formConfiguration>

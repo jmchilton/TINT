@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations"><list><value>file:${user.home}/.tropix/test/rawextract.properties</value></list></property>
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
+
+  <bean name="rawExtractJobClientFactory" factory-bean="jobClientFactoryManager" factory-method="getFactory" >
+    <constructor-arg value="RawExtract" />
+  </bean>
+
+  <bean id="rawExtractService" factory-bean="rawExtractJobClientFactory" factory-method="createJobContext">
+    <constructor-arg><null /></constructor-arg>
+    <constructor-arg value="${rawextract.service.url}" />
+    <constructor-arg value="edu.umn.msi.tropix.proteomics.service.RawExtractJobQueueContext" />
+  </bean>
+  
+  <bean id="statusService" factory-bean="rawExtractJobClientFactory" factory-method="getServiceClient">
+    <constructor-arg><null /></constructor-arg>
+    <constructor-arg value="${rawextract.service.url}" />
+    <constructor-arg value="edu.umn.msi.tropix.common.jobqueue.service.StatusService" />
+  </bean>
+   
+</beans>  

@@ -1,0 +1,16 @@
+<tool id="touch" name="Touch Test" version="0.1.0">
+  <description></description>
+
+  <command>
+    touch $output
+  </command>
+  
+  <inputs>
+    <param name="input" type="text" label="Input" />  
+  </inputs>
+  
+  <outputs>
+    <data format="txt" name="output" />
+  </outputs>
+    
+</tool>
