@@ -77,8 +77,8 @@
 	          <fileset dir="${build.classes.dir}/@{conf}" />
 	        </copy>
 	        <copy toDir="@{build}/findbugs-src">
-            <fileset dir="${src.dir}/@{conf}" />
-            <fileset dir="${build.src.dir}/@{conf}" />
+            <fileset dir="${src.dir}/@{conf}" erroronmissingdir="false" />
+            <fileset dir="${build.src.dir}/@{conf}" erroronmissingdir="false" />
 	        </copy>
 	      </sequential>	
       </for>
@@ -250,9 +250,9 @@
     <attribute name="jar" default="tropix-${short.name}@{suffix}.jar" />
     <sequential>
       <jar destfile="${jars.dir}/@{jar}" basedir="${build.classes.dir}/@{conf}">
-	      <fileset dir="${resources.dir}/@{conf}" />
-	      <fileset dir="${src.dir}/@{conf}" />
-	      <fileset dir="${build.src.dir}/@{conf}" />
+        <fileset dir="${resources.dir}/@{conf}" erroronmissingdir="false"  />
+        <fileset dir="${src.dir}/@{conf}"  erroronmissingdir="false"  />
+        <fileset dir="${build.src.dir}/@{conf}"  erroronmissingdir="false" />
       </jar>
     </sequential>
   </macrodef>
@@ -260,10 +260,11 @@
   <macrodef name="compileconf">
     <attribute name="conf" />
     <sequential>
+      <mkdir dir="${src.dir}/@{conf}" /> <!-- In case directory is empty -->
       <compile-java destdir="${build.classes.dir}/@{conf}">
-	      <src path="${src.dir}/@{conf}" />
-	      <src path="${build.src.dir}/@{conf}" />
-	      <classpath refid="compile.classpath" />
+	<src path="${src.dir}/@{conf}" />
+	<src path="${build.src.dir}/@{conf}" />
+	<classpath refid="compile.classpath" />
       </compile-java>
     </sequential>
   </macrodef>
@@ -303,8 +304,8 @@
       <for list="${confs}" param="conf">
 	<sequential>
 	  <copy toDir="${build.dir}/doc-src">
-            <fileset dir="${src.dir}/@{conf}" />
-            <fileset dir="${build.src.dir}/@{conf}" />
+            <fileset dir="${src.dir}/@{conf}"  erroronmissingdir="false" />
+            <fileset dir="${build.src.dir}/@{conf}"  erroronmissingdir="false" />
 	  </copy>
 	</sequential>
       </for>
@@ -340,7 +341,7 @@
       <for list="@{confs}" param="conf" parallel="true">
 	<sequential>
 	  <copy toDir="@{coverage.src.dir}">
-	    <fileset dir="${src.dir}/@{conf}" />
+	    <fileset dir="${src.dir}/@{conf}"  erroronmissingdir="false" />
 	  </copy>	  
 	</sequential>
       </for>
