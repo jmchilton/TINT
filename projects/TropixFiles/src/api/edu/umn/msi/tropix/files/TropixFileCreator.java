@@ -1,4 +1,4 @@
-package edu.umn.msi.tropix.persistence.service.file;
+package edu.umn.msi.tropix.files;
 
 import javax.annotation.Nullable;
 

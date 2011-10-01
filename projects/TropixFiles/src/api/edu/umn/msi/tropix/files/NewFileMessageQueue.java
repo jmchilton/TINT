@@ -1,7 +1,8 @@
-package edu.umn.msi.tropix.persistence.service.file;
+package edu.umn.msi.tropix.files;
 
 import java.io.Serializable;
 
+import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.messaging.AsyncMessage;
 import edu.umn.msi.tropix.messaging.MessageRouting;
 
@@ -13,6 +14,15 @@ public interface NewFileMessageQueue {
     private String fileId;
     private String parentId;
     private String ownerId;
+    private Credential credential;
+
+    public Credential getCredential() {
+      return credential;
+    }
+
+    public void setCredential(final Credential credential) {
+      this.credential = credential;
+    }
 
     public String getOwnerId() {
       return ownerId;

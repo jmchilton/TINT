@@ -1,13 +1,15 @@
-package edu.umn.msi.tropix.persistence.service.file;
+package edu.umn.msi.tropix.files.impl;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
 import org.apache.camel.Produce;
 
+import edu.umn.msi.tropix.files.NewFileMessageQueue;
+import edu.umn.msi.tropix.files.TropixFileCreator;
+import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
-import edu.umn.msi.tropix.persistence.service.file.NewFileMessageQueue.NewFileMessage;
 
 @ManagedBean
 public class TropixFileCreatorImpl implements TropixFileCreator {

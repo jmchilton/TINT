@@ -21,6 +21,7 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-storage-client" rev="${ivy.project.version}" conf="impl->impls" />
+    <dependency org="msi.umn.edu" name="tropix-storage-client" rev="${ivy.project.version}" conf="api,impl->default" />
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl->service-impl-dao" />
   </dependencies>
 

@@ -26,7 +26,7 @@ import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 
 public class RootNewItemFolder extends NewItemFolderImpl {
-  private final ComponentConstants CONSTANTS = ConstantsInstances.COMPONENT_INSTANCE;
+  private static final ComponentConstants CONSTANTS = ConstantsInstances.COMPONENT_INSTANCE;
 
   public RootNewItemFolder() {
     super("Root", "Root new folder");

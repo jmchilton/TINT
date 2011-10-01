@@ -268,7 +268,7 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
     checkValid();
   }
 
-  private void updateRunIds(Collection<TreeItem> treeItems) {
+  private void updateRunIds(final Collection<TreeItem> treeItems) {
     ids.clear();
     if(treeItems != null) {
       selectedTreeItems = treeItems;

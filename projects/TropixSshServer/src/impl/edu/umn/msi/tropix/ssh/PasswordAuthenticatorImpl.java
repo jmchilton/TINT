@@ -10,7 +10,10 @@ import org.apache.sshd.server.session.ServerSession;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 
+import com.google.common.base.Preconditions;
+
 import edu.umn.msi.tropix.client.authentication.AuthenticationToken;
+import edu.umn.msi.tropix.client.authentication.CredentialAuthentication;
 
 @ManagedBean
 public class PasswordAuthenticatorImpl implements PasswordAuthenticator {
@@ -27,7 +30,9 @@ public class PasswordAuthenticatorImpl implements PasswordAuthenticator {
       final ServerSession session) {
     LOG.debug(String.format("Attempting to authenticate username [%s]", username));
     final AuthenticationToken usernamePasswordToken = new AuthenticationToken(username, password, "Local");
+    
     final Authentication authentication = authenticationProvider.authenticate(usernamePasswordToken);
+    Preconditions.checkState(authentication instanceof CredentialAuthentication);
     boolean isAuthenticated = authentication.isAuthenticated();
     LOG.info("Authenticated? " + isAuthenticated + " " + authentication);
     return isAuthenticated;

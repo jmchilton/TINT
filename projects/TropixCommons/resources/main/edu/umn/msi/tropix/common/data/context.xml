@@ -8,6 +8,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 
   <context:annotation-config/> 
   
+  <bean class="edu.umn.msi.tropix.common.spring.StaticPropertyPlaceholderConfigurer">
+  </bean>
+  
   <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
 
   <bean id="repositoryConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">

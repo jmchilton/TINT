@@ -22,7 +22,6 @@
 
 package edu.umn.msi.tropix.webgui.client.components.newwizards;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import com.google.common.base.Predicate;
@@ -34,10 +33,8 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
-import edu.umn.msi.tropix.webgui.client.utils.Iterables;
 
 class Utils {
   private static final Predicate<TreeItem> DATABASE_PREDICATE = TreeItemPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.DATABASE, false);

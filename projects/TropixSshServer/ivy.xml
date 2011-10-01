@@ -27,7 +27,7 @@
     </dependency>
 
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${project.version}" conf="default->impl;test->test" />
-<!--    <dependency org="msi.umn.edu" name="tropix-storage-client" rev="${project.version}" conf="test->test" /> -->
+    <dependency org="msi.umn.edu" name="tropix-files" rev="${project.version}" conf="default->impl" />
     <dependency org="msi.umn.edu" name="tropix-auth" rev="${project.version}" conf="default->impl" />
     <dependency org="org.apache.sshd" name="apache-sshd" rev="0.6.0-SNAPSHOT" />
     <dependency org="com.jcraft" name="jsch" rev="0.1.44-1" />

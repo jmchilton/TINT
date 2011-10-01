@@ -6,6 +6,6 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.ScaffoldSample;
 
 interface HasScaffoldSamples {
 
-  public abstract List<ScaffoldSample> getScaffoldSamples();
+  List<ScaffoldSample> getScaffoldSamples();
 
 }

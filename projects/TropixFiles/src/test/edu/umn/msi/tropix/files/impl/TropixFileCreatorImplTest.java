@@ -1,4 +1,4 @@
-package edu.umn.msi.tropix.persistence.service.file;
+package edu.umn.msi.tropix.files.impl;
 
 import java.util.UUID;
 
@@ -7,9 +7,10 @@ import org.easymock.classextension.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
+import edu.umn.msi.tropix.files.NewFileMessageQueue;
+import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
-import edu.umn.msi.tropix.persistence.service.file.NewFileMessageQueue.NewFileMessage;
 
 public class TropixFileCreatorImplTest {
 

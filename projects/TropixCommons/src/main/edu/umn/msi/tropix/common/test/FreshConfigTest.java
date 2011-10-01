@@ -40,6 +40,7 @@ import edu.umn.msi.tropix.common.io.IOUtils;
 import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.io.OutputContext;
 import edu.umn.msi.tropix.common.io.OutputContexts;
+import edu.umn.msi.tropix.common.spring.StaticPropertyPlaceholderConfigurer;
 import edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer;
 
 /**
@@ -145,6 +146,7 @@ public class FreshConfigTest  extends AbstractTestNGSpringContextTests  {
   @Override
   protected void springTestContextBeforeTestClass() throws Exception {
     tropixConfigDir = FILE_UTILS.createTempDirectory();
+    StaticPropertyPlaceholderConfigurer.addProperty("tropix.repository.config.dir", TropixConfigDirPropertyPlaceholderConfigurer.getConfigDir() + File.separator + "repository");
     TropixConfigDirPropertyPlaceholderConfigurer.overrideConfigDir(tropixConfigDir);
     final ConfigDirBuilderImpl configDirBuilder = new ConfigDirBuilderImpl(tropixConfigDir);
     initializeConfigDir(configDirBuilder);

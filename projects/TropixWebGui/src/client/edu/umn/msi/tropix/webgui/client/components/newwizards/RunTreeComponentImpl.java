@@ -68,7 +68,7 @@ public class RunTreeComponentImpl extends LocationSelectionComponentImpl {
   }
 
   RunTreeComponentImpl(final TreeComponentFactory treeComponentFactory, final LocationFactory locationFactory, final Collection<TreeItem> treeItems,
-      final boolean optionalRun, List<InputType> validInputTypes, final ValidationListener validationListener) {
+      final boolean optionalRun, final List<InputType> validInputTypes, final ValidationListener validationListener) {
     super(treeComponentFactory, locationFactory, treeItems, optionalRun, validInputTypes, validationListener);
   }
 

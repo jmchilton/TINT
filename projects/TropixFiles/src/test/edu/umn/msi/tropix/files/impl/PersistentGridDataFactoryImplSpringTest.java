@@ -55,7 +55,7 @@ public class PersistentGridDataFactoryImplSpringTest extends FreshConfigTest {
 
   @Inject
   private FileService fileService;
-
+  
   protected void initializeConfigDir(final ConfigDirBuilder configDirBuilder) {
     final ConfigDirBuilder metadataBuilder = configDirBuilder.createSubConfigDir("metadata");
     metadataBuilder.addDeployProperty("metadata.db.showsql", "true");

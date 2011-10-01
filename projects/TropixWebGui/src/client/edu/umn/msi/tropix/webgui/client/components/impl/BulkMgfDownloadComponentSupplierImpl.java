@@ -48,7 +48,7 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
     private final GWTDownloadFormPanel smartDownloadFormPanel;
     private final Button downloadButton;
 
-    final AsyncCallbackImpl<Collection<ProteomicsRun>> getRunsCallback = new AsyncCallbackImpl<Collection<ProteomicsRun>>() {
+    private final AsyncCallbackImpl<Collection<ProteomicsRun>> getRunsCallback = new AsyncCallbackImpl<Collection<ProteomicsRun>>() {
       @Override
       protected void handleSuccess() {
         final Iterable<String> idIterable = ModelUtils.getIds(getResult());
@@ -96,7 +96,7 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
       this.setWidget(PopOutWindowBuilder.titled("Bulk MGF Download").autoSized().withContents(layout).get());
     }
 
-    public void onValidation(boolean isValid) {
+    public void onValidation(final boolean isValid) {
       downloadButton.setDisabled(!isValid);
     }
   }

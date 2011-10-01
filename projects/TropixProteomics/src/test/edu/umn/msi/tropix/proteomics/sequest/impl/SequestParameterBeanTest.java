@@ -16,37 +16,22 @@
 
 package edu.umn.msi.tropix.proteomics.sequest.impl;
 
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.models.sequest.SequestParameters;
-import edu.umn.msi.tropix.proteomics.parameters.ParameterUtils;
 import edu.umn.msi.tropix.proteomics.sequest.SequestBeanParameterTranslator;
-import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
+import edu.umn.msi.tropix.proteomics.sequest.SequestParameterTestData;
 
 public class SequestParameterBeanTest {
-
-  public static SequestParameters getSimpleSequestParameters() throws Exception {
-    final InputStream inputStream = ProteomicsTests.getResourceAsStream("sequestSimple.properties");
-    final SequestParameters sequestParameters = new SequestParameters();
-    ParameterUtils.setParametersFromProperties(inputStream, sequestParameters);
-    return sequestParameters;
-  }
-
-  public static Map<String, String> getSimpleSequestParametersMap() throws Exception {
-    final SequestParameters parameters = getSimpleSequestParameters();
-    return ParameterUtils.mapForParameters(parameters);
-  }
 
   @Test(groups = {"unit"})
   public void testTranslateSequestBean() throws Exception {
     final SequestBeanParameterTranslator translator = new SequestBeanParameterTranslator();
-    translator.getSequestParameters(getSimpleSequestParameters(), "/tmp/database.fasta");
+    translator.getSequestParameters(SequestParameterTestData.getSimpleSequestParameters(), "/tmp/database.fasta");
   }
 
   // Fetches the value of the given parameter from a sequest parameters file
@@ -62,7 +47,7 @@ public class SequestParameterBeanTest {
     String parametersContents;
     String value;
     final SequestBeanParameterTranslator translator = new SequestBeanParameterTranslator();
-    final SequestParameters sequestParameters = getSimpleSequestParameters();
+    final SequestParameters sequestParameters = SequestParameterTestData.getSimpleSequestParameters();
     // java.util.Map<String, Pair<String, Double>> doubleParameters = new java.util.HashMap<String, Pair<String, Double>>();
     final java.util.Map<String, String> doubleParameters = new java.util.HashMap<String, String>();
     doubleParameters.put("AddA", "add_A_Alanine");

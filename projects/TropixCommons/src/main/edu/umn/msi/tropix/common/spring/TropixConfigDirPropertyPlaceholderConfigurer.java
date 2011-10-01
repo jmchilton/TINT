@@ -38,7 +38,7 @@ public class TropixConfigDirPropertyPlaceholderConfigurer extends SingleProperty
     CONFIG_DIR_OVERRIDE.set(configDir.getAbsolutePath());
   }
 
-  private static String getConfigDir() {
+  public static String getConfigDir() {
     String configDir = CONFIG_DIR_OVERRIDE.get();
     if(configDir == null) {
       if(!StringUtils.hasText(System.getProperty("tropix.config.dir"))) {

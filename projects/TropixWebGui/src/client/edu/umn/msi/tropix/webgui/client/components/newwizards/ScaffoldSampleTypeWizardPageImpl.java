@@ -47,8 +47,8 @@ public class ScaffoldSampleTypeWizardPageImpl extends WizardPageImpl<Canvas> {
   private Property<ScaffoldSampleType> scaffoldSampleTypeProperty =
       Properties.newProperty(ScaffoldSampleType.MANY_ANALYSIS);
   private boolean analyzeAsMudpit;
-  final RadioGroupItem sampleRadioGroupItem = new RadioGroupItem("option");
-  final CheckboxItem analyzeAsMudpitItem = new CheckboxItem("analyzeAsMudpit", "Analyze as mudpit");
+  private final RadioGroupItem sampleRadioGroupItem = new RadioGroupItem("option");
+  private final CheckboxItem analyzeAsMudpitItem = new CheckboxItem("analyzeAsMudpit", "Analyze as mudpit");
 
   public enum ScaffoldSampleType {
     MANY_ANALYSIS("One scaffold analysis per identification analysis"),

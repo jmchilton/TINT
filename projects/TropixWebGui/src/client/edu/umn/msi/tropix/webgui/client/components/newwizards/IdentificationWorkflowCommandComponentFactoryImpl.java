@@ -157,8 +157,8 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
         finish();
       }
     });
-    private UploadComponent uploadComponent = uploadComponentFactory.get(uploadOpts);
-    private UploadWizardPageImpl uploadPage = new UploadWizardPageImpl(uploadComponent, CONSTANTS.runWizardThermoUploadTitle(),
+    private final UploadComponent uploadComponent = uploadComponentFactory.get(uploadOpts);
+    private final UploadWizardPageImpl uploadPage = new UploadWizardPageImpl(uploadComponent, CONSTANTS.runWizardThermoUploadTitle(),
         CONSTANTS.runWizardThermoUploadDescription()) {
       @Override
       public boolean isValid() {
@@ -168,7 +168,7 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
     };
 
     private class RunsWizardPageImpl extends WizardPageImpl<Canvas> {
-      private RunTreeComponentImpl runTreeComponent = new RunTreeComponentImpl(getTreeComponentFactory(), getLocationFactory(), getLocations(),
+      private final RunTreeComponentImpl runTreeComponent = new RunTreeComponentImpl(getTreeComponentFactory(), getLocationFactory(), getLocations(),
           false, new ValidationListener() {
             public void onValidation(final boolean isValid) {
               if(runTreeComponent != null) {
@@ -216,11 +216,12 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
       }
     }
 
-    private DatabaseWizardPageImpl databasePage = new DatabaseWizardPageImpl();
+    private final DatabaseWizardPageImpl databasePage = new DatabaseWizardPageImpl();
     // private ConditionalSampleWizardPageImpl sampleWizardPage = new ConditionalSampleWizardPageImpl(getLocationFactory(),
     // getTreeComponentFactory());
 
-    private WizardPageImpl<Canvas> workflowOptionsPage = new WizardPageImpl<Canvas>() {
+    private final WizardPageImpl<Canvas> workflowOptionsPage = new WizardPageImpl<Canvas>() {
+      @Override
       public void setTitle(final String title) {
         super.setTitle(title);
       }
@@ -255,7 +256,7 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
         this.setCanvas(layout);
       }
     };
-    private ScaffoldSampleTypeWizardPageImpl scaffoldOptionsPage = new ScaffoldSampleTypeWizardPageImpl(false);
+    private final ScaffoldSampleTypeWizardPageImpl scaffoldOptionsPage = new ScaffoldSampleTypeWizardPageImpl(false);
 
     private final MetadataWizardPageImpl metadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.idWorkflowResultType(),
         DestinationType.HOME);
@@ -308,19 +309,18 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
       identificationSelectionPage = new ServiceWizardPageImpl<QueueGridService>(identificationSelectionComponent, CONSTANTS.idWizardServiceTitle(),
           CONSTANTS.idWizardServiceDescription());
       scaffoldOptionsPage.registerScaffoldSampleTypeChangeListener(new Listener<ScaffoldSampleType>() {
-        public void onEvent(ScaffoldSampleType event) {
+        public void onEvent(final ScaffoldSampleType event) {
           scaffoldType = event;
         }
       });
       identificationSelectionComponent.addSelectionListener(new Listener<QueueGridService>() {
         public void onEvent(final QueueGridService gridService) {
-          IdentificationGridService idService = (IdentificationGridService) gridService;
+          final IdentificationGridService idService = (IdentificationGridService) gridService;
           parametersPage.setParametersType(idService.getParameterType());
         }
       });
       rawExtractSelectionPage = new ServiceWizardPageImpl<QueueGridService>(rawExtractSelectionComponent,
-          CONSTANTS.runWizardRawExtractServiceTitle(),
-          CONSTANTS.runWizardRawExtractServiceDescription());
+          CONSTANTS.runWizardRawExtractServiceTitle(), CONSTANTS.runWizardRawExtractServiceDescription());
       parametersPage = new ParametersWizardPage(locations, parametersPanelFactory);
 
       runsPage = new RunsWizardPageImpl(); // Must be constructed after rawExtractSelectionPage
@@ -360,6 +360,7 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
 
   }
 
+  @Override
   public Command get(final Collection<TreeItem> treeItems) {
     return new IdentificationWorkflowWizardCommand(treeItems);
   }

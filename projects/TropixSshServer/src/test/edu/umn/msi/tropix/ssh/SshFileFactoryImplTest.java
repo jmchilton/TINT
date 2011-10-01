@@ -24,12 +24,12 @@ import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
+import edu.umn.msi.tropix.files.TropixFileCreator;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
-import edu.umn.msi.tropix.persistence.service.file.TropixFileCreator;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 

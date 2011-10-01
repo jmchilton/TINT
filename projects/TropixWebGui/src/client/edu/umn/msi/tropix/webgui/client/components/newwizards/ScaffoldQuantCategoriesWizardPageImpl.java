@@ -50,7 +50,7 @@ public class ScaffoldQuantCategoriesWizardPageImpl extends WizardPageImpl<Canvas
       public void execute() {
         ValueCallback callback = new ValueCallback() {
 
-          public void execute(String value) {
+          public void execute(final String value) {
             addRecord(value);
           }
 
@@ -87,12 +87,12 @@ public class ScaffoldQuantCategoriesWizardPageImpl extends WizardPageImpl<Canvas
   private void updateListener() {
     new Timer() {
       public void run() {
-        updateListener_();
+        updateListenerHack();
       }
     }.schedule(1);
   }
 
-  private void updateListener_() {
+  private void updateListenerHack() {
     final List<String> categories = Lists.newArrayList();
     for(DataClass data : dataSource.getTestData()) {
       categories.add(data.getAttribute("name"));

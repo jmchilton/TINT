@@ -37,9 +37,9 @@ import edu.umn.msi.tropix.webgui.client.utils.Listener;
 // TODO: Move this functionality into module installers...
 public class NewItemActionController {
   private final ActionMediator actionMediator;
-  private final ComponentConstants CONSTANTS = ConstantsInstances.COMPONENT_INSTANCE;
-  private final GenetipConstants GENETIP_CONSTANTS = GenetipConstants.INSTANCE;
-  private final ProtipConstants PROTIP_CONSTANTS = ProtipConstants.INSTANCE;
+  private static final ComponentConstants CONSTANTS = ConstantsInstances.COMPONENT_INSTANCE;
+  private static final GenetipConstants GENETIP_CONSTANTS = GenetipConstants.INSTANCE;
+  private static final ProtipConstants PROTIP_CONSTANTS = ProtipConstants.INSTANCE;
 
   @Inject
   public NewItemActionController(final ActionMediator actionMediator) {

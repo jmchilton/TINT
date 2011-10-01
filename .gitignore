@@ -31,6 +31,7 @@
 # /projects/TropixFiles/
 /projects/TropixFiles/bin
 /projects/TropixFiles/build
+/projects/TropixFiles/test-output
 
 # /projects/TropixFunctionalTests/
 /projects/TropixFunctionalTests/ext
@@ -141,6 +142,8 @@
 /projects/TropixUofMModels/temp-testng-customsuite.xml
 
 # /projects/TropixWebGui/
+/projects/TropixWebGui/.out
+/projects/TropixWebGui/.gwt
 /projects/TropixWebGui/build
 /projects/TropixWebGui/ext
 /projects/TropixWebGui/bin

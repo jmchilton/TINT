@@ -39,7 +39,7 @@ import edu.umn.msi.tropix.webgui.client.utils.Sets;
 
 // TODO: Don't iterate over uploadRuns twice, it won't yield different order but seems in bad form nonetheless.
 public class IdentificationWorkflowBuilder {
-  private ComponentConstants componentConstants;
+  private final ComponentConstants componentConstants;
 
   private boolean createSubfolders;
   private boolean useExistingRuns;
@@ -64,11 +64,11 @@ public class IdentificationWorkflowBuilder {
     final List<String> names = Lists.newArrayList();
     if(uploadedRuns != null) { // Uploaded new runs
       for(final Map.Entry<String, String> uploadedRunEntry : uploadedRuns.entrySet()) {
-        String rawFileBaseName = Utils.stripRawExtension(uploadedRunEntry.getKey());
+        final String rawFileBaseName = Utils.stripRawExtension(uploadedRunEntry.getKey());
         names.add(rawFileBaseName);
       }
     } else {
-      for(ProteomicsRun run : selectedRuns) {
+      for(final ProteomicsRun run : selectedRuns) {
         names.add(run.getName());
       }
     }
@@ -192,8 +192,7 @@ public class IdentificationWorkflowBuilder {
         final CreateProteomicsRunDescription createProteomicsRunDescription = new CreateProteomicsRunDescription();
         createProteomicsRunDescription.setJobDescription(jobDescription);
         createProteomicsRunDescription.setName(name);
-        createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(runFolder).produces("objectId").consumes("destinationId")
-            .build());
+        createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(runFolder).produces("objectId").consumes("destinationId").build());
         createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createRawFileDescription).produces("objectId")
             .consumes("sourceId").build());
         createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createMzxmlDescription).produces("objectId")
@@ -225,10 +224,10 @@ public class IdentificationWorkflowBuilder {
 
     if(useScaffold) {
       final boolean analyzeAsMudpit = analyzeScaffoldAsMudpit;
-      Collection<MergeScaffoldSamplesDescription> mergeScaffoldSamples = Lists.newArrayList();
+      final Collection<MergeScaffoldSamplesDescription> mergeScaffoldSamples = Lists.newArrayList();
       if(scaffoldType.equals(ScaffoldSampleType.MANY_ANALYSIS)) {
         int index = 0;
-        for(String name : names) {
+        for(final String name : names) {
           final CreateIdentificationAnalysisDescription createIdAnalysis = createIdentficationAnalysisDescriptions.get(index++);
           final JobDescription jobDescription = new JobDescription(componentConstants.scaffoldWizardJobDescriptionName() + name);
           final MergeScaffoldSamplesDescription mergeSamples = new MergeScaffoldSamplesDescription();
@@ -250,7 +249,7 @@ public class IdentificationWorkflowBuilder {
           mergeSamples.setProduceMultipleSamples(true);
         }
         int index = 0;
-        for(String name : names) {
+        for(final String name : names) {
           final CreateIdentificationAnalysisDescription createIdAnalysis = createIdentficationAnalysisDescriptions.get(index++);
           mergeSamples.addDependency(ActivityDependency.Builder.on(createIdAnalysis).produces("objectId").consumes("identificationId").build());
           if(scaffoldType == ScaffoldSampleType.MANY_SAMPLE) {
@@ -293,59 +292,59 @@ public class IdentificationWorkflowBuilder {
     return descriptions;
   }
 
-  public void setCreateSubfolders(boolean createSubfolders) {
+  public void setCreateSubfolders(final boolean createSubfolders) {
     this.createSubfolders = createSubfolders;
   }
 
-  public void setUseExistingRuns(boolean useExistingRuns) {
+  public void setUseExistingRuns(final boolean useExistingRuns) {
     this.useExistingRuns = useExistingRuns;
   }
 
-  public void setUseScaffold(boolean useScaffold) {
+  public void setUseScaffold(final boolean useScaffold) {
     this.useScaffold = useScaffold;
   }
 
-  public void setScaffoldType(ScaffoldSampleType scaffoldType) {
+  public void setScaffoldType(final ScaffoldSampleType scaffoldType) {
     this.scaffoldType = scaffoldType;
   }
 
-  public void setCommonMetadataProvider(CommonMetadataProvider commonMetadataProvider) {
+  public void setCommonMetadataProvider(final CommonMetadataProvider commonMetadataProvider) {
     this.commonMetadataProvider = commonMetadataProvider;
   }
 
-  public void setParameterMap(Map<String, String> parameterMap) {
+  public void setParameterMap(final Map<String, String> parameterMap) {
     this.parameterMap = parameterMap;
   }
 
-  public void setIdService(IdentificationGridService idService) {
+  public void setIdService(final IdentificationGridService idService) {
     this.idService = idService;
   }
 
-  public void setDatabaseId(String databaseId) {
+  public void setDatabaseId(final String databaseId) {
     this.databaseId = databaseId;
   }
 
-  public void setUploadedRuns(Map<String, String> uploadedRuns) {
+  public void setUploadedRuns(final Map<String, String> uploadedRuns) {
     this.uploadedRuns = uploadedRuns;
   }
 
-  public void setSelectedRuns(Collection<ProteomicsRun> selectedRuns) {
+  public void setSelectedRuns(final Collection<ProteomicsRun> selectedRuns) {
     this.selectedRuns = selectedRuns;
   }
 
-  public void setRawExtractGridService(QueueGridService rawExtractGridService) {
+  public void setRawExtractGridService(final QueueGridService rawExtractGridService) {
     this.rawExtractGridService = rawExtractGridService;
   }
 
-  public void setAnalyzeScaffoldAsMudpit(boolean analyzeScaffoldAsMudpit) {
+  public void setAnalyzeScaffoldAsMudpit(final boolean analyzeScaffoldAsMudpit) {
     this.analyzeScaffoldAsMudpit = analyzeScaffoldAsMudpit;
   }
 
-  public void setScaffoldGridService(ScaffoldGridService scaffoldGridService) {
+  public void setScaffoldGridService(final ScaffoldGridService scaffoldGridService) {
     this.scaffoldGridService = scaffoldGridService;
   }
 
-  public void setScaffoldParameterMap(Map<String, String> scaffoldParameterMap) {
+  public void setScaffoldParameterMap(final Map<String, String> scaffoldParameterMap) {
     this.scaffoldParameterMap = scaffoldParameterMap;
   }
 

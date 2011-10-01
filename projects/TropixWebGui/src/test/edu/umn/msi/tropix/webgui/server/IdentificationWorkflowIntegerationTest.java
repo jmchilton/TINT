@@ -14,6 +14,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.CreateIdentificationAnaly
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
+import edu.umn.msi.tropix.proteomics.sequest.SequestParameterTestData;
 import edu.umn.msi.tropix.proteomics.sequest.impl.SequestParameterBeanTest;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.IdentificationWorkflowBuilder;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleTypeWizardPageImpl.ScaffoldSampleType;
@@ -34,7 +35,7 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     workflowBuilder.setUseScaffold(false);
     workflowBuilder.setUseExistingRuns(true);
     workflowBuilder.setSelectedRuns(Lists.newArrayList(run1));
-    final Map<String, String> idParameters = SequestParameterBeanTest.getSimpleSequestParametersMap();
+    final Map<String, String> idParameters = SequestParameterTestData.getSimpleSequestParametersMap();
     idParameters.put("enzymeName", "Trypsin");
 
     workflowBuilder.setParameterMap(idParameters);

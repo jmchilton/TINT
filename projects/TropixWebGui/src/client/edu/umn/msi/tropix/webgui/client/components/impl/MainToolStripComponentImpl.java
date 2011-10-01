@@ -219,7 +219,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     final ToolStripButton logoutButton = new ToolStripButton("Logout");
     logoutButton.setIcon(Resources.SHUTDOWN);
     logoutButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-      public void onClick(ClickEvent event) {
+      public void onClick(final ClickEvent event) {
         loginMediator.attemptLogout();
       }
     });

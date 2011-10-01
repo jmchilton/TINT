@@ -9,7 +9,7 @@
   <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
   <import file="${shared-targets.file}" />
 
-  <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies">
+  <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies,check-globus">
     <path id="source.classpath">
       <pathelement path="${src.dir}/api" />
       <pathelement path="${src.dir}/impl" />
