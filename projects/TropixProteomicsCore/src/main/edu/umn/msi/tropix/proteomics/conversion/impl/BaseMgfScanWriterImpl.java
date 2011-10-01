@@ -8,10 +8,10 @@ import edu.umn.msi.tropix.proteomics.conversion.Scan;
 
 abstract class BaseMgfScanWriterImpl implements MgfScanWriter {
   private final OutputStream outputStream;
-  protected final MgfConversionOptions options;
-  protected final Formatter formatter;
+  private final MgfConversionOptions options;
+  private final Formatter formatter;
 
-  protected BaseMgfScanWriterImpl(OutputStream outputStream, MgfConversionOptions options) {
+  protected BaseMgfScanWriterImpl(final OutputStream outputStream, final MgfConversionOptions options) {
     this.outputStream = outputStream;
     this.options = options;
     formatter = new Formatter(outputStream);
@@ -81,18 +81,19 @@ abstract class BaseMgfScanWriterImpl implements MgfScanWriter {
     }
   }
 
-  protected void writeCharge(final Scan scan, short precursorCharge) {
+  protected void writeCharge(final Scan scan, final short precursorCharge) {
     if(precursorCharge != 0) {
       writeCharge(String.format("%d+", precursorCharge));
     }
   }
-  
+
   protected void writeScans(final Scan scan) {
-    writeHeader("SCANS", scan.getNumber() == scan.getAlt() ? String.format("%d", scan.getNumber()) : String.format("%d-%d", scan.getAlt(), scan.getNumber()));
+    writeHeader("SCANS",
+        scan.getNumber() == scan.getAlt() ? String.format("%d", scan.getNumber()) : String.format("%d-%d", scan.getAlt(), scan.getNumber()));
   }
 
-  protected void writeScanHeader(Scan scan) {
-    short precursorCharge = getPrecursorCharge(scan);
+  protected void writeScanHeader(final Scan scan) {
+    final short precursorCharge = getPrecursorCharge(scan);
     writePepMass(scan);
     writeCharge(scan, precursorCharge);
     writeScans(scan);

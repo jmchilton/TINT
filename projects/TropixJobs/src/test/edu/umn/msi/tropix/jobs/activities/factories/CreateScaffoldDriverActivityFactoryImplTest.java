@@ -16,9 +16,7 @@
 
 package edu.umn.msi.tropix.jobs.activities.factories;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.testng.annotations.Test;
@@ -28,6 +26,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldDriverDescr
 import edu.umn.msi.tropix.jobs.activities.descriptions.StringParameterSet;
 import edu.umn.msi.tropix.jobs.activities.factories.CreateScaffoldDriverActivityFactoryImpl.DatabaseType;
 import edu.umn.msi.tropix.jobs.activities.impl.Activity;
+import edu.umn.msi.tropix.jobs.test.ScaffoldParameterTestData;
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.IdentificationAnalysis;
 import edu.umn.msi.tropix.models.TropixFile;
@@ -55,19 +54,8 @@ public class CreateScaffoldDriverActivityFactoryImplTest extends CreateMergeIden
     super.populateScaffoldSamples(description);
 
     // TODO: Verify
-    final Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("minimumNTT", "3");
-    parameters.put("minimumPeptideCount", "4");
-    parameters.put("peptideProbability", ".95");
-    parameters.put("proteinProbability", ".99");
-    parameters.put("useCharge1", "false");
-    parameters.put("useCharge2", "true");
-    parameters.put("useCharge3", "true");
-    parameters.put("connectToNCBI", "true");
-    parameters.put("decoyRegex", "REVERSE");
-    parameters.put("databaseType", "IPI");
-
-    description.setParameterSet(StringParameterSet.fromMap(parameters));
+    final StringParameterSet paramSet = StringParameterSet.fromMap(ScaffoldParameterTestData.getTestParameters());
+    description.setParameterSet(paramSet);
 
     final IdentificationAnalysis[] analyses = createIdentificationAnalyses(storageServiceUrl);
 

@@ -169,6 +169,7 @@ class CreateScaffoldDriverActivityFactoryImpl implements ActivityFactory<CreateS
       final DisplayThresholds thresholds = new DisplayThresholds();
       thresholds.setId("thresh");
       thresholds.setName("thresh");
+      
       thresholds.setMinimumNTT(Integer.valueOf(parameters.get("minimumNTT")));
       thresholds.setMinimumPeptideCount(Integer.valueOf(parameters.get("minimumPeptideCount")));
       thresholds.setPeptideProbability(Float.valueOf(parameters.get("peptideProbability")));

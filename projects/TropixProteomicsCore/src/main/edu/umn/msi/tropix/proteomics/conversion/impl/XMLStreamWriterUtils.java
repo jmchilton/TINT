@@ -75,7 +75,7 @@ class XMLStreamWriterUtils {
     }
   }
 
-  public static void writeEndElement(XMLStreamWriter xmlStreamWriter) {
+  public static void writeEndElement(final XMLStreamWriter xmlStreamWriter) {
     try {
       xmlStreamWriter.writeEndElement();
     } catch(final XMLStreamException e) {

@@ -7,7 +7,7 @@ public class MzxmlParentFile {
   private final String sourceFileName;
   private final MzXmlParentFileType fileType;
 
-  public MzxmlParentFile(String sha1, String sourceFileName, MzXmlParentFileType fileType) {
+  public MzxmlParentFile(final String sha1, final String sourceFileName, final MzXmlParentFileType fileType) {
     this.sha1 = sha1;
     this.sourceFileName = sourceFileName;
     this.fileType = fileType;

@@ -9,7 +9,7 @@ import edu.umn.msi.tropix.proteomics.conversion.Scan;
 
 class DefaultMgfScanWriterImpl extends BaseMgfScanWriterImpl {
 
-  DefaultMgfScanWriterImpl(OutputStream outputStream, MgfConversionOptions options) {
+  DefaultMgfScanWriterImpl(final OutputStream outputStream, final MgfConversionOptions options) {
     super(outputStream, options);
   }
 
@@ -23,7 +23,7 @@ class DefaultMgfScanWriterImpl extends BaseMgfScanWriterImpl {
     return title;
   }
 
-  protected void writeTitle(final Scan scan, short precursorCharge) {
+  protected void writeTitle(final Scan scan, final short precursorCharge) {
     final String title = getTitle(scan, precursorCharge);
     if(DtaNameUtils.isDtaName(title)) {
       final DtaNameSummary dtaNameSummary = DtaNameUtils.getDtaNameSummary(title);

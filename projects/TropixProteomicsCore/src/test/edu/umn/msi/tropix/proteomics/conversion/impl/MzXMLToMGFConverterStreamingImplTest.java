@@ -44,22 +44,22 @@ public class MzXMLToMGFConverterStreamingImplTest {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
 
-  protected File destination;
+  private File destination;
 
   @BeforeMethod(groups = "unit")
   public void setupDestination() {
-    destination = FILE_UTILS.createTempFile();
+    setDestination(FILE_UTILS.createTempFile());
   }
 
   @AfterMethod(groups = "unit")
   public void deleteDestination() {
-    FILE_UTILS.deleteQuietly(destination);
+    FILE_UTILS.deleteQuietly(getDestination());
   }
 
   @Test(groups = "unit")
   public void testMzXMLToMFG() throws IOException {
     convertResource("validMzXML.mzxml", null);
-    final FileInputStream desinationInputStream = FILE_UTILS.getFileInputStream(destination);
+    final FileInputStream desinationInputStream = FILE_UTILS.getFileInputStream(getDestination());
     try {
       VerifyUtils.verifyMGF(desinationInputStream);
     } finally {
@@ -99,19 +99,27 @@ public class MzXMLToMGFConverterStreamingImplTest {
 
   private Iterator<Scan> loadConvertedScans() {
     final MgfParser mgfParser = new MgfParser();
-    final Iterator<Scan> scanIter = mgfParser.parserMgf(FILE_UTILS.getFileInputStream(destination));
+    final Iterator<Scan> scanIter = mgfParser.parserMgf(FILE_UTILS.getFileInputStream(getDestination()));
     return scanIter;
   }
 
-  private void convertResource(final String resourceName, MgfConversionOptions options) {
+  private void convertResource(final String resourceName, final MgfConversionOptions options) {
     final InputStream mzxml = ProteomicsTests.getResourceAsStream(resourceName);
     final MzXMLToMGFConverterStreamingImpl converter = new MzXMLToMGFConverterStreamingImpl();
-    final FileOutputStream destinationOutputStream = FILE_UTILS.getFileOutputStream(destination);
+    final FileOutputStream destinationOutputStream = FILE_UTILS.getFileOutputStream(getDestination());
     try {
       converter.mzxmlToMGF(mzxml, destinationOutputStream, options);
     } finally {
       IO_UTILS.closeQuietly(destinationOutputStream);
     }
+  }
+
+  public void setDestination(final File destination) {
+    this.destination = destination;
+  }
+
+  public File getDestination() {
+    return destination;
   }
 
 }

@@ -1,11 +1,11 @@
 package edu.umn.msi.tropix.proteomics.conversion.impl;
 
+import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.flush;
 import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.writeAttribute;
 import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.writeCharacters;
 import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.writeDefaultNamespace;
 import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.writeEndElement;
 import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.writeStartElement;
-import static edu.umn.msi.tropix.proteomics.conversion.impl.XMLStreamWriterUtils.flush;
 
 import java.io.OutputStream;
 
@@ -15,26 +15,26 @@ import javax.xml.stream.XMLStreamWriter;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 
 public class MzXmlStreamWriterUtils {
-  
+
   public static enum MzXmlParentFileType {
     RAW("RAWData"), PROCESSED("processedData");
-    
-    private String value;
-    
+
+    private final String value;
+
     private MzXmlParentFileType(final String value) {
       this.value = value;
     }
-    
+
     public String getValue() {
       return value;
     }
   }
-  
+
   public static XMLStreamWriter getMzxmlStreamWriter(final OutputStream outputStream) {
-    
+
     final XMLStreamWriter xmlStreamWriter = XMLStreamWriterUtils.get(outputStream, "http://sashimi.sourceforge.net/schema_revision/mzXML_3.0");
     writeStartElement(xmlStreamWriter, "mzXML");
-    writeDefaultNamespace(xmlStreamWriter, "http://sashimi.sourceforge.net/schema_revision/mzXML_3.0");    
+    writeDefaultNamespace(xmlStreamWriter, "http://sashimi.sourceforge.net/schema_revision/mzXML_3.0");
     writeStartElement(xmlStreamWriter, "msRun");
     return xmlStreamWriter;
   }
@@ -62,7 +62,7 @@ public class MzXmlStreamWriterUtils {
     final short precursorCharge = scan.getPrecursorCharge();
     final float precursorMz = scan.getPrecursorMz();
     final float precursorIntensity = scan.getPrecursorIntensity();
-  
+
     if(precursorMz != 0.0) {
       writeStartElement(xmlStreamWriter, "precursorMz");
       // Potentially writing out a precursorIntensity of 0.0 indicating we have no value
@@ -73,7 +73,7 @@ public class MzXmlStreamWriterUtils {
       writeCharacters(xmlStreamWriter, Float.toString(precursorMz));
       writeEndElement(xmlStreamWriter); // close <precursorMz>
     }
-  
+
   }
 
   public static void addPeaks(final XMLStreamWriter xmlStreamWriter, final double[] peaks) {
@@ -81,7 +81,7 @@ public class MzXmlStreamWriterUtils {
     writeAttribute(xmlStreamWriter, "precision", "64");
     writeAttribute(xmlStreamWriter, "byteOrder", "network");
     writeAttribute(xmlStreamWriter, "pairOrder", "m/z-int");
-  
+
     final byte[] encodedPeaks = ConversionUtils.doubles2bytes(peaks);
     final String base64Peaks = new String(org.apache.commons.codec.binary.Base64.encodeBase64(encodedPeaks));
     writeCharacters(xmlStreamWriter, base64Peaks);
@@ -93,9 +93,9 @@ public class MzXmlStreamWriterUtils {
     if(ConversionUtils.isEmptyPeaks(peaks)) {
       return;
     }
-    final String scanNumber = Long.toString(scan.getNumber());  
+    final String scanNumber = Long.toString(scan.getNumber());
     final int peaksCount = peaks.length / 2;
-    
+
     writeStartElement(xmlStreamWriter, "scan");
     writeAttribute(xmlStreamWriter, "num", scanNumber);
     writeAttribute(xmlStreamWriter, "msLevel", Integer.toString(scan.getMsLevel()));
@@ -105,11 +105,11 @@ public class MzXmlStreamWriterUtils {
     }
     addPrecursor(xmlStreamWriter, scan);
     addPeaks(xmlStreamWriter, peaks);
-  
+
     writeEndElement(xmlStreamWriter); // end <scan>
   }
 
-  private static void writeScanOrigin(XMLStreamWriter xmlStreamWriter, String scanNumber, String parentSha1) {
+  private static void writeScanOrigin(final XMLStreamWriter xmlStreamWriter, final String scanNumber, final String parentSha1) {
     writeStartElement(xmlStreamWriter, "scanOrigin");
     writeAttribute(xmlStreamWriter, "parentFileID", parentSha1);
     writeAttribute(xmlStreamWriter, "num", scanNumber);

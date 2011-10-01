@@ -8,7 +8,7 @@ import edu.umn.msi.tropix.proteomics.conversion.Scan;
 public class ProteinPilotScanWriterImplTest extends BaseMgfScanWriterImplTest {
 
   public ProteinPilotScanWriterImplTest() {
-    this.mgfStyle = MgfStyle.PROTEIN_PILOT;
+    this.setMgfStyle(MgfStyle.PROTEIN_PILOT);
   }
 
   @Test(groups = "unit")

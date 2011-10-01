@@ -246,30 +246,5 @@ public class WebIntegrationTest extends FreshConfigTest {
     return folderService.getFolderContents(getUserHomeFolderId(), null);
   }
 
-  @Inject
-  private ProteomicsRunService proteomicsRunService;
-
-  protected ProteomicsRun createProteomicsRun(final String name, final String resourceId) {
-    final ModelStorageData storageData = newPersistedStorageData(name + ".RAW");
-    storageData.getUploadContext().put(ProteomicsTests.getResourceAsStream(resourceId));
-    final String mzxmlId = storageData.getTropixFile().getId();
-    final ProteomicsRun run = new ProteomicsRun();
-    run.setName(name);
-    run.setSource(storageData.getTropixFile());
-    return proteomicsRunService.createProteomicsRun(getUserGridId(), getUserHomeFolderId(), run, mzxmlId, null, mzxmlId);
-  }
-
-  @Inject
-  private DatabaseService databaseService;
-
-  protected Database createDatabase() {
-    final ModelStorageData storageData = newPersistedStorageData("test.fasta");
-    storageData.getUploadContext().put("> a\nABCD".getBytes());
-    final String mzxmlId = storageData.getTropixFile().getId();
-    final Database run = new Database();
-    run.setName("test");
-    run.setType("FASTA");
-    return databaseService.createDatabase(getUserGridId(), getUserHomeFolderId(), run, mzxmlId);
-  }
 
 }

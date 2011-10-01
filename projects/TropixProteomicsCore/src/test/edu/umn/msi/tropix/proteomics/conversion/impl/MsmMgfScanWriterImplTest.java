@@ -8,7 +8,7 @@ import edu.umn.msi.tropix.proteomics.conversion.Scan;
 public class MsmMgfScanWriterImplTest extends BaseMgfScanWriterImplTest {
 
   public MsmMgfScanWriterImplTest() {
-    this.mgfStyle = MgfStyle.MSM;
+    this.setMgfStyle(MgfStyle.MSM);
   }
 
   @Test(groups = "unit")

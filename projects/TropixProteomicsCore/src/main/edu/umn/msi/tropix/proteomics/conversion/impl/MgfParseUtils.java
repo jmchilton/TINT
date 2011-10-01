@@ -35,7 +35,7 @@ class MgfParseUtils {
     return extractScansPart(line, 1);
   }
 
-  private static int extractScansPart(final String line, int index) {
+  private static int extractScansPart(final String line, final int index) {
     final String scansPart = line.split("=")[1].trim();
     Preconditions.checkState(StringUtils.hasText(scansPart));
     if(scansPart.contains("-")) {

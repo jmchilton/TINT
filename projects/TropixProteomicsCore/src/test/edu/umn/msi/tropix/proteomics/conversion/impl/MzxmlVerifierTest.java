@@ -25,7 +25,7 @@ public class MzxmlVerifierTest {
     checkResource("invalid3.mzxml", false);
   }
 
-  private void checkResource(String resourceName, boolean expectedToVerify) {
+  private void checkResource(final String resourceName, final boolean expectedToVerify) {
     final InputStream inputStream = ProteomicsTests.getResourceAsStream(resourceName);
     assert MzxmlVerifier.isValid(inputStream) == expectedToVerify;
   }

@@ -33,7 +33,7 @@ public class MzXMLToDTAInteractiveTest {
   @Test(groups = "interactive")
   public void testConvert() {
     final File directory = FILE_UTILS.createTempDirectory();
-    try {
+    //try {
       System.out.println(directory.getAbsolutePath());
       final MzXMLToDTAConverterStreamingImpl converter = new MzXMLToDTAConverterStreamingImpl();
       final MzXMLToDTAOptions inputOptions = new MzXMLToDTAOptions();
@@ -49,9 +49,9 @@ public class MzXMLToDTAInteractiveTest {
        * mgfConverter.mzxmlToMGF(FILE_UTILS.getFileInputStream("/home/john/Downloads/TrpDig_001.mzXML"), FILE_UTILS.getFileOutputStream(mgfFile));
        * System.out.println(mgfFile.getAbsolutePath());
        */
-    } finally {
-      // FILE_UTILS.deleteDirectoryQuietly(directory);
-    }
+    //} finally {
+    //  FILE_UTILS.deleteDirectoryQuietly(directory);
+    //}
   }
 
 }

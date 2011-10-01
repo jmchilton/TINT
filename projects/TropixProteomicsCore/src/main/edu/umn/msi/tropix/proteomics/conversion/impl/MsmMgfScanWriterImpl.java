@@ -7,11 +7,12 @@ import edu.umn.msi.tropix.proteomics.conversion.Scan;
 
 public class MsmMgfScanWriterImpl extends BaseMgfScanWriterImpl {
 
-  protected MsmMgfScanWriterImpl(OutputStream outputStream, MgfConversionOptions options) {
+  protected MsmMgfScanWriterImpl(final OutputStream outputStream, final MgfConversionOptions options) {
     super(outputStream, options);
   }
 
-  protected void writeTitle(Scan scan, short precursorCharge) {
+  @Override
+  protected void writeTitle(final Scan scan, final short precursorCharge) {
     final Float intensity = scan.getPrecursorIntensity();
     final String intensityString = (intensity > 0.0) ? String.format("precIntensity: %f ", intensity) : "";
     final String title = String.format("Elution from: 26.21 to 26.87 period: %s experiment: 1 cycles: 1 %sFinneganScanNumber %d",

@@ -15,7 +15,7 @@ import edu.umn.msi.tropix.proteomics.conversion.impl.MzXmlStreamWriterUtils.MzXm
 public class DefaultMgfParentFileExtracterImpl extends MgfParentFileExtracter {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   
-  public Iterator<MzxmlParentFile> getAllParentFiles(File sourceFile) {
+  public Iterator<MzxmlParentFile> getAllParentFiles(final File sourceFile) {
     final FileInputStream inputStream = FILE_UTILS.getFileInputStream(sourceFile);
     final String sha1 = ConversionUtils.getSHA1(inputStream); // This will close the stream;
     final String sourceFileName = sourceFile.getName();
@@ -25,7 +25,7 @@ public class DefaultMgfParentFileExtracterImpl extends MgfParentFileExtracter {
     return Iterators.forArray(parentFile);
   }
 
-  public String getParentFileSha1ForScan(Scan scan) {
+  public String getParentFileSha1ForScan(final Scan scan) {
     return null;
   }
 

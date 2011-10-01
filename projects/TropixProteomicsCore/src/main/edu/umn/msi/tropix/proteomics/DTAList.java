@@ -23,7 +23,7 @@ package edu.umn.msi.tropix.proteomics;
  * 
  */
 public interface DTAList extends Iterable<DTAList.Entry> {
-  public static interface Entry {
+  public interface Entry {
     /**
      * @return contents of the dta file represented by this entry
      */
