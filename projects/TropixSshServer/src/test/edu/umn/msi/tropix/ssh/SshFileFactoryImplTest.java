@@ -32,6 +32,7 @@ import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
+import edu.umn.msi.tropix.grid.credentials.Credentials;
 
 public class SshFileFactoryImplTest {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
@@ -278,7 +279,7 @@ public class SshFileFactoryImplTest {
 
   private void replayAndSetFile() {
     EasyMockUtils.replayAll(tropixObjectService, storageManager, folderService, tropixFileCreator);
-    sshFile = sshFileFactoryImpl.getFile(id, path);
+    sshFile = sshFileFactoryImpl.getFile(Credentials.getMock(id), path);
   }
   
   private String expectFileId() {

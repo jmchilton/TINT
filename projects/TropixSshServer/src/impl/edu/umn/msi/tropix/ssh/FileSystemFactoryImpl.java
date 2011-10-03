@@ -14,14 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 
+import edu.umn.msi.tropix.grid.credentials.Credential;
+
+
 @ManagedBean
 public class FileSystemFactoryImpl implements FileSystemFactory {
-  private Function<String, String> userNameToIdentityFunction = Functions.identity();
+    //  private Function<String, String> userNameToIdentityFunction = Functions.identity();
 
-  @Autowired(required = false)
-  public void setUserNameToIdentityFunction(final Function<String, String> userNameToIdentityFunction) {
-    this.userNameToIdentityFunction = userNameToIdentityFunction;
-  }
+    //@Autowired(required = false)
+    //public void setUserNameToIdentityFunction(final Function<String, String> userNameToIdentityFunction) {
+    //    this.userNameToIdentityFunction = userNameToIdentityFunction;
+    //  }
 
   private final SshFileFactory sshFileFactory;
 
@@ -30,18 +33,18 @@ public class FileSystemFactoryImpl implements FileSystemFactory {
     this.sshFileFactory = sshFileFactory;
   }
 
-  public FileSystemView createFileSystemView(final String userName) {
-    return new FileSystemViewImpl(userNameToIdentityFunction.apply(userName));
+  public FileSystemView createFileSystemView(final Credential credential) {
+    return new FileSystemViewImpl(credential);
   }
 
   public FileSystemView createFileSystemView(final Session session) throws IOException {
-    return createFileSystemView(session.getUsername());
+    return createFileSystemView((Credential) session.getAttribute(PasswordAuthenticatorImpl.CREDENTIAL_KEY));
   }
   
   private class FileSystemViewImpl implements FileSystemView {
-    private final String identity;
+    private final Credential identity;
 
-    FileSystemViewImpl(final String identity) {
+    FileSystemViewImpl(final Credential identity) {
       this.identity = identity;
     }
 

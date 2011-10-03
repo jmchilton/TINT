@@ -12,7 +12,7 @@ import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.persistence.service.TropixObjectLoaderService;
-import edu.umn.msi.tropix.persistence.service.file.NewFileMessageQueue.NewFileMessage;
+import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
 import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
 
 public class NewFileMessageQueueConsumerImplTest {

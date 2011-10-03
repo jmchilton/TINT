@@ -33,6 +33,8 @@ import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 
+import edu.umn.msi.tropix.grid.credentials.Credential;
+
 @ManagedBean
 public class SshFileFactoryImpl implements SshFileFactory {
   private static final Log LOG = LogFactory.getLog(SshFileFactoryImpl.class);
@@ -53,11 +55,12 @@ public class SshFileFactoryImpl implements SshFileFactory {
     this.folderService = folderService;
   }
 
-  public SshFile getFile(final String identity, final String virtualPath) {
-    return new SshFileImpl(identity, virtualPath);
+  public SshFile getFile(final Credential credential, final String virtualPath) {
+    return new SshFileImpl(credential, virtualPath);
   }
 
   class SshFileImpl implements SshFile {
+    private Credential credential;
     private String identity;
     private String virtualPath;
     private TropixObject object;
@@ -74,8 +77,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
       return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
     }
 
-    SshFileImpl(final String identity, final String virtualPath) {
-      this.identity = identity;
+    SshFileImpl(final Credential credential, final String virtualPath) {
+      this.credential = credential;
+      this.identity = credential.getIdentity();
       this.virtualPath = virtualPath;
     }
 
@@ -130,7 +134,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public SshFile getParentFile() {
       log("getParentFile");
-      return getFile(identity, Utils.parent(virtualPath));
+      return getFile(credential, Utils.parent(virtualPath));
     }
 
     public long getLastModified() {
@@ -292,7 +296,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
         final String derivedName = uniqueName.get(name) ? name : String.format("%s [id:%s]", name, object.getId());
         final String childName = Utils.join(virtualPath, derivedName);
         LOG.debug(String.format("Creating child with name [%s]", childName));
-        children.add(getFile(identity, childName));
+        children.add(getFile(credential, childName));
       }
       return children.build();
     }
