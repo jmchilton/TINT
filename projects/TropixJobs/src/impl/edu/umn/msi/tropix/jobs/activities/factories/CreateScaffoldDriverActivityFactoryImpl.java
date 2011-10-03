@@ -195,12 +195,12 @@ class CreateScaffoldDriverActivityFactoryImpl implements ActivityFactory<CreateS
 
       // Specify export for scaffold, just hard code a single SFD file for now
       final Export scaffoldExport = new Export();
-      if("V3".equals(getDescription().getScaffoldVersion())) {
-        scaffoldExport.setType(ExportType.SF_3);
-        scaffoldExport.setPath("output.sf3");
-      } else {
+      if("V2".equals(getDescription().getScaffoldVersion())) {
         scaffoldExport.setType(ExportType.SFD);
         scaffoldExport.setPath("output.sfd");
+      } else {
+        scaffoldExport.setType(ExportType.SF_3);
+        scaffoldExport.setPath("output.sf3");
       }
       scaffoldExport.setThresholds("thresh");
 

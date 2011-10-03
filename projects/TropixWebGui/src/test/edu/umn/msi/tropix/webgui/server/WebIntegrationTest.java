@@ -20,23 +20,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeMethod;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import edu.umn.msi.tropix.common.io.InputContext;
 import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
-import edu.umn.msi.tropix.models.Database;
-import edu.umn.msi.tropix.models.ProteomicsRun;
+import edu.umn.msi.tropix.jobs.activities.descriptions.TropixObjectDescription;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
-import edu.umn.msi.tropix.persistence.service.DatabaseService;
+import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.persistence.service.FileTypeService;
-import edu.umn.msi.tropix.persistence.service.ProteomicsRunService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
-import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
 import edu.umn.msi.tropix.storage.client.ModelStorageData;
 import edu.umn.msi.tropix.storage.client.ModelStorageDataFactory;
 import edu.umn.msi.tropix.webgui.server.messages.MessageManager;
@@ -102,6 +101,15 @@ public class WebIntegrationTest extends FreshConfigTest {
     final ProgressMessage progressMessage = waitForJobComplete(jobDescription);
     assert progressMessage.getJobStatus() == ProgressMessage.JOB_COMPLETE;
   }
+  
+  protected InputContext getDownloadContextForObjectId(final String objectId) {
+    return getStorageDataForObjectId(objectId).getDownloadContext();
+  }
+  
+  protected ModelStorageData getStorageDataForObjectId(final String objectId) {
+    final TropixFile file = (TropixFile) tropixObjectService.load(getUserGridId(), objectId, TropixObjectTypeEnum.FILE);
+    return storageDataFactory.getStorageData(file, userSession.getProxy());
+  }
 
   protected ModelStorageData newPersistedStorageData(final String name) {
     final TropixFile file = new TropixFile();
@@ -111,7 +119,7 @@ public class WebIntegrationTest extends FreshConfigTest {
     file.setStorageServiceUrl("local://");
     final TropixFile result = tropixObjectService.createFile(userSession.getGridId(), getUserHomeFolderId(), file,
                 fileTypeService.loadPrimaryFileTypeWithExtension(userSession.getGridId(), ".RAW").getId());
-    return storageDataFactory.getStorageData(result, userSession.getProxy());
+    return storageDataFactory.getStorageData(result, userSession.getProxy());    
   }
 
   private List<String> addedObjectIds = Lists.newArrayList();
@@ -126,6 +134,21 @@ public class WebIntegrationTest extends FreshConfigTest {
       final Iterable<ActivityDescription> descriptions) {
     return (T) Iterables.find(descriptions, Predicates.instanceOf(clazz));
   }
+  
+  @SuppressWarnings("unchecked")
+  protected static <T extends ActivityDescription> T getActivityDescriptionOfTypeWithNamePrefix(final Class<T> clazz,
+      final Iterable<ActivityDescription> descriptions, final String prefix) {
+    return (T) Iterables.find(descriptions, Predicates.and(Predicates.instanceOf(clazz), new Predicate<ActivityDescription>() {
+      public boolean apply(final ActivityDescription input) {
+        if(input instanceof TropixObjectDescription) {
+          return ((TropixObjectDescription) input).getName().startsWith(prefix);
+        }
+        return false;
+      }
+    }));
+  }
+  
+  
 
   @BeforeMethod(alwaysRun = true)
   public void init() {

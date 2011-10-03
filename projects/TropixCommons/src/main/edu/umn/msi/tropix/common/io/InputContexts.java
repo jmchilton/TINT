@@ -171,11 +171,21 @@ public class InputContexts {
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     try {
       inputContext.get(outputStream);
-      InputContexts.IO_UTILS.flush(outputStream);
+      IO_UTILS.flush(outputStream);
       return outputStream.toByteArray();
     } finally {
-      InputContexts.IO_UTILS.closeQuietly(outputStream);
+      IO_UTILS.closeQuietly(outputStream);
     }
+  }
+  
+  public static InputStream asInputStream(final InputContext inputContext) {
+    final InputStream stream;
+    if(inputContext instanceof InputStreamCoercible) {
+      stream = ((InputStreamCoercible) inputContext).asInputStream();
+    } else {
+      stream = new ByteArrayInputStream(getAsByteArray(inputContext));
+    }
+    return stream;
   }
 
   public static String toString(final InputContext inputContext) {
