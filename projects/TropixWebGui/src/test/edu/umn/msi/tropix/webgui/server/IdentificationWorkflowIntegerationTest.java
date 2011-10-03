@@ -40,10 +40,10 @@ import edu.umn.msi.tropix.webgui.client.constants.ConstantProxies;
 
 public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
   private IdentificationWorkflowBuilder workflowBuilder;
-  
+
   @Override
   protected void initializeConfigDir(final ConfigDirBuilder builder) {
-    builder.createSubConfigDir("client").addDeployProperty("queue.staging.clean", "false");
+    // builder.createSubConfigDir("client").addDeployProperty("queue.staging.clean", "false");
   }
 
   public void setupWorkflowBuilder() throws Exception {
@@ -53,13 +53,13 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     workflowBuilder = new IdentificationWorkflowBuilder(ConstantProxies.getProxy(ComponentConstants.class));
     workflowBuilder.setScaffoldType(ScaffoldSampleType.MANY_SAMPLE);
     workflowBuilder.setScaffoldParameterMap(ScaffoldParameterTestData.getTestParameters());
-    
+
     setupDatabase();
     setupMetadataProvider();
     setupIdParameters();
     setupIdService();
   }
-  
+
   @Test(groups = "integration")
   public void testIdentificationOnly() throws Exception {
     setupWorkflowBuilder();
@@ -76,7 +76,7 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     assertActivityCompleteNormally(description);
     finishMessageProcessing();
   }
-  
+
   @Test(groups = "integration")
   public void testSingleScaffold() throws Exception {
     setupWorkflowBuilder();
@@ -85,9 +85,9 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     workflowBuilder.setUseScaffold(true);
     workflowBuilder.setUseExistingRuns(true);
     workflowBuilder.setSelectedRuns(Lists.newArrayList(run1));
-    
+
     setupScaffoldService();
-    
+
     final Set<ActivityDescription> descriptions = workflowBuilder.build();
     super.submit(descriptions);
 
@@ -96,7 +96,7 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     assertActivityCompleteNormally(description);
     finishMessageProcessing();
   }
-  
+
   @Test(groups = "integration", invocationCount = 10, skipFailedInvocations = true)
   public void testMultipleScaffoldSamples() throws Exception {
     setupWorkflowBuilder();
@@ -106,9 +106,9 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     workflowBuilder.setUseScaffold(true);
     workflowBuilder.setUseExistingRuns(true);
     workflowBuilder.setSelectedRuns(Lists.newArrayList(run1, run2));
-    
+
     setupScaffoldService();
-    
+
     final Set<ActivityDescription> descriptions = workflowBuilder.build();
     super.submit(descriptions);
 
@@ -116,26 +116,28 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
         CreateScaffoldAnalysisDescription.class, descriptions);
     assertActivityCompleteNormally(description);
 
-    final CreateIdentificationAnalysisDescription idDesc1 = getActivityDescriptionOfTypeWithNamePrefix(CreateIdentificationAnalysisDescription.class, descriptions, "run1");
-    final CreateIdentificationAnalysisDescription idDesc2 = getActivityDescriptionOfTypeWithNamePrefix(CreateIdentificationAnalysisDescription.class, descriptions, "run2");
+    final CreateIdentificationAnalysisDescription idDesc1 = getActivityDescriptionOfTypeWithNamePrefix(CreateIdentificationAnalysisDescription.class,
+        descriptions, "run1");
+    final CreateIdentificationAnalysisDescription idDesc2 = getActivityDescriptionOfTypeWithNamePrefix(CreateIdentificationAnalysisDescription.class,
+        descriptions, "run2");
     final String id1Output = idDesc1.getAnalysisFileId();
     Preconditions.checkNotNull(id1Output);
     final String id2Output = idDesc2.getAnalysisFileId();
     Preconditions.checkNotNull(id2Output);
     final long id1Size = getSize(getDownloadContextForObjectId(id1Output));
     final long id2Size = getSize(getDownloadContextForObjectId(id2Output));
-    
+
     assert id1Size != id2Size;
-    
+
     final String outputFileId = description.getOutputFileId();
-        
+
     final Properties properties = new Properties();
-    properties.load(InputContexts.asInputStream(getDownloadContextForObjectId(outputFileId)));    
+    properties.load(InputContexts.asInputStream(getDownloadContextForObjectId(outputFileId)));
     assert getActualResourceSize("run1", properties) == id1Size;
     assert getActualResourceSize("run2", properties) == id2Size;
     finishMessageProcessing();
   }
-  
+
   private long getActualResourceSize(final String name, final Properties propertiesFromFakeScaffold) {
     final Iterable<String> keys = Maps.fromProperties(propertiesFromFakeScaffold).keySet();
     for(final String recordedFileName : keys) {
@@ -154,7 +156,7 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     }
     return size;
   }
-  
+
   private long getExpectedResourceSize(final String resourceId) throws IOException {
     final InputStream inputStream = ProteomicsTests.getResourceAsStream(resourceId);
     long size = 0;
@@ -163,7 +165,7 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     }
     return size;
   }
-  
+
   @Inject
   private ProteomicsRunService proteomicsRunService;
 
@@ -198,7 +200,7 @@ public class IdentificationWorkflowIntegerationTest extends WebIntegrationTest {
     idService.setServiceAddress("local://Sequest");
     workflowBuilder.setIdService(idService);
   }
-  
+
   private void setupScaffoldService() {
     final ScaffoldGridService scaffoldService = new ScaffoldGridService();
     scaffoldService.setScaffoldVersion("3");
