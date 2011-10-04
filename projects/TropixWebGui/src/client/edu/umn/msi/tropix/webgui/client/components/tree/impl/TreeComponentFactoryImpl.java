@@ -105,6 +105,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
   }
 
   private class TreeComponentImpl extends SelectionComponentBaseImpl<TreeItem, TreeGrid> implements TreeComponent {
+    private String treeId;
     private List<TreeState> initialState;
     private Iterable<String> expandIds;
     private Iterable<TreeItem> selectedItems;
@@ -160,7 +161,9 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     private class CustomTreeGrid extends TreeGrid {
       private final TreeComponentImpl treeComponent;
 
-      CustomTreeGrid(final TreeComponentImpl treeComponent) {
+      CustomTreeGrid(final String id, final TreeComponentImpl treeComponent) {
+
+        this.setID(id);
         this.treeComponent = treeComponent;
       }
 
@@ -181,6 +184,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     }
 
     public TreeComponentImpl(final TreeOptions options) {
+      this.treeId = "TreeComponent_" + options.getTreeId();
       this.acceptsDrops = options.isAcceptsDrops();
       this.expandIds = options.getExpandIds();
       this.selectedItems = options.getSelectedItems();
@@ -201,7 +205,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     }
 
     private void initTreeWidget() {
-      setWidget(new CustomTreeGrid(this));
+      setWidget(new CustomTreeGrid(treeId, this));
       get().setShowHeaderMenuButton(true);
       get().setShowHeaderContextMenu(true);
       get().setShowRoot(false);

@@ -54,6 +54,7 @@ import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.services.message.ProgressMessage;
 
 public class ProgressCollectionView extends View implements Supplier<Tab> {
+  private static int lastRecordId = 0;
   private final ListGrid grid = new ListGrid();
   private final ProgressCollectionModel progressCollectionModel;
   private final Map<String, ListGridRecord> gridRecords = new HashMap<String, ListGridRecord>();
@@ -70,7 +71,7 @@ public class ProgressCollectionView extends View implements Supplier<Tab> {
     field.setPrimaryKey(true);
     this.dataSource.addField(field);
     this.dataSource.setClientOnly(true);
-
+    this.grid.setID("ProgressListGrid");
     this.grid.setDataSource(this.dataSource);
     this.grid.setAutoFetchData(true);
     this.grid.setEmptyMessage("No jobs to show.");
@@ -171,6 +172,7 @@ public class ProgressCollectionView extends View implements Supplier<Tab> {
     bar.setProgress(0.0);
 
     final ListGridRecord record = new ListGridRecord();
+    record.setAttribute("recordId", lastRecordId++);
     record.setAttribute("workflowId", progressModel.getAsString("workflowId"));
     record.setAttribute("id", progressModel.getAsString("id"));
     record.setAttribute("status", "images/default/icons/wait.gif");
@@ -181,7 +183,7 @@ public class ProgressCollectionView extends View implements Supplier<Tab> {
     updateRecord(record, progressModel);
     return record;
   }
-  
+
   private static void updateBar(final ProgressModel progressModel, final ProgressBar bar) {
     final String stepStatus = (String) progressModel.get("stepStatus");
     if(stepStatus == null) {
@@ -194,9 +196,9 @@ public class ProgressCollectionView extends View implements Supplier<Tab> {
         }
       });
       bar.setProgress(((Float) progressModel.get("stepPercent")).doubleValue());
-    }           
+    }
   }
-  
+
   private static void updateRecord(final ListGridRecord record, final ProgressModel progressModel) {
     final int status = ((Integer) progressModel.get("jobStatus")).intValue();
     if(status == ProgressMessage.JOB_COMPLETE) {
@@ -208,8 +210,6 @@ public class ProgressCollectionView extends View implements Supplier<Tab> {
     final ProgressBar bar = (ProgressBar) record.getAttributeAsObject("percentObject");
     updateBar(progressModel, bar);
   }
-  
-  
 
   private ChangeListener progressCollectionModelChangeListener = new ChangeListener() {
 

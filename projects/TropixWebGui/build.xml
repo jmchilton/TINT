@@ -109,7 +109,7 @@
   </target>
 
   <target name="start-test-server" depends="prepare,defineClasspaths" >
-    <start-jetty port="8180" />
+    <start-jetty port="8181" />
     <sleep hours="1" />
   </target>
   

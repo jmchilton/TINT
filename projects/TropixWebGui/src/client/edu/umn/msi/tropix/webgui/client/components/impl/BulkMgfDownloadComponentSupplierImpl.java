@@ -39,7 +39,7 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
 
   @Inject
   public BulkMgfDownloadComponentSupplierImpl(final TreeComponentFactory treeComponentFactory,
-                                           final LocationFactory locationFactory) {
+      final LocationFactory locationFactory) {
     this.treeComponentFactory = treeComponentFactory;
     this.locationFactory = locationFactory;
   }
@@ -65,8 +65,14 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
       smartDownloadFormPanel = new GWTDownloadFormPanel("mgfStyle");
       smartDownloadFormPanel.setType("bulkMgf");
       downloadButton = SmartUtils.getButton(ConstantsInstances.COMPONENT_INSTANCE.bulkMgfDownload(), Resources.DOWNLOAD);
+      downloadButton.setID("BulkMgfDownload_Button_Download");
       final RunTreeComponentImpl runTreeComponent = new RunTreeComponentImpl(treeComponentFactory, locationFactory, Lists.<TreeItem>newArrayList(),
-          false, this);
+          false, this) {
+        @Override
+        public String getTreeId() {
+          return "BulkMgfDownload";
+        }
+      };
 
       final Command downloadCommand = new Command() {
         public void execute() {
@@ -84,7 +90,7 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
       mgfStyleItem.setValueMap(styleMap);
       mgfStyleItem.setValue("DEFAULT");
 
-      final Form form = new Form(mgfStyleItem);
+      final Form form = new Form("BulkMgfDownload", mgfStyleItem);
       form.setWidth100();
 
       final Layout formLayout = SmartUtils.getFullVLayout(form, runTreeComponent.get());

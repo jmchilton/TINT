@@ -39,7 +39,8 @@ import edu.umn.msi.tropix.webgui.client.utils.ListenerList;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerLists;
 
 /**
- * Extends Smart's Dynamic Form to provide a common look and feel and extended functionality including a validation concept the isn't as tied to Smart or DataSources and instead makes use of the {@code Listener} and {@code Predicate} interface.
+ * Extends Smart's Dynamic Form to provide a common look and feel and extended functionality including a validation concept the isn't as tied to Smart
+ * or DataSources and instead makes use of the {@code Listener} and {@code Predicate} interface.
  * 
  * @author John Chilton
  * 
@@ -48,25 +49,31 @@ public class Form extends DynamicForm implements HasValidation {
   private final ListenerList<Boolean> validationListeners = ListenerLists.getInstance();
   private Boolean clientValid = false;
   private FormItem[] items;
-  
+
   @Override
   public void setItems(final FormItem... items) {
     this.items = items;
     super.setItems(items);
   }
-  
+
   /**
    * Resulting list is unmodifiable.
    * 
-   * @return List of FormItems 
-   */  
+   * @return List of FormItems
+   */
   public List<FormItem> getItems() {
     return Collections.unmodifiableList(Arrays.asList(items));
   }
-  
+
   public Form() {
     super();
     init(null);
+  }
+
+  public Form(final String id, final FormItem... items) {
+    super();
+    super.setID(id);
+    init(items);
   }
 
   public Form(final FormItem... items) {

@@ -524,7 +524,7 @@
       <!-- Directory to put loccated artifacts into, by convention this is the ext.dir -->
       <property name="ivy.resolved.artifacts.dir" location="${ext.dir}" />
       <!-- Pattern used to determine where to place resolved dependencies -->
-      <property name="ivy.resolved.artifacts.pattern" value="${ivy.resolved.artifacts.dir}/dependencies/[conf]/[type]s/[originalname](.[ext])" />
+      <property name="ivy.resolved.artifacts.pattern" value="${ivy.resolved.artifacts.dir}/dependencies/[conf]/jars/[originalname](.[ext])" />
 
 
       <!-- Directory generated artifacts is found in, by convention this is the build directory. -->
@@ -537,7 +537,7 @@
       <property name="ivy.resolve.configurations" value="all" />
       
       <!-- Ivy artifact types to fetch, by default only jars are fetched. -->
-      <property name="ivy.resolve.type" value="jar" />
+      <property name="ivy.resolve.type" value="jar,bundle" />
 
       <!-- Ivy xml file -->
       <property name="ivy.xml.file" location="ivy.xml" />

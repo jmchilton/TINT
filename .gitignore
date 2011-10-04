@@ -155,6 +155,7 @@
 /projects/TropixWebGui/tropix.info
 /projects/TropixWebGui/tropix.trace
 /projects/TropixWebGui/tropix.warn
+/projects/TropixWebGui/gwt-client.log
 
 # /tools/
 /tools/ws-core

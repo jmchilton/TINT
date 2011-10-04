@@ -37,7 +37,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="login.timeout" value="7200" />
         <!-- <entry key="index.service.url" value="http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService" /> -->
         <entry key="index.service.url" value="" />
-        <entry key="unindexed.service.urls" value="" />
+        <entry key="unindexed.service.urls" value="local://Sequest,local://XTandem,local://ProteomicsConvert,local://Scaffold" />
         <entry key="admin.only" value="false" />
         <entry key="blocked.service.urls" value="" />
         <entry key="local.catalog.host" value="http://localhost:8080/" />

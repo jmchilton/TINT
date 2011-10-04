@@ -52,6 +52,7 @@ public class WizardFactoryImpl implements WizardFactory {
   }
 
   static class Wizard extends WizardWindow implements WizardStateListener {
+    private final String wizardId;
     private final List<WizardPage> wizardPages;
     private final List<Label> titleLabels, descriptionLabels;
     private final Button nextButton = SmartUtils.getButton("Next", null, 70);
@@ -71,8 +72,11 @@ public class WizardFactoryImpl implements WizardFactory {
     };
 
     Wizard(final List<WizardPage> pages, final WizardCompletionHandler finishHandler, final WizardOptions options) {
+      this.wizardId = "Wizard_" + options.getWizardId();
       this.setShowToolbar(true);
       SmartUtils.destroyOnClose(this);
+      this.nextButton.setID(wizardId + "_Button_Next");
+      this.finishButton.setID(wizardId + "_Button_Finish");
       this.options = options == null ? new WizardOptions() : options;
       this.setToolbarButtons(this.previousButton, this.nextButton, this.finishButton, this.cancelButton);
       this.wizardPages = pages;

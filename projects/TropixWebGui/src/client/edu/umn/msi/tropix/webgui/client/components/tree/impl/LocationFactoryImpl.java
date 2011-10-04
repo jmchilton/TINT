@@ -63,12 +63,12 @@ import edu.umn.msi.tropix.webgui.services.tropix.RequestService;
 public class LocationFactoryImpl implements LocationFactory {
   private final ModuleManager moduleManager;
   private Session session;
-  
-  @Inject 
+
+  @Inject
   public void setSession(final Session session) {
     this.session = session;
   }
-  
+
   @Inject
   public LocationFactoryImpl(final ModuleManager moduleManager) {
     this.moduleManager = moduleManager;
@@ -94,7 +94,8 @@ public class LocationFactoryImpl implements LocationFactory {
     };
   }
 
-  public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final TreeItem parent, final TropixObject object, final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+  public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final TreeItem parent, final TropixObject object,
+      final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     return new TropixObjectTreeItemImpl(parent, object, tropixObjectTreeItemExpander);
   }
 
@@ -310,11 +311,13 @@ public class LocationFactoryImpl implements LocationFactory {
   }
 
   public Iterable<TreeItem> getAllRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getSharedRootItem(expander), getMyRecentActivityItem(), getMyRecentSearchesItem(), getIncomingRequestsItem(), getOutgoingRequestsItem()), moduleManager);
+    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getSharedRootItem(expander), getMyRecentActivityItem(),
+        getMyRecentSearchesItem(), getIncomingRequestsItem(), getOutgoingRequestsItem()), moduleManager);
   }
 
   public Iterable<TreeItem> getTropixObjectSourceRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getSharedRootItem(expander), getMyRecentActivityItem(), getMyRecentSearchesItem()), moduleManager);
+    return Iterables.filter(
+        Arrays.asList(getHomeRootItem(expander), getSharedRootItem(expander), getMyRecentActivityItem(), getMyRecentSearchesItem()), moduleManager);
   }
 
   public Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable final TropixObjectTreeItemExpander expander) {

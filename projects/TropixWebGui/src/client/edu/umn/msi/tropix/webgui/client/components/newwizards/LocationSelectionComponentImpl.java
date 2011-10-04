@@ -67,25 +67,25 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
         final Predicate<TreeItem> selectionPredicate,
         final String selectionLabel) {
       this(name,
-           inputType,
-           allowMultiple,
-           isBatch,
-           selectionPredicate,
-           TreeItemPredicates.getTropixObjectTreeItemTypePredicate(
-               new TropixObjectType[] {
-                   TropixObjectTypeEnum.FOLDER,
-                   TropixObjectTypeEnum.VIRTUAL_FOLDER, inputType},
-               true),
-           selectionLabel);
+          inputType,
+          allowMultiple,
+          isBatch,
+          selectionPredicate,
+          TreeItemPredicates.getTropixObjectTreeItemTypePredicate(
+              new TropixObjectType[] {
+                  TropixObjectTypeEnum.FOLDER,
+                  TropixObjectTypeEnum.VIRTUAL_FOLDER, inputType},
+              true),
+          selectionLabel);
     }
 
     public InputTypeImpl(final String name,
-                         final TropixObjectType inputType,
-                         final boolean allowMultiple,
-                         final boolean isBatch,
-                         final Predicate<TreeItem> selectionPredicate,
-                         final Predicate<TreeItem> showPredicate,
-                         final String selectionLabel) {
+        final TropixObjectType inputType,
+        final boolean allowMultiple,
+        final boolean isBatch,
+        final Predicate<TreeItem> selectionPredicate,
+        final Predicate<TreeItem> showPredicate,
+        final String selectionLabel) {
       this.name = name;
       this.inputType = inputType;
       this.allowMultiple = allowMultiple;
@@ -139,6 +139,10 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
   protected Layout treeLayout = new VLayout();
   private TreeComponent tree;
 
+  public String getTreeId() {
+    return null;
+  }
+
   LocationSelectionComponentImpl(final TreeComponentFactory treeComponentFactory, final LocationFactory locationFactory,
       final Collection<TreeItem> treeItems,
       final boolean optionalRun, final Iterable<InputType> validInputTypes, final ValidationListener validationListener) {
@@ -169,7 +173,7 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
           throw new NullPointerException("Input type should not be null");
         }
         if(initialTreeItems != null &&
-             Iterables.any(this.initialTreeItems, validInputType.getSelectionPredicate())) {
+            Iterables.any(this.initialTreeItems, validInputType.getSelectionPredicate())) {
           this.inputType = validInputType;
           break;
         }
@@ -243,6 +247,7 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
         TropixObjectTypeEnum.VIRTUAL_FOLDER, inputType.getInputType()};
 
     final TreeOptions treeOptions = new TreeOptions();
+    treeOptions.setTreeId(getTreeId());
     treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(TropixObjectTreeItemExpanders.get(inputTypes)));
     treeOptions.setShowPredicate(inputType.getShowPredicate());
     treeOptions.setSelectionPredicate(inputType.getSelectionPredicate());

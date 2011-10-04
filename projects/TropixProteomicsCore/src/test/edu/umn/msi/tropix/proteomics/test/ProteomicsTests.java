@@ -24,14 +24,14 @@ import java.util.List;
 import net.sourceforge.sashimi.mzxml.v3_0.MsRun;
 import net.sourceforge.sashimi.mzxml.v3_0.MzXML;
 import net.sourceforge.sashimi.mzxml.v3_0.Scan;
-
 import edu.umn.msi.tropix.common.data.Repositories;
 import edu.umn.msi.tropix.common.data.Repository;
 import edu.umn.msi.tropix.proteomics.xml.MzXMLUtility;
 
 public class ProteomicsTests {
   private static Repository repository = Repositories.getInstance();
-  private static final MzXMLUtility UTILITY = new MzXMLUtility(); 
+  private static final MzXMLUtility UTILITY = new MzXMLUtility();
+  public static String SMALL_MZXML_RESOURCE_ID = "parentPerScan.mzxml";
 
   public static synchronized InputStream getMzxmlStream(final int sizeSeed) {
     final MzXML mzxml = UTILITY.deserialize(getResourceAsStream("parentPerScan.mzxml"));
@@ -54,7 +54,7 @@ public class ProteomicsTests {
     }
     return new ByteArrayInputStream(UTILITY.serialize(mzxml).getBytes());
   }
-  
+
   public static InputStream getResourceAsStream(final String resourceName) {
     final Class<ProteomicsTests> clazz = ProteomicsTests.class;
     InputStream stream;

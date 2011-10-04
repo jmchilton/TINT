@@ -46,8 +46,8 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.mediators.ActionMediator;
-import edu.umn.msi.tropix.webgui.client.mediators.LocationActionEventImpl;
 import edu.umn.msi.tropix.webgui.client.mediators.ActionMediator.ActionEvent;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationActionEventImpl;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.TextBlock;
@@ -103,6 +103,7 @@ public class NewItemFolderActionListenerImpl implements Listener<ActionEvent> {
     final Dialog window = new Dialog();
     window.setShowToolbar(true);
     final Button okButton = SmartUtils.getButton("Ok", Resources.OK);
+    okButton.setID("NewItemFolder_Button_Ok");
     okButton.disable();
 
     final TextBlock block = new TextBlock("Description");

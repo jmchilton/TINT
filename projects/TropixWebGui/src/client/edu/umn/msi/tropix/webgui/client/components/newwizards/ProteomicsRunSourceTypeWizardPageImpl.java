@@ -76,7 +76,7 @@ class ProteomicsRunSourceTypeWizardPageImpl extends WizardPageImpl<Canvas> {
     final RadioGroupItem sourceRadioGroupItem = getSourceItem();
     final CheckboxItem batchItem = getBatchItem();
 
-    final Form form = new Form(sourceRadioGroupItem, batchItem);
+    final Form form = new Form("ProteomicsRunSource", sourceRadioGroupItem, batchItem);
     form.setNumCols(2);
     final Layout layout = SmartUtils.getFullVLayout();
     layout.addMember(form);

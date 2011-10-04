@@ -436,7 +436,10 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
 
   }
 
+  private static int uploadComponentCount = 0;
+
   private class MultiUploadComponentImpl extends WidgetSupplierImpl<Canvas> implements DynamicUploadComponent {
+    private int uploadComponentNumber = uploadComponentCount++;
     private final LinkedHashMap<String, UploadComponent> components = new LinkedHashMap<String, UploadComponent>();
     private final VLayout wrapperLayout = new VLayout();
     private VLayout layout;
@@ -479,7 +482,7 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
           update();
         }
       });
-      final Form form = new Form(typeItem);
+      final Form form = new Form("UploadComponentType_" + uploadComponentNumber, typeItem);
       form.setPadding(0);
       form.setMargin(0);
       form.setCellSpacing(0);
