@@ -16,11 +16,12 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    <!--  <dependency org="msi.umn.edu" name="tropix-webgui" rev="${ivy.project.version}" conf="default->constants" />  -->
     <dependency org="org.seleniumhq.selenium" name="selenium-firefox-driver" rev="2.6.0">
     </dependency>
     <dependency org="org.seleniumhq.selenium" name="selenium-server" rev="2.6.0">
     </dependency>
-
   </dependencies>  
 
 </ivy-module>
+

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+        <classpathentry kind="src" path="src/constants" />
 	<classpathentry kind="src" path="resources/client"/>
 	<classpathentry kind="src" path="resources/server"/>
 	<classpathentry kind="src" path="resources/test"/>
