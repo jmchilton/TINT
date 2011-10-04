@@ -535,6 +535,9 @@
 
   <target name="prepare-directories">
     <mkdir dir="${build.dir}" />
+    <mkdir dir="${build.wars.dir}" />
+    <mkdir dir="${build.wars.dir}/insecure" />
+    <mkdir dir="${build.wars.dir}/secure" />
     <mkdir dir="${wars.dir}" />
     <mkdir dir="${ext.dir}" />
     <mkdir dir="${jars.dir}" />

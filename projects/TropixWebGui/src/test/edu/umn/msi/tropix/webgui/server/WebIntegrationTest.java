@@ -52,6 +52,7 @@ import edu.umn.msi.tropix.webgui.services.session.SessionInfo;
 
 @ContextConfiguration("classpath:/WEB-INF/applicationContext.xml")
 public class WebIntegrationTest extends FreshConfigTest {
+  private static final String TEST_STORAGE_SERVICE_URL = "local://";
   private MockHttpSession session = new MockHttpSession();
   private MockHttpServletRequest request = new MockHttpServletRequest();
 
@@ -106,19 +107,31 @@ public class WebIntegrationTest extends FreshConfigTest {
     return getStorageDataForObjectId(objectId).getDownloadContext();
   }
   
+  protected InputContext getDownloadContextForFileId(final String fileId) {
+    return getStorageDataForFileId(fileId).getDownloadContext();
+  }
+  
+  protected ModelStorageData getStorageDataForFileId(final String fileId) {
+    return storageDataFactory.getStorageData(fileId, TEST_STORAGE_SERVICE_URL, userSession.getProxy());
+  }
+  
   protected ModelStorageData getStorageDataForObjectId(final String objectId) {
     final TropixFile file = (TropixFile) tropixObjectService.load(getUserGridId(), objectId, TropixObjectTypeEnum.FILE);
     return storageDataFactory.getStorageData(file, userSession.getProxy());
   }
-
+  
   protected ModelStorageData newPersistedStorageData(final String name) {
+    return newPersistedStorageData(name, null);
+  }
+
+  protected ModelStorageData newPersistedStorageData(final String name, final String extension) {
     final TropixFile file = new TropixFile();
     file.setName(name);
     file.setCommitted(true);
     file.setFileId(UUID.randomUUID().toString()); // NOT THE RIGHT WAY TO DO THIS
-    file.setStorageServiceUrl("local://");
+    file.setStorageServiceUrl(TEST_STORAGE_SERVICE_URL);
     final TropixFile result = tropixObjectService.createFile(userSession.getGridId(), getUserHomeFolderId(), file,
-                fileTypeService.loadPrimaryFileTypeWithExtension(userSession.getGridId(), ".RAW").getId());
+                fileTypeService.loadPrimaryFileTypeWithExtension(userSession.getGridId(), ".mzxml").getId());
     return storageDataFactory.getStorageData(result, userSession.getProxy());    
   }
 
