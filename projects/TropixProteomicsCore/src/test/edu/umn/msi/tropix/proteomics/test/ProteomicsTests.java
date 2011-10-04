@@ -16,14 +16,45 @@
 
 package edu.umn.msi.tropix.proteomics.test;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.List;
+
+import net.sourceforge.sashimi.mzxml.v3_0.MsRun;
+import net.sourceforge.sashimi.mzxml.v3_0.MzXML;
+import net.sourceforge.sashimi.mzxml.v3_0.Scan;
 
 import edu.umn.msi.tropix.common.data.Repositories;
 import edu.umn.msi.tropix.common.data.Repository;
+import edu.umn.msi.tropix.proteomics.xml.MzXMLUtility;
 
 public class ProteomicsTests {
   private static Repository repository = Repositories.getInstance();
+  private static final MzXMLUtility UTILITY = new MzXMLUtility(); 
 
+  public static synchronized InputStream getMzxmlStream(final int sizeSeed) {
+    final MzXML mzxml = UTILITY.deserialize(getResourceAsStream("parentPerScan.mzxml"));
+    final MsRun run = mzxml.getMsRun();
+    final List<Scan> scans = run.getScan();
+    final Scan firstScan = scans.get(0);
+    for(int i = 0; i < sizeSeed; i++) {
+      final Scan newScan = new Scan();
+      newScan.setPeaksCount(firstScan.getPeaksCount());
+      newScan.setMsLevel(firstScan.getPeaksCount());
+      newScan.setNum(BigInteger.valueOf(1000L + sizeSeed));
+      newScan.getPrecursorMz().addAll(firstScan.getPrecursorMz());
+      newScan.getScan().addAll(firstScan.getScan());
+      newScan.getScanOrigin().addAll(firstScan.getScanOrigin());
+      scans.add(newScan);
+    }
+    final BigInteger scanCount = run.getScanCount();
+    if(scanCount != null) {
+      run.setScanCount(scanCount.add(BigInteger.valueOf(sizeSeed)));
+    }
+    return new ByteArrayInputStream(UTILITY.serialize(mzxml).getBytes());
+  }
+  
   public static InputStream getResourceAsStream(final String resourceName) {
     final Class<ProteomicsTests> clazz = ProteomicsTests.class;
     InputStream stream;

@@ -70,6 +70,8 @@ public class IdList implements Serializable, Iterable<String> {
   public void setId(final String id) {
     this.id = id;
   }
+  
+  
 
   public List<Id> getIds() {
     return ids;
@@ -108,12 +110,20 @@ public class IdList implements Serializable, Iterable<String> {
     ids.nextIndex = index;
     return ids;
   }
-
-  public void add(final String id) {
+  
+  public void setValue(final String id, final int index) {
     final Id newId = new Id();
     newId.setValue(id);
-    newId.setIndex(nextIndex++);
-    ids.add(newId);
+    newId.setIndex(index);
+    while(ids.size() <= index) {
+      ids.add(null);
+    }
+    ids.set(index, newId);
+    nextIndex = index + 1;
+  }
+
+  public void add(final String id) {
+    setValue(id, nextIndex);
   }
 
   public Iterator<String> iterator() {

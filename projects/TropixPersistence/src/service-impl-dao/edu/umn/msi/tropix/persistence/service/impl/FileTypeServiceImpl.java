@@ -64,8 +64,8 @@ class FileTypeServiceImpl implements FileTypeService {
   public FileType loadPrimaryFileTypeWithExtension(final String userId, final String extension) {
     FileType fileType = fileTypeDao.getType(extension);
     if(fileType == null) {
-      for(StockFileExtensionI stockExtension : StockFileExtensionEnum.values()) {
-        if(stockExtension.getExtension().equals(extension)) {
+      for(final StockFileExtensionI stockExtension : StockFileExtensionEnum.values()) {
+        if(stockExtension.getExtension().toLowerCase().equals(extension.toLowerCase())) {
           fileType = fileTypeResolver.getType(stockExtension);
         }
       }

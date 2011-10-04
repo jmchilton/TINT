@@ -74,6 +74,11 @@ public class MergeScaffoldSamplesDescription extends ActivityDescription {
   public void addIdentificationId(final String identifciationId) {
     identificationIds.add(identifciationId);
   }
+
+  @Consumes
+  public void setIdentificationId(final String identificationId, final int index) {
+    identificationIds.setValue(identificationId, index);
+  }
   
   public boolean getProduceMultipleSamples() {
     return produceMultipleSamples;

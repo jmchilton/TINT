@@ -25,6 +25,9 @@ package edu.umn.msi.tropix.persistence.dao.hibernate;
 import javax.annotation.ManagedBean;
 
 import org.hibernate.Query;
+import org.springframework.util.StringUtils;
+
+import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.persistence.dao.FileTypeDao;
@@ -33,9 +36,20 @@ import edu.umn.msi.tropix.persistence.dao.FileTypeDao;
 class FileTypeDaoImpl extends GenericDaoImpl<FileType> implements FileTypeDao {
 
   public synchronized FileType getOrCreateType(final String extension, final String shortName) {
-    final Query query = createQuery("from FileType where extension = :extension and shortName = :shortName");
-    query.setParameter("extension", extension);
-    query.setParameter("shortName", shortName);
+    final Query query;
+    Preconditions.checkNotNull(extension);
+    if(StringUtils.hasText(extension)) {
+      if(StringUtils.hasText(shortName)) {
+        query = createQuery("from FileType where extension = :extension and shortName = :shortName");
+        query.setParameter("shortName", shortName);
+        query.setParameter("extension", extension);        
+      } else {
+        query = createQuery("from FileType where extension = :extension");
+        query.setParameter("extension", extension);        
+      }
+    } else {
+      query = createQuery("from FileType where extension = '' or extension is null");      
+    }
     final FileType type = (FileType) query.uniqueResult();
     if(type != null) {
       return type;
@@ -44,6 +58,7 @@ class FileTypeDaoImpl extends GenericDaoImpl<FileType> implements FileTypeDao {
       newType.setExtension(extension);
       newType.setShortName(shortName);
       save(newType);
+      flush();
       return newType;
     }
   }

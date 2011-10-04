@@ -228,7 +228,7 @@ public class IdentificationWorkflowBuilder {
       if(scaffoldType.equals(ScaffoldSampleType.MANY_ANALYSIS)) {
         int index = 0;
         for(final String name : names) {
-          final CreateIdentificationAnalysisDescription createIdAnalysis = createIdentficationAnalysisDescriptions.get(index++);
+          final CreateIdentificationAnalysisDescription createIdAnalysis = createIdentficationAnalysisDescriptions.get(index);
           final JobDescription jobDescription = new JobDescription(componentConstants.scaffoldWizardJobDescriptionName() + name);
           final MergeScaffoldSamplesDescription mergeSamples = new MergeScaffoldSamplesDescription();
           mergeSamples.setJobDescription(jobDescription);
@@ -236,6 +236,7 @@ public class IdentificationWorkflowBuilder {
           mergeSamples.addDependency(ActivityDependency.Builder.on(createIdAnalysis).produces("objectId").consumes("identificationId").build());
           mergeSamples.setMudpit(analyzeAsMudpit);
           mergeScaffoldSamples.add(mergeSamples);
+          index++;
         }
       } else {
         final JobDescription jobDescription = new JobDescription(componentConstants.scaffoldWizardJobDescriptionName() + createFolder.getName());
@@ -250,11 +251,12 @@ public class IdentificationWorkflowBuilder {
         }
         int index = 0;
         for(final String name : names) {
-          final CreateIdentificationAnalysisDescription createIdAnalysis = createIdentficationAnalysisDescriptions.get(index++);
-          mergeSamples.addDependency(ActivityDependency.Builder.on(createIdAnalysis).produces("objectId").consumes("identificationId").build());
+          final CreateIdentificationAnalysisDescription createIdAnalysis = createIdentficationAnalysisDescriptions.get(index);
+          mergeSamples.addDependency(ActivityDependency.Builder.on(createIdAnalysis).produces("objectId").consumesWithIndex("identificationId", index).build());
           if(scaffoldType == ScaffoldSampleType.MANY_SAMPLE) {
             mergeSamples.addName(name);
           }
+          index++;
         }
         mergeScaffoldSamples.add(mergeSamples);
       }

@@ -5,13 +5,22 @@
             xmlns:m="http://ant.apache.org/ivy/maven"
             >
 
-  <info organisation="msi.umn.edu" module="tropix-web-gui" />
+  <info organisation="msi.umn.edu" module="tropix-webgui" />
   <configurations>
-    <conf name="default" description="Default configuration" visibility="public" />
-    <conf name="all" description="All Dependencies" extends="default" visibility="private" />
+    <conf name="constants" visibility="public" />
+    <conf name="services"  visibility="public" />
+    <conf name="client" extends="services,constants"  visibility="public" />
+    <conf name="server" extends="client" visibility="public" />
+    <conf name="test" extends="server" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
   </configurations>
 
   <publications>
+    <artifact name="tropix-webgui-constants" type="jar" conf="constants" ext="jar" />
+    <artifact name="tropix-webgui-services" type="jar" conf="services" ext="jar" />
+    <artifact name="tropix-webgui-client" type="jar" conf="client" ext="jar" />
+    <artifact name="tropix-webgui-server" type="jar" conf="server" ext="jar" />    
+    <artifact name="tropix-webgui-test" type="jar" conf="test" ext="jar" />
   </publications>
 
   <dependencies>
@@ -38,17 +47,17 @@
     <dependency org="msi.umn.edu" name="another-gwt-mvc" rev="1.0" />
     <dependency org="globus" name="core" rev="4.0.3" />
     <dependency org="matheclipse.org" name="bliki" rev="3.0.10" />
-    <dependency org="info.minnesotapartnership" name="tropix" rev="1.0" conf="default->catalog-cagrid-client">
+    <dependency org="info.minnesotapartnership" name="tropix" rev="1.0" conf="client->catalog-cagrid-client">
       <exclude org="org.easymock" />
     </dependency>
-    <dependency org="smartgwt" name="smartgwt" rev="2.4" />
-    <dependency org="msi.umn.edu" name="tropix-jobs" rev="${ivy.project.version}" conf="default->impl" />
-    <dependency org="msi.umn.edu" name="tropix-client" rev="${ivy.project.version}" conf="default->impl" />
+    <dependency org="smartgwt" name="smartgwt" rev="2.5" />
+    <dependency org="msi.umn.edu" name="tropix-jobs" rev="${ivy.project.version}" conf="client->impl" />
+    <dependency org="msi.umn.edu" name="tropix-client" rev="${ivy.project.version}" conf="client->impl" />
     <dependency org="msi.umn.edu" name="tropix-proteomics-core" rev="${ivy.project.version}" conf="all->test" />
     
-    <dependency org="com.google.gwt" name="gwt-user" rev="2.3.0"/>
-    <dependency org="com.google.gwt" name="gwt-dev" rev="2.3.0"/>
-    <dependency org="com.google.gwt" name="gwt-servlet" rev="2.3.0"/>
+    <dependency org="com.google.gwt" name="gwt-user" rev="2.4.0"/>
+    <dependency org="com.google.gwt" name="gwt-dev" rev="2.4.0"/>
+    <dependency org="com.google.gwt" name="gwt-servlet" rev="2.4.0"/>
     <dependency org="javax.validation" name="validation-api" rev="1.0.0.GA"> 
       <artifact name="validation-api"/> 
       <artifact name="validation-api" m:classifier="sources"/>     
@@ -57,7 +66,7 @@
     <dependency org="google" name="gwt-incubator" rev="revision-1766" />
     <dependency rev="1.2" org="caGrid" name="core" />
     <dependency rev="1.2" org="caGrid" name="discovery" />    
-    <dependency rev="1.2" org="caGrid" name="dorian" conf="default->client" />
+    <dependency rev="1.2" org="caGrid" name="dorian" conf="server->client" />
     <dependency rev="1.2" org="caGrid" name="metadata" />
     <dependency rev="1.2" org="caGrid" name="metadatautils" />
     <dependency rev="1.2" org="caGrid" name="opensaml" />

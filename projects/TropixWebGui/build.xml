@@ -57,11 +57,13 @@
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/gwt-dev*.jar" />
     </path>
     <path id="gwt.sources">
+      <pathelement location="${src.dir}/constants" />
       <pathelement location="${src.dir}/services" />
       <pathelement location="${src.dir}/client" />
       <pathelement location="${resources.dir}/client" />
     </path>
     <path id="gwt.classes">
+      <pathelement location="${build.classes.dir}/constants" />
       <pathelement location="${build.classes.dir}/services" />
       <pathelement location="${build.classes.dir}/client" />
     </path>
@@ -92,6 +94,7 @@
       <fileset dir="${build.lib.dir}" includes="*test*jar" />
       <pathelement path="${build.test.classes.dir}" />
       <pathelement path="${build.classes.dir}/test" />
+      <pathelement location="${src.dir}/constants" />
       <pathelement location="${src.dir}/services" />
       <pathelement location="${src.dir}/test" />
       <pathelement location="${src.dir}/client" />
@@ -272,7 +275,7 @@
     <finishemma />
   </target>
 
-  <target name="all" depends="war" />
+  <target name="all" depends="compile-java" />
 
   <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
 
