@@ -35,6 +35,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="delegated.credential.lifetime" value="3600" />
         <entry key="delegation.lifetime" value="3600" />
         <entry key="login.timeout" value="7200" />
+        <entry key="messaging.broker.start" value="true" />
         <!-- <entry key="index.service.url" value="http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService" /> -->
         <entry key="index.service.url" value="" />
         <entry key="unindexed.service.urls" value="local://Sequest,local://XTandem,local://ProteomicsConvert,local://Scaffold" />

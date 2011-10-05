@@ -233,7 +233,7 @@ public class IdentificationWorkflowBuilder {
           final MergeScaffoldSamplesDescription mergeSamples = new MergeScaffoldSamplesDescription();
           mergeSamples.setJobDescription(jobDescription);
           mergeSamples.addName(name);
-          mergeSamples.addDependency(ActivityDependency.Builder.on(createIdAnalysis).produces("objectId").consumes("identificationId").build());
+          mergeSamples.addDependency(ActivityDependency.Builder.on(createIdAnalysis).produces("objectId").consumesWithIndex("identificationId", 0).build());
           mergeSamples.setMudpit(analyzeAsMudpit);
           mergeScaffoldSamples.add(mergeSamples);
           index++;

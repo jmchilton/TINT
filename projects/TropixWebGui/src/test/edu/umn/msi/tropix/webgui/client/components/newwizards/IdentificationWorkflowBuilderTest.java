@@ -22,6 +22,7 @@ import edu.umn.msi.tropix.jobs.activities.WorkflowVerificationUtils;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CommonMetadataProvider;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldAnalysisDescription;
+import edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldDriverDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.MergeScaffoldSamplesDescription;
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleTypeWizardPageImpl.ScaffoldSampleType;
@@ -134,6 +135,7 @@ public class IdentificationWorkflowBuilderTest {
     registerNewUpload();
     scaffoldType = ScaffoldSampleType.MANY_ANALYSIS;
     buildAndVerify();
+    assertBuiltNDescriptionsOfType(2, CreateScaffoldDriverDescription.class);
     assertBuiltNDescriptionsOfType(2, MergeScaffoldSamplesDescription.class);
     assertBuiltNDescriptionsOfType(2, CreateScaffoldAnalysisDescription.class);
   }

@@ -55,10 +55,10 @@ public class FunctionalTestBase {
     // profile.setPreference("browser.download.useDownloadDir", false);
     // profile.setPreference("browser.download.useDownloadDir", "true");
     profile.setPreference("browser.download.lastDir", downloadDirectory.getAbsolutePath());
-    // profile.setPreference("browser.download.defaultFolder", downloadDirectory.getAbsolutePath());
-    profile.setPreference("browser.download.folderList", "2");
+    profile.setPreference("browser.download.defaultFolder", downloadDirectory.getAbsolutePath());
+    profile.setPreference("browser.download.folderList", 2);
     profile.setPreference("browser.download.dir", downloadDirectory.getAbsolutePath());
-    // profile.setPreference("browser.download.downloadDir", downloadDirectory.getAbsolutePath());
+    profile.setPreference("browser.download.downloadDir", downloadDirectory.getAbsolutePath());
     profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/x-zip,application/zip");
     final FirefoxDriver driver = new FirefoxDriver(profile);
 

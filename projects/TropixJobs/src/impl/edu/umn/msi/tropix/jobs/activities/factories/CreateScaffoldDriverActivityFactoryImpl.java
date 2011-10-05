@@ -145,8 +145,9 @@ class CreateScaffoldDriverActivityFactoryImpl implements ActivityFactory<CreateS
 
     public void run() throws ShutdownException {
       final Map<String, String> parameters = getDescription().getParameterSet().toMap();
-      final Map<String, IdentificationAnalysis> analysesMap = ScaffoldSampleUtils.loadIdentificationAnalyses(getUserId(), getDescription()
-          .getScaffoldSamples(), factorySupport);
+      final List<ScaffoldSample> samples = getDescription().getScaffoldSamples();
+      Preconditions.checkNotNull(samples);
+      final Map<String, IdentificationAnalysis> analysesMap = ScaffoldSampleUtils.loadIdentificationAnalyses(getUserId(), samples, factorySupport);
       Preconditions.checkState(analysesMap.values() != null && !Iterables.isEmpty(analysesMap.values()));
       final Map<String, Database> databaseMap = ScaffoldSampleUtils.getDatabaseMap(analysisService, getUserId(), analysesMap);
       Preconditions.checkState(databaseMap.values() != null && !Iterables.isEmpty(databaseMap.values()));
@@ -211,7 +212,7 @@ class CreateScaffoldDriverActivityFactoryImpl implements ActivityFactory<CreateS
       final List<BiologicalSample> scaffoldSamples = scaffoldExperiment.getBiologicalSample();
       final UniqueSanitizedFileNamer namer = new UniqueSanitizedFileNamer();
 
-      for(final ScaffoldSample sample : getDescription().getScaffoldSamples()) {
+      for(final ScaffoldSample sample : samples) {
         final BiologicalSample scaffoldSample = new BiologicalSample();
         scaffoldSample.setAnalyzeAsMudpit(sample.getAnalyzeAsMudpit());
         scaffoldSample.setDatabase(null);

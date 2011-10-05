@@ -27,7 +27,7 @@ http://www.springframework.org/schema/jms http://www.springframework.org/schema/
   <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
     <property name="properties">
       <map>
-        <entry key="messaging.broker.start" value="true" />
+        <entry key="messaging.broker.start" value="false" />
         <entry key="messaging.broker.url" value="tcp://localhost:61610" /> 
         <entry key="messaging.broker.persist" value="false" />
       </map>

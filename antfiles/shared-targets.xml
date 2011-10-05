@@ -874,7 +874,7 @@ package]]></replacetoken>
       <taskdef resource="cargo.tasks" classpathref="test.classpath" />
       <!-- TODO: Create property -->
       <delete dir="${build.dir}/test-tropix-config-dir" />
-      <mkdir dir="${build.dir}/test-tropix-config.dir" />
+      <mkdir dir="${build.dir}/test-tropix-config-dir" />
 
       <cargo containerId="jetty7x" output="build/jetty.log" log="build/cargo.log" action="start" timeout="0">
 	<zipUrlInstaller

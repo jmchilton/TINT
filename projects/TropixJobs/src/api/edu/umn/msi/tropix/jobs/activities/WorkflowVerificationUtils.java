@@ -26,9 +26,17 @@ public class WorkflowVerificationUtils {
         String setMethodName = buildMethodName("set", consumerProperty);
         boolean hasSetter = REFLECTION_HELPER.hasMethod(activityDescription.getClass(), setMethodName);
         if(hasSetter) {
-          final Method setMethod = REFLECTION_HELPER.getMethod(activityDescription.getClass(),
-              setMethodName,
-              getMethod.getReturnType());
+          final Method setMethod;
+          if(ActivityDependency.specifiesConsumesIndex(dependency)) {
+            setMethod= REFLECTION_HELPER.getMethod(activityDescription.getClass(),
+                setMethodName,
+                getMethod.getReturnType(),
+                int.class);            
+          } else {
+            setMethod= REFLECTION_HELPER.getMethod(activityDescription.getClass(),
+                setMethodName,
+                getMethod.getReturnType());
+          }
           // The depending property must consume specified property.
           assert setMethod.getAnnotation(Consumes.class) != null;
         } else {
