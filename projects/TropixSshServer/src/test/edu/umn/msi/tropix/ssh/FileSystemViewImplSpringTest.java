@@ -15,6 +15,7 @@ import org.testng.Assert;
 
 import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.test.FreshConfigTest;
+import edu.umn.msi.tropix.grid.credentials.Credentials;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -46,7 +47,8 @@ public class FileSystemViewImplSpringTest extends FreshConfigTest {
 
     folderService.createFolder(user.getCagridId(), user.getHomeFolder().getId(), subFolder);
     final Session session = EasyMock.createMock(Session.class);
-    EasyMock.expect(session.getUsername()).andStubReturn("testuser1");
+    //EasyMock.expect(session.getUsername()).andStubReturn("testuser1");
+    EasyMock.expect(session.getAttribute(PasswordAuthenticatorImpl.CREDENTIAL_KEY)).andStubReturn(Credentials.getMock("testuser1"));
     EasyMock.replay(session);
     final FileSystemView view = fileSystemFactory.createFileSystemView(session);
     SshFile sshFile = view.getFile("/Test");

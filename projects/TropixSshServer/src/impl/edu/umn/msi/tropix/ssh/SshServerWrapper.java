@@ -15,6 +15,7 @@ import org.apache.sshd.server.FileSystemFactory;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.command.ScpCommandFactory;
 import org.apache.sshd.server.sftp.SftpSubsystem;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.collect.Lists;
 
@@ -39,7 +40,8 @@ public class SshServerWrapper {
   @Inject
   public SshServerWrapper(final PasswordAuthenticator passwordAuthenticator,
                           final FileSystemFactory fileSystemFactory,
-                          final KeyPairProvider keyPairProvider) {
+                          final KeyPairProvider keyPairProvider,
+                          @Value("${ssh.port}") final Integer port) {
     this.passwordAuthenticator = passwordAuthenticator;
     this.fileSystemFactory = fileSystemFactory;
     
@@ -48,7 +50,7 @@ public class SshServerWrapper {
     //final KeyPairProvider keyPair = new SimpleGeneratorHostKeyProvider();
     wrappedServer.setKeyPairProvider(keyPairProvider);
     wrappedServer.setCommandFactory(new ScpCommandFactoryWrapper());
-    wrappedServer.setPort(DEFAULT_PORT);
+    wrappedServer.setPort(port);
     wrappedServer.setPasswordAuthenticator(passwordAuthenticator);
     wrappedServer.setFileSystemFactory(fileSystemFactory);
   }

@@ -9,23 +9,12 @@ import org.apache.sshd.common.Session;
 import org.apache.sshd.server.FileSystemFactory;
 import org.apache.sshd.server.FileSystemView;
 import org.apache.sshd.server.SshFile;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
 
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
 
 @ManagedBean
 public class FileSystemFactoryImpl implements FileSystemFactory {
-    //  private Function<String, String> userNameToIdentityFunction = Functions.identity();
-
-    //@Autowired(required = false)
-    //public void setUserNameToIdentityFunction(final Function<String, String> userNameToIdentityFunction) {
-    //    this.userNameToIdentityFunction = userNameToIdentityFunction;
-    //  }
-
   private final SshFileFactory sshFileFactory;
 
   @Inject

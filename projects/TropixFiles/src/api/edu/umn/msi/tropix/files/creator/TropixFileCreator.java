@@ -1,4 +1,4 @@
-package edu.umn.msi.tropix.files;
+package edu.umn.msi.tropix.files.creator;
 
 import javax.annotation.Nullable;
 

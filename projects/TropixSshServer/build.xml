@@ -113,6 +113,10 @@
     </war>
   </target>
 
+  <target name="war" depends="package-war" />
+
+  
+
   <target name="all" depends="jar" />
   
   <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc, dist-scripts" />

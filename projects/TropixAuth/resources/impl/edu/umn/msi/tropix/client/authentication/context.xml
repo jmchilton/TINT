@@ -14,17 +14,27 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
   <context:annotation-config/> 
 
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="authConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="auth" />
+  </bean>
+  
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="auth" />
+  </bean>
+
   <import resource="classpath:edu/umn/msi/tropix/client/credential/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/persistence/service/impl/applicationContext.xml" />
 
   <bean id="authenticationSourceManager" class="edu.umn.msi.tropix.client.authentication.impl.AuthenticationSourceManagerImpl">
-    <property name="authenticationSourcesFile" value="${tropix.client.config.dir}/authenticationSources.xml" />
+    <property name="authenticationSourcesFile" value="${tropix.auth.config.dir}/authenticationSources.xml" />
   </bean> 
     
   <import resource="classpath:edu/umn/msi/tropix/client/authentication/databaseContext.xml" />
 
   <bean name="localUserManager" class="edu.umn.msi.tropix.client.authentication.impl.LocalUserManagerImpl">
-  	<property name="localAuthenticationService" ref="localAuthenticationService" />
+  	<property name="localAuthenticationService" ref="authService" />
   </bean>
 
 </beans>

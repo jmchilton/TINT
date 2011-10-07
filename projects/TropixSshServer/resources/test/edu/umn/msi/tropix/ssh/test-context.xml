@@ -10,6 +10,8 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
   <context:annotation-config/> 
 
+  <import resource="classpath:/edu/umn/msi/tropix/messaging/testContext.xml" />
+
   <import resource="context.xml" />
   
   <bean class="edu.umn.msi.tropix.ssh.TestDataCreator">

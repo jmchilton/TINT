@@ -10,8 +10,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 
   <context:annotation-config />
   
-  <import resource="classpath:edu/umn/msi/tropix/messaging/context.xml" />
-  
   <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
 
   <bean id="sshConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
@@ -25,20 +23,14 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
     <property name="properties">
       <map>
-        <entry key="proxy.lifetime" value="43200" />      
+        <entry key="proxy.lifetime" value="43200" />
+        <entry key="ssh.port" value="8021" />      
       </map>
     </property>
   </bean>
-
-
-  <!-- 
-  <bean class="org.apache.sshd.common.keyprovider.FileKeyPairProvider">
-  	<constructor-arg value="${tropix.ssh.config.dir}/hostkey.pem" />
-  </bean>
-  -->
   
   <!-- Storage core. -->
-  <import resource="classpath:edu/umn/msi/tropix/storage/core/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/files/creator/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/client/authentication/context.xml" />
   <!-- Load up authenticationProvider bean. -->
   <context:component-scan base-package="edu.umn.msi.tropix.client.authentication.impl" />

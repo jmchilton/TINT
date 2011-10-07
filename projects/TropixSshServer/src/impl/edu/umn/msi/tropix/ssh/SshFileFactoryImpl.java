@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputStreamCoercible;
-import edu.umn.msi.tropix.files.TropixFileCreator;
+import edu.umn.msi.tropix.files.creator.TropixFileCreator;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -188,7 +188,24 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean move(final SshFile destination) {
+      log("move");
+      initObject();
       boolean moved = false;
+      if(parentIsFolder() && destination instanceof SshFileImpl) {
+        final SshFileImpl destinationFile = (SshFileImpl) destination;
+        if(!destinationFile.doesExist() && destinationFile.parentIsFolder()) {
+          final String objectId = object.getId();
+          tropixObjectService.move(identity, objectId, destinationFile.parentAsFolder().getId());
+          final TropixObject object = tropixObjectService.load(identity, objectId);
+          object.setName(destination.getName());
+          tropixObjectService.update(identity, object);
+          moved = true;
+        }
+        //destinationFile.virtualPath
+        //if(destinationIsFolder) {
+        //
+        //}
+      }
       log(String.format("In move - moved? %b", moved));
       return moved;
     }
@@ -214,6 +231,11 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public void handleClose() throws IOException {
+      try {
+        Thread.sleep(1000);
+      } catch(InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     // TODO: Check uniqueness
@@ -236,14 +258,21 @@ public class SshFileFactoryImpl implements SshFileFactory {
       final TropixObject parentObject = getTropixObject(parentPath);
       return parentObject;
     }
+    
+    private boolean parentIsFolder() {
+      return getParentFolder() instanceof Folder;
+    }
+    
+    private Folder parentAsFolder() {
+      return (Folder) getParentFolder();
+    }
+    
 
     public OutputStream createOutputStream(final long offset) throws IOException {
-      final TropixObject parentObject = getParentFolder();
-      if(!(parentObject instanceof Folder)) {
+      if(!parentIsFolder()) {
         throw new IllegalStateException("Invalid path to create output stream from " + virtualPath);
       } else {
         final String newFileId = UUID.randomUUID().toString();
-        System.out.println("Calling with " + newFileId);
         final UploadCallback uploadCallback = storageManager.upload(newFileId, identity);
         Preconditions.checkNotNull(uploadCallback);
         final File tempFile = FILE_UTILS.createTempFile(); 
@@ -255,7 +284,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
             } finally {
               try {
                 uploadCallback.onUpload(FILE_UTILS.getFileInputStream(tempFile));
-                final Folder parentFolder = (Folder) parentObject;
+                final Folder parentFolder = parentAsFolder();
                 final TropixFile tropixFile = new TropixFile();
                 tropixFile.setName(getName());
                 tropixFile.setCommitted(true);

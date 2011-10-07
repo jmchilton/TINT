@@ -12,8 +12,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
   <context:annotation-config />
 
-  <import resource="classpath:edu/umn/msi/tropix/storage/client/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/messaging/context.xml" />
 
-  <context:component-scan base-package="edu.umn.msi.tropix.files.impl" />
+  <import resource="classpath:edu/umn/msi/tropix/storage/core/context.xml" />
+
+  <context:component-scan base-package="edu.umn.msi.tropix.files.creator" />
 
 </beans>

@@ -28,7 +28,7 @@ import javax.persistence.PersistenceContext;
 public class LocalAuthenticationServiceImpl implements LocalAuthenticationService {
   private EntityManager entityManager;
 
-  @PersistenceContext(unitName = "localauthentication")
+  @PersistenceContext(unitName = "auth")
   public synchronized void setEntityManager(final EntityManager entityManager) {
     this.entityManager = entityManager;
   }
