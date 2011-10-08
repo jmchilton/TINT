@@ -29,6 +29,7 @@ import javax.inject.Named;
 import edu.umn.msi.tropix.models.IdentificationParameters;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.sequest.SequestParameters;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.models.xtandem.XTandemParameters;
 import edu.umn.msi.tropix.persistence.dao.SequestParametersDao;
 import edu.umn.msi.tropix.persistence.dao.XTandemParametersDao;

@@ -10,7 +10,7 @@ import javax.inject.Named;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 
 @Scope("prototype")
 @Component

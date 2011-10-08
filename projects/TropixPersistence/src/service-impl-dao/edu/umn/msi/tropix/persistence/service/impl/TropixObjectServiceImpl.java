@@ -47,6 +47,7 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.dao.Dao;
 import edu.umn.msi.tropix.persistence.dao.FileTypeDao;

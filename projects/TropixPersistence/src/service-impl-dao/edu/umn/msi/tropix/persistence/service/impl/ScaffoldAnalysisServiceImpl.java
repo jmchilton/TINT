@@ -31,6 +31,7 @@ import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.IdentificationAnalysis;
 import edu.umn.msi.tropix.models.ScaffoldAnalysis;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.ScaffoldAnalysisService;
 
 @ManagedBean

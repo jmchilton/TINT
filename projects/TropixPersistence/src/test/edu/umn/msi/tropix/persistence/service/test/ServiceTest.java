@@ -46,11 +46,11 @@ import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.persistence.dao.DaoFactory;
 import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 import edu.umn.msi.tropix.persistence.dao.UserDao;
 import edu.umn.msi.tropix.persistence.service.impl.FileTypeResolver;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionI;
 
 @ContextConfiguration(locations = {"classpath:edu/umn/msi/tropix/persistence/test/applicationContext.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)

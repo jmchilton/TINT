@@ -20,7 +20,7 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.persistence.service.impl;
+package edu.umn.msi.tropix.models.utils;
 
 // TODO: Rename to StockFileExtension
 public interface StockFileExtensionI {

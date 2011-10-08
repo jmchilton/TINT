@@ -28,6 +28,7 @@ import org.easymock.classextension.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.models.FileType;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.dao.FileTypeDao;
 
 public class FileTypeServiceImplUnitTest {

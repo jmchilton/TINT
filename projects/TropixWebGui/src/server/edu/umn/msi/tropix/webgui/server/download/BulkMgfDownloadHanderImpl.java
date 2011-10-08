@@ -13,7 +13,7 @@ import org.apache.commons.io.FilenameUtils;
 import com.google.common.base.Function;
 
 import edu.umn.msi.tropix.models.TropixFile;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.webgui.client.utils.Lists;
 
 @ManagedBean

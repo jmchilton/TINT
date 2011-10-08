@@ -27,6 +27,8 @@ import javax.inject.Inject;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.models.FileType;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.persistence.service.test.ServiceTest;
 
 public class FileTypeResolverImplTest extends ServiceTest {

@@ -30,8 +30,8 @@ import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.User;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.test.ServiceTest.Destination;
 
 public class TropixObjectServiceCreateFileTest extends ServiceTest {

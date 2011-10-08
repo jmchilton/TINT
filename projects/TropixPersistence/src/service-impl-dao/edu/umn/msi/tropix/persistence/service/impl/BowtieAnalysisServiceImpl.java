@@ -33,6 +33,7 @@ import edu.umn.msi.tropix.models.BowtieAnalysis;
 import edu.umn.msi.tropix.models.BowtieIndex;
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.BowtieAnalysisService;
 
 @ManagedBean @Named("bowtieAnalysisService")

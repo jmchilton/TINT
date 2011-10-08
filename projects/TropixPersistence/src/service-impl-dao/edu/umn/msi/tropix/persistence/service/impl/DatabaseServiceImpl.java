@@ -30,6 +30,7 @@ import com.google.common.base.Preconditions;
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.DatabaseService;
 
 @ManagedBean

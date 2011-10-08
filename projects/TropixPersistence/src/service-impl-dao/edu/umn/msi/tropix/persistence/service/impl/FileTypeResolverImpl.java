@@ -28,6 +28,7 @@ import javax.inject.Named;
 
 import edu.umn.msi.tropix.common.message.MessageSource;
 import edu.umn.msi.tropix.models.FileType;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.persistence.dao.FileTypeDao;
 
 @ManagedBean

@@ -34,6 +34,7 @@ import edu.umn.msi.tropix.models.Provider;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.RequestService;
 import edu.umn.msi.tropix.persistence.service.request.RequestSubmission;
 import edu.umn.msi.tropix.persistence.service.requestid.RequestId;

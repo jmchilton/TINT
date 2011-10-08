@@ -35,10 +35,10 @@ import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.persistence.service.IdentificationAnalysisService;
 import edu.umn.msi.tropix.persistence.service.impl.MessageConstants;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionI;
 
 // TODO: Fill out commit tests a little more (check more attributes)
 public class IdentificationAnalysisServiceTest extends ServiceTest {

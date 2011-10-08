@@ -32,9 +32,9 @@ import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.BowtieAnalysisService;
 import edu.umn.msi.tropix.persistence.service.impl.MessageConstants;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
 
 public class BowtieAnalysisServiceTest extends ServiceTest {
   @Inject

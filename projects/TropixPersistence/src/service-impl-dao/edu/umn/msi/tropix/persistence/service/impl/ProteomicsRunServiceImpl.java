@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.TissueSample;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.ProteomicsRunService;
 
 @ManagedBean

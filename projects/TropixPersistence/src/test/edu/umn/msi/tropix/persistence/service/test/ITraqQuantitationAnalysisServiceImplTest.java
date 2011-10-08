@@ -36,9 +36,9 @@ import edu.umn.msi.tropix.models.ScaffoldAnalysis;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.ITraqQuantitationAnalysisService;
 import edu.umn.msi.tropix.persistence.service.impl.MessageConstants;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
 
 public class ITraqQuantitationAnalysisServiceImplTest extends ServiceTest {
   @Autowired

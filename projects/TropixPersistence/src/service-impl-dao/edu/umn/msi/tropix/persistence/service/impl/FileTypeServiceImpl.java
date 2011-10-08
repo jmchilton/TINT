@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import com.google.common.collect.Iterables;
 
 import edu.umn.msi.tropix.models.FileType;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.persistence.dao.FileTypeDao;
 import edu.umn.msi.tropix.persistence.service.FileTypeService;
 

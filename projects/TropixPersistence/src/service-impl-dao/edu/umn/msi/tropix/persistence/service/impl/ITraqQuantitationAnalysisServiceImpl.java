@@ -31,6 +31,7 @@ import edu.umn.msi.tropix.models.ITraqQuantitationAnalysis;
 import edu.umn.msi.tropix.models.ITraqQuantitationTraining;
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.ITraqQuantitationAnalysisService;
 
 @ManagedBean @Named("iTraqQuantitationAnalysisService")

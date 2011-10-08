@@ -10,10 +10,10 @@ import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.common.spring.AnnotatedBeanProcessor;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.persistence.service.TropixObjectLoaderService;
 import edu.umn.msi.tropix.files.NewFileMessageQueue;
-import edu.umn.msi.tropix.persistence.service.impl.StockFileExtensionEnum;
 
 @ManagedBean
 public class NewFileMessageQueueConsumerImpl extends AnnotatedBeanProcessor<ForExtension> implements NewFileMessageQueue {

@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.persistence.service.impl;
 
 import edu.umn.msi.tropix.models.FileType;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 
 public interface FileTypeResolver {
   FileType getType(StockFileExtensionI fileExtension);

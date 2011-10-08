@@ -27,6 +27,7 @@ import javax.inject.Named;
 
 import edu.umn.msi.tropix.models.BowtieIndex;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.persistence.service.BowtieIndexService;
 
 @ManagedBean @Named("bowtieIndexService")
