@@ -16,6 +16,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <property name="properties">
       <map>
         <entry key="storage.type" value="local" />
+        <entry key="storage.service.url" value="local://Storage" />
       </map>
     </property>
   </bean>  

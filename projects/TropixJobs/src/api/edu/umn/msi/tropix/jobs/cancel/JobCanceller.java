@@ -16,6 +16,7 @@
 
 package edu.umn.msi.tropix.jobs.cancel;
 
+// TODO: Move to client
 public interface JobCanceller {
   void cancelWorkflow(final String workflowId);
   
