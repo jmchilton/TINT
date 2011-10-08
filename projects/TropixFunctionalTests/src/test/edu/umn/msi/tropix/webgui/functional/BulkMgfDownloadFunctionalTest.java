@@ -58,14 +58,14 @@ public class BulkMgfDownloadFunctionalTest extends FunctionalTestBase {
       String runLocator = treeItemSelect("BulkMgfDownload", 1);
       waitForElementPresent(runLocator);
       click(runLocator);
-      assert downloadDirectory.list().length == 0;
+      assert getDownloadDirectory().list().length == 0;
       click("scLocator=//Button[ID=\"BulkMgfDownload_Button_Download\"]/");
       // click("scLocator=//Window[ID=\"isc_Frame_1\"]/item[0][Class=\"TreeGrid\"]/body/row[1]/col[fieldName=name||0]/open")
       // waitForElementPresent(myHomeSelector);
       // click(myHomeSelector);
 
       Thread.sleep(2000);
-      assert downloadDirectory.list().length == 1 : downloadDirectory.list().length;
+      assert getDownloadDirectory().list().length == 1 : getDownloadDirectory().list().length;
     } finally {
       tempFile.delete();
     }

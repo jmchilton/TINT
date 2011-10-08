@@ -10,6 +10,7 @@ import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.files.NewFileMessageQueue;
 import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
 import edu.umn.msi.tropix.files.creator.TropixFileCreatorImpl;
+import edu.umn.msi.tropix.grid.credentials.Credentials;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 
@@ -32,7 +33,7 @@ public class TropixFileCreatorImplTest {
     final TropixFileCreatorImpl creator = new TropixFileCreatorImpl(objectService);
     creator.setNewFileMessageQueue(queue);
     EasyMock.replay(objectService, queue);
-    assert resultFile == creator.createFile("userId", "foldId", file, "fileTypeId");
+    assert resultFile == creator.createFile(Credentials.getMock("userId"), "foldId", file, "fileTypeId");
     EasyMock.verify(objectService, queue);
     
     NewFileMessage message = messageCapture.getValue();

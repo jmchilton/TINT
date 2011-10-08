@@ -47,11 +47,11 @@ public class RunTreeComponentImpl extends LocationSelectionComponentImpl {
       TropixObjectTypeEnum.PROTEOMICS_RUN, false);
 
   public static class RunInputTypeEnum {
-    public static InputType RUN = new InputTypeImpl("RUN", TropixObjectTypeEnum.PROTEOMICS_RUN, false, false, PROTEOMICS_RUN_PREDICATE,
+    public static final InputType RUN = new InputTypeImpl("RUN", TropixObjectTypeEnum.PROTEOMICS_RUN, false, false, PROTEOMICS_RUN_PREDICATE,
         CONSTANTS.runWizardSelectByRun());
-    public static InputType BATCH_RUNS = new InputTypeImpl("BATCH_RUNS", TropixObjectTypeEnum.PROTEOMICS_RUN, true, true, PROTEOMICS_RUN_PREDICATE,
+    public static final InputType BATCH_RUNS = new InputTypeImpl("BATCH_RUNS", TropixObjectTypeEnum.PROTEOMICS_RUN, true, true, PROTEOMICS_RUN_PREDICATE,
         CONSTANTS.runWizardSelectByRuns());
-    public static InputType BATCH_FOLDER = new InputTypeImpl("BATCH_FOLDER", TropixObjectTypeEnum.FOLDER, false, true,
+    public static final InputType BATCH_FOLDER = new InputTypeImpl("BATCH_FOLDER", TropixObjectTypeEnum.FOLDER, false, true,
         TreeItemPredicates.getFolderPredicate(), CONSTANTS.runWizardSelectByFolder());
   }
 

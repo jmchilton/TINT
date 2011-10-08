@@ -24,10 +24,12 @@ public interface NewFileMessageQueue {
       this.credential = credential;
     }
 
+    @Deprecated
     public String getOwnerId() {
       return ownerId;
     }
 
+    @Deprecated
     public void setOwnerId(final String ownerId) {
       this.ownerId = ownerId;
     }

@@ -231,11 +231,6 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public void handleClose() throws IOException {
-      try {
-        Thread.sleep(1000);
-      } catch(InterruptedException e) {
-        throw new RuntimeException(e);
-      }
     }
 
     // TODO: Check uniqueness
@@ -289,7 +284,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
                 tropixFile.setName(getName());
                 tropixFile.setCommitted(true);
                 tropixFile.setFileId(newFileId);
-                tropixFileCreator.createFile(identity, parentFolder.getId(), tropixFile, null);
+                tropixFileCreator.createFile(credential, parentFolder.getId(), tropixFile, null);
               } finally {
                 FILE_UTILS.deleteQuietly(tempFile);
               }

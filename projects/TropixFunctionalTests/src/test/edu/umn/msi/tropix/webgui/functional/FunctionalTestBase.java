@@ -17,8 +17,12 @@ public class FunctionalTestBase {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private static final long DEFAULT_WAIT_TIME = 5000; // Five seconds
   private Selenium selenium;
-  protected File downloadDirectory;
+  private File downloadDirectory;
 
+  protected File getDownloadDirectory() {
+    return downloadDirectory;
+  }
+  
   protected Selenium getSelenium() {
     return selenium;
   }

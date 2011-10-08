@@ -32,6 +32,7 @@ import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
+import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;
 
 public class SshFileFactoryImplTest {
@@ -48,7 +49,8 @@ public class SshFileFactoryImplTest {
   private SshFile sshFile;
   private TropixObject backingObject;
   private File tempFile;
-
+  private Credential credential;
+  
   @BeforeMethod(groups = "unit")
   public void init() {
     tropixObjectService = EasyMock.createMock(TropixObjectService.class);
@@ -57,6 +59,7 @@ public class SshFileFactoryImplTest {
     folderService = EasyMock.createMock(FolderService.class);
     sshFileFactoryImpl = new SshFileFactoryImpl(tropixObjectService, tropixFileCreator, storageManager, folderService);
     id = UUID.randomUUID().toString();
+    credential = Credentials.getMock(id);
     fileId = UUID.randomUUID().toString();
     path = "/test/path";
 
@@ -207,7 +210,7 @@ public class SshFileFactoryImplTest {
     expectDirectoryWithPath(path);
     path = "/test/path/file-name";
     final Capture<TropixFile> fileCapture = EasyMockUtils.newCapture();
-    EasyMock.expect(tropixFileCreator.createFile(expectId(), EasyMock.eq(folderId), EasyMock.capture(fileCapture), EasyMock.<String>isNull())).andReturn(null);
+    EasyMock.expect(tropixFileCreator.createFile(EasyMock.same(credential), EasyMock.eq(folderId), EasyMock.capture(fileCapture), EasyMock.<String>isNull())).andReturn(null);
     UploadCallback callback = new UploadCallback() {
       private String contents;
       
@@ -281,7 +284,8 @@ public class SshFileFactoryImplTest {
 
   private void replayAndSetFile() {
     EasyMockUtils.replayAll(tropixObjectService, storageManager, folderService, tropixFileCreator);
-    sshFile = sshFileFactoryImpl.getFile(Credentials.getMock(id), path);
+    
+    sshFile = sshFileFactoryImpl.getFile(credential, path);
   }
   
   private String expectFileId() {
