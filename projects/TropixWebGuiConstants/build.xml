@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<project name="Tropix" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="TropixWebGuiConstants" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
   <description>
   </description>
 
@@ -54,7 +54,7 @@
   </target> 
 
   <target name="javadoc" depends="prepare">
-    <dojavadoc />
+    <dojavadoc confs="main" />
   </target>
   
   <target name="test" description="Runs test cases" depends="compile">
