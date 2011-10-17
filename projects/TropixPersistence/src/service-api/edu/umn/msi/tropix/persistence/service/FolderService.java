@@ -28,6 +28,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
+import edu.umn.msi.tropix.persistence.aop.Admin;
 import edu.umn.msi.tropix.persistence.aop.Modifies;
 import edu.umn.msi.tropix.persistence.aop.PersistenceMethod;
 import edu.umn.msi.tropix.persistence.aop.Reads;
@@ -36,7 +37,9 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 public interface FolderService {
 
   @PersistenceMethod Folder[] getGroupFolders(@UserId String gridId);
-  
+
+  @PersistenceMethod Folder[] getAllGroupFolders(@Admin @UserId String gridId);
+
   @PersistenceMethod TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId);
 
   @PersistenceMethod TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId, TropixObjectType[] types);

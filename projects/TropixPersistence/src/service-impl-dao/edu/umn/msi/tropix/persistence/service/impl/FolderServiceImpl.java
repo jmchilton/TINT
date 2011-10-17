@@ -29,6 +29,8 @@ import java.util.HashSet;
 import javax.annotation.ManagedBean;
 import javax.inject.Named;
 
+import com.google.common.collect.Iterables;
+
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
@@ -37,7 +39,8 @@ import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.impl.utils.PersistenceModelUtils;
 
-@ManagedBean @Named("folderService")
+@ManagedBean
+@Named("folderService")
 class FolderServiceImpl extends ServiceBase implements FolderService {
 
   public TropixObject[] getFolderContents(final String userGridId, final String folderId, final TropixObjectType[] types) {
@@ -67,7 +70,7 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
       if(getTropixObjectDao().ownsSharedFolderWithName(userGridId, inputFolder.getName())) {
         throw new IllegalArgumentException("User alread owns a shared folder with that name.");
       }
-      final VirtualFolder folder = newVirtualFolder(inputFolder);      
+      final VirtualFolder folder = newVirtualFolder(inputFolder);
       folder.setRoot(true);
       saveNewObject(folder, userGridId);
       getTropixObjectDao().createVirtualPermission(folder.getId(), "read");
@@ -84,7 +87,7 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
       VirtualFolder childFolder = null;
       for(final TropixObject child : folder.getContents()) {
         if(child instanceof VirtualFolder && child.getName().equals(subfolderName)) {
-          childFolder = (VirtualFolder) child; 
+          childFolder = (VirtualFolder) child;
           break;
         }
       }
@@ -113,12 +116,16 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
       sharedFolder.setName(name);
       sharedFolder.setCommitted(true);
       sharedFolderToReturn = this.createVirtualFolder(userGridId, null, sharedFolder);
-      
+
     }
     return sharedFolderToReturn;
   }
 
   public Folder[] getGroupFolders(final String gridId) {
     return filter(getTropixObjectDao().getGroupFolders(gridId), Folder.class, gridId);
+  }
+
+  public Folder[] getAllGroupFolders(String gridId) {
+    return Iterables.toArray(getTropixObjectDao().getAllGroupFolders(), Folder.class);
   }
 }

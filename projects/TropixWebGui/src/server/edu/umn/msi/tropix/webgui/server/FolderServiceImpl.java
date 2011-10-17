@@ -34,6 +34,7 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.service.FolderService;
+import edu.umn.msi.tropix.persistence.service.ProviderService;
 import edu.umn.msi.tropix.webgui.server.aop.ServiceMethod;
 import edu.umn.msi.tropix.webgui.server.models.BeanSanitizer;
 import edu.umn.msi.tropix.webgui.server.models.BeanSanitizerUtils;
@@ -44,12 +45,17 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
   private final FolderService folderService;
   private final UserSession userSession;
   private final BeanSanitizer beanSanitizer;
+  private final ProviderService providerService;
 
   @Inject
-  public FolderServiceImpl(final FolderService folderService, final UserSession userSession, final BeanSanitizer beanSanitizer) {
+  public FolderServiceImpl(final FolderService folderService,
+      final UserSession userSession,
+      final BeanSanitizer beanSanitizer,
+      final ProviderService providerService) {
     this.folderService = folderService;
     this.userSession = userSession;
     this.beanSanitizer = beanSanitizer;
+    this.providerService = providerService;
   }
 
   @ServiceMethod
@@ -76,7 +82,8 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
   }
 
   /*
-   * @ServiceMethod(readOnly = true) public TropixObject[][] getFoldersContents(final String[] folderIds, final TropixObjectType[] filterTypes) { final TropixObject[][] objects = new TropixObject[folderIds.length][]; for(int i = 0; i < objects.length; i++) { objects[i] =
+   * @ServiceMethod(readOnly = true) public TropixObject[][] getFoldersContents(final String[] folderIds, final TropixObjectType[] filterTypes) {
+   * final TropixObject[][] objects = new TropixObject[folderIds.length][]; for(int i = 0; i < objects.length; i++) { objects[i] =
    * this.getFolderContents(folderIds[i], filterTypes); } return objects; }
    */
 
@@ -91,9 +98,23 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
     return BeanSanitizerUtils.sanitizeArray(beanSanitizer, objects);
   }
 
+  @ServiceMethod
   public List<Folder> getGroupFolders() {
-    final Folder[] groupFolders = this.folderService.getGroupFolders(this.userSession.getGridId());
-    this.sanitizeArray(groupFolders);
-    return Lists.newArrayList(groupFolders);
+    return sanitizeFolders(folderService.getGroupFolders(this.userSession.getGridId()));
+  }
+
+  @ServiceMethod(adminOnly = true)
+  public List<Folder> getAllGroupFolders() {
+    return sanitizeFolders(folderService.getAllGroupFolders(this.userSession.getGridId()));
+  }
+
+  @ServiceMethod(adminOnly = true)
+  public Folder createGroupFolder(final Folder folder, final String ownerId) {
+    return beanSanitizer.sanitize(providerService.createNewProviderAndFolder(userSession.getGridId(), folder, ownerId));
+  }
+
+  private List<Folder> sanitizeFolders(final Folder[] folders) {
+    this.sanitizeArray(folders);
+    return Lists.newArrayList(folders);
   }
 }

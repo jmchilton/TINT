@@ -19,7 +19,7 @@ public class ProviderServiceImpl extends ServiceBase implements ProviderService 
     final Provider provider = newProvider();
     provider.setObjects(Sets.<TropixObject>newHashSet());
     provider.setGroups(Sets.<Group>newHashSet());
-    provider.setUsers(Sets.<User>newHashSet());
+    provider.setUsers(Sets.<User>newHashSet(getUserDao().loadUser(ownerId)));
     saveNewObject(folder, ownerId);
     saveToProvider(provider, folder);
     return folder;
@@ -34,9 +34,23 @@ public class ProviderServiceImpl extends ServiceBase implements ProviderService 
   }
 
   public void addGroupToObjectsProvider(final String adminId, final String objectId, final String groupId) {
-    final Provider provider = getProviderDao().getObjectsProvider(objectId);
+    final Provider provider = loadProvider(objectId);
     provider.getGroups().add(getDaoFactory().getDao(Group.class).load(groupId));
-    getProviderDao().saveObject(provider);
+    saveProvider(provider);
+  }
+
+  public void addUserToObjectsProvider(String adminId, String objectId, String userId) {
+    final Provider provider = loadProvider(objectId);
+    provider.getUsers().add(getUserDao().loadUser(userId));
+    saveProvider(provider);
+  }
+
+  private Provider saveProvider(final Provider provider) {
+    return getProviderDao().saveObject(provider);
+  }
+
+  private Provider loadProvider(final String objectId) {
+    return getProviderDao().getObjectsProvider(objectId);
   }
 
 }

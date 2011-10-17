@@ -81,6 +81,10 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
   @Inject
   private SecurityProvider securityProvider;
 
+  protected SecurityProvider getSecurityProvider() {
+    return securityProvider;
+  }
+
   protected FileType getFileType(final StockFileExtensionI stockFileExtension) {
     return fileTypeResolver.getType(stockFileExtension);
   }

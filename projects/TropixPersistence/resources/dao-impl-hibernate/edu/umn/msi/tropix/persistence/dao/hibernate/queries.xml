@@ -58,6 +58,20 @@
     and 
       o.committed is true
   ]]></query>
+  <query name="getAllGroupFolders"><![CDATA[
+    select distinct o
+    from Provider p
+         inner join p.objects o
+    where 
+      o.parentFolder is null
+    and
+      o.deletedTime is null
+    and
+      o.class is Folder
+    and 
+      o.committed is true
+  ]]></query>
+  
   <query name="getSharedFolders"><![CDATA[
     select distinct f
     from VirtualFolder f, VirtualPermission vp, User u 

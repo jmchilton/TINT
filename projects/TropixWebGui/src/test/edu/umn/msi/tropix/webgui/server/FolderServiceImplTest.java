@@ -36,46 +36,61 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.persistence.service.FolderService;
+import edu.umn.msi.tropix.persistence.service.ProviderService;
 
 public class FolderServiceImplTest extends BaseGwtServiceTest {
   private FolderService folderService;
+  private ProviderService providerService;
   private String folderId;
-  
+  private FolderServiceImpl gwtFolderService;
+
   @BeforeMethod(groups = "unit")
   public void init() {
     super.init();
     folderId = UUID.randomUUID().toString();
     folderService = EasyMock.createMock(FolderService.class);
+    providerService = EasyMock.createMock(ProviderService.class);
+    gwtFolderService = new FolderServiceImpl(folderService, getUserSession(), getSanitizer(), providerService);
   }
-  
+
+  @Test(groups = "unit")
+  public void getAllGroupFolders() {
+    final Folder folder1 = createTropixObject(Folder.class);
+    EasyMock.expect(folderService.getAllGroupFolders(getUserId())).andReturn(new Folder[] {folder1});
+    EasyMock.replay(folderService);
+    verifyOneFolderReturned(gwtFolderService.getAllGroupFolders(), folder1);
+  }
+
+  public void verifyOneFolderReturned(final Iterable<Folder> results, final Folder expectedFolder) {
+    assert Iterables.elementsEqual(results, Lists.newArrayList(expectedFolder));
+    assert getSanitizer().wasSanitized(expectedFolder);
+    EasyMock.verify(folderService);
+  }
+
   @Test(groups = "unit")
   public void getGroupFolders() {
     final Folder folder1 = createTropixObject(Folder.class);
     EasyMock.expect(folderService.getGroupFolders(getUserId())).andReturn(new Folder[] {folder1});
     EasyMock.replay(folderService);
-    final FolderServiceImpl gwtFolderService = new FolderServiceImpl(folderService, getUserSession(), getSanitizer());
-    assert Iterables.elementsEqual(gwtFolderService.getGroupFolders(), Lists.newArrayList(folder1));
-    assert getSanitizer().wasSanitized(folder1);
-    EasyMock.verify(folderService);
+    verifyOneFolderReturned(gwtFolderService.getGroupFolders(), folder1);
   }
-  
-  @Test(groups = "unit", dataProvider = "bool1", dataProviderClass=TestNGDataProviders.class)
+
+  @Test(groups = "unit", dataProvider = "bool1", dataProviderClass = TestNGDataProviders.class)
   public void getFolderContents(final boolean withTypes) {
     final TropixObjectTypeEnum[] types = withTypes ? new TropixObjectTypeEnum[] {TropixObjectTypeEnum.FILE} : null;
     final TropixObject object1 = createTropixObject(TropixObject.class);
     final TropixObject object2 = createTropixObject(TropixObject.class);
     final TropixObject[] objects = new TropixObject[] {object1, object2};
     if(withTypes) {
-      EasyMock.expect(folderService.getFolderContents(getUserId(), folderId, types));      
+      EasyMock.expect(folderService.getFolderContents(getUserId(), folderId, types));
     } else {
       EasyMock.expect(folderService.getFolderContents(getUserId(), folderId));
     }
     EasyMock.expectLastCall().andReturn(objects);
     EasyMock.replay(folderService);
-    final FolderServiceImpl gwtFolderService = new FolderServiceImpl(folderService, getUserSession(), getSanitizer());
     assert Iterables.elementsEqual(gwtFolderService.getFolderContents(folderId, types), Lists.newArrayList(object1, object2));
     assert getSanitizer().wasSanitized(object1);
-    assert getSanitizer().wasSanitized(object2);    
+    assert getSanitizer().wasSanitized(object2);
     EasyMock.verify(folderService);
   }
 

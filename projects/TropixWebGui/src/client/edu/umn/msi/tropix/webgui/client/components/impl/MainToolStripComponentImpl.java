@@ -264,6 +264,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     final MenuBuilder menuBuilder = new MenuBuilder();
     if(moduleManager.containsModules(Module.ADMIN)) {
       menuBuilder.addMenuItem(getDialogMenuItem("Manage Groups", "groupAdmin", Resources.PARAMETERS_16));
+      menuBuilder.addMenuItem(getDialogMenuItem("Manage Group Folders", "manageGroupFolders", Resources.PARAMETERS_16));
       menuBuilder.addMenuItem(getDialogMenuItem("Create Local User", "createLocalUser", Resources.ADD));
       menuBuilder.addSeparator();
       menuBuilder.addMenuItem(getDialogMenuItem("Manage File Types", "manageFileTypes", Resources.PARAMETERS_16));
@@ -326,7 +327,8 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
         final MenuItem bulkMgfMascotDownloadItem = getDialogMenuItem("Download Peak Lists for Mascot", "bulkMgfMascotDownload", Resources.SAVE);
         exportMenuBuilder.addMenuItem(bulkMgfMascotDownloadItem);
 
-        final MenuItem bulkMgfProteinPilotDownloadItem = getDialogMenuItem("Download Peak Lists for ProteinPilot", "bulkMgfProteinPilotDownload", Resources.SAVE);
+        final MenuItem bulkMgfProteinPilotDownloadItem = getDialogMenuItem("Download Peak Lists for ProteinPilot", "bulkMgfProteinPilotDownload",
+            Resources.SAVE);
         exportMenuBuilder.addMenuItem(bulkMgfProteinPilotDownloadItem);
       }
 

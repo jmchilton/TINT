@@ -68,7 +68,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   private static final Log LOG = LogFactory.getLog(TropixObjectDaoImpl.class);
   private static final int DEFAULT_MAX_SEARCH_RESULTS = 1000;
   private int maxSearchResults = DEFAULT_MAX_SEARCH_RESULTS;
-  
+
   /**
    * Override setSessionFactory so the @Inject annotation can be added to it.
    */
@@ -80,7 +80,6 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   public void setMaxSearchResults(final int maxSearchResults) {
     this.maxSearchResults = maxSearchResults;
   }
-  
 
   public boolean isInstance(final String objectId, final Class<? extends TropixObject> clazz) {
     final TropixObject object = loadTropixObject(objectId);
@@ -414,7 +413,14 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     query.setParameter("userId", userId);
     @SuppressWarnings("unchecked")
     final List<Folder> results = query.list();
-    return results;    
+    return results;
+  }
+
+  public Collection<Folder> getAllGroupFolders() {
+    final Query query = super.getSession().getNamedQuery("getAllGroupFolders");
+    @SuppressWarnings("unchecked")
+    final List<Folder> results = query.list();
+    return results;
   }
 
   public Collection<VirtualFolder> getSharedFolders(final String userId) {
@@ -540,22 +546,22 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   }
 
   /*
-  private TropixObject getPathFromId(final String userId, final List<String> pathParts) {
-    TropixObject object = null;
-    if(!pathParts.isEmpty()) {
-      final String lastPart = pathParts.get(pathParts.size());
-      
-    }
-    return object;
-  }
-  */
-  
+   * private TropixObject getPathFromId(final String userId, final List<String> pathParts) {
+   * TropixObject object = null;
+   * if(!pathParts.isEmpty()) {
+   * final String lastPart = pathParts.get(pathParts.size());
+   * 
+   * }
+   * return object;
+   * }
+   */
+
   public TropixObject getPath(final String userId, final List<String> pathParts) {
     if(LOG.isDebugEnabled()) {
       LOG.debug(String.format("getPath called with userId %s and path parts %s", userId, Iterables.toString(pathParts)));
     }
     final StringBuilder joins = new StringBuilder(), wheres = new StringBuilder();
-    
+
     final ListIterator<String> pathPartsIter = pathParts.listIterator(pathParts.size());
     final LinkedList<String> parameters = Lists.newLinkedList();
     while(pathPartsIter.hasPrevious()) {
@@ -563,8 +569,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
       final String pathPart = pathPartsIter.previous();
       final Matcher matcher = ID_FROM_PATH_PATTERN.matcher(pathPart);
       final boolean containsId = matcher.matches();
-      
-      
+
       int nextObjectBackIndex = pathPartsIter.previousIndex() + 1;
       joins.append(String.format(" inner join o%d.permissionParents as o%d ", index, nextObjectBackIndex));
       wheres.append(String.format(" and o%d.deletedTime is null", index));
@@ -574,7 +579,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
         parameters.addFirst(matcher.group(1));
       } else {
         parameters.addFirst(pathPart);
-        wheres.append(String.format(" and o%d.name = :o%dconst", index, index));                
+        wheres.append(String.format(" and o%d.name = :o%dconst", index, index));
       }
       index++;
     }

@@ -54,6 +54,7 @@ import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.DynamicUploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.EditCatalogProviderFormComponent;
 import edu.umn.msi.tropix.webgui.client.components.EditCatalogServiceFormComponent;
+import edu.umn.msi.tropix.webgui.client.components.EditGroupFolderFormComponent;
 import edu.umn.msi.tropix.webgui.client.components.EditObjectComponent;
 import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent;
 import edu.umn.msi.tropix.webgui.client.components.GridUserItemComponent;
@@ -139,6 +140,11 @@ public class ComponentsModule extends AbstractGinModule {
     bind(new TypeLiteral<ComponentFactory<Provider, ? extends Command>>() {
     }).annotatedWith(Names.named("addCatalogService")).to(AddCatalogServiceWindowComponentFactoryImpl.class);
 
+    bind(new TypeLiteral<Supplier<EditGroupFolderFormComponent>>() {
+    }).to(EditGroupFolderFormComponentSupplierImpl.class).in(Singleton.class);
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("addGroupFolder")).to(AddGroupFolderWindowComponentSupplierImpl.class).in(Singleton.class);
+
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("about")).to(AboutWindowComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
@@ -165,6 +171,9 @@ public class ComponentsModule extends AbstractGinModule {
     }).annotatedWith(Names.named("quickCatalogSearch")).to(CatalogQuickSearchWindowComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("catalogSearch")).to(CatalogSearchWindowComponentSupplierImpl.class).in(Singleton.class);
+
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("manageGroupFolders")).to(ManageGroupFoldersWindowComponentSupplierImpl.class).in(Singleton.class);
 
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("manageGalaxyTools")).to(ManageGalaxyToolsWindowComponentSupplierImpl.class).in(Singleton.class);
@@ -230,7 +239,7 @@ public class ComponentsModule extends AbstractGinModule {
     }).to(FileTypeFormItemComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent>>() {
     }).to(FileTypeFormItemComponentSupplierImpl.class).in(Singleton.class);
-    
+
     // Service lists
     bind(new TypeLiteral<Supplier<ServiceSelectionComponent<GridService>>>() {
     }).to(ServiceSelectionComponentSupplierImpl.class).in(Singleton.class);

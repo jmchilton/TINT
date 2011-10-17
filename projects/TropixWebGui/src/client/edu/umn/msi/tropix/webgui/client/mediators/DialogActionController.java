@@ -61,6 +61,10 @@ public class DialogActionController {
     registerListener("bulkMgfMascotDownload", windowComponentSupplier);
   }
 
+  @Inject
+  public void setManageGroupFoldersWindowComponentSupplier(@Named("manageGroupFolders") final Supplier<? extends Command> windowComponentSupplier) {
+    registerListener("manageGroupFolders", windowComponentSupplier);
+  }
   
   @Inject
   public void setGridFtpExportWindowComponentSupplier(@Named("gridFtpExport") final Supplier<? extends Command> windowComponentSupplier) {

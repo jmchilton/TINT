@@ -39,7 +39,9 @@ import edu.umn.msi.tropix.models.VirtualFolder;
 public interface TropixObjectDao {
 
   Collection<Folder> getGroupFolders(final String userId);
-  
+
+  Collection<Folder> getAllGroupFolders();
+
   Collection<TropixObject> loadRecent(String userId, int num, boolean includeFolders, boolean requireParent);
 
   void saveOrUpdateTropixObject(TropixObject object);
