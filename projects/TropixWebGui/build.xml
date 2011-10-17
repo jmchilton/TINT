@@ -254,7 +254,7 @@
     <finishemma />
   </target>
 
-  <target name="all" depends="compile-java" />
+  <target name="all" depends="jar" />
 
   <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
 
