@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -48,30 +48,38 @@ import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.persistence.dao.DaoFactory;
+import edu.umn.msi.tropix.persistence.dao.ProviderDao;
 import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 import edu.umn.msi.tropix.persistence.dao.UserDao;
 import edu.umn.msi.tropix.persistence.service.impl.FileTypeResolver;
+import edu.umn.msi.tropix.persistence.service.security.SecurityProvider;
 
 @ContextConfiguration(locations = {"classpath:edu/umn/msi/tropix/persistence/test/applicationContext.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
-  @Autowired
+  @Inject
   private TropixObjectDao tropixObjectDao;
 
-  @Autowired
+  @Inject
   private UserDao userDao;
 
-  @Autowired
+  @Inject
   private DaoFactory daoFactory;
 
-  @Autowired
+  @Inject
   private SessionFactory sessionFactory;
 
-  @Autowired
+  @Inject
   private MessageSource messageSource;
 
-  @Autowired
+  @Inject
   private FileTypeResolver fileTypeResolver;
+
+  @Inject
+  private ProviderDao providerDao;
+
+  @Inject
+  private SecurityProvider securityProvider;
 
   protected FileType getFileType(final StockFileExtensionI stockFileExtension) {
     return fileTypeResolver.getType(stockFileExtension);
@@ -208,9 +216,44 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
 
   }
 
+  class FolderWithProvider extends FolderDestination {
+    private final User providerUser;
+    private final Provider provider;
+
+    FolderWithProvider(final User user) {
+      super(createTempUser());
+      this.providerUser = user;
+      provider = createTempProvider();
+      provider.getUsers().add(getOwner());
+      provider.getUsers().add(user);
+      provider.getObjects().add(getFolder());
+      getDaoFactory().getDao(Provider.class).saveObject(provider);
+      assert providerDao.getObjectsProvider(getFolder().getId()) != null;
+    }
+
+    public void validate(final TropixObject... objects) {
+      super.validate(objects);
+      for(final TropixObject object : objects) {
+        final Provider objectsProvider = providerDao.getObjectsProvider(object.getId());
+        assert objectsProvider != null;
+        assert objectsProvider.getId().equals(provider.getId());
+        assert securityProvider.canModify(object.getId(), providerUser.getCagridId());
+      }
+    }
+
+    // public void verifyContains(final TropixObject tropixObject) {
+    // super.verifyContains(tropixObject);
+    // }
+
+  }
+
   class FolderDestination implements Destination {
     private final User user;
     private final Folder folder;
+
+    protected Folder getFolder() {
+      return folder;
+    }
 
     public User getOwner() {
       return user;
@@ -367,6 +410,7 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
 
   protected Iterable<Destination> getTestDestinationsWithNull(final User user) {
     return Arrays.<Destination>asList(new FolderDestination(user), new RequestDestination(user, this), new InternalRequestDestination(user),
+        new FolderWithProvider(user),
         new NullDestination(user));
   }
 
@@ -389,7 +433,7 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
   protected MessageSource getMessageSource() {
     return messageSource;
   }
-  
+
   protected <T extends TropixObject> T saveWithName(final T object, final String name, final User owner) {
     object.setName(name);
     return saveNewCommitted(object, owner);
@@ -406,6 +450,5 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     getTropixObjectDao().addPermissionParent(object.getId(), parent.getId());
     return object;
   }
-
 
 }

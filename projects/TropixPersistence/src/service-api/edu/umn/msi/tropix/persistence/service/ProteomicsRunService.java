@@ -31,12 +31,9 @@ import edu.umn.msi.tropix.persistence.aop.Reads;
 import edu.umn.msi.tropix.persistence.aop.UserId;
 
 public interface ProteomicsRunService {
-  
-  @PersistenceMethod
-  ProteomicsRun createProteomicsRun(@UserId String userGridId, @Nullable @Modifies String folderId, ProteomicsRun analysis, @Modifies String mzxmlFileId, @Reads @Nullable String sampleId, @Modifies @Nullable String sourceFileId);
 
-  /*
   @PersistenceMethod
-  ThermofinniganRun createThermofinniganRun(@UserId String userGridId, @Nullable @Modifies String folderId, ThermofinniganRun analysis, @Modifies String mzxmlFileId, @Owns String rawFileId, @Reads @Nullable String sampleId);
-  */
+  ProteomicsRun createProteomicsRun(@UserId String userGridId, @Nullable @Modifies String folderId, ProteomicsRun analysis,
+      @Modifies String mzxmlFileId, @Reads @Nullable String sampleId, @Modifies @Nullable String sourceFileId);
+
 }

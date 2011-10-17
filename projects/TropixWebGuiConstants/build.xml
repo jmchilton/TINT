@@ -21,7 +21,6 @@
       <pathelement path="${java.class.path}"/>
       <path refid="ivy.path" />
       <path refid="source.classpath" />
-      <path refid="ext.globus.classpath" />
     </path>
     <path id="run.classpath">
       <pathelement path="${resources.dir}/main" />

@@ -185,7 +185,7 @@ public abstract class ServiceBase {
       providerDao.saveObject(provider);
     }
   }
-  
+
   /**
    * If destinationId is null object is just saved with userId as owner.
    * 
@@ -209,7 +209,7 @@ public abstract class ServiceBase {
       tropixObjectDao.addPermissionParent(objectId, folderId);
       final User owner = tropixObjectDao.getOwner(folderId);
       tropixObjectDao.setOwner(objectId, owner);
-      final Provider provider = providerDao.getObjectsProvider(objectId);
+      final Provider provider = providerDao.getObjectsProvider(folderId);
       saveToProvider(provider, object);
     }
     if(destination instanceof Request) {
@@ -275,13 +275,13 @@ public abstract class ServiceBase {
   }
 
   protected VirtualFolder newVirtualFolder(final VirtualFolder inputFolder) {
-    final VirtualFolder folder = new VirtualFolder();    
+    final VirtualFolder folder = new VirtualFolder();
     folder.setName(inputFolder.getName());
     folder.setDescription(inputFolder.getDescription());
     folder.setContents(new HashSet<TropixObject>());
     folder.setCommitted(true);
     folder.setId(null); // make sure a new id is assigned
-    return folder;    
+    return folder;
   }
 
   protected VirtualFolder createNewChildVirtualFolder(final String parentFolderId, final VirtualFolder inputVirtualFolder) {
