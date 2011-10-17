@@ -43,6 +43,7 @@
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/tropix-models-utils.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/tropix-jobs-api.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/tropix-galaxy-stubs.jar" />
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/tropix-webgui-constants.jar" />
       <!-- Annotations -->
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/findbugs*.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/jaxb-api*.jar" />
@@ -57,13 +58,11 @@
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/gwt-dev*.jar" />
     </path>
     <path id="gwt.sources">
-      <pathelement location="${src.dir}/constants" />
       <pathelement location="${src.dir}/services" />
       <pathelement location="${src.dir}/client" />
       <pathelement location="${resources.dir}/client" />
     </path>
     <path id="gwt.classes">
-      <pathelement location="${build.classes.dir}/constants" />
       <pathelement location="${build.classes.dir}/services" />
       <pathelement location="${build.classes.dir}/client" />
     </path>
@@ -94,7 +93,6 @@
       <fileset dir="${build.lib.dir}" includes="*test*jar" />
       <pathelement path="${build.test.classes.dir}" />
       <pathelement path="${build.classes.dir}/test" />
-      <pathelement location="${src.dir}/constants" />
       <pathelement location="${src.dir}/services" />
       <pathelement location="${src.dir}/test" />
       <pathelement location="${src.dir}/client" />
@@ -177,27 +175,6 @@
     </java>
   </target>
 
-  <!--
-  <target name="shell_">
-    <delete dir="${build.lib.dir}" />
-    <property name="myclasspath" refid="run.classpath"/>
-    <echo message="Classpath = ${myclasspath}"/>
-    <java classname="com.google.gwt.dev.DevMode" fork="true" maxmemory="1216m">
-      <classpath>
-        <path refid="run.classpath" />
-      </classpath>
-      <jvmarg value="-XX:MaxPermSize=256m" />
-      <arg value="-war" />
-      <arg value="${build.war.dir}" />
-      <arg value="-startupUrl" />
-      <arg value="TropixGui.html" />
-      <arg value="edu.umn.msi.tropix.webgui.TropixGui" />
-    </java>
-  </target>
-
-  <target name="shell" depends="jar, shell_" />
-  -->
-
   <target name="prepare-libraries" depends="prepare"> 
     <copy todir="${build.lib.dir}" flatten="true" >
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*.jar" excludes="**/gwt-user*.jar" />
@@ -232,13 +209,15 @@
     <runfindbugs />
   </target>
   
-  <target name="package-war" depends="prepare">
+  <target name="package-war_" depends="prepare">
     <war destfile="${war.location}" basedir="${build.war.dir}" >
       <lib dir="${build.lib.dir}" />
     </war>
   </target>
 
-  <target name="war" depends="compile-gwt,jar,package-war" />
+  <target name="package-war" depends="compile-gwt,jar,package-war_" />
+
+  <target name="war" depends="package-war" />
 
   <target name="test" depends="compile-java">
     <runtestng file="${test.dir}/testng.xml" />

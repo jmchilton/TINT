@@ -26,6 +26,7 @@ import org.testng.annotations.BeforeMethod;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
+import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.jobs.activities.ActivityContext;
 import edu.umn.msi.tropix.jobs.activities.descriptions.TropixObjectDescription;
 import edu.umn.msi.tropix.jobs.activities.impl.Activity;
@@ -48,6 +49,10 @@ class BaseCreateActivityFactoryImplTest<D extends TropixObjectDescription, T ext
   
   protected ActivityContext getContext() {
     return context;
+  }
+  
+  protected Credential matchCredential() {
+    return EasyMock.isA(Credential.class);
   }
   
   protected String matchId() {

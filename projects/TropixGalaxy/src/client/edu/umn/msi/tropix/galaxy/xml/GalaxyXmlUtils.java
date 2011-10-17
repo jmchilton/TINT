@@ -49,14 +49,25 @@ public class GalaxyXmlUtils {
   @SuppressWarnings("unchecked")
   public static Object jaxbToCaGrid(final Object input, final XMLUtility wrapper, final Class c) {
     String inputXml = wrapper.toString(input);
+    int beginTests = inputXml.indexOf("<test");
+    String preTestXml, postTestXml;
+    if(beginTests > 0) {
+      preTestXml = inputXml.substring(0, beginTests);
+      postTestXml = inputXml.substring(beginTests);
+    } else {
+      preTestXml = inputXml;
+      postTestXml = "";
+    }
+    preTestXml = preTestXml.replaceAll("\\<param ([^/]*)/>", "<param $1></param>");
+    preTestXml = preTestXml.replaceAll("\\<(param|conditional|repeat)", "<InputElement><$1")
+                           .replaceAll("\\</(param|conditional|repeat)>", "</$1></InputElement>");
 
-    inputXml = inputXml.replaceAll("\\<param ([^/]*)/>", "<param $1></param>");
-    inputXml = inputXml.replaceAll("\\<(param|conditional|repeat)", "<InputElement><$1").replaceAll("\\</(param|conditional|repeat)>", "</$1></InputElement>");
-    System.out.println(inputXml);
-    final StringReader reader = new StringReader(inputXml);
+    final String hackedXml = preTestXml + postTestXml;
+    final StringReader reader = new StringReader(hackedXml);
     try {
       return Utils.deserializeObject(reader, c);
     } catch(final Exception e) {
+      System.out.println(hackedXml);
       throw new IllegalArgumentException("Failed to convert xml based object.", e);
     }
   }

@@ -29,12 +29,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
+import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.Request;
-import edu.umn.msi.tropix.models.Sample;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
@@ -47,22 +48,20 @@ import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 public class TropixObjectDaoTest extends DaoTest {
   @Autowired
   private TropixObjectDao objectDao;
-
+  
   @Test
   public void isInstnace() {
-    final String objectId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + objectId + "')");
+    final String objectId = newObject();
+    makeFile(objectId);
 
     assert objectDao.isInstance(objectId, TropixFile.class);
   }
 
   @Test
   public void isInstanceCacheTest() {
-    final String objectId = newId(), requestorId = newId(), externalId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO REQUEST(OBJECT_ID,REQUESTOR_ID,EXTERNAL_ID) VALUES ('" + objectId + "','" + requestorId + "','" + externalId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO INTERNAL_REQUEST(REQUEST_ID,STORAGE_SERVICE_URL) VALUES ('" + objectId + "','http://moo.cow')");
+    final String requestorId = newId(), externalId = newId();
+    final String objectId = newObject();
+    makeInternalRequest(objectId, requestorId, externalId);
 
     // Load it as a request..
     objectDao.loadTropixObject(objectId, Request.class);
@@ -73,9 +72,8 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void loadRequest() {
-    final String objectId = newId(), requestorId = newId(), externalId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO REQUEST(OBJECT_ID,REQUESTOR_ID,EXTERNAL_ID) VALUES ('" + objectId + "','" + requestorId + "','" + externalId + "')");
+    final String objectId = newObject(), requestorId = newId(), externalId = newId();
+    makeRequest(objectId, requestorId, externalId);
 
     Request request = objectDao.loadRequest(requestorId, externalId);
     assert request.getId().equals(objectId);
@@ -88,10 +86,8 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void loadRequestInternal() {
-    final String objectId = newId(), requestorId = newId(), externalId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO REQUEST(OBJECT_ID,REQUESTOR_ID,EXTERNAL_ID) VALUES ('" + objectId + "','" + requestorId + "','" + externalId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO INTERNAL_REQUEST(REQUEST_ID,STORAGE_SERVICE_URL) VALUES ('" + objectId + "','http://moo.cow')");
+    final String objectId = newObject(), requestorId = newId(), externalId = newId();
+    makeInternalRequest(objectId, requestorId, externalId);
 
     InternalRequest request = (InternalRequest) objectDao.loadRequest(requestorId, externalId);
     assert request.getStorageServiceUrl().equals("http://moo.cow");
@@ -103,77 +99,51 @@ public class TropixObjectDaoTest extends DaoTest {
 
   }
 
-  private String newPermission(final String role) {
-    final String id = newId();
-    final String query = "INSERT INTO PERMISSION(ID,ROLE) VALUES ('" + id + "','" + role + "')";
-    simpleJdbcTemplate.getJdbcOperations().execute(query);
-    return id;
+  private void makeInternalRequest(final String objectId, final String requestorId, final String externalId) {
+    makeRequest(objectId, requestorId, externalId);
+    execute("INSERT INTO INTERNAL_REQUEST(REQUEST_ID,STORAGE_SERVICE_URL) VALUES ('" + objectId + "','http://moo.cow')");
   }
 
-  private void addUserPermission(final String permissionId, final String userId) {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_USER(PERMISSION_ID,USER_ID) VALUES ('" + permissionId + "','" + userId + "')");
-  }
-
-  private void addGroupPermission(final String permissionId, final String groupId) {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_GROUP(PERMISSION_ID,GROUP_ID) VALUES ('" + permissionId + "','" + groupId + "')");
-  }
-
-  private void addObjectPermission(final String permissionId, final String objectId) {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID,OBJECT_ID) VALUES ('" + permissionId + "','" + objectId + "')");
+  private void makeRequest(final String objectId, final String requestorId, final String externalId) {
+    execute("INSERT INTO REQUEST(OBJECT_ID,REQUESTOR_ID,EXTERNAL_ID) VALUES ('" + objectId + "','" + requestorId + "','" + externalId + "')");
   }
 
   @Test
   public void ownsSharedFolderWithName() {
-    // TODO: Run more tests
-
-    final String objectId = newId(), userId = newId(), user2Id = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID,ROOT) VALUES ('" + objectId + "','1')");
-
-    final String user1Query = "INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')";
-    simpleJdbcTemplate.getJdbcOperations().execute(user1Query);
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + user2Id + "','" + user2Id + "')");
+    final String objectId = newObjectWithName("The name1"), userId = newUser(), user2Id = newUser();
+    makeVirtualFolder(objectId, true);
 
     final String ownerPermissionId = newPermission("owner");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_USER(PERMISSION_ID,USER_ID) VALUES ('" + ownerPermissionId + "','" + userId + "')");
+    execute("INSERT INTO JOIN_PERMISSION_USER(PERMISSION_ID,USER_ID) VALUES ('" + ownerPermissionId + "','" + userId + "')");
     addObjectPermission(ownerPermissionId, objectId);
 
     flush();
 
     assert objectDao.ownsSharedFolderWithName(userId, "The name1");
     assert !objectDao.ownsSharedFolderWithName(user2Id, "The name1");
-
   }
 
   @Test
   public void loadFileWithFileId() {
-    final String id1 = newId(), fileId = newId();
-
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + id1 + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID, FILE_ID) VALUES ('" + id1 + "','" + fileId + "')");
-
+    final String id1 = newObjectWithName("The name");
+    final String fileId = makeFile(id1);
     assert objectDao.loadTropixFileWithFileId(fileId).getName().equals("The name");
   }
 
   @Test
   public void loadFileWithFileIdNotPresent() {
-    final String id1 = newId(), fileId = newId();
-
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + id1 + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID, FILE_ID) VALUES ('" + id1 + "','" + fileId + "')");
-
+    final String id1 = newObject();
+    makeFile(id1);
     assert objectDao.loadTropixFileWithFileId(id1) == null;
   }
 
   @Test
   public void getOwnerId() {
-    final String id1 = newId(), userId = newId();
-
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + id1 + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + id1 + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID,FIRST_NAME) VALUES ('" + userId + "','" + userId + "','Homer')");
-    final String roleId = this.newPermission("owner");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO DIRECT_PERMISSION(PERMISSION_ID) VALUES ('" + roleId + "')");
+    final String id1 = newObject(), userId = newUser();
+    makeFile(id1);
+    
+    final String roleId = newPermission("owner");
+    makeDirectPermission(roleId);
     this.addObjectPermission(roleId, id1);
     this.addUserPermission(roleId, userId);
     flush();
@@ -183,20 +153,11 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void getAssociation() {
-    final String fileId = newId(), runId = newId(), folderId = newId();
+    final String fileId = newObject(), runId = newObject();
+    makeFile(fileId);
 
-    // Setup folder
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + folderId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('" + folderId + "')");
-
-    // setup file
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + fileId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + fileId + "')");
-
-    // setup object
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('" + runId + "','The name','The description','" + folderId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO RUN(OBJECT_ID) VALUES ('" + runId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO PROTEOMICS_RUN(RUN_ID, SOURCE_ID) VALUES ('" + runId + "','" + fileId + "')");
+    execute("INSERT INTO RUN(OBJECT_ID) VALUES ('%s')", runId);
+    execute("INSERT INTO PROTEOMICS_RUN(RUN_ID, SOURCE_ID) VALUES ('%s','%s')", runId, fileId);
 
     final TropixFile file = (TropixFile) objectDao.getAssociation(runId, "source");
     assert file.getId().equals(fileId);
@@ -204,19 +165,9 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void getAssociations() {
-    final String folderId = newId(), runId = newId(), fileId = newId();
-
-    // Setup folder
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + folderId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('" + folderId + "')");
-
-    // setup file
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('" + fileId + "','The name','The description','" + folderId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + fileId + "')");
-
-    // setup object
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('" + runId + "','The name','The description','" + folderId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO RUN(OBJECT_ID) VALUES ('" + runId + "')");
+    final String folderId = newFolder(), runId = newObjectInFolder(folderId), fileId = newObjectInFolder(folderId);
+    makeFile(fileId);
+    makeFile(runId);
 
     final Collection<TropixObject> objects = objectDao.getAssociations(folderId, "contents");
     assert objects.size() == 2 : objects.size();
@@ -224,23 +175,20 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void polymorphicLoad() {
-    final String id1 = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + id1 + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO SAMPLE(OBJECT_ID) VALUES ('" + id1 + "')");
+    final String id1 = newFolder();
     flush();
 
     final TropixObject object = objectDao.loadTropixObject(id1);
-    assert object instanceof Sample;
+    assert object instanceof Folder;
   }
 
   @Test
   public void addPermissionParent() {
-    final String id1 = newId(), id2 = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + id1 + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + id2 + "','The name1','The description2')");
+    final String id1 = newObject(), id2 = newObject();
     flush();
 
     objectDao.addPermissionParent(id1, id2);
+    
     flush();
     assert objectDao.loadTropixObject(id1).getPermissionParents().size() == 1;
     assert objectDao.loadTropixObject(id2).getPermissionChildren().size() == 1;
@@ -248,11 +196,12 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void requestContents() {
-    final String reqId = newId(), fileId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + reqId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO REQUEST(OBJECT_ID) VALUES ('" + reqId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,REQUEST_ID) VALUES ('" + fileId + "','The name3','The description3','" + reqId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + fileId + "')");
+    final String reqId = newObject(), fileId = newId();
+    makeRequest(reqId, newId(), newId());
+
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,REQUEST_ID) VALUES ('" + fileId + "','The name3','The description3','" + reqId + "')");
+    makeFile(fileId);
+
     flush();
     final Collection<TropixObject> collect = objectDao.getFolderContents(reqId);
     assert collect.size() == 1;
@@ -261,25 +210,22 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void contents() {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('1234','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('1234')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('1235','The name2','The description2','1234')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('1235')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('1236','The name3','The description3','1234')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO SAMPLE(OBJECT_ID) VALUES ('1236')");
+    final String folder1Id = newFolder();
+    final String subFolderId = newFolderInFolder(folder1Id);
+    final String object1 = newObjectInFolder(folder1Id);
     flush();
-    final Collection<TropixObject> collect = objectDao.getFolderContents("1234");
+    final Collection<TropixObject> collect = objectDao.getFolderContents(folder1Id);
     assert collect.size() == 2;
 
-    final Collection<TropixObject> collect3 = objectDao.getFolderContents("1235");
+    final Collection<TropixObject> collect3 = objectDao.getFolderContents(subFolderId);
     assert collect3.size() == 0;
   }
 
   @Test
   public void createVirtualPermissions() {
     final String objectId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID) VALUES ('" + objectId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
+    execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID) VALUES ('" + objectId + "')");
     flush();
     final int preCount = simpleJdbcTemplate.queryForInt("SELECT count(*) from PERMISSION WHERE ROLE='read'");
     final int preJoinCount = simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_OBJECT WHERE OBJECT_ID='" + objectId + "'");
@@ -291,19 +237,18 @@ public class TropixObjectDaoTest extends DaoTest {
     assert postJoinCount - preJoinCount == 1;
 
     final String userId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID,FIRST_NAME) VALUES ('+userId+','" + userId + "','Homer')");
+    execute("INSERT INTO USER(ID,CAGRID_ID,FIRST_NAME) VALUES ('+userId+','" + userId + "','Homer')");
     flush();
   }
 
   @Test
   public void addVirtualPermissionUser() {
     final String objectId = newId(), userId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID,FIRST_NAME) VALUES ('" + userId + "','" + userId + "','Homer')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
+    execute("INSERT INTO USER(ID,CAGRID_ID,FIRST_NAME) VALUES ('" + userId + "','" + userId + "','Homer')");
     final String permId = this.newPermission("read");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID) VALUES ('" + permId + "')");
-    this.addObjectPermission(permId, objectId);
-    // simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_OBJECT(VIRTUAL_PERMISSION_ID,OBJECT_ID) VALUES ('"+ permId +"','"+objectId+"')");
+    execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID) VALUES ('" + permId + "')");
+    addObjectPermission(permId, objectId);
     flush();
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_USER WHERE PERMISSION_ID='" + permId + "' AND USER_ID='" + userId + "'") == 0;
     objectDao.addVirtualPermissionUser(objectId, "read", userId);
@@ -314,10 +259,10 @@ public class TropixObjectDaoTest extends DaoTest {
   @Test
   public void addVirtualPermissionGroup() {
     final String objectId = newId(), groupId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_GROUP(ID) VALUES ('" + groupId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
+    execute("INSERT INTO TROPIX_GROUP(ID) VALUES ('" + groupId + "')");
     final String permId = this.newPermission("read");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID) VALUES ('" + permId + "')");
+    execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID) VALUES ('" + permId + "')");
     this.addObjectPermission(permId, objectId);
     flush();
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_GROUP WHERE PERMISSION_ID='" + permId + "' AND GROUP_ID='" + groupId + "'") == 0;
@@ -342,26 +287,26 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void load() {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('356','The name','The description')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('356','The name','The description')");
     final TropixObject object = objectDao.loadTropixObject("356");
     assert object.getId().equals("356");
     assert object.getDescription().equals("The description");
     assert object.getName().equals("The name");
 
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('357','The name','The description')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('357','The name','The description')");
     assert objectDao.loadTropixObjects(new String[] {"356", "357"}).size() == 2;
     assert objectDao.loadTropixObjects(new String[] {"356"}).size() == 1;
   }
 
   @Test
   public void getOwner() {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID) VALUES (111,112)");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID) VALUES (333)");
+    execute("INSERT INTO USER(ID,CAGRID_ID) VALUES (111,112)");
+    execute("INSERT INTO TROPIX_OBJECT(ID) VALUES (333)");
     final String permissionId = newPermission("owner");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO DIRECT_PERMISSION(PERMISSION_ID) VALUES ('" + permissionId + "')");
+    makeDirectPermission(permissionId);
     this.addObjectPermission(permissionId, "333");
     this.addUserPermission(permissionId, "111");
-    // simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_USER_ROLE(ID,ROLE_NAME,USER_ID,OBJECT_ID) VALUES (123412323,'owner',111,333)");
+    // execute("INSERT INTO TROPIX_USER_ROLE(ID,ROLE_NAME,USER_ID,OBJECT_ID) VALUES (123412323,'owner',111,333)");
     flush();
     assert objectDao.getOwner("333").getCagridId().equals("112");
 
@@ -372,9 +317,9 @@ public class TropixObjectDaoTest extends DaoTest {
     final User user = getNewUser();
     final String id = user.getCagridId();
 
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + id + "','" + id + "')");
-    // simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_USER_ROLE(ID,ROLE_NAME,USER_ID,OBJECT_ID) VALUES (123412323,'owner',111,333)");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID) VALUES (33323432)");
+    execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + id + "','" + id + "')");
+    // execute("INSERT INTO TROPIX_USER_ROLE(ID,ROLE_NAME,USER_ID,OBJECT_ID) VALUES (123412323,'owner',111,333)");
+    execute("INSERT INTO TROPIX_OBJECT(ID) VALUES (33323432)");
 
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from PERMISSION, JOIN_PERMISSION_USER, JOIN_PERMISSION_OBJECT WHERE PERMISSION.ROLE='owner' AND JOIN_PERMISSION_USER.USER_ID='" + id
         + "' AND JOIN_PERMISSION_OBJECT.OBJECT_ID='33323432' AND JOIN_PERMISSION_OBJECT.PERMISSION_ID=PERMISSION.ID AND JOIN_PERMISSION_USER.PERMISSION_ID=PERMISSION.ID") == 0;
@@ -386,8 +331,8 @@ public class TropixObjectDaoTest extends DaoTest {
 
   @Test
   public void delete() {
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('3523426','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('3523426')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('3523426','The name','The description')");
+    execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('3523426')");
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from TROPIX_OBJECT WHERE ID='3523426'") == 1;
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from FOLDER WHERE OBJECT_ID='3523426'") == 1;
     objectDao.delete("3523426");
@@ -400,9 +345,9 @@ public class TropixObjectDaoTest extends DaoTest {
   public void deleteWithRole() {
     final String permissionId = newId(), objectId = newId();
     
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO PERMISSION(ID) VALUES ('" + permissionId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID, OBJECT_ID) VALUES ('" + permissionId + "','" + objectId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name','The description')");
+    execute("INSERT INTO PERMISSION(ID) VALUES ('" + permissionId + "')");
+    execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID, OBJECT_ID) VALUES ('" + permissionId + "','" + objectId + "')");
     
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_OBJECT WHERE OBJECT_ID='"+ objectId + "'") == 1;
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from TROPIX_OBJECT WHERE ID='"+ objectId + "'") == 1;
@@ -410,17 +355,17 @@ public class TropixObjectDaoTest extends DaoTest {
     flush();
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_OBJECT WHERE OBJECT_ID='"+ objectId + "'") == 0;
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from TROPIX_OBJECT WHERE ID='" + objectId + "'") == 0;
-    simpleJdbcTemplate.getJdbcOperations().execute("DELETE FROM PERMISSION WHERE ID='" + permissionId + "'");
+    execute("DELETE FROM PERMISSION WHERE ID='" + permissionId + "'");
   }
 
   @Test @NotTransactional
   public void deleteWithRoleNotTransactional() {
     final String permissionId = newId(), objectId = newId();
     
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO PERMISSION(ID) VALUES ('" + permissionId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO DIRECT_PERMISSION(PERMISSION_ID) VALUES ('" + permissionId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID, OBJECT_ID) VALUES ('" + permissionId + "','" + objectId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name','The description')");
+    execute("INSERT INTO PERMISSION(ID) VALUES ('" + permissionId + "')");
+    makeDirectPermission(permissionId);
+    execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID, OBJECT_ID) VALUES ('" + permissionId + "','" + objectId + "')");
     
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_OBJECT WHERE OBJECT_ID='"+ objectId + "'") == 1;
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from TROPIX_OBJECT WHERE ID='"+ objectId + "'") == 1;
@@ -428,8 +373,8 @@ public class TropixObjectDaoTest extends DaoTest {
     flush();
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from JOIN_PERMISSION_OBJECT WHERE OBJECT_ID='"+ objectId + "'") == 0;
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from TROPIX_OBJECT WHERE ID='" + objectId + "'") == 0;
-    simpleJdbcTemplate.getJdbcOperations().execute("DELETE FROM DIRECT_PERMISSION WHERE PERMISSION_ID='" + permissionId + "'");
-    simpleJdbcTemplate.getJdbcOperations().execute("DELETE FROM PERMISSION WHERE ID='" + permissionId + "'");
+    execute("DELETE FROM DIRECT_PERMISSION WHERE PERMISSION_ID='" + permissionId + "'");
+    execute("DELETE FROM PERMISSION WHERE ID='" + permissionId + "'");
   }
   
   @Test
@@ -483,24 +428,24 @@ public class TropixObjectDaoTest extends DaoTest {
     final String folderId = newId();
 
     // Setup user
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')");
+    execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')");
 
     // Setup group
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_GROUP(ID) VALUES ('" + groupId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_USER_GROUP(USER_ID,GROUP_ID) VALUES ('" + userId + "','" + groupId + "')");
+    execute("INSERT INTO TROPIX_GROUP(ID) VALUES ('" + groupId + "')");
+    execute("INSERT INTO JOIN_USER_GROUP(USER_ID,GROUP_ID) VALUES ('" + userId + "','" + groupId + "')");
 
     // Setup folder
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + folderId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('" + folderId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + folderId + "','The name','The description')");
+    execute("INSERT INTO FOLDER(OBJECT_ID) VALUES ('" + folderId + "')");
 
     // setup file
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + fileId + "','The name','The description')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + fileId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + fileId + "','The name','The description')");
+    execute("INSERT INTO FILE(OBJECT_ID) VALUES ('" + fileId + "')");
 
     // setup object
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('" + objId + "','The name','The description','" + folderId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO RUN(OBJECT_ID) VALUES ('" + objId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO PROTEOMICS_RUN(RUN_ID,SOURCE_ID) VALUES ('" + objId + "','" + fileId + "')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION,FOLDER_ID) VALUES ('" + objId + "','The name','The description','" + folderId + "')");
+    execute("INSERT INTO RUN(OBJECT_ID) VALUES ('" + objId + "')");
+    execute("INSERT INTO PROTEOMICS_RUN(RUN_ID,SOURCE_ID) VALUES ('" + objId + "','" + fileId + "')");
 
     // setup role for object and file
     roleId = this.newPermission("read");
@@ -541,19 +486,30 @@ public class TropixObjectDaoTest extends DaoTest {
     assert simpleJdbcTemplate.queryForInt("SELECT count(*) from PROTEOMICS_RUN WHERE RUN_ID='" + objId + "'") == 0;
   }
 
+
+  @Test
+  public void testGetGroupFolder() {
+    final String userId = newUser();
+    final String groupId = newGroupWithUser(userId);
+    final String providerId = newProviderForGroup(groupId);
+    final String objectId = newObjectWithPermission(providerId);
+    makeFolder(objectId);
+    
+    final Collection<Folder> groupFolders = this.objectDao.getGroupFolders(userId);
+    assert Iterables.getOnlyElement(groupFolders).getId().equals(objectId);    
+  }
+
+  
   @Test
   public void getSharedFoldersFromGroup() {
-    final String objectId = newId(), groupId = newId(), userId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID,ROOT) VALUES ('" + objectId + "','1')");
-
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')");
-
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_GROUP(ID,NAME) VALUES ('" + groupId + "','Moo')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_USER_GROUP(USER_ID,GROUP_ID) VALUES ('" + userId + "','" + groupId + "')");
+    final String objectId = newId();
+    final String userId = newUser();
+    final String groupId = newGroupWithUser(userId);
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
+    execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID,ROOT) VALUES ('" + objectId + "','1')");
 
     final String permId = this.newPermission("read");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID,ROOT_VIRTUAl_FOLDER_ID) VALUES ('" + permId + "','" + objectId + "')");
+    execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID,ROOT_VIRTUAl_FOLDER_ID) VALUES ('" + permId + "','" + objectId + "')");
     this.addObjectPermission(permId, objectId);
     this.addGroupPermission(permId, groupId);
 
@@ -576,14 +532,14 @@ public class TropixObjectDaoTest extends DaoTest {
     final String objectId = newId();
     String permId;
     final String userId = newId();
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID,ROOT) VALUES ('" + objectId + "','1')");
+    execute("INSERT INTO TROPIX_OBJECT(ID,NAME,DESCRIPTION) VALUES ('" + objectId + "','The name1','The description2')");
+    execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID,ROOT) VALUES ('" + objectId + "','1')");
 
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')");
+    execute("INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')");
     permId = newPermission("read");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID,ROOT_VIRTUAl_FOLDER_ID) VALUES ('" + permId + "','" + objectId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID,OBJECT_ID) VALUES ('" + permId + "','" + objectId + "')");
-    simpleJdbcTemplate.getJdbcOperations().execute("INSERT INTO JOIN_PERMISSION_USER(PERMISSION_ID,USER_ID) VALUES ('" + permId + "','" + userId + "')");
+    execute("INSERT INTO VIRTUAL_PERMISSION(PERMISSION_ID,ROOT_VIRTUAl_FOLDER_ID) VALUES ('" + permId + "','" + objectId + "')");
+    execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID,OBJECT_ID) VALUES ('" + permId + "','" + objectId + "')");
+    execute("INSERT INTO JOIN_PERMISSION_USER(PERMISSION_ID,USER_ID) VALUES ('" + permId + "','" + userId + "')");
     flush();
     final Collection<VirtualFolder> folders = objectDao.getSharedFolders(userId);
     assert folders.size() == 1 : folders.size();
@@ -652,5 +608,117 @@ public class TropixObjectDaoTest extends DaoTest {
     assert count == 2 : count;
 
   }
+
+  private String newObjectInFolder(final String folderId) {
+    return newObjectInFolderWithName(folderId, newId());
+  }
+  
+  private String newObjectInFolderWithName(final String folderId, final String name) {
+    final String objectId = newId();
+    if(folderId != null) {
+      execute("INSERT INTO TROPIX_OBJECT(ID,NAME, DESCRIPTION, FOLDER_ID, COMMITTED) VALUES ('%s','%s', 'Test description', '%s', 1)", objectId, name, folderId);
+    } else {
+      execute("INSERT INTO TROPIX_OBJECT(ID,NAME, DESCRIPTION, COMMITTED) VALUES ('%s','%s', 'Test description', 1)", objectId, name);
+    }
+    return objectId;    
+  }
+  
+  private String newObjectWithName(final String name) {
+    return newObjectInFolderWithName(null, name);
+  }
+
+  public String newObject() {
+    return newObjectWithName(newId());
+  }
+
+  public String makeFile(final String objectId) {
+    final String fileId = newId();
+    execute("INSERT INTO FILE (OBJECT_ID, FILE_ID) VALUES ('%s', '%s')", objectId, fileId);
+    return fileId;
+  }
+  
+  public String newFolderInFolder(final String parentId) {
+    final String objectId = newObjectInFolder(parentId);
+    makeFolder(objectId);
+    return objectId;    
+  }
+  
+  public String newFolder() {
+    final String objectId = newObject();
+    makeFolder(objectId);
+    return objectId;
+  }
+  
+  public void makeFolder(final String objectId) {
+    execute("INSERT INTO FOLDER (OBJECT_ID) VALUES ('%s')", objectId);
+  }
+
+  private void makeVirtualFolder(final String objectId, final boolean root) {
+    execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID, ROOT) VALUES ('%s','%d')", objectId, root ? 1 : 0);
+  }
+  
+  public String newObjectWithPermission(final String permissionId) {
+    final String objectId = newObject();
+    addObjectPermission(permissionId, objectId);
+    return objectId;
+  }
+  
+  public String newProviderForGroup(final String groupId) {
+    final String providerId = newPermission();
+    makeProvider(providerId);
+    addGroupPermission(providerId, groupId);
+    return providerId;
+  }
+
+  public String newGroupWithUser(final String userId) {
+    final String groupId = newId(), groupName = newId();
+    execute("INSERT INTO TROPIX_GROUP(ID,NAME) VALUES ('" + groupId + "','" + groupName + "')");
+    execute("INSERT INTO JOIN_USER_GROUP(USER_ID,GROUP_ID) VALUES ('" + userId + "','" + groupId + "')");
+    return groupId;
+  }
+
+  public String newUser() {
+    final String userId = newId();
+    String query = "INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')";
+    execute(query);
+    return userId;
+  }
+
+  private void makeDirectPermission(final String permissionId) {
+    execute("INSERT INTO DIRECT_PERMISSION(PERMISSION_ID) VALUES ('%s')", permissionId);
+  }
+
+
+  private String newPermission(final String role) {
+    final String id = newId();
+    final String query = "INSERT INTO PERMISSION(ID,ROLE) VALUES ('" + id + "','" + role + "')";
+    execute(query);
+    return id;
+  }
+
+  private void makeProvider(final String providerId) {
+    execute("INSERT INTO PROVIDER(PERMISSION_ID) VALUES ('%s')", providerId);
+  }  
+
+  private void addUserPermission(final String permissionId, final String userId) {
+    execute("INSERT INTO JOIN_PERMISSION_USER(PERMISSION_ID,USER_ID) VALUES ('" + permissionId + "','" + userId + "')");
+  }
+
+  private void addGroupPermission(final String permissionId, final String groupId) {
+    execute("INSERT INTO JOIN_PERMISSION_GROUP(PERMISSION_ID,GROUP_ID) VALUES ('" + permissionId + "','" + groupId + "')");
+  }
+
+  private void addObjectPermission(final String permissionId, final String objectId) {
+    execute("INSERT INTO JOIN_PERMISSION_OBJECT(PERMISSION_ID,OBJECT_ID) VALUES ('" + permissionId + "','" + objectId + "')");
+  }
+
+  public String newPermission() {
+    return newPermission("owner");
+  }
+  
+  private void execute(final String query, final Object... args) {
+    super.simpleJdbcTemplate.getJdbcOperations().execute(String.format(query, args));
+  }
+  
 
 }

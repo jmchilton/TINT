@@ -33,18 +33,25 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.webgui.client.Session;
+import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent;
+import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent.FileTypeFormItemOptions;
 import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 
-public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeFormItemComponent> {
+public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeFormItemComponent>,
+                                                              ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent> {
   private Session session;
   
   @Inject
   public FileTypeFormItemComponentSupplierImpl(final Session session) {
     this.session = session;
   }
-    
+
+  public FileTypeFormItemComponent get(final FileTypeFormItemOptions options) {
+    return new FileTypeFormItemComponentImpl(session, options);
+  }
+
   public FileTypeFormItemComponent get() {
     return new FileTypeFormItemComponentImpl(session);
   }
@@ -54,6 +61,10 @@ public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeF
     private final SelectItem selectItem;
     
     FileTypeFormItemComponentImpl(final Session session) {
+      this(session, new FileTypeFormItemOptions());
+    }
+    
+    FileTypeFormItemComponentImpl(final Session session, final FileTypeFormItemOptions options) {
       for(final FileType fileType : session.getFileTypes()) {
         fileTypes.put(fileType.getId(), fileType);      
       }
@@ -73,7 +84,14 @@ public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeF
         }
         valueMap.put(fileTypeEntry.getKey(), fileTypeDescription);
       }
+      if(options.isAllowAutoDetect()) {
+        valueMap.put("Auto-Detect", "*auto*");
+      }
       selectItem.setValueMap(valueMap);
+    }
+    
+    public boolean isAutoDetect() {
+      return "*auto*".equals(StringUtils.toString(selectItem.getValue()));
     }
     
     public FileType getSelection() {

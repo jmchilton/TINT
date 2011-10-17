@@ -32,6 +32,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.test.TestNGDataProviders;
+import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.persistence.service.FolderService;
@@ -45,6 +46,17 @@ public class FolderServiceImplTest extends BaseGwtServiceTest {
     super.init();
     folderId = UUID.randomUUID().toString();
     folderService = EasyMock.createMock(FolderService.class);
+  }
+  
+  @Test(groups = "unit")
+  public void getGroupFolders() {
+    final Folder folder1 = createTropixObject(Folder.class);
+    EasyMock.expect(folderService.getGroupFolders(getUserId())).andReturn(new Folder[] {folder1});
+    EasyMock.replay(folderService);
+    final FolderServiceImpl gwtFolderService = new FolderServiceImpl(folderService, getUserSession(), getSanitizer());
+    assert Iterables.elementsEqual(gwtFolderService.getGroupFolders(), Lists.newArrayList(folder1));
+    assert getSanitizer().wasSanitized(folder1);
+    EasyMock.verify(folderService);
   }
   
   @Test(groups = "unit", dataProvider = "bool1", dataProviderClass=TestNGDataProviders.class)

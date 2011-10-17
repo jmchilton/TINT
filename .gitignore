@@ -157,6 +157,14 @@
 /projects/TropixWebGui/tropix.warn
 /projects/TropixWebGui/gwt-client.log
 
+# /projects/TropixWebGuiConstants/
+/projects/TropixWebGuiConstants/build
+/projects/TropixWebGuiConstants/ext
+/projects/TropixWebGuiConstants/bin
+/projects/TropixWebGuiConstants/test-output
+/projects/TropixWebGuiConstants/temp-testng-customsuite.xml
+
+
 # /tools/
 /tools/ws-core
 /tools/tomcat

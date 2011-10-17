@@ -17,6 +17,7 @@
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
     <dependency org="msi.umn.edu" name="tropix-proteomics-core" rev="${ivy.project.version}" conf="default->test" />
+    <dependency org="msi.umn.edu" name="tropix-webgui-constants" rev="${ivy.project.version}" />
     <!--  <dependency org="msi.umn.edu" name="tropix-webgui" rev="${ivy.project.version}" conf="default->constants" />  -->
     <dependency org="org.seleniumhq.selenium" name="selenium-firefox-driver" rev="2.6.0">
     </dependency>

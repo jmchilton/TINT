@@ -27,6 +27,8 @@ import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
+import com.google.common.collect.Lists;
+
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
@@ -87,5 +89,11 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
       objects = this.folderService.getFolderContents(this.userSession.getGridId(), folderId);
     }
     return BeanSanitizerUtils.sanitizeArray(beanSanitizer, objects);
+  }
+
+  public List<Folder> getGroupFolders() {
+    final Folder[] groupFolders = this.folderService.getGroupFolders(this.userSession.getGridId());
+    this.sanitizeArray(groupFolders);
+    return Lists.newArrayList(groupFolders);
   }
 }

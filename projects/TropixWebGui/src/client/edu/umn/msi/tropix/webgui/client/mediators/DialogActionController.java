@@ -52,10 +52,16 @@ public class DialogActionController {
   }
 
   @Inject
-  public void setBulkMgfDownloadWindowComponentSupplier(@Named("bulkMgfDownload") final Supplier<? extends Command> windowComponentSupplier) {
-    registerListener("bulkMgfDownload", windowComponentSupplier);
+  public void setBulkMgfProteinPilotDownloadWindowComponentSupplier(@Named("bulkMgfProteinPilotDownload") final Supplier<? extends Command> windowComponentSupplier) {
+    registerListener("bulkMgfProteinPilotDownload", windowComponentSupplier);
   }
 
+  @Inject
+  public void setBulkMgfMascotDownloadWindowComponentSupplier(@Named("bulkMgfMascotDownload") final Supplier<? extends Command> windowComponentSupplier) {
+    registerListener("bulkMgfMascotDownload", windowComponentSupplier);
+  }
+
+  
   @Inject
   public void setGridFtpExportWindowComponentSupplier(@Named("gridFtpExport") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("gridFtpExport", windowComponentSupplier);

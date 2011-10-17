@@ -22,30 +22,31 @@ import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.test.TestNGDataProviders;
+import edu.umn.msi.tropix.files.creator.TropixFileCreator;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription;
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.service.FileTypeService;
-import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 
 public class CreateTropixFileActivityFactoryImplTest  extends BaseCreateActivityFactoryImplTest<CreateTropixFileDescription, TropixFile> {
 
   @Test(groups = "unit", dataProvider="bool1", dataProviderClass=TestNGDataProviders.class)
   public void create(final boolean useExtension) {
-    final TropixObjectService tropixObjectService = EasyMock.createMock(TropixObjectService.class);
     final FileTypeService fileTypeService = EasyMock.createMock(FileTypeService.class);
-    getDescription().setExtension(useExtension ? "ext" : null);
     final String fileTypeId = UUID.randomUUID().toString();
     if(useExtension) {
       final FileType fileType = new FileType();
       fileType.setId(fileTypeId);
       EasyMock.expect(fileTypeService.loadPrimaryFileTypeWithExtension(matchId(), EasyMock.eq("ext"))).andReturn(fileType);
     }
-    tropixObjectService.createFile(matchId(), matchDestinationId(), captureObject(), useExtension ? EasyMock.eq(fileTypeId) : EasyMock.<String>isNull());
+    final TropixFileCreator creator = EasyMock.createMock(TropixFileCreator.class);
+    creator.createFile(matchCredential(), matchDestinationId(), captureObject(), useExtension ? EasyMock.eq(fileTypeId) : EasyMock.<String>isNull());
+    getDescription().setExtension(useExtension ? "ext" : null);
     returnInitializedObject();
-    EasyMock.replay(tropixObjectService, fileTypeService);
-    runAndVerify(new CreateTropixFileActivityFactoryImpl(tropixObjectService, getFactorySupport(), fileTypeService));
-    EasyMock.verify(tropixObjectService, fileTypeService);    
+    EasyMock.replay(creator, fileTypeService);
+    runAndVerify(new CreateTropixFileActivityFactoryImpl(creator, getFactorySupport(), fileTypeService));
+    EasyMock.verify(creator, fileTypeService);    
   }
+
   
 }

@@ -13,4 +13,7 @@ public class DomConstants {
   public static final String PROJECT_MENU_ID = buildConstant(MENU_ID_PREFIX, "Project");
   public static final String SEARCH_MENU_ID = buildConstant(MENU_ID_PREFIX, "Search");
   public static final String TOOLS_ADMIN_MENU_ID = buildConstant(MENU_ID_PREFIX, "Tools");
+  
+  
+  
 }

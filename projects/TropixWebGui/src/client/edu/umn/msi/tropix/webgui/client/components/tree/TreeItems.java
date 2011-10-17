@@ -51,7 +51,12 @@ public class TreeItems {
   public static final String MY_RECENT_SEARCHES_ID = "-4";
   public static final String MY_INCOMING_REQUESTS_ID = "-5";
   public static final String MY_OUTGOING_REQUESTS_ID = "-6";
+  public static final String MY_GROUP_FOLDERS_ID = "-7";
 
+  public static boolean isMyGroupFoldersItem(final TreeItem treeItem) {
+    return TreeItems.MY_GROUP_FOLDERS_ID.equals(treeItem.getId());
+  }
+  
   public static boolean isMySharedFoldersItem(final TreeItem treeItem) {
     return TreeItems.MY_SHARED_FOLDERS_ID.equals(treeItem.getId());
   }
@@ -166,8 +171,6 @@ public class TreeItems {
     } else {
       result = treeItem1.getParent().getId().equals(treeItem2.getParent().getId());
     }
-    // System.out.println(treeItem1.getId() + " " + treeItem2.getId() + " " +
-    // result);
     return result;
   }
 

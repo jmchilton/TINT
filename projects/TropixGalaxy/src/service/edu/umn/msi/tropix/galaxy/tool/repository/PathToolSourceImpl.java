@@ -62,7 +62,7 @@ public abstract class PathToolSourceImpl implements ToolSource {
   }
 
   private void populateTestData(final String path, final Tool tool) {
-    final Map<String, InputType> inputTypeMap = GalaxyDataUtils.buildParamMap(tool);
+    final Map<String, InputType> inputTypeMap = GalaxyDataUtils.buildFlatParamMap(tool);
     final Tests tests = tool.getTests();
     if(tests == null) {
       return;
@@ -71,7 +71,8 @@ public abstract class PathToolSourceImpl implements ToolSource {
       for(TestParam testParam : test.getParam()) {
         if(GalaxyDataUtils.DATA_PARAM_PREDICATE.apply(inputTypeMap.get(testParam.getName()))) {
           if(testParam.getEmbeddedValue() == null) {
-            testParam.setEmbeddedValue(getEmbeddedValue(path));
+            final String embeddedValue = getEmbeddedValue(testParam.getValue());
+            testParam.setEmbeddedValue(embeddedValue);
           }
         }        
       }

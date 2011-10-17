@@ -19,6 +19,7 @@ package edu.umn.msi.tropix.galaxy;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -91,6 +92,33 @@ public class GalaxyDataUtils {
     }
 
   }
+  
+  public static Input getFullyQualifiedInput(final String label, final Iterable<Input> input) {
+    final int periodPos = label.indexOf('.');
+    Input childInput;
+    if(periodPos == -1) {
+      childInput = findInput(label, input);
+    } else {
+      final String firstPart = label.substring(0, periodPos);
+      childInput = getFullyQualifiedInput(label.substring(periodPos+1), findInput(firstPart, input).getInput());
+    }
+    return childInput;
+  }
+
+  public static Iterable<InputType> getDataChildren(final InputType data) {
+    List<InputType> children = Lists.newArrayList();
+    if(data instanceof Conditional) {
+      final Conditional conditional = (Conditional) data;
+      children.add(conditional.getParam());
+      final List<ConditionalWhen> whens = conditional.getWhen();
+      for(final ConditionalWhen when : whens) {
+        children.addAll(when.getInputElement());
+      }
+    } else if(data instanceof Repeat) {
+      children = ((Repeat) data).getInputElement();
+    }
+    return children;
+  }
 
   private static class ParamTreeWalker extends TreeWalker<InputType> {
     private final Tool tool;
@@ -100,18 +128,7 @@ public class GalaxyDataUtils {
     }
 
     protected Iterable<InputType> getChildren(final InputType data) {
-      List<InputType> children = Lists.newArrayList();
-      if(data instanceof Conditional) {
-        final Conditional conditional = (Conditional) data;
-        children.add(conditional.getParam());
-        final List<ConditionalWhen> whens = conditional.getWhen();
-        for(final ConditionalWhen when : whens) {
-          children.addAll(when.getInputElement());
-        }
-      } else if(data instanceof Repeat) {
-        children = ((Repeat) data).getInputElement();
-      }
-      return children;
+      return getDataChildren(data);
     }
 
     protected String getLabel(final InputType data) {
@@ -123,6 +140,42 @@ public class GalaxyDataUtils {
     }
 
   }
+
+  private static class TreePair {
+    private InputType data;
+    private Input input;
+    
+    TreePair(final InputType toolData) {
+      this.data = toolData;
+      this.input = new Input();
+      input.setName(data.getName());
+    }
+    
+  }
+ 
+  
+  public static RootInput buildRootInputSkeleton(final Tool tool) {
+    final RootInput rootInput = new RootInput();
+    
+    final List<TreePair> stack = Lists.newLinkedList();
+    for(final InputType toolInput : tool.getInputs().getInputElement()) {
+      final TreePair treePair = new TreePair(toolInput);
+      rootInput.getInput().add(treePair.input);
+      stack.add(treePair);
+    }
+    
+    while(!stack.isEmpty()) {
+      final TreePair parent = stack.remove(0);
+      for(final InputType child : getDataChildren(parent.data)) {
+        final TreePair childPair = new TreePair(child);
+        parent.input.getInput().add(childPair.input);
+        stack.add(childPair);
+      }
+    }
+
+    return rootInput;
+  }
+
 
   public interface ParamVisitor {
     void visit(final String key, final Input input, final Param param);
@@ -148,8 +201,19 @@ public class GalaxyDataUtils {
   public static Map<String, InputType> buildParamMap(final Tool tool) {
     return new ParamTreeWalker(tool).flattenTree();
   }
-  
-  
+
+  public static Map<String, InputType> buildFlatParamMap(final Tool tool) {
+    final Map<String, InputType> flatMap = Maps.newHashMap();
+    for(Map.Entry<String, InputType> paramMapEntry : buildParamMap(tool).entrySet()) {
+      final String inputName = paramMapEntry.getKey();
+      final int periodLoc = inputName.lastIndexOf('.');
+      final String flatInputName = inputName.substring(periodLoc + 1);
+      flatMap.put(flatInputName, paramMapEntry.getValue());
+    }
+    return flatMap;
+  }
+
+
   public static final Predicate<InputType> DATA_PARAM_PREDICATE = new Predicate<InputType>() {
 
     public boolean apply(final InputType input) {
@@ -160,7 +224,7 @@ public class GalaxyDataUtils {
       }
       return isDataParam;
     }
-    
+
   };
   /*
   public static void visitDataParams(final Tool tool, final Closure<Param> closure) {
@@ -168,5 +232,18 @@ public class GalaxyDataUtils {
       closure.apply((Param) inputType);
     }
   }
-  */
+   */
+
+
+  public static Input findInput(final String inputName, final Iterable<Input> inputs) {
+    Preconditions.checkNotNull(inputName);
+    Input matchingInput = null;
+    for(Input input : inputs) {
+      if(inputName.equals(input.getName())) {
+        matchingInput = input;
+      }
+    }
+    Preconditions.checkNotNull(matchingInput, String.format("Failed to find input with name %s", inputName));
+    return matchingInput;
+  }
 }

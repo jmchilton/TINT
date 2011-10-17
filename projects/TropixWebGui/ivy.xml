@@ -7,16 +7,14 @@
 
   <info organisation="msi.umn.edu" module="tropix-webgui" />
   <configurations>
-    <conf name="constants" visibility="public" />
     <conf name="services"  visibility="public" />
-    <conf name="client" extends="services,constants"  visibility="public" />
+    <conf name="client" extends="services"  visibility="public" />
     <conf name="server" extends="client" visibility="public" />
     <conf name="test" extends="server" visibility="public" />
     <conf name="all" description="All Dependencies" extends="test" visibility="private" />
   </configurations>
 
   <publications>
-    <artifact name="tropix-webgui-constants" type="jar" conf="constants" ext="jar" />
     <artifact name="tropix-webgui-services" type="jar" conf="services" ext="jar" />
     <artifact name="tropix-webgui-client" type="jar" conf="client" ext="jar" />
     <artifact name="tropix-webgui-server" type="jar" conf="server" ext="jar" />    
@@ -52,6 +50,7 @@
     </dependency>
     <!-- <dependency org="smartgwt" name="smartgwt" rev="2.5" /> --> <!-- Needs work! -->
     <dependency org="smartgwt" name="smartgwt" rev="2.4" />
+    <dependency org="msi.umn.edu" name="tropix-webgui-constants" rev="${ivy.project.version}" conf="client->main" />
     <dependency org="msi.umn.edu" name="tropix-jobs" rev="${ivy.project.version}" conf="client->impl" />
     <dependency org="msi.umn.edu" name="tropix-client" rev="${ivy.project.version}" conf="client->impl" />
     <dependency org="msi.umn.edu" name="tropix-proteomics-core" rev="${ivy.project.version}" conf="all->test" />

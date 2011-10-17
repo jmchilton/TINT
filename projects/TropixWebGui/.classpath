@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-        <classpathentry kind="src" path="src/constants" />
 	<classpathentry kind="src" path="resources/client"/>
 	<classpathentry kind="src" path="resources/server"/>
 	<classpathentry kind="src" path="resources/test"/>
@@ -9,25 +8,7 @@
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="src" path="src/services"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=all&amp;ivySettingsPath=%24%7Bworkspace_loc%3Atint%2Fantfiles%2Fivysettings-eclipse.xml%7D&amp;loadSettingsOnDemand=false&amp;propertyFiles=%24%7Bworkspace_loc%3Atint%2Fantfiles%2Fivysettings.properties%7D&amp;acceptedTypes=jar%2Cbundle%2Cejb%2Cmaven-plugin&amp;sourceTypes=source&amp;javadocTypes=javadoc&amp;sourceSuffixes=-source%2C-sources%2C-src&amp;javadocSuffixes=-javadoc%2C-javadocs%2C-doc%2C-docs&amp;alphaOrder=false&amp;resolveInWorkspace=true&amp;resolveBeforeLaunch=false"/>
-  <!--
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/another-gwt-mvc.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/smartgwt-skins.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/smartgwt.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/gwt-incubator.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/gwt-sl.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/bliki.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/itext-paulo-155.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/jakarta-oro-2.0.8.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/json.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/gin.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/guice-2.0.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/swfupload-gwt.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/commons-fileupload-javadoc.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/commons-fileupload-sources.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/commons-fileupload.jar"/>
-	<classpathentry kind="lib" path="ext/dependencies/all/jars/guava-gwt.jar"/>
-  -->
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=all&amp;ivySettingsPath=%24%7Bworkspace_loc%3Atint%2Fantfiles%2Fivysettings-eclipse.xml%7D&amp;loadSettingsOnDemand=false&amp;propertyFiles=%24%7Bworkspace_loc%3Atint%2Fantfiles%2Fivysettings.properties%7D&amp;acceptedTypes=jar%2Cbundle%2Cejb%2Cmaven-plugin&amp;sourceTypes=source&amp;javadocTypes=javadoc&amp;sourceSuffixes=-source%2C-sources%2C-src&amp;javadocSuffixes=-javadoc%2C-javadocs%2C-doc%2C-docs&amp;alphaOrder=false&amp;resolveInWorkspace=true&amp;resolveBeforeLaunch=false"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

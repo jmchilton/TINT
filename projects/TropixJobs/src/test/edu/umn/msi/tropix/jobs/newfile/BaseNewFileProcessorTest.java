@@ -8,10 +8,14 @@ import org.easymock.EasyMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
+
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;
+import edu.umn.msi.tropix.jobs.activities.WorkflowVerificationUtils;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.client.ActivityClient;
 import edu.umn.msi.tropix.models.TropixFile;
@@ -29,6 +33,10 @@ public class BaseNewFileProcessorTest {
     activityClient.submit(EasyMock.capture(submittedDescriptionsCapture), EasyMock.same(credential));
     EasyMock.replay(activityClient);
     newFileProcessor.processFile(message, newFile);
+    WorkflowVerificationUtils.checkDependencies(getSubmittedActivities());
+    for(ActivityDescription description : getSubmittedActivities()) {
+      assert description.getJobDescription() != null;
+    }
   }
   
   protected Set<ActivityDescription> getSubmittedActivities() {
@@ -38,6 +46,12 @@ public class BaseNewFileProcessorTest {
   protected ActivityClient getMockActivityClient() {
     return activityClient;
   }
+  
+  @SuppressWarnings("unchecked")
+  protected <T extends ActivityDescription> T getActivityDescriptionOfType(final Class<T> clazz) {
+    return (T) Iterables.find(getSubmittedActivities(), Predicates.instanceOf(clazz));
+  }
+
 
   @BeforeMethod(groups = "unit")
   public void init() {

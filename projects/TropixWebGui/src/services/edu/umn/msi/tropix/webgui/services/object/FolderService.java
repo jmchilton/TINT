@@ -48,11 +48,12 @@ public interface FolderService extends RemoteService {
 
   List<TropixObject> getFolderContents(String folderId, TropixObjectType[] filterTypes);
 
-  // public TropixObject[][] getFoldersContents(String[] folderIds, TropixObjectType[] filterTypes);
-
   void createFolder(String parentFolderId, Folder folder);
 
   void createVirtualFolder(String parentFolderId, VirtualFolder folder);
 
   VirtualFolder[] getSavedVirtualFolders();
+  
+  List<Folder> getGroupFolders();
+  
 }

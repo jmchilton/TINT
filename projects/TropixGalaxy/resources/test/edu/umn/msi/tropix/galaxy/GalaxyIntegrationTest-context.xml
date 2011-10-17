@@ -10,5 +10,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 
   <import resource="service/baseGalaxyContext.xml" />
   <import resource="tool/repository/testContext.xml" />
+  
+  <context:component-scan base-package="edu.umn.msi.tropix.galaxy.test" />
 
 </beans>

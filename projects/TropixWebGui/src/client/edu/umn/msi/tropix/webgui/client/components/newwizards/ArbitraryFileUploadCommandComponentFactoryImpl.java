@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -39,6 +38,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.UploadFileDescription;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent;
+import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent.FileTypeFormItemOptions;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent.CanUpload;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
@@ -64,7 +64,7 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
     }
 
     private MetadataWizardPageImpl metadataPage = getMetadataWizardPageFactory().get(getLocations(), "file");
-    private FileTypeFormItemComponent fileTypeComponent = fileTypeFormItemComponentSupplier.get();
+    private FileTypeFormItemComponent fileTypeComponent; // = fileTypeFormItemComponentFactory.get();
 
     private final UploadComponentOptions uploadOptions = new UploadComponentOptions(new AsyncCallbackImpl<LinkedHashMap<String, String>>() {
       @Override
@@ -105,6 +105,11 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
       UploadWizardPageImpl() {
         setTitle("File");
         setDescription("Specify a file to upload");
+        
+        final FileTypeFormItemOptions fileTypeOptions = new FileTypeFormItemOptions();
+        fileTypeOptions.setAllowAutoDetect(true);
+        //final Form fileTypeForm = new Form();
+        fileTypeComponent = fileTypeFormItemComponentFactory.get(fileTypeOptions);
         final ItemWrapper wrapper = new ItemWrapper(fileTypeComponent.get());
         fileTypeComponent.setSelection("");
         final VLayout layout = new VLayout();
@@ -145,11 +150,11 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
     this.uploadComponentFactory = uploadComponentFactory;
   }
 
-  private Supplier<FileTypeFormItemComponent> fileTypeFormItemComponentSupplier;
+  private ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent> fileTypeFormItemComponentFactory;
 
   @Inject
-  public void setFileTypeFormItemComponentSupplier(final Supplier<FileTypeFormItemComponent> fileTypeFormItemComponentSupplier) {
-    this.fileTypeFormItemComponentSupplier = fileTypeFormItemComponentSupplier;
+  public void setFileTypeFormItemComponentSupplier(final ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent> fileTypeFormItemComponentFactory) {
+    this.fileTypeFormItemComponentFactory = fileTypeFormItemComponentFactory;
   }
 
 }

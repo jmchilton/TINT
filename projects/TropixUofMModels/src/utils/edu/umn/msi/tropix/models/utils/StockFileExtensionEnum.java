@@ -44,6 +44,13 @@ public enum StockFileExtensionEnum implements StockFileExtensionI {
     return extension;
   }
   
+  public String stripExtension(final String fileName) {
+    final boolean hasExtension = fileName.toUpperCase().endsWith(getExtension().toUpperCase());
+    final int length = fileName.length();
+    final String databaseName = hasExtension ? fileName.substring(0, length - getExtension().length()) : fileName;
+    return databaseName;
+  }
+  
   @Nullable
   public static StockFileExtensionEnum loadForFile(final TropixFile tropixFile) {
     StockFileExtensionEnum fileExtension = null;

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.umn.msi.tropix.models.DirectPermission;
+import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.ProteomicsRun;
@@ -37,6 +38,8 @@ import edu.umn.msi.tropix.models.VirtualFolder;
 
 public interface TropixObjectDao {
 
+  Collection<Folder> getGroupFolders(final String userId);
+  
   Collection<TropixObject> loadRecent(String userId, int num, boolean includeFolders, boolean requireParent);
 
   void saveOrUpdateTropixObject(TropixObject object);

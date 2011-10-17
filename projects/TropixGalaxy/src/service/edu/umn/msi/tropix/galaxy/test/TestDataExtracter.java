@@ -8,10 +8,13 @@ import javax.inject.Inject;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.galaxy.GalaxyDataUtils;
+import edu.umn.msi.tropix.galaxy.inputs.Input;
 import edu.umn.msi.tropix.galaxy.inputs.RootInput;
 import edu.umn.msi.tropix.galaxy.test.TestDataExtracter.TestData.TestInputFile;
 import edu.umn.msi.tropix.galaxy.tool.InputType;
@@ -87,7 +90,7 @@ public class TestDataExtracter {
   
   private GalaxyToolRepository galaxyToolRepository;
   
-  List<TestData> getTestCases(final String toolId) {
+  public List<TestData> getTestCases(final String toolId) {
     final Tool tool = galaxyToolRepository.loadForToolId(toolId);
     ImmutableList.Builder<TestData> testCases = ImmutableList.builder();
     final Tests tests = tool.getTests();
@@ -101,9 +104,10 @@ public class TestDataExtracter {
   }
 
   private TestData buildTestData(final Tool tool, final Test test) {
-    final Map<String, InputType> inputTypeMap = GalaxyDataUtils.buildParamMap(tool);
+    final Map<String, InputType> inputTypeMap = GalaxyDataUtils.buildFlatParamMap(tool);
     final TestData testData = new TestData();
-    for(TestParam testParam : test.getParam()) {
+    final Map<String, String> testDataMap = Maps.newHashMap();
+    for(final TestParam testParam : test.getParam()) {
       final InputType matchingInput = inputTypeMap.get(testParam.getName());
       if(matchingInput instanceof Param) {
         final Param matchingParam = (Param) matchingInput;
@@ -113,10 +117,22 @@ public class TestDataExtracter {
           Preconditions.checkNotNull(fileContents);
           inputFile.setInputFileName(testParam.getName());
           inputFile.setContents(fileContents.getBytes());
+          System.out.println(Iterables.toString(inputTypeMap.keySet()));
           testData.getInputFiles().add(inputFile);
         }
+        testDataMap.put(testParam.getName(), testParam.getValue());
+      }       
+    }
+     
+    final RootInput rootInput = GalaxyDataUtils.buildRootInputSkeleton(tool);
+    final Map<String, InputType> paramMap = GalaxyDataUtils.buildParamMap(tool);
+    for(Map.Entry<String, InputType> paramEntry : paramMap.entrySet()) {
+      final Input input = GalaxyDataUtils.getFullyQualifiedInput(paramEntry.getKey(), rootInput.getInput());
+      if(testDataMap.containsKey(input.getName())) {
+        testDataMap.put(input.getName(), testDataMap.get(input.getName()));
       }
     }
+    testData.setRootInput(rootInput);
     return testData;
   }
   

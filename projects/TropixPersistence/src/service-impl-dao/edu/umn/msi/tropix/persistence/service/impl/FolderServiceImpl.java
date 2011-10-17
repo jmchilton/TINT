@@ -117,4 +117,8 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
     }
     return sharedFolderToReturn;
   }
+
+  public Folder[] getGroupFolders(final String gridId) {
+    return filter(getTropixObjectDao().getGroupFolders(gridId), Folder.class, gridId);
+  }
 }

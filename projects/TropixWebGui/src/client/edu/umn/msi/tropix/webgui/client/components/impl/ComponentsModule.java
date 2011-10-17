@@ -181,7 +181,9 @@ public class ComponentsModule extends AbstractGinModule {
     }).to(GalaxyActionComponentFactoryImpl.class).in(Singleton.class);
 
     bind(new TypeLiteral<Supplier<? extends Command>>() {
-    }).annotatedWith(Names.named("bulkMgfDownload")).to(BulkMgfDownloadComponentSupplierImpl.class).in(Singleton.class);
+    }).annotatedWith(Names.named("bulkMgfProteinPilotDownload")).to(BulkMgfProteinPilotDownloadComponentSupplierImpl.class).in(Singleton.class);
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("bulkMgfMascotDownload")).to(BulkMgfMascotDownloadComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("bulkDownload")).to(BulkDownloadComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
@@ -226,7 +228,9 @@ public class ComponentsModule extends AbstractGinModule {
 
     bind(new TypeLiteral<Supplier<FileTypeFormItemComponent>>() {
     }).to(FileTypeFormItemComponentSupplierImpl.class).in(Singleton.class);
-
+    bind(new TypeLiteral<ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent>>() {
+    }).to(FileTypeFormItemComponentSupplierImpl.class).in(Singleton.class);
+    
     // Service lists
     bind(new TypeLiteral<Supplier<ServiceSelectionComponent<GridService>>>() {
     }).to(ServiceSelectionComponentSupplierImpl.class).in(Singleton.class);

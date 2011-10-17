@@ -69,6 +69,18 @@ public class ActivityDescriptions {
     submitDescription.addDependency(ActivityDependency.Builder.on(createRawFileDescription).produces("objectId").consumes("rawFileId").build());
     return submitDescription;
   }
+  
+  public static SubmitThermofinniganRunJobDescription createSubmitThermo(final CreateProteomicsRunDescription run,
+      final String serviceUrl, final String rawFileBaseName) {
+    final SubmitThermofinniganRunJobDescription submitDescription = new SubmitThermofinniganRunJobDescription();
+    submitDescription.setJobDescription(run.getJobDescription());
+    submitDescription.setServiceUrl(serviceUrl);
+    submitDescription.setRawFileBaseName(rawFileBaseName);
+    submitDescription.setRawFileId(run.getSourceId());
+    return submitDescription;
+  }
+  
+  
 
   public static SubmitScaffoldAnalysisDescription createSubmitScaffold(final CreateScaffoldDriverDescription createDriver,
       final CreateTropixFileDescription createDriverFile, final String serviceUrl) {

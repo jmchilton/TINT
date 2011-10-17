@@ -2,7 +2,6 @@ package edu.umn.msi.tropix.jobs.newfile;
 
 import org.testng.annotations.Test;
 
-import edu.umn.msi.tropix.jobs.activities.WorkflowVerificationUtils;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateDatabaseDescription;
 
@@ -14,7 +13,6 @@ public class DatabaseNewFileProcessorImplTest extends BaseNewFileProcessorTest {
     final DatabaseNewFileProcessorImpl processor = new DatabaseNewFileProcessorImpl(getMockActivityClient());
     sendMessage(processor);
     
-    WorkflowVerificationUtils.checkDependencies(getSubmittedActivities());
     final ActivityDescription description = getSubmittedActivities().iterator().next();
 
     assert description instanceof CreateDatabaseDescription;

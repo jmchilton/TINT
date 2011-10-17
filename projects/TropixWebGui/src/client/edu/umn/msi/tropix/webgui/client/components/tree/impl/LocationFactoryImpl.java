@@ -195,6 +195,41 @@ public class LocationFactoryImpl implements LocationFactory {
       return Arrays.asList(Module.REQUEST, Module.USER);
     }
   }
+  
+  class MyGroupFoldersItemImpl extends TreeItemImpl implements RequiresModule {
+    private final TreeItem treeItem = this;
+    private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;
+    
+    protected MyGroupFoldersItemImpl(final TreeItem parent, final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+      super(parent);
+      this.tropixObjectTreeItemExpander = tropixObjectTreeItemExpander;
+      this.setId(TreeItems.MY_GROUP_FOLDERS_ID);
+      this.setIcon(Resources.SHARED_FOLDER_16);
+      this.setType("");
+      this.setName("My Group Folders");
+      this.setFolder(true);
+    }
+
+    public void getChildren(final AsyncCallback<List<TreeItem>> childrenCallback) {
+      FolderService.Util.getInstance().getGroupFolders(new WrappedAsyncCallback<List<TreeItem>, List<Folder>>(childrenCallback) {
+        public void onSuccess(final List<Folder> folders) {
+          final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folders.size());
+          for(final Folder folder : folders) {
+            treeItems.add(new TropixObjectTreeItemImpl(treeItem, folder, tropixObjectTreeItemExpander));
+          }
+          childrenCallback.onSuccess(treeItems);
+        }
+      });      
+    }
+
+    public Module requiresModule() {
+      return Module.USER;
+    }
+    
+
+    
+    
+  }
 
   class MyRecentActivityItemImpl extends TreeItemImpl implements RequiresModule {
     private final TreeItem treeItem = this;

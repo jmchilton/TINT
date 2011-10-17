@@ -1,6 +1,10 @@
 package edu.umn.msi.tropix.webgui.functional;
 
 import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.annotation.WillClose;
 
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -8,17 +12,42 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.Selenium;
 
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
+import edu.umn.msi.tropix.common.io.IOUtils;
+import edu.umn.msi.tropix.common.io.IOUtilsFactory;
+import edu.umn.msi.tropix.common.io.InputContexts;
 
 public class FunctionalTestBase {
+  private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private static final long DEFAULT_WAIT_TIME = 5000; // Five seconds
   private Selenium selenium;
   private File downloadDirectory;
+  private List<File> tempFiles = Lists.newArrayList();
 
+
+  protected File getTempFile(final String suffix) {
+    final File tempFile = FILE_UTILS.createTempFile("tpxtest", suffix);
+    return tempFile;
+  }
+  
+  protected File getTempFieWithContents(final String suffix, @WillClose final InputStream stream) {
+    try {
+      final File tempFile = getTempFile(suffix);
+      InputContexts.forFile(tempFile).put(stream);
+      return tempFile;
+    } finally {
+      IO_UTILS.closeQuietly(stream);
+    }
+  }
+  
+  
   protected File getDownloadDirectory() {
     return downloadDirectory;
   }
@@ -54,7 +83,7 @@ public class FunctionalTestBase {
   @BeforeClass(groups = "functional")
   public void setUp() throws Exception {
     downloadDirectory = FILE_UTILS.createTempDirectory();
-
+    
     final FirefoxProfile profile = new FirefoxProfile();
     // profile.setPreference("browser.download.useDownloadDir", false);
     // profile.setPreference("browser.download.useDownloadDir", "true");
@@ -72,6 +101,42 @@ public class FunctionalTestBase {
     selenium.addLocationStrategy("scLocator", "return inWindow.isc.AutoTest.getElement(locator);");
     // selenium.setExtensionJs("user-extensions.js");
     // selenium.start();
+  }
+  
+  private File getDownloadFile() {
+    return downloadDirectory.listFiles()[0];
+  }
+  
+  protected void sleep(final long time) {
+    try {
+      Thread.sleep(time);
+    } catch(InterruptedException ie) {
+      throw new RuntimeException(ie);
+    }    
+  }
+  
+  protected File waitForDownload(final String fileName) {
+    
+    final File downloadFile = new File(downloadDirectory, fileName);
+    while(!downloadFile.exists()) {
+      sleep(100);
+    }
+
+    long lastLength = -1;
+    // Wait for file to finish downloading.
+    while(true) {
+      long length = downloadFile.length();
+      if(lastLength == length) {
+        break;
+      }
+      lastLength = length;
+      sleep(500);
+    }
+    return downloadFile;
+  }
+  
+  protected void waitFor(final Supplier<String> locator) {
+    waitForElementPresent(locator.get());
   }
 
   protected void waitForElementPresent(final String locator) {
@@ -91,6 +156,10 @@ public class FunctionalTestBase {
       }
     }
   }
+  
+  protected void click(final Supplier<String> locatorSupplier) {
+    click(locatorSupplier.get());
+  }
 
   protected void click(final String locator) {
     selenium.click(locator);
@@ -100,6 +169,9 @@ public class FunctionalTestBase {
   public void tearDown() throws Exception {
     FILE_UTILS.deleteDirectoryQuietly(downloadDirectory);
     selenium.stop();
+    for(File tempFile : tempFiles) {
+      FILE_UTILS.deleteQuietly(tempFile);
+    }
   }
 
   protected void expandFileMenu() {
@@ -136,7 +208,6 @@ public class FunctionalTestBase {
 
   protected void wizardNext(final String wizardId) {
     final String selector = String.format("scLocator=//Button[ID=\"Wizard_%s_Button_Next\"]/", wizardId);
-    System.out.println("selector is " + selector);
     click(selector);
   }
 

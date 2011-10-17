@@ -10,7 +10,6 @@ public class BulkDownloadFunctionalTest extends FunctionalTestBase {
     expandFileMenu();
     clickExportSubMenu();
     clickExportOption("Download as Zip");
-    // click("scLocator=//Menu[ID=\"isc_MainToolStripComponentImpl_TitledMenu_0\"]/body/row[title=Download%20as%20Zip||0]/col[fieldName=title||1]");
     waitForElementPresent("scLocator=//Window[ID=\"isc_Window_1\"]/header/member[Class=Canvas||index=0||length=4||classIndex=0||classLength=1]/");
   }
 }

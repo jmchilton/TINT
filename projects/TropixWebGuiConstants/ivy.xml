@@ -1,0 +1,24 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-webgui-constants" />
+  
+  <configurations>
+    <conf name="main" visibility="public" />
+    
+    <conf name="test" description="Tests" extends="main" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-webgui-constants" type="jar" conf="main" ext="jar" />
+    <artifact name="tropix-webgui-constants-test" type="jar" conf="test" ext="jar" />
+    
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+  </dependencies>  
+
+</ivy-module>

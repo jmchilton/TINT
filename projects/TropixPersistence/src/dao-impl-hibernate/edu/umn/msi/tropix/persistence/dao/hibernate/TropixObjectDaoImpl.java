@@ -68,7 +68,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   private static final Log LOG = LogFactory.getLog(TropixObjectDaoImpl.class);
   private static final int DEFAULT_MAX_SEARCH_RESULTS = 1000;
   private int maxSearchResults = DEFAULT_MAX_SEARCH_RESULTS;
-
+  
   /**
    * Override setSessionFactory so the @Inject annotation can be added to it.
    */
@@ -80,6 +80,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   public void setMaxSearchResults(final int maxSearchResults) {
     this.maxSearchResults = maxSearchResults;
   }
+  
 
   public boolean isInstance(final String objectId, final Class<? extends TropixObject> clazz) {
     final TropixObject object = loadTropixObject(objectId);
@@ -406,6 +407,14 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     @SuppressWarnings("unchecked")
     final Collection<DirectPermission> roles = query.list();
     return roles;
+  }
+
+  public Collection<Folder> getGroupFolders(final String userId) {
+    final Query query = super.getSession().getNamedQuery("getGroupFolders");
+    query.setParameter("userId", userId);
+    @SuppressWarnings("unchecked")
+    final List<Folder> results = query.list();
+    return results;    
   }
 
   public Collection<VirtualFolder> getSharedFolders(final String userId) {

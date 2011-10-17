@@ -47,6 +47,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.PollJobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitProteomicsConvertDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitThermofinniganRunJobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.UploadFileDescription;
+import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.DynamicUploadComponent;
@@ -137,10 +138,12 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
             }
 
             if(type == ProteomicsRunSource.THERMO) {
+              final String serviceAddress = thermoServicesSelectionPage.getGridService().getServiceAddress();
               final CreateTropixFileDescription createRawFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
-              createRawFileDescription.setExtension(".RAW");
+              createRawFileDescription.setExtension(StockFileExtensionEnum.THERMO_RAW.getExtension());
+              
               final SubmitThermofinniganRunJobDescription submitDescription = ActivityDescriptions.createSubmitThermo(createRawFileDescription,
-                  thermoServicesSelectionPage.getGridService().getServiceAddress(), calculatedName);
+                  serviceAddress, calculatedName);
               final PollJobDescription pollJobDescription = ActivityDescriptions.buildPollDescription(submitDescription);
               final CreateTropixFileDescription createMzxmlDescription = ActivityDescriptions.buildCreateResultFile(pollJobDescription);
 
@@ -155,7 +158,7 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
               descriptions.add(createMzxmlDescription);
             } else if(type == ProteomicsRunSource.MGF) {
               final CreateTropixFileDescription createSourceFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
-              createSourceFileDescription.setExtension(".mgf");
+              createSourceFileDescription.setExtension(StockFileExtensionEnum.MASCOT_GENERIC_FORMAT.getExtension());
 
               final SubmitProteomicsConvertDescription submitDescription = ActivityDescriptions.createSubmitProteomicsConvert(
                   createSourceFileDescription, proteomicsConvertServicesSelectionPage.getGridService().getServiceAddress(), calculatedName);

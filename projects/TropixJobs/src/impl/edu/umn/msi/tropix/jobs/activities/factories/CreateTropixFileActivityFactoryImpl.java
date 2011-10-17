@@ -20,6 +20,7 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
 import edu.umn.msi.tropix.common.shutdown.ShutdownException;
+import edu.umn.msi.tropix.files.creator.TropixFileCreator;
 import edu.umn.msi.tropix.jobs.activities.ActivityContext;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription;
 import edu.umn.msi.tropix.jobs.activities.impl.Activity;
@@ -28,17 +29,16 @@ import edu.umn.msi.tropix.jobs.activities.impl.ActivityFactoryFor;
 import edu.umn.msi.tropix.jobs.activities.impl.Revertable;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.service.FileTypeService;
-import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 
 @ManagedBean @ActivityFactoryFor(CreateTropixFileDescription.class)
 class CreateTropixFileActivityFactoryImpl implements ActivityFactory<CreateTropixFileDescription> {
-  private final TropixObjectService tropixObjectService;
+  private final TropixFileCreator fileCreator;
   private final FileTypeService fileTypeService;
   private final FactorySupport factorySupport;
   
   @Inject
-  CreateTropixFileActivityFactoryImpl(final TropixObjectService tropixObjectService, final FactorySupport factorySupport, final FileTypeService fileTypeService) {
-    this.tropixObjectService = tropixObjectService;
+  CreateTropixFileActivityFactoryImpl(final TropixFileCreator fileCreator, final FactorySupport factorySupport, final FileTypeService fileTypeService) {
+    this.fileCreator = fileCreator;
     this.factorySupport = factorySupport;
     this.fileTypeService = fileTypeService;
   }
@@ -54,7 +54,7 @@ class CreateTropixFileActivityFactoryImpl implements ActivityFactory<CreateTropi
       tropixFile.setFileId(getDescription().getFileId());
       final String extension = getDescription().getExtension();
       final String fileTypeId = extension == null ? null : fileTypeService.loadPrimaryFileTypeWithExtension(getUserId(), extension).getId();
-      updateId(tropixObjectService.createFile(getUserId(), getDescription().getDestinationId(), tropixFile, fileTypeId));
+      updateId(fileCreator.createFile(getCredential(), getDescription().getDestinationId(), tropixFile, fileTypeId));
     }
 
   }

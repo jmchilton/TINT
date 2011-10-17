@@ -176,12 +176,16 @@ public abstract class ServiceBase {
       tropixObjectDao.setOwner(objectId, destinationOwner);
     }
     final Provider provider = providerDao.getObjectsProvider(parentId);
+    saveToProvider(provider, object);
+  }
+
+  protected void saveToProvider(final Provider provider, final TropixObject object) {
     if(provider != null) {
       provider.getObjects().add(object);
       providerDao.saveObject(provider);
     }
   }
-
+  
   /**
    * If destinationId is null object is just saved with userId as owner.
    * 
@@ -205,16 +209,15 @@ public abstract class ServiceBase {
       tropixObjectDao.addPermissionParent(objectId, folderId);
       final User owner = tropixObjectDao.getOwner(folderId);
       tropixObjectDao.setOwner(objectId, owner);
+      final Provider provider = providerDao.getObjectsProvider(objectId);
+      saveToProvider(provider, object);
     }
     if(destination instanceof Request) {
       final Request request = (Request) destination;
       request.getContents().add(object);
       tropixObjectDao.saveOrUpdateTropixObject(destination);
       final Provider provider = request.getProvider();
-      if(provider != null) {
-        provider.getObjects().add(object);
-        providerDao.saveObject(provider);
-      }
+      saveToProvider(provider, object);
     }
   }
 

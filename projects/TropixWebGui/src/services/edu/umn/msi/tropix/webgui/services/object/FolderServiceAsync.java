@@ -39,4 +39,6 @@ public interface FolderServiceAsync {
   void getSavedVirtualFolders(AsyncCallback<VirtualFolder[]> callback);
 
   void createVirtualFolder(String parentFolderId, VirtualFolder folder, AsyncCallback<Void> callback);
+
+  void getGroupFolders(AsyncCallback<List<Folder>> callback);
 }

@@ -7,11 +7,9 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
+import edu.umn.msi.tropix.galaxy.GalaxyDataUtils;
 import edu.umn.msi.tropix.galaxy.inputs.Input;
 import edu.umn.msi.tropix.galaxy.inputs.RootInput;
 import edu.umn.msi.tropix.galaxy.tool.Conditional;
@@ -26,7 +24,7 @@ public class ContextBuilder {
   private static void populateInputs(final Iterable<InputType> inputs, final Iterable<Input> inputValues, final Map<String, Object> map) {
     for(InputType type : inputs) {
       final String name = type.getName();
-      final Input inputValue = findInput(name, inputValues);
+      final Input inputValue = GalaxyDataUtils.findInput(name, inputValues);
       final Context tree = buildContextForInput(type, inputValue);
       map.put(name, tree);
     }
@@ -42,7 +40,7 @@ public class ContextBuilder {
     } else if(inputType instanceof Conditional) {
       final Conditional conditional = (Conditional) inputType;
       final Param param = conditional.getParam();
-      final Context paramTree = buildContextForInput(param, findInput(param.getName(), inputValue.getInput()));
+      final Context paramTree = buildContextForInput(param, GalaxyDataUtils.findInput(param.getName(), inputValue.getInput()));
       inputProperties.put(param.getName(), paramTree);
       for(ConditionalWhen when : conditional.getWhen()) {
         populateInputs(when.getInputElement(), inputValue.getInput(), inputProperties);
@@ -52,16 +50,6 @@ public class ContextBuilder {
     return tree;
   }
   
-  private static Input findInput(final String inputName, final Iterable<Input> inputs) {
-    Preconditions.checkNotNull(inputName);
-    return Iterables.find(inputs, new Predicate<Input>() {
-      public boolean apply(final Input queryInput) {
-        String queryInputName = queryInput.getName();
-        return inputName.equals(queryInputName);
-      }      
-    });
-  }
-
   public Context buildContext(final Tool tool, final RootInput rootInput, final Map<String, String> outputMap) {
     final Map<String, Object> contextContents = Maps.newHashMap();
     

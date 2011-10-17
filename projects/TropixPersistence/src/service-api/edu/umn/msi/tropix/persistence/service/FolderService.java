@@ -35,6 +35,8 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 
 public interface FolderService {
 
+  @PersistenceMethod Folder[] getGroupFolders(@UserId String gridId);
+  
   @PersistenceMethod TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId);
 
   @PersistenceMethod TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId, TropixObjectType[] types);
