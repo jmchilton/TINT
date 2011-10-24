@@ -46,11 +46,11 @@ abstract class CachedSupport<T> {
   private Supplier<LoopingRunnable> loopingRunnableSupplier;
   private Executor executor;
   private boolean cache = true;
-  
+
   public void setCache(final boolean cache) {
     this.cache = cache;
   }
-  
+
   private void setupCachingLoop() {
     final Runnable runnable = new Runnable() {
       public void run() {
@@ -68,7 +68,7 @@ abstract class CachedSupport<T> {
     };
     final LoopingRunnable loopingRunnable = this.loopingRunnableSupplier.get();
     loopingRunnable.setBaseRunnable(runnable);
-    executor.execute(loopingRunnable);    
+    executor.execute(loopingRunnable);
   }
 
   @PostConstruct
@@ -81,12 +81,16 @@ abstract class CachedSupport<T> {
   protected abstract T getInstance();
 
   protected T getCachedInstance() {
-    interruptableExecutor.execute(new Interruptable() {
-      public void run() throws InterruptedException {
-        isInitialized.await();
-      }
-    });
-    return this.cachedInstance;
+    if(cache) {
+      interruptableExecutor.execute(new Interruptable() {
+        public void run() throws InterruptedException {
+          isInitialized.await();
+        }
+      });
+      return this.cachedInstance;
+    } else {
+      return getInstance();
+    }
   }
 
   public void setLoopingRunnableSupplier(final Supplier<LoopingRunnable> loopingRunnableSupplier) {

@@ -14,10 +14,14 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import edu.umn.msi.tropix.client.directory.GridUser;
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
+import edu.umn.msi.tropix.webgui.client.components.SelectionWindowComponent;
 import edu.umn.msi.tropix.webgui.client.components.WindowComponent;
+import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.widgets.CanvasWithOpsLayout;
 import edu.umn.msi.tropix.webgui.client.widgets.ClientListGrid;
 import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
@@ -35,6 +39,22 @@ public class ManageGroupFoldersWindowComponentSupplierImpl implements Supplier<W
   @Inject
   public void setAddCatalogProviderComponentSupplier(@Named("addGroupFolder") final Supplier<? extends Command> addGroupFolderComponentSupplier) {
     this.addGroupFolderComponentSupplier = addGroupFolderComponentSupplier;
+  }
+
+  private Supplier<? extends SelectionWindowComponent<GridUser, ? extends Window>> userSelectionWindowComponentSupplier;
+
+  @Inject
+  public void setUserSelectionWindowComponentSupplier(
+      final Supplier<? extends SelectionWindowComponent<GridUser, ? extends Window>> userSelectionWindowComponentSupplier) {
+    this.userSelectionWindowComponentSupplier = userSelectionWindowComponentSupplier;
+  }
+
+  private Supplier<? extends SelectionWindowComponent<Group, ? extends Window>> groupSelectionWindowComponentSupplier;
+
+  @Inject
+  public void setGroupSelectionWindowComponentSupplier(
+      final Supplier<? extends SelectionWindowComponent<Group, ? extends Window>> groupSelectionWindowComponentSupplier) {
+    this.groupSelectionWindowComponentSupplier = groupSelectionWindowComponentSupplier;
   }
 
   public WindowComponent<Window> get() {
@@ -78,6 +98,10 @@ public class ManageGroupFoldersWindowComponentSupplierImpl implements Supplier<W
       listGrid = new ClientListGrid(dataSource);
     }
 
+    private String getSelectedGroupFolderId() {
+      return listGrid.getSelectedRecord().getAttribute("id");
+    }
+
     private Canvas getContents() {
       initListGrid();
       final Button newFolderButton = SmartUtils.getButton("New Folder", Resources.ADD, new Command() {
@@ -87,11 +111,33 @@ public class ManageGroupFoldersWindowComponentSupplierImpl implements Supplier<W
       });
       final Button addUserButton = SmartUtils.getButton("Add User", Resources.ADD, new Command() {
         public void execute() {
+          final SelectionWindowComponent<GridUser, ? extends Window> selectionComponent = userSelectionWindowComponentSupplier.get();
+          selectionComponent.setSelectionCallback(new Listener<GridUser>() {
+            public void onEvent(final GridUser gridUser) {
+              if(gridUser != null) {
+                final String userGridId = gridUser.getGridId();
+                FolderService.Util.getInstance().addUserToGroupFolder(getSelectedGroupFolderId(), userGridId,
+                    new AsyncCallbackImpl<Void>());
+              }
+            }
+          });
+          selectionComponent.execute();
         }
       });
       SmartUtils.enabledWhenHasSelection(addUserButton, listGrid, false);
       final Button addGroupButton = SmartUtils.getButton("Add Group", Resources.ADD, new Command() {
         public void execute() {
+          final SelectionWindowComponent<Group, ? extends Window> selectionComponent = groupSelectionWindowComponentSupplier.get();
+          selectionComponent.setSelectionCallback(new Listener<Group>() {
+            public void onEvent(final Group group) {
+              if(group != null) {
+                final String groupId = group.getId();
+                FolderService.Util.getInstance().addGroupToGroupFolder(getSelectedGroupFolderId(), groupId,
+                    new AsyncCallbackImpl<Void>());
+              }
+            }
+          });
+          selectionComponent.execute();
         }
       });
       SmartUtils.enabledWhenHasSelection(addGroupButton, listGrid, false);

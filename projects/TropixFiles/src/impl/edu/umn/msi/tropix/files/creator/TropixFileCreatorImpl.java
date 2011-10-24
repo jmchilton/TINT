@@ -38,7 +38,6 @@ public class TropixFileCreatorImpl implements TropixFileCreator {
     message.setParentId(destinationId);
     message.setOwnerId(tropixObjectService.getOwnerId(objectId));
     message.setCredential(credential);
-    
     queue.newFile(message);
     return savedFile;
     

@@ -113,6 +113,16 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
     return beanSanitizer.sanitize(providerService.createNewProviderAndFolder(userSession.getGridId(), folder, ownerId));
   }
 
+  @ServiceMethod(adminOnly = true)
+  public void addGroupToGroupFolder(final String objectId, final String groupId) {
+    providerService.addGroupToObjectsProvider(userSession.getGridId(), objectId, groupId);
+  }
+
+  @ServiceMethod(adminOnly = true)
+  public void addUserToGroupFolder(final String objectId, final String userId) {
+    providerService.addGroupToObjectsProvider(userSession.getGridId(), objectId, userId);
+  }
+
   private List<Folder> sanitizeFolders(final Folder[] folders) {
     this.sanitizeArray(folders);
     return Lists.newArrayList(folders);

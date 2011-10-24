@@ -60,4 +60,7 @@ public interface FolderService extends RemoteService {
 
   Folder createGroupFolder(final Folder folder, final String ownerId);
 
+  void addGroupToGroupFolder(final String objectId, final String groupId);
+
+  void addUserToGroupFolder(final String objectId, final String userId);
 }

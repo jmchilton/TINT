@@ -105,11 +105,11 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
     <property name="baseIterable" ref="userIterable" />
     <property name="executor" ref="executorService" />
     <property name="loopingRunnableSupplier" ref="cachedUserIterableLoopingRunnableSupplier" />
-    <property name="cache" value="user.iterable.cache" />
+    <property name="cache" value="${user.iterable.cache}" />
   </bean>
 
-  <bean id="gridUserMap" class="java.util.concurrent.ConcurrentHashMap">
-    <constructor-arg value="user.map.concurrency" />
+  <bean id="gridUserMap" class="java.util.concurrent.ConcurrentHashMap" scope="singleton">
+    <constructor-arg value="${user.map.concurrency}" />
   </bean>
   
   <gc:map-to-function id="gridUserFunction">

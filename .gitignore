@@ -177,5 +177,6 @@
 /tools/tomcat
 /tools/tomcat.zip
 /tools/ws-core.zip
-
+/tools/cargo-downloads
+/tools/cargo-extracts
 *~
