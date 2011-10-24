@@ -13,6 +13,7 @@ import edu.umn.msi.tropix.galaxy.GalaxyDataUtils;
 import edu.umn.msi.tropix.galaxy.inputs.RootInput;
 import edu.umn.msi.tropix.galaxy.test.TestDataExtracter.TestData;
 import edu.umn.msi.tropix.galaxy.test.TestDataExtracter.TestData.TestInputFile;
+import edu.umn.msi.tropix.galaxy.xml.GalaxyXmlUtils;
 
 @ContextConfiguration(locations = "testContext.xml")
 public class TestDataExtracterTest extends FreshConfigTest {
@@ -39,6 +40,11 @@ public class TestDataExtracterTest extends FreshConfigTest {
   @Test(groups = "unit")
   public void testRootInput() {
     assert GalaxyDataUtils.findInput("input1", rootInput.getInput()) != null; 
+  }
+  
+  @Test(groups = "unit")
+  public void testRepeat() {
+    System.out.println(GalaxyXmlUtils.serialize(rootInput));
   }
   
 }

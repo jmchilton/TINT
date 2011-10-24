@@ -19,19 +19,27 @@ package edu.umn.msi.tropix.galaxy.service;
 import java.util.Iterator;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.globus.exec.generated.JobDescriptionType;
+import org.springframework.util.StringUtils;
 
 import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.common.io.InputContext;
+import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.io.OutputContext;
+import edu.umn.msi.tropix.common.jobqueue.jobprocessors.BaseExecutableJobProcessorFactoryImpl;
 import edu.umn.msi.tropix.common.jobqueue.jobprocessors.BaseExecutableJobProcessorImpl;
+import edu.umn.msi.tropix.common.xml.XMLUtility;
 import edu.umn.msi.tropix.galaxy.inputs.RootInput;
 import edu.umn.msi.tropix.galaxy.tool.ConfigFile;
 import edu.umn.msi.tropix.galaxy.tool.Data;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
+import edu.umn.msi.tropix.galaxy.xml.GalaxyXmlUtils;
 
 class GalaxyJobProcessorImpl extends BaseExecutableJobProcessorImpl {
+  private static final Log LOG = LogFactory.getLog(GalaxyJobProcessorImpl.class);
   private final GalaxyConverter galaxyConverter;
   private Iterable<InputContext> inputContexts;
   private Iterable<String> fileNames;
@@ -66,14 +74,24 @@ class GalaxyJobProcessorImpl extends BaseExecutableJobProcessorImpl {
     while(fileNameIterator.hasNext()) {
       Preconditions.checkState(inputContextsIterator.hasNext());
       final String fileName = fileNameIterator.next();
+      LOG.debug(String.format("In preprocessing with filename %s", fileName));
       // Verify this write attempt isn't trying to write outside the specified staging directory.
       // Later this should be modified to let subdirectories be written.
       Preconditions.checkState(FilenameUtils.getName(fileName).equals(fileName));
       final OutputContext outputContext = getStagingDirectory().getOutputContext(fileName);
       inputContextsIterator.next().get(outputContext);
     }
-
+    if(LOG.isDebugEnabled()) {
+      LOG.debug("Pre Expanded Galaxy Tool");
+      LOG.debug(GalaxyXmlUtils.serialize(tool));
+      LOG.debug("RootInput");
+      LOG.debug(GalaxyXmlUtils.serialize(rootInput));
+    }
     toolEvaluator.resolve(tool, Contexts.expandPathsAndBuildContext(tool, rootInput, getStagingDirectory()));
+    if(LOG.isDebugEnabled()) {
+      LOG.debug("Expanded Galaxy Tool");
+      LOG.debug(new XMLUtility<Tool>(Tool.class).toString(tool));
+    }
     if(tool.getConfigfiles() != null) {
       for(final ConfigFile configFile : tool.getConfigfiles().getConfigfile()) {
         final String configFileName = configFile.getName();
@@ -88,6 +106,12 @@ class GalaxyJobProcessorImpl extends BaseExecutableJobProcessorImpl {
 
   @Override
   protected void doPostprocessing() {
+    if(wasCompletedNormally()) {
+      final String standardError = InputContexts.toString(getStagingDirectory().getInputContext(BaseExecutableJobProcessorFactoryImpl.DEFAULT_STANDARD_ERROR_FILE_NAME));
+      if(StringUtils.hasText(standardError)) {
+        throw new IllegalStateException(String.format("Problem executing galaxy tool, standard error was %s", standardError));
+      }
+    }
     for(final Data output : tool.getOutputs().getData()) {
       final InputContext inputContext = getStagingDirectory().getInputContext(output.getName());
       getResourceTracker().add(inputContext);

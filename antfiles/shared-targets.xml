@@ -804,6 +804,7 @@
             <substitution expression="/* CHECKSTYLE:OFF */@SuppressWarnings(&quot;all&quot;) public \1 implements java.io.Serializable {" />
             <fileset dir="@{dir}" includes="**/*java" />
           </replaceregexp>          
+	  
         </then>
         <else>
           <replaceregexp flags="m">

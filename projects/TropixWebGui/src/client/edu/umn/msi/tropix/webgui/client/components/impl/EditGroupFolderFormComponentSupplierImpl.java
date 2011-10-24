@@ -39,14 +39,15 @@ public class EditGroupFolderFormComponentSupplierImpl implements Supplier<EditGr
       ownerItem = gridUserItemComponent.get();
       setWidget(new Form(nameItem, ownerItem));
       get().setValidationPredicate(new Predicate<Form>() {
-        public boolean apply(Form input) {
+        public boolean apply(final Form input) {
           return StringUtils.hasText(input.getValue("name"));
         }
       });
     }
 
     public boolean validate() {
-      return StringUtils.hasText(nameItem.getValue());// && StringUtils.hasText(gridUserItemComponent.getSelectedUserId());
+      return StringUtils.hasText(nameItem.getValue());
+      // && StringUtils.hasText(gridUserItemComponent.getSelectedUserId());
     }
 
     public String getName() {

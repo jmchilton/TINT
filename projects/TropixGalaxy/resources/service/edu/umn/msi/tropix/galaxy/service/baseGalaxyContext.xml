@@ -23,6 +23,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
       <map>
         <entry key="galaxy.staging.type" value="system" />
         <entry key="galaxy.execution.type" value="system" />
+        <entry key="require.globus.credential" value="false" /> <!-- Change to secure production! -->
       </map>
     </property>
   </bean>  
@@ -35,8 +36,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     </constructor-arg>
     <constructor-arg ref="toolEvaluator" />
     <property name="credentialedStagingDirectoryFactory" ref="${galaxy.staging.type}CredentialedStagingDirectoryFactory" />
-    <property name="executionType" value="${galaxy.execution.type}" />        
-  </bean>  
+    <property name="executionType" value="${galaxy.execution.type}" />
+    <property name="requireGlobusCredential" value="${require.globus.credential}" />        
+  </bean>
   
   <bean id="galaxyService" class="edu.umn.msi.tropix.galaxy.service.GalaxyJobQueueContextImpl" parent="queueServiceParent">
     <property name="galaxyJobBuilder" ref="galaxyJobProcessorFactory" />

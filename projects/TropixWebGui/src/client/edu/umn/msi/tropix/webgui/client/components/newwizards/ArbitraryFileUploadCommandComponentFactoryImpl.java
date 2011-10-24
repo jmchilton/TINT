@@ -73,13 +73,18 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
         final UploadFileDescription uploadDescription = ActivityDescriptions.createUploadFileDescription(jobDescription, getResult().values()
             .iterator().next());
 
-        final String extension = fileTypeComponent.getSelection().getExtension(); // name.contains(".") ? name.substring(name.lastIndexOf('.')) : "";
+        
         final String modelName = metadataPage.getMetadataCanvasSupplier().getName();
 
         final CreateTropixFileDescription createFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, true);
         ActivityDescriptions.initCommonMetadata(createFileDescription, metadataPage.getMetadataCanvasSupplier());
-        createFileDescription.setName(modelName.toLowerCase().endsWith(extension.toLowerCase()) ? modelName : modelName + extension);
-        createFileDescription.setExtension(extension);
+        if(fileTypeComponent.isAutoDetect()) {
+          createFileDescription.setName(modelName);
+        } else {
+          final String extension = fileTypeComponent.getSelection().getExtension(); // name.contains(".") ? name.substring(name.lastIndexOf('.')) : "";
+          createFileDescription.setName(modelName.toLowerCase().endsWith(extension.toLowerCase()) ? modelName : modelName + extension);
+          createFileDescription.setExtension(extension);          
+        }
         createFileDescription.setCommitted(true);
 
         JobSubmitService.Util.getInstance().submit(Sets.<ActivityDescription>newHashSet(uploadDescription, createFileDescription),

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.galaxy.GalaxyDataUtils;
@@ -17,6 +18,7 @@ import edu.umn.msi.tropix.galaxy.tool.ConditionalWhen;
 import edu.umn.msi.tropix.galaxy.tool.Data;
 import edu.umn.msi.tropix.galaxy.tool.InputType;
 import edu.umn.msi.tropix.galaxy.tool.Param;
+import edu.umn.msi.tropix.galaxy.tool.Repeat;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
 
 public class ContextBuilder {
@@ -25,28 +27,44 @@ public class ContextBuilder {
     for(InputType type : inputs) {
       final String name = type.getName();
       final Input inputValue = GalaxyDataUtils.findInput(name, inputValues);
-      final Context tree = buildContextForInput(type, inputValue);
+      final Object tree = buildContextForInput(type, inputValue);
       map.put(name, tree);
     }
   }
   
-  private static Context buildContextForInput(final InputType inputType, @Nullable final Input inputValue) {
+  private static Object buildContextForInput(final InputType inputType, @Nullable final Input inputValue) {
+    final Object tree;
     final Map<String, Object> inputProperties = Maps.newHashMap();
     String value = null;
     if(inputType instanceof Param) {
-      final Param param = new Param();
+      final Param param = (Param) inputType;
       inputProperties.put("label", new Context(param.getLabel()));
       value = inputValue != null ? inputValue.getValue() : null;
+      tree = new Context(value, inputProperties);
     } else if(inputType instanceof Conditional) {
       final Conditional conditional = (Conditional) inputType;
       final Param param = conditional.getParam();
-      final Context paramTree = buildContextForInput(param, GalaxyDataUtils.findInput(param.getName(), inputValue.getInput()));
+      final Context paramTree = (Context) buildContextForInput(param, GalaxyDataUtils.findInput(param.getName(), inputValue.getInput()));
       inputProperties.put(param.getName(), paramTree);
       for(ConditionalWhen when : conditional.getWhen()) {
         populateInputs(when.getInputElement(), inputValue.getInput(), inputProperties);
       }
+      tree = new Context(value, inputProperties);
+    } else if(inputType instanceof Repeat) {
+      final Repeat repeat = (Repeat) inputType;
+      final List<Context> contexts = Lists.newArrayList();
+      final Input repeatInput = inputValue; // GalaxyDataUtils.findInput(repeat.getName(), inputValue.getInput());
+      for(Input repeatInstance : repeatInput.getInput()) {
+        final Map<String, Object> repeatInstanceProperties = Maps.newHashMap();
+        populateInputs(repeat.getInputElement(), repeatInstance.getInput(), repeatInstanceProperties);
+        final Context repeatInstanceContext = new Context(GalaxyDataUtils.REPEAT_INSTANCE, repeatInstanceProperties);
+        contexts.add(repeatInstanceContext);
+      }
+      tree = contexts;
+      //inputProperties.put(repeat.getName(), contexts);
+    } else {
+      throw new IllegalStateException("Unknown inputType " + inputType.getClass().getName());
     }
-    final Context tree = new Context(value, inputProperties);
     return tree;
   }
   

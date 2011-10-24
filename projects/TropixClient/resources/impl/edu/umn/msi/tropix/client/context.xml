@@ -38,10 +38,12 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="messaging.broker.start" value="true" />
         <!-- <entry key="index.service.url" value="http://index.training.cagrid.org:8080/wsrf/services/DefaultIndexService" /> -->
         <entry key="index.service.url" value="" />
-        <entry key="unindexed.service.urls" value="local://Sequest,local://XTandem,local://ProteomicsConvert,local://Scaffold" />
+        <entry key="unindexed.service.urls" value="local://Sequest,local://XTandem,local://ProteomicsConvert,local://Scaffold,local://RawExtract" />
         <entry key="admin.only" value="false" />
         <entry key="blocked.service.urls" value="" />
         <entry key="local.catalog.host" value="http://localhost:8080/" />
+        <entry key="user.iterable.cache" value="false" />
+        <entry key="user.map.concurrency" value="10" />
       </map>
     </property>
   </bean>    
@@ -103,10 +105,11 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
     <property name="baseIterable" ref="userIterable" />
     <property name="executor" ref="executorService" />
     <property name="loopingRunnableSupplier" ref="cachedUserIterableLoopingRunnableSupplier" />
+    <property name="cache" value="user.iterable.cache" />
   </bean>
 
   <bean id="gridUserMap" class="java.util.concurrent.ConcurrentHashMap">
-    <constructor-arg value="10000" />
+    <constructor-arg value="user.map.concurrency" />
   </bean>
   
   <gc:map-to-function id="gridUserFunction">

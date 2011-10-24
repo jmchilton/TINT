@@ -21,6 +21,7 @@ import edu.umn.msi.tropix.galaxy.tool.ConfigFileType;
 import edu.umn.msi.tropix.galaxy.tool.ConfigFiles;
 import edu.umn.msi.tropix.galaxy.tool.InputType;
 import edu.umn.msi.tropix.galaxy.tool.Test;
+import edu.umn.msi.tropix.galaxy.tool.TestOutput;
 import edu.umn.msi.tropix.galaxy.tool.TestParam;
 import edu.umn.msi.tropix.galaxy.tool.Tests;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
@@ -75,6 +76,12 @@ public abstract class PathToolSourceImpl implements ToolSource {
             testParam.setEmbeddedValue(embeddedValue);
           }
         }        
+      }
+      for(final TestOutput testOutput : test.getOutput()) {
+        if(testOutput.getEmbeddedValue() == null) {
+          final String embeddedValue = getEmbeddedValue(testOutput.getFile());
+          testOutput.setEmbeddedValue(embeddedValue);          
+        }
       }
     }
   }

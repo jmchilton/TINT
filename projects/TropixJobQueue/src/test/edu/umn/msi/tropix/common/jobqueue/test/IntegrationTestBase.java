@@ -65,7 +65,13 @@ public class IntegrationTestBase extends AbstractTestNGSpringContextTests {
   private String storageServiceUrl = null;
   
   private List<StorageData> results = Lists.newArrayList();
+  
   private boolean jobCompletedProperly;
+  
+  protected List<StorageData> getResults() {
+    return results;
+  }
+  
   
   @BeforeMethod(groups = "spring")
   public void initJobIntegration() {
@@ -164,6 +170,7 @@ public class IntegrationTestBase extends AbstractTestNGSpringContextTests {
     final TransferResource[] results = new TransferResource[numResults];
     for(int i = 0; i < numResults; i++) {
       final StorageData storageData = getStorageData();
+      getResults().add(storageData);
       results[i] = storageData.prepareUploadResource();
     }          
     fileContext.getResults(results, null);    

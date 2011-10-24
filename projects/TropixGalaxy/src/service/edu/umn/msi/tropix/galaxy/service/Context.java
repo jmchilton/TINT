@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.python.core.Py;
 import org.python.core.PyDictionary;
+import org.python.core.PyList;
 import org.python.core.PyObject;
 import org.python.core.PyString;
 
@@ -11,8 +12,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 public class Context {
-  private Map<String, Object> backingMap = Maps.newHashMap();
+  private Map<String, Object> backingMap = Maps.newLinkedHashMap();
   private String value;
+  
+  public Map<String, Object> getBackingMap() {
+    return backingMap;
+  }
 
   public Context() {
   }
@@ -68,8 +73,16 @@ public class Context {
       pyObject = asPyString(value);
     } else if(value instanceof Context) {
       pyObject = ((Context) value).asPyObject();
+    } else if(value instanceof Iterable) {
+      final PyList list = new PyList();
+      @SuppressWarnings("unchecked")
+      final Iterable<Object> valueIterable = (Iterable<Object>) value;
+      for(final Object child : valueIterable) {
+        list.add(getAsPyObject(child));        
+      }
+      pyObject = list;
     }
-    Preconditions.checkState(pyObject != null, String.format("Failed to convert object %s to python.", value.toString()));
+    Preconditions.checkState(pyObject != null, String.format("Failed to convert object %s of class %s to python.", value.toString(), value.getClass().getName()));
     return pyObject;
   }
   
@@ -77,5 +90,5 @@ public class Context {
     Preconditions.checkArgument(object instanceof String);
     return new PyString((String) object);
   }
-
+  
 }

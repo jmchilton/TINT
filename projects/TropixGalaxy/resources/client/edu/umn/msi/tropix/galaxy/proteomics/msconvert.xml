@@ -1,0 +1,142 @@
+<tool id="msconvert" name="msconvert" version="0.1.0">
+  <description></description>
+
+  <command interpreter="python">
+    msconvert_wrapper.py 
+    --input=${input} 
+    --output=${output} 
+    --fromextension=${input.ext} 
+    --toextension=${output_type} 
+    --binaryencoding=${binary_encoding} 
+    --mzencoding=${mz_encoding} 
+    --intensityencoding=${intensity_encoding}
+    --noindex=${no_index}
+    --zlib=${zlib}
+    #if len($indices) > 0
+    --filter "index
+    #for $index in $indices
+    [${index.from},${index.to}]
+    #end for
+    "
+    #end if
+
+    #if len($scan_numbers) > 0
+    --filter "scanNumber
+    #for $scanNumber in $scanNumbers
+    [${scanNumber.from},${scanNumber.to}]
+    #end for
+    "
+    #end if
+
+    #if $precursor_recalculation.value
+    --filter "precursorRecalculation"
+    #end if
+
+    #if $strip_it.value
+    --filter "stripIT"
+    #end if
+
+    
+    #if $filter_ms_levels.do_filter == "true"
+    --filter "msLevel [$filter_ms_levels.from, $filter_ms_levels.to]"
+    #end if
+
+  </command>
+
+  <inputs>
+    <conditional name="type">
+      <param name="input_type" type="select" label="Input Type">
+        <option value="mzML">mzML</option>
+        <option value="mzXML">mzXML</option>
+        <option value="mgf">mgf</option>
+        <option value="ms2">ms2</option>
+      </param>
+      <when value="mzML">
+        <param format="mzML" name="input" type="data" label="mzML"/>
+      </when>
+      <when value="mzXML">
+        <param format="mzXML" name="input" type="data" label="mzXML"/>
+      </when>
+      <when value="mgf">
+        <param format="mgf" name="input" type="data" label="mgf"/>
+      </when>
+      <when value="ms2">
+        <param format="ms2" name="input" type="data" label="ms2"/>
+      </when>
+    </conditional>
+    <param name="output_type" type="select" label="Output Type">
+      <option value="mzML">mzML</option>
+      <option value="mzXML">mzXML</option>
+      <option value="mgf">mgf</option>
+      <option value="ms2">ms2</option>  
+    </param>
+    <param type="select" name="binary_encoding" label="Binary Encoding Precision">
+      <option value="64" selected="true">64</option>
+      <option value="32">32</option>
+    </param>
+    <param type="select" name="mz_encoding" label="m/z Encoding Precision">
+      <option value="64" selected="true">64</option>
+      <option value="32">32</option>
+    </param>
+    <param type="select" name="intensity_encoding" label="Intensity Encoding Precision" value="32">
+      <option value="64">64</option>
+      <option value="32" selected="true">32</option>
+    </param>
+    <param type="boolean" name="no_index" label="No Index">
+    </param>
+    <param type="boolean" name="zlib" label="Use zlib">      
+    </param>
+    
+    <repeat name="indices" title="Filter Indices">
+      <param name="from" type="integer" label="From" value="0" optional="false" />
+      <param name="to" type="integer" label="To" value="0" optional="true" />
+    </repeat>
+
+    <repeat name="scan_numbers" title="Filter Scan Numbers">
+      <param name="from" type="integer" label="From" value="0" optional="false" />
+      <param name="to" type="integer" label="To" value="0" optional="true" />
+    </repeat>
+
+    <conditional name="filter_ms_levels">
+      <param name="do_filter" type="select" label="Filter MS Levels">
+        <option value="false" selected="false">no</option>
+        <option value="true">yes</option>
+      </param>
+      <when value="true">
+        <param name="from" type="integer" label="From" value="0" optional="false" />
+        <param name="to" type="integer" label="To" value="0" optional="true" />
+      </when>
+      <when value="false" />
+    </conditional>
+
+    <!--
+    <conditional name="filter_mz_windows">
+      <param name="do_filter" type="boolean" label="Filter m/z Values" />
+      <when value="True">
+        <param name="from" type="float" label="From" value="0.0" optional="false" />
+        <param name="to" type="float" label="To" value="0.0" optional="true" />
+      </when>
+      <when value="False" />
+    </conditional>
+    -->
+    <param type="boolean" name="precursor_recalculation" label="Recalculate Precursor" />
+    <param type="boolean" name="strip_it" label="Strip Ion Trap  MS1 Scans" />
+
+  </inputs>
+  <outputs>
+    <data format="mzML" name="output">
+      <change_format>
+        <when input="output_type" value="mzXML" format="mzXML" />
+        <when input="output_type" value="ms2" format="ms2" />
+        <when input="output_type" value="mgf" format="mgf" />
+      </change_format>
+    </data>
+  </outputs>
+
+  <requirements>
+    <requirement type="binary">msconvert</requirement>    
+  </requirements>
+
+  <help>
+  </help>
+</tool>

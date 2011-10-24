@@ -138,10 +138,15 @@ public class JobProcessorFactoryTest<T extends BaseJobProcessorFactoryImpl<? ext
     EasyMock.expect(getStagingDirectory().getAbsolutePath()).andStubReturn(path);
     EasyMock.expect(getStagingDirectory().getSep()).andStubReturn(sep);
   }
+  
+  protected void expectGetInputContext(final String filename, final InputContext inputContext) {
+    EasyMock.expect(getStagingDirectory().getInputContext(filename)).andReturn(inputContext);
+  }
 
   protected void expectAddResource(final String filename) {
     final InputContext inputContext = EasyMock.createMock(InputContext.class);
-    EasyMock.expect(getStagingDirectory().getInputContext(filename)).andReturn(inputContext);
+    // EasyMock.expect(getStagingDirectory().getInputContext(filename)).andReturn(inputContext);
+    expectGetInputContext(filename, inputContext);
     getTracker().add(inputContext);
   }
 

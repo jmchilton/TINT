@@ -66,6 +66,16 @@ public class CacheSupportTest {
   }
 
   @Test(groups = "unit", timeOut=1000)
+  public void testDoCacheParameter() throws InterruptedException {
+    PublicCachedSupport cacheSupport = new PublicCachedSupport();
+    cacheSupport.setCache(false);
+    cacheSupport.init(); // Shouldn't need dependencies...
+    cacheSupport.getInstance();
+    cacheSupport.getInstance();
+    assert cacheSupport.called == 2;
+ }
+  
+  @Test(groups = "unit", timeOut=1000)
   public void cacheTest() throws InterruptedException {
     final Executor executor = EasyMock.createMock(Executor.class);
     final LoopingRunnable loopingRunnable = EasyMock.createMock(LoopingRunnable.class);

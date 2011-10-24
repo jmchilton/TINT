@@ -1,0 +1,4 @@
+project.version=1.15.1
+short.name=galaxy-libs
+confs=main,test
+license.type=tropix

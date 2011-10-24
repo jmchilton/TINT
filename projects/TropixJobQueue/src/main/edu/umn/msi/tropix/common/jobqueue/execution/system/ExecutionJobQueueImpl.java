@@ -134,6 +134,7 @@ public class ExecutionJobQueueImpl implements ExecutionJobQueue<ExecutableJobDes
     if(executionJobQueueObserver != null) {
       executionJobQueueObserver.onSubmission(jobDescription);
     }
+    //final Credential credential = JobDescriptionUtils.getProxy(jobDescription);
     final String localJobId = JobDescriptionUtils.getLocalJobId(jobDescription);
     initializeJob(queueService.pushJob(localJobId, JobDescriptionUtils.serialize(jobDescription)));
   }

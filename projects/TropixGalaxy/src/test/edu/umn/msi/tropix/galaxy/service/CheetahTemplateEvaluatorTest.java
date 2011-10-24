@@ -1,16 +1,15 @@
 package edu.umn.msi.tropix.galaxy.service;
 
-import java.io.StringWriter;
-
+import org.python.google.common.collect.Lists;
 import org.testng.annotations.Test;
+
+import edu.umn.msi.tropix.galaxy.GalaxyDataUtils;
 
 public class CheetahTemplateEvaluatorTest {
 
   private void assertEvaluatesTo(final String template, final Context context, final String equals) {
-    final StringWriter writer = new StringWriter();
-    CheetahTemplateEvaluator.evaluate(template, context, writer);
-    final String obtained = writer.toString();
-    assert obtained.equals(equals) : String.format("Expect %s, obtained %s.", equals, obtained);
+    final String obtained = CheetahTemplateEvaluator.evaluate(template, context);
+    assert obtained.equals(equals) : String.format("Expect <%s>, obtained <%s>.", equals, obtained);
   }
   
   @Test
@@ -34,7 +33,13 @@ public class CheetahTemplateEvaluatorTest {
     assertEvaluatesTo("$c $c.sub", context, "C VALUE SUB VALUE");
   }
   
-  
-  
+  @Test
+  public void testList() {
+    final Context context = new Context();
+    final Context instanceContext = new Context(GalaxyDataUtils.REPEAT_INSTANCE);
+    instanceContext.put("input", "a");
+    context.put("queries", Lists.newArrayList(instanceContext));
+    assertEvaluatesTo("#for $q in $queries\n  ${q.input}#end for", context, "  a");
+  }
   
 }

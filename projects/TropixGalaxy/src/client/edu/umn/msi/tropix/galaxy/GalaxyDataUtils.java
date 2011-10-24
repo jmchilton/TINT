@@ -19,8 +19,11 @@ package edu.umn.msi.tropix.galaxy;
 import java.util.List;
 import java.util.Map;
 
+import org.python.google.common.base.Joiner;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -35,6 +38,7 @@ import edu.umn.msi.tropix.galaxy.tool.Repeat;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
 
 public class GalaxyDataUtils {
+  public static final String REPEAT_INSTANCE = "*REPEAT_INSTANCE*";
 
   private abstract static class TreeWalker<T> {
 
@@ -92,6 +96,8 @@ public class GalaxyDataUtils {
     }
 
   }
+
+
   
   public static Input getFullyQualifiedInput(final String label, final Iterable<Input> input) {
     final int periodPos = label.indexOf('.');
@@ -100,9 +106,24 @@ public class GalaxyDataUtils {
       childInput = findInput(label, input);
     } else {
       final String firstPart = label.substring(0, periodPos);
-      childInput = getFullyQualifiedInput(label.substring(periodPos+1), findInput(firstPart, input).getInput());
+      final Input firstPartInput = findInput(firstPart, input);
+      if(isRepeatInput(firstPartInput)) {
+        childInput = getFullyQualifiedInput(label.substring(periodPos+1), firstPartInput.getInput().iterator().next().getInput());        
+      } else {
+        childInput = getFullyQualifiedInput(label.substring(periodPos+1), firstPartInput.getInput());        
+      }
     }
     return childInput;
+  }
+  
+  public static boolean isRepeatInput(final Input input) {
+    boolean isRepeatInput = false;
+    for(final Input childInput : input.getInput()) {
+      if(childInput.getName().equals(REPEAT_INSTANCE)) {
+        isRepeatInput = true;
+      }
+    }
+    return isRepeatInput;
   }
 
   public static Iterable<InputType> getDataChildren(final InputType data) {
@@ -149,6 +170,20 @@ public class GalaxyDataUtils {
       this.data = toolData;
       this.input = new Input();
       input.setName(data.getName());
+      if(toolData instanceof Repeat) {
+        final Input instanceInput = new Input();
+        instanceInput.setName(GalaxyDataUtils.REPEAT_INSTANCE);
+        for(final InputType child : getDataChildren(toolData)) {
+          final TreePair childPair = new TreePair(child);
+          instanceInput.getInput().add(childPair.input);
+        }
+        input.getInput().add(instanceInput);
+      } else {
+        for(final InputType child : getDataChildren(toolData)) {
+          final TreePair childPair = new TreePair(child);
+          input.getInput().add(childPair.input);
+        }
+      }
     }
     
   }
@@ -156,21 +191,9 @@ public class GalaxyDataUtils {
   
   public static RootInput buildRootInputSkeleton(final Tool tool) {
     final RootInput rootInput = new RootInput();
-    
-    final List<TreePair> stack = Lists.newLinkedList();
     for(final InputType toolInput : tool.getInputs().getInputElement()) {
       final TreePair treePair = new TreePair(toolInput);
       rootInput.getInput().add(treePair.input);
-      stack.add(treePair);
-    }
-    
-    while(!stack.isEmpty()) {
-      final TreePair parent = stack.remove(0);
-      for(final InputType child : getDataChildren(parent.data)) {
-        final TreePair childPair = new TreePair(child);
-        parent.input.getInput().add(childPair.input);
-        stack.add(childPair);
-      }
     }
 
     return rootInput;
@@ -236,6 +259,10 @@ public class GalaxyDataUtils {
 
 
   public static Input findInput(final String inputName, final Iterable<Input> inputs) {
+    return findInput(inputName, inputs, false);
+  }
+  
+  public static Input findInput(final String inputName, final Iterable<Input> inputs, final boolean allowNull) {
     Preconditions.checkNotNull(inputName);
     Input matchingInput = null;
     for(Input input : inputs) {
@@ -243,7 +270,25 @@ public class GalaxyDataUtils {
         matchingInput = input;
       }
     }
-    Preconditions.checkNotNull(matchingInput, String.format("Failed to find input with name %s", inputName));
+    if(matchingInput == null && !allowNull) {
+      throw new IllegalStateException(String.format("Failed to find input with name %s in inputs [%s]", inputName, inputsToString(inputs)));
+    }
     return matchingInput;
+  }
+
+  
+  private static String inputsToString(final Iterable<Input> inputs) {
+    String inputsAsString = "";
+    if(inputs != null && Iterables.size(inputs) > 0) {
+      final List<String> inputsAsStrings = Lists.newArrayList();
+      for(final Input input : inputs) {
+        inputsAsStrings.add(String.format("Input[name=%s,value=%s,inputs=%s]", 
+                            input.getName(),
+                            input.getValue(),
+                            inputsToString(input.getInput())));
+      }
+      inputsAsString = Joiner.on(",").join(inputsAsStrings);      
+    }
+    return String.format("[%s]", inputsAsString);
   }
 }

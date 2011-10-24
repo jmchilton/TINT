@@ -1,5 +1,6 @@
 package edu.umn.msi.tropix.galaxy.test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,6 @@ import javax.inject.Inject;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -21,6 +21,7 @@ import edu.umn.msi.tropix.galaxy.tool.InputType;
 import edu.umn.msi.tropix.galaxy.tool.Param;
 import edu.umn.msi.tropix.galaxy.tool.ParamType;
 import edu.umn.msi.tropix.galaxy.tool.Test;
+import edu.umn.msi.tropix.galaxy.tool.TestOutput;
 import edu.umn.msi.tropix.galaxy.tool.TestParam;
 import edu.umn.msi.tropix.galaxy.tool.Tests;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
@@ -29,6 +30,25 @@ import edu.umn.msi.tropix.galaxy.tool.repository.GalaxyToolRepository;
 @ManagedBean
 public class TestDataExtracter {
 
+  static class OutputChecker implements Closure<byte[]> {
+    private TestOutput testOutput;
+
+    public OutputChecker(final TestOutput testOutput) {
+      this.testOutput = testOutput;
+    }
+    
+    public void apply(final byte[] input) {
+      final String expectedContents = testOutput.getEmbeddedValue();
+      if(!Arrays.equals(input, expectedContents.getBytes())) {
+        final String format = "Expected output file contents [%s], actual file contents [%s].";
+        final String message = String.format(format, expectedContents, new String(input));
+        throw new AssertionError(message);
+      }
+    }
+    
+  }
+  
+  
   public static class TestData {
     public static class TestInputFile {
       public byte[] getContents() {
@@ -117,20 +137,27 @@ public class TestDataExtracter {
           Preconditions.checkNotNull(fileContents);
           inputFile.setInputFileName(testParam.getName());
           inputFile.setContents(fileContents.getBytes());
-          System.out.println(Iterables.toString(inputTypeMap.keySet()));
           testData.getInputFiles().add(inputFile);
         }
         testDataMap.put(testParam.getName(), testParam.getValue());
       }       
     }
-     
+    final List<Closure<byte[]>> checkers = Lists.newArrayList();
+    for(final TestOutput output : test.getOutput()) {
+      checkers.add(new OutputChecker(output));
+    }
+    testData.setOutputFileChecker(checkers);
+    
     final RootInput rootInput = GalaxyDataUtils.buildRootInputSkeleton(tool);
     final Map<String, InputType> paramMap = GalaxyDataUtils.buildParamMap(tool);
     for(Map.Entry<String, InputType> paramEntry : paramMap.entrySet()) {
       final Input input = GalaxyDataUtils.getFullyQualifiedInput(paramEntry.getKey(), rootInput.getInput());
-      if(testDataMap.containsKey(input.getName())) {
-        testDataMap.put(input.getName(), testDataMap.get(input.getName()));
-      }
+      String key = input.getName();
+      input.setValue(input.getName());
+      // TODO: Add filename
+      //if(testDataMap.containsKey(key)) {
+      //  input.setValue(testDataMap.get(key));
+      //}
     }
     testData.setRootInput(rootInput);
     return testData;

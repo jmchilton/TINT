@@ -1,0 +1,25 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-galaxy-libs" />
+  
+  <configurations>
+    <conf name="main" visibility="public" />
+    
+    <conf name="test" description="Tests" extends="main" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-galaxy-libs" type="jar" conf="main" ext="jar" />
+    <artifact name="tropix-galaxy-libs-test" type="jar" conf="test" ext="jar" />
+    
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="jython-tropix" rev="0.1" /> <!--  Jython 2.5.2 packaged with Cheetah 2.4.4 -->
+    <!-- <dependency org="org.jython" name="jython" rev="2.5.1" /> -->
+  </dependencies>  
+
+</ivy-module>

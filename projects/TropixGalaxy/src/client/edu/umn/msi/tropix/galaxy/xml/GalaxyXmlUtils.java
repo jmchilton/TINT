@@ -110,4 +110,8 @@ public class GalaxyXmlUtils {
     return TOOL_XML_UTILITY.toString(tool);
   }
 
+  public static String serialize(final edu.umn.msi.tropix.galaxy.inputs.RootInput rootInput) {
+    return INPUT_XML_UTILITY.toString(rootInput);
+  }
+
 }

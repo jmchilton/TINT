@@ -23,9 +23,11 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.message.MessageSource;
+import edu.umn.msi.tropix.files.NewFileMessageQueue;
 import edu.umn.msi.tropix.files.PersistentModelStorageDataFactory;
 import edu.umn.msi.tropix.jobs.activities.ActivityDirector;
 import edu.umn.msi.tropix.jobs.activities.descriptions.MessageCodeConstants;
+import edu.umn.msi.tropix.jobs.newfile.NewFileMessageQueueConsumerImpl;
 
 /**
  * Just loads the spring beans to make sure they all fit together properly.
@@ -41,6 +43,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
     assert applicationContext.getBean("persistentStorageDataFactory") != null;
     assert applicationContext.getBean(ActivityDirector.class) != null;
     assert applicationContext.getBean(PersistentModelStorageDataFactory.class) != null;
+    assert applicationContext.getBean(NewFileMessageQueue.class) != null;
   }
 
   @Test(groups = "integration")

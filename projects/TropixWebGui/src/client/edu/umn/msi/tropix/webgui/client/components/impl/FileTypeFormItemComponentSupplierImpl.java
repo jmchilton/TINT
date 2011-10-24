@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 import com.smartgwt.client.widgets.form.fields.FormItem;
@@ -82,10 +83,11 @@ public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeF
         } else { // Must have an at least a shortname
           fileTypeDescription = fileType.getShortName();
         }
+        Log.debug("fileTypeDescription is " + fileTypeDescription);
         valueMap.put(fileTypeEntry.getKey(), fileTypeDescription);
       }
       if(options.isAllowAutoDetect()) {
-        valueMap.put("Auto-Detect", "*auto*");
+        valueMap.put("*auto*", "Auto-Detect");
       }
       selectItem.setValueMap(valueMap);
     }

@@ -46,6 +46,13 @@
 /projects/TropixGalaxy/test-output
 /projects/TropixGalaxy/temp-testng-customsuite.xml
 
+# /projects/TropixGalaxyLibs/
+/projects/TropixGalaxyLibs/build
+/projects/TropixGalaxyLibs/ext
+/projects/TropixGalaxyLibs/bin
+/projects/TropixGalaxyLibs/test-output
+/projects/TropixGalaxyLibs/temp-testng-customsuite.xml
+
 # /projects/TropixGrid/
 /projects/TropixGrid/build
 /projects/TropixGrid/ext

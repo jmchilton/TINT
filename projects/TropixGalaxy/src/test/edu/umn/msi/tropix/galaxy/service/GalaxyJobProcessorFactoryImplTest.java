@@ -27,8 +27,10 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.io.InputContext;
+import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.io.OutputContext;
 import edu.umn.msi.tropix.common.jobqueue.description.ExecutableJobDescription;
+import edu.umn.msi.tropix.common.jobqueue.jobprocessors.BaseExecutableJobProcessorFactoryImpl;
 import edu.umn.msi.tropix.common.jobqueue.test.JobProcessorFactoryTest;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.galaxy.inputs.Input;
@@ -141,6 +143,7 @@ public class GalaxyJobProcessorFactoryImplTest extends JobProcessorFactoryTest<G
     toolEvaluator.resolve(EasyMock.same(tool), EasyMock.capture(contextCapture));
     galaxyConverter.populateJobDescription(EasyMock.capture(jobDescriptionCapture), EasyMock.same(tool));
     expectAddResource("output1");
+    expectGetInputContext(BaseExecutableJobProcessorFactoryImpl.DEFAULT_STANDARD_ERROR_FILE_NAME, InputContexts.forString(""));
     getStagingDirectory().cleanUp();
     getMockObjects().replay();
     final GalaxyJobProcessorImpl processor = getFactory().createJob(getJobProcessorConfiguration(), tool, rootInput, Lists.newArrayList("file1.txt", "file2.fasta"), inputContexts);

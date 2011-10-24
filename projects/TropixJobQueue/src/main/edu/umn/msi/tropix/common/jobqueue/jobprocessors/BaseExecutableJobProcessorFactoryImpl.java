@@ -19,6 +19,8 @@ package edu.umn.msi.tropix.common.jobqueue.jobprocessors;
 import org.globus.exec.generated.JobDescriptionType;
 import org.springframework.core.annotation.AnnotationUtils;
 
+import com.google.common.base.Preconditions;
+
 
 import edu.umn.msi.tropix.common.io.Directories;
 import edu.umn.msi.tropix.common.io.StagingDirectory;
@@ -30,12 +32,13 @@ import edu.umn.msi.tropix.common.jobqueue.utils.JobDescriptionUtils;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
 public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecutableJobProcessor> extends BaseJobProcessorFactoryImpl<T> implements RecoverableJobProcessorFactory<ExecutableJobDescription> {
-  private static final String DEFAULT_STANDARD_OUT_FILE_NAME = "STANDARD_OUT";
-  private static final String DEFAULT_STANDARD_ERROR_FILE_NAME = "STANDARD_ERROR"; 
+  public static final String DEFAULT_STANDARD_OUT_FILE_NAME = "STANDARD_OUT";
+  public static final String DEFAULT_STANDARD_ERROR_FILE_NAME = "STANDARD_ERROR"; 
   private boolean useStaging = true;
   private String applicationPath;
   private String workingDirectory;
   private String executionType;
+  private boolean requireGlobusCredential = false;
 
   /**
    * This method is responsible for returning fresh new jobs ready to be preprocessed.
@@ -43,6 +46,10 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
   public final T create(final JobProcessorConfiguration config) {
     final T instance = createAndInitialize();
     final StagingDirectory stagingDirectory = getAndSetupStagingDirectory(config);
+    
+    if(requireGlobusCredential) {
+      Preconditions.checkState(config.getCredential().getGlobusCredential() != null);
+    }
 
     // Create jobDescription
     final JobDescriptionType jobDescription = new JobDescriptionType();
@@ -105,6 +112,10 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
 
   public void setExecutionType(final String executionType) {
     this.executionType = executionType;
+  }
+  
+  public void setRequireGlobusCredential(final boolean requireGlobusCredential) {
+    this.requireGlobusCredential = requireGlobusCredential;
   }
 
 }
