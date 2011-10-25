@@ -24,6 +24,25 @@ package edu.umn.msi.tropix.webgui.services.session;
 
 import java.io.Serializable;
 
+/* 
+ * TODO: Rename to ClientModule or Profile, these modules indicate what modules
+ * the user has loaded, these should be distinguished from what modules 
+ * the system is started with. For instance, USER / ADMIN / GUEST are simply
+ * ClientModules there would be no corresponding system module.
+ * 
+ */
 public enum Module implements Serializable {
-  GUEST, USER, LOCAL, GRID, ADMIN, SHARING, PROTIP, GENETIP, GALAXY, LOCAL_SEARCH, REQUEST, CATALOG, GRID_SEARCH;
+  GUEST, 
+  USER, 
+  LOCAL, 
+  GRID, 
+  ADMIN, 
+  SHARING, 
+  PROTIP, 
+  GENETIP, 
+  GALAXY, 
+  LOCAL_SEARCH, 
+  REQUEST, 
+  CATALOG, 
+  GRID_SEARCH;
 }
