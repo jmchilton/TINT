@@ -76,6 +76,6 @@
 
   <target name="all" depends="jar" />
   
-  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  <target name="dist" depends="publish" />
 
 </project>

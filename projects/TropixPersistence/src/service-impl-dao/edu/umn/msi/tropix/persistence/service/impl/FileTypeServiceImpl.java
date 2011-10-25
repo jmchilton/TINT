@@ -75,4 +75,23 @@ class FileTypeServiceImpl implements FileTypeService {
     return fileType;
   }
 
+  public FileType getFileTypeForName(final String userId, final String fileName) {
+    int indexOf = 0;
+    FileType fileType;
+    while(true) {
+      indexOf = fileName.indexOf('.', indexOf);
+      if(indexOf == -1) {
+        fileType = loadPrimaryFileTypeWithExtension(userId, StockFileExtensionEnum.UNKNOWN.getExtension());
+        break;
+      }
+      final String extension = fileName.substring(indexOf);
+      fileType = loadPrimaryFileTypeWithExtension(userId, extension);
+      if(fileType != null) {
+        break;
+      }
+      indexOf++;
+    }
+    return fileType;
+  }
+
 }

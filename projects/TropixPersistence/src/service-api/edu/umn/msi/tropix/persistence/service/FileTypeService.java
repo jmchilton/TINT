@@ -38,5 +38,7 @@ public interface FileTypeService {
   @PersistenceMethod void update(@UserId @Admin final String userId, final FileType fileType);
   
   @PersistenceMethod FileType create(@UserId @Admin final String userId, final FileType fileType);
+
+  @PersistenceMethod FileType getFileTypeForName(@UserId final String userId, final String fileName);
   
 }

@@ -125,7 +125,7 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
     return filter(getTropixObjectDao().getGroupFolders(gridId), Folder.class, gridId);
   }
 
-  public Folder[] getAllGroupFolders(String gridId) {
+  public Folder[] getAllGroupFolders(final String gridId) {
     return Iterables.toArray(getTropixObjectDao().getAllGroupFolders(), Folder.class);
   }
 }
