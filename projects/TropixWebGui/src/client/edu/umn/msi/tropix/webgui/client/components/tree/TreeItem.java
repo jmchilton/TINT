@@ -48,6 +48,8 @@ public interface TreeItem {
 
   String getName();
 
+  String getSort();
+
   Date getCreationDate();
 
   boolean isValid();

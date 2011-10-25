@@ -208,9 +208,11 @@ public class LocationFactoryImpl implements LocationFactory {
       super(parent);
       this.tropixObjectTreeItemExpander = tropixObjectTreeItemExpander;
       this.setId(TreeItems.MY_GROUP_FOLDERS_ID);
-      this.setIcon(Resources.SHARED_FOLDER_16);
+      this.setIcon(Resources.GROUP_ABSOLUTE);
       this.setType("");
       this.setName("My Group Folders");
+      // HACK so it doesn't appear before my home
+      this.setSort("N");
       this.setFolder(true);
     }
 

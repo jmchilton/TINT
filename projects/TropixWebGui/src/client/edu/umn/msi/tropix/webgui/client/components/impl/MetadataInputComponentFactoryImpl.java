@@ -82,7 +82,9 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       } else if(destinationType == MetadataOptions.DestinationType.HOME) {
         treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null)));
       } else {
-        treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null), locationFactory.getMySharedFoldersItem(null)));
+        treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null),
+            locationFactory.getMySharedFoldersItem(null),
+            locationFactory.getMyGroupFoldersItem(null)));
       }
       treeOptions.setShowPredicate(TreeItemPredicates.getDestinationsPredicate(true));
       if(destinationType != MetadataOptions.DestinationType.FOLDER) {

@@ -36,9 +36,11 @@ public abstract class TreeItemImpl implements TreeItem {
   private String type;
   private String icon;
   private String name;
+  @Nullable
+  private String sort;
   private String id;
   @Nullable
-  private Date creationDate; // Nullable
+  private Date creationDate;
   private boolean valid = true;
   private boolean folder;
 
@@ -70,6 +72,10 @@ public abstract class TreeItemImpl implements TreeItem {
     return this.name;
   }
 
+  public String getSort() {
+    return sort == null ? name : sort;
+  }
+
   public String getIcon() {
     return this.icon;
   }
@@ -98,6 +104,11 @@ public abstract class TreeItemImpl implements TreeItem {
     this.name = name;
   }
 
+  @Nullable
+  protected void setSort(final String sort) {
+    this.sort = sort;
+  }
+
   protected void setIcon(final String icon) {
     this.icon = icon;
   }
@@ -106,6 +117,7 @@ public abstract class TreeItemImpl implements TreeItem {
     this.type = type;
   }
 
+  @Nullable
   protected void setCreationDate(final Date creationDate) {
     this.creationDate = creationDate;
   }

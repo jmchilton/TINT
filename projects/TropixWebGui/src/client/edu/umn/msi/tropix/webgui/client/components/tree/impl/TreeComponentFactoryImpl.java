@@ -153,10 +153,10 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     }
 
     public native Collection<TreeNode> findAllNodesWithId(final String id) /*-{
-                                                                           var jsTree = this.@edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl$TreeComponentImpl::tree.@com.smartgwt.client.core.BaseClass::getOrCreateJsObj()();
-                                                                           var nodesJs = jsTree.findAll("id", id);
-                                                                           return @edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl::getTreeNodes(Lcom/google/gwt/core/client/JavaScriptObject;)(nodesJs);
-                                                                           }-*/;
+			var jsTree = this.@edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl$TreeComponentImpl::tree.@com.smartgwt.client.core.BaseClass::getOrCreateJsObj()();
+			var nodesJs = jsTree.findAll("id", id);
+			return @edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl::getTreeNodes(Lcom/google/gwt/core/client/JavaScriptObject;)(nodesJs);
+    }-*/;
 
     private class CustomTreeGrid extends TreeGrid {
       private final TreeComponentImpl treeComponent;
@@ -224,7 +224,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
       options.getInitialTreeState(new AsyncCallbackImpl<List<TreeState>>() {
         public void onSuccess(final List<TreeState> initialState) {
           TreeComponentImpl.this.initialState = initialState;
-          get().setSortField(TreeItems.ATTRIBUTE_NAME);
+          get().setSortField(TreeItems.ATTRIBUTE_SORT);
           reset();
         }
       });
@@ -245,10 +245,16 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     }
 
     private void initFields() {
-      final TreeGridField idField = new TreeGridField(TreeItems.ATTRIBUTE_ID, "Tropix Grid Id");
-      idField.setRequired(true);
-      idField.setHidden(true);
-      idField.setCanSort(false);
+      /*
+       * final TreeGridField idField = new TreeGridField(TreeItems.ATTRIBUTE_ID, "Tropix Grid Id");
+       * idField.setRequired(true);
+       * idField.setHidden(true);
+       * idField.setCanSort(false);
+       * final TreeGridField defaultSortField = new TreeGridField(TreeItems.ATTRIBUTE_SORT, "Default Sort");
+       * defaultSortField.setRequired(true);
+       * defaultSortField.setHidden(true);
+       * defaultSortField.setCanSort(false);
+       */
       final TreeGridField parentField = new TreeGridField(TreeItems.ATTRIBUTE_PARENT_ID);
       parentField.setRequired(true);
       parentField.setHidden(true);
@@ -405,6 +411,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
       treeNode.setAttribute(TreeItems.ATTRIBUTE_ICON, treeItem.getIcon());
       treeNode.setAttribute(TreeItems.ATTRIBUTE_TYPE, treeItem.getType());
       treeNode.setAttribute(TreeItems.ATTRIBUTE_NAME, treeItem.getName());
+      treeNode.setAttribute(TreeItems.ATTRIBUTE_SORT, treeItem.getSort());
       final Date creationDate = treeItem.getCreationDate();
       if(creationDate != null) {
         treeNode.setAttribute(TreeItems.ATTRIBUTE_CREATION_DATE, creationDate);

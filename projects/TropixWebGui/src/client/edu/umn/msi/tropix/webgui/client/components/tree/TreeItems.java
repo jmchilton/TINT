@@ -38,6 +38,7 @@ public class TreeItems {
   public static final String ATTRIBUTE_CREATION_DATE = "creationDate";
   public static final String ATTRIBUTE_FOLDER = "isFolder";
   public static final String ATTRIBUTE_NAME = "name";
+  public static final String ATTRIBUTE_SORT = "sort";
   public static final String ATTRIBUTE_ID = "id";
   public static final String ATTRIBUTE_ICON = "icon";
 
@@ -56,7 +57,7 @@ public class TreeItems {
   public static boolean isMyGroupFoldersItem(final TreeItem treeItem) {
     return TreeItems.MY_GROUP_FOLDERS_ID.equals(treeItem.getId());
   }
-  
+
   public static boolean isMySharedFoldersItem(final TreeItem treeItem) {
     return TreeItems.MY_SHARED_FOLDERS_ID.equals(treeItem.getId());
   }
@@ -98,7 +99,7 @@ public class TreeItems {
     }
     return ancestorIds;
   }
-  
+
   public static Collection<String> getIds(final Iterable<TreeItem> treeItems) {
     final LinkedList<String> ids = new LinkedList<String>();
     for(TreeItem treeItem : treeItems) {
@@ -113,7 +114,7 @@ public class TreeItems {
       if(!(item.getParent() instanceof TropixObjectTreeItem)) {
         allParentsAreFolder = false;
         break;
-      } 
+      }
       final TropixObjectTreeItem parentItem = (TropixObjectTreeItem) item.getParent();
       final TropixObject tropixObject = parentItem.getObject();
       if(!(tropixObject instanceof Folder || tropixObject instanceof VirtualFolder)) {
@@ -124,7 +125,7 @@ public class TreeItems {
     System.out.println("Returing allParentsAreFolder " + allParentsAreFolder);
     return allParentsAreFolder;
   }
-  
+
   /**
    * Test used by deleteItem and moveItem, could be useful elsewhere as well.
    * 
@@ -154,7 +155,8 @@ public class TreeItems {
    * <li>Have the same ids.</li>
    * <li>Have the same parent ids, or both have no parents.</li>
    * </ol>
-   * This condition may need to be amended as new types of objects are added, but it works for now to capture the concept of two distinct objects along with a unique path to them.
+   * This condition may need to be amended as new types of objects are added, but it works for now to capture the concept of two distinct objects
+   * along with a unique path to them.
    * 
    * @param treeItem1
    * @param treeItem2
