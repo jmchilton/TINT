@@ -21,6 +21,10 @@ import java.io.File;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
+import net.jmchilton.concurrent.Semaphore;
+
+import org.springframework.beans.factory.annotation.Value;
+
 import edu.umn.msi.tropix.common.shutdown.ShutdownException;
 import edu.umn.msi.tropix.jobs.MessageCodes;
 import edu.umn.msi.tropix.jobs.activities.ActivityContext;
@@ -34,10 +38,17 @@ import edu.umn.msi.tropix.storage.client.StorageDataFactory;
 @ManagedBean @ActivityFactoryFor(UploadFileDescription.class)
 class UploadFileActivityFactoryImpl implements ActivityFactory<UploadFileDescription> {
   private final FactorySupport factorySupport;
+  private final Semaphore semaphore;
+
+  UploadFileActivityFactoryImpl(final FactorySupport factorySupport) {  
+    this(factorySupport, 0);
+  }
   
   @Inject 
-  UploadFileActivityFactoryImpl(final FactorySupport factorySupport) {
+  UploadFileActivityFactoryImpl(final FactorySupport factorySupport,
+                                @Value("${max.simultaneous.storage.uploads?:0}") final int maxSimultaneousUploads) {
     this.factorySupport = factorySupport;
+    this.semaphore = new Semaphore(maxSimultaneousUploads > 0 ? maxSimultaneousUploads : Integer.MAX_VALUE, true);
   }
   
   class UploadActivityImpl extends BaseActivityImpl<UploadFileDescription> {
@@ -50,7 +61,12 @@ class UploadFileActivityFactoryImpl implements ActivityFactory<UploadFileDescrip
       factorySupport.getEventSupport().workflowUpdate(newWorkflowEvent(), MessageCodes.TRANSFERRING_FILES, null);
       final StorageDataFactory storageDataFactory = factorySupport.getStorageDataFactory();
       final StorageData storageData = storageDataFactory.getStorageData(getDescription().getStorageServiceUrl(), getCredential());
-      storageData.getUploadContext().put(new File(getDescription().getInputFilePath()));
+      try {
+        semaphore.acquire();
+        storageData.getUploadContext().put(new File(getDescription().getInputFilePath()));
+      } finally {
+        semaphore.release();
+      }
       final String dataIdentifier = storageData.getDataIdentifier();
       getDescription().setFileId(dataIdentifier);
     }

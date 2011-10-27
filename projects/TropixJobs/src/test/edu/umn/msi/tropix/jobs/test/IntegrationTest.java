@@ -27,7 +27,6 @@ import edu.umn.msi.tropix.files.NewFileMessageQueue;
 import edu.umn.msi.tropix.files.PersistentModelStorageDataFactory;
 import edu.umn.msi.tropix.jobs.activities.ActivityDirector;
 import edu.umn.msi.tropix.jobs.activities.descriptions.MessageCodeConstants;
-import edu.umn.msi.tropix.jobs.newfile.NewFileMessageQueueConsumerImpl;
 
 /**
  * Just loads the spring beans to make sure they all fit together properly.

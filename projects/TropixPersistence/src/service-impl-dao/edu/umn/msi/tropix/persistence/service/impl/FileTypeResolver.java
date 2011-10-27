@@ -26,5 +26,5 @@ import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 
 public interface FileTypeResolver {
-  FileType getType(StockFileExtensionI fileExtension);
+  FileType resolveType(StockFileExtensionI fileExtension);
 }

@@ -349,6 +349,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     refreshItem.addClickHandler(new ClickHandler() {
       public void onClick(final MenuItemClickEvent event) {
         mainTreeComponent.reset();
+
         navigationSelectionMediator.onEvent(new NavigationSelection(locationFactory.getTropixHomeItem()));
       }
     });

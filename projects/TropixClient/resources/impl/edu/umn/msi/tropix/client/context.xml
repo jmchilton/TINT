@@ -44,6 +44,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="local.catalog.host" value="http://localhost:8080/" />
         <entry key="user.iterable.cache" value="false" />
         <entry key="user.map.concurrency" value="10" />
+        <entry key="modules" value="BASE, SHARING, LOCAL_SEARCH, PROTIP" />
       </map>
     </property>
   </bean>    
@@ -62,6 +63,12 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
       <property name="ignoreResourceNotFound" value="true" />
     </bean>
   </gc:properties-to-map>
+
+  <bean id="modulesIterable" class="edu.umn.msi.tropix.common.collect.spring.JmxStringIterable">
+    <property name="contents" value="${modules}" />
+  </bean>
+  
+  <context:component-scan base-package="edu.umn.msi.tropix.client.modules" />
   
   <import resource="classpath:edu/umn/msi/tropix/jobs/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/client/metadata/context.xml" />

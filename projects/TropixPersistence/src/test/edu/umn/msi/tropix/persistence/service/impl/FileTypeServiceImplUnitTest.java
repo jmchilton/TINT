@@ -44,7 +44,7 @@ public class FileTypeServiceImplUnitTest {
     EasyMock.expect(fileTypeDao.getType(StockFileExtensionEnum.BOWTIE_INDEX.getExtension())).andReturn(null);
     final FileType fileType = new FileType();
     fileType.setId(UUID.randomUUID().toString());
-    EasyMock.expect(fileTypeResolver.getType(StockFileExtensionEnum.BOWTIE_INDEX)).andReturn(fileType);
+    EasyMock.expect(fileTypeResolver.resolveType(StockFileExtensionEnum.BOWTIE_INDEX)).andReturn(fileType);
     EasyMock.replay(fileTypeResolver, fileTypeDao);
     assert fileType.equals(service.loadPrimaryFileTypeWithExtension(UUID.randomUUID().toString(), StockFileExtensionEnum.BOWTIE_INDEX.getExtension()));
     EasyMock.verify(fileTypeResolver, fileTypeDao);

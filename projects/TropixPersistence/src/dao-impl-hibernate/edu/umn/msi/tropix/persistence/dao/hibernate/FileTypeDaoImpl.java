@@ -35,7 +35,7 @@ import edu.umn.msi.tropix.persistence.dao.FileTypeDao;
 @ManagedBean
 class FileTypeDaoImpl extends GenericDaoImpl<FileType> implements FileTypeDao {
 
-  public synchronized FileType getOrCreateType(final String extension, final String shortName) {
+  public synchronized FileType createOrGetType(final String extension, final String shortName) {
     final Query query;
     Preconditions.checkNotNull(extension);
     if(StringUtils.hasText(extension)) {

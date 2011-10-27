@@ -1,4 +1,5 @@
 /*******************************************************************************
+
  * Copyright 2009 Regents of the University of Minnesota. All rights
  * reserved.
  * Copyright 2009 Mayo Foundation for Medical Education and Research.
@@ -81,7 +82,7 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
     }
     final TreeItem rootItem = treeItems.iterator().next().getRoot();
     // Don't let you delete from searches, recent activity, etc...
-    return rootItem instanceof TropixObjectTreeItem || TreeItems.isMySharedFoldersItem(rootItem);
+    return rootItem instanceof TropixObjectTreeItem || TreeItems.isMySharedFoldersItem(rootItem) || TreeItems.isMyGroupFoldersItem(rootItem);
   }
 
   public Command get(final Collection<TreeItem> treeItems) {
@@ -129,7 +130,7 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
               // This gets reset before the callback is executed, so grab
               // selectedTreeItem at
               // construction time.
-              private final TreeItem selectedTreeContext = MoveWindowComponent.this.selectedTreeItem;
+              private final TreeItem selectedTreeContext = selectedTreeItem;
 
               @Override
               public void onSuccess(final Void result) {
@@ -142,9 +143,9 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
               }
             };
             if(tropixObjectRoot instanceof VirtualFolder) {
-              ObjectService.Util.getInstance().moveVirtually(treeItem.getId(), treeItem.getParent().getId(), MoveWindowComponent.this.selectedTreeItem.getObject().getId(), callback);
+              ObjectService.Util.getInstance().moveVirtually(treeItem.getId(), treeItem.getParent().getId(), selectedTreeItem.getObject().getId(), callback);
             } else {
-              ObjectService.Util.getInstance().move(treeItem.getId(), MoveWindowComponent.this.selectedTreeItem.getObject().getId(), callback);
+              ObjectService.Util.getInstance().move(treeItem.getId(), selectedTreeItem.getObject().getId(), callback);
             }
           }
           get().markForDestroy();

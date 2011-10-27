@@ -25,6 +25,7 @@ package edu.umn.msi.tropix.webgui.client.components.impl;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.google.common.base.Predicate;
 import com.google.inject.Inject;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Canvas;
@@ -83,12 +84,18 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
         treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null)));
       } else {
         treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null),
-            locationFactory.getMySharedFoldersItem(null),
-            locationFactory.getMyGroupFoldersItem(null)));
+                                                  locationFactory.getMySharedFoldersItem(null),
+                                                  locationFactory.getMyGroupFoldersItem(null)));
       }
       treeOptions.setShowPredicate(TreeItemPredicates.getDestinationsPredicate(true));
       if(destinationType != MetadataOptions.DestinationType.FOLDER) {
         treeOptions.setSelectionPredicate(TreeItemPredicates.getDestinationsPredicate(false));
+      } else {
+        treeOptions.setSelectionPredicate(new Predicate<TreeItem>() {
+          public boolean apply(final TreeItem treeItem) {
+            return !TreeItems.isMyGroupFoldersItem(treeItem);
+          }
+        });
       }
       if(initialItems != null) {
         for(final TreeItem initialItem : initialItems) {

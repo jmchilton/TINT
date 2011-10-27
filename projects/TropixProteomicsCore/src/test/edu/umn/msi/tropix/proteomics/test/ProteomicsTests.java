@@ -31,7 +31,7 @@ import edu.umn.msi.tropix.proteomics.xml.MzXMLUtility;
 public class ProteomicsTests {
   private static Repository repository = Repositories.getInstance();
   private static final MzXMLUtility UTILITY = new MzXMLUtility();
-  public static String SMALL_MZXML_RESOURCE_ID = "parentPerScan.mzxml";
+  public static final String SMALL_MZXML_RESOURCE_ID = "parentPerScan.mzxml";
 
   public static synchronized InputStream getMzxmlStream(final int sizeSeed) {
     final MzXML mzxml = UTILITY.deserialize(getResourceAsStream("parentPerScan.mzxml"));

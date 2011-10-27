@@ -71,7 +71,7 @@ public abstract class ServiceBase {
   }
 
   protected FileType getFileType(final StockFileExtensionI stockFileExtension) {
-    return fileTypeResolver.getType(stockFileExtension);
+    return fileTypeResolver.resolveType(stockFileExtension);
   }
 
   @Inject

@@ -127,8 +127,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
   private ComponentFactory<Note, ? extends CanvasComponent<? extends Canvas>> noteComponentFactory;
   private NavigationSelectionMediator navigationSelectionMediator;
   private ParametersPanelFactory parametersPanelFactory;
-  private LocationCommandComponentFactory<? extends Command> deleteCommandComponentFactory, renameCommandComponentFactory,
-      changeDescriptionCommandComponentFactory;
+  private LocationCommandComponentFactory<? extends Command> deleteCommandComponentFactory, renameCommandComponentFactory, changeDescriptionCommandComponentFactory;
   private final HashMap<String, Boolean> expandedMap = new HashMap<String, Boolean>();
   private ModuleManager moduleManager;
 
@@ -376,8 +375,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
     private Command getAddItemsToSharedFolderCommand(final VirtualFolder virtualFolder) {
       return new Command() {
         public void execute() {
-          final MultiSelectionWindowComponent<TreeItem, ? extends Window> component = PageComponentFactoryImpl.this.objectSelectionWindowComponentSupplier
-              .get();
+          final MultiSelectionWindowComponent<TreeItem, ? extends Window> component = objectSelectionWindowComponentSupplier.get();
           component.setMultiSelectionCallback(new Listener<Collection<TreeItem>>() {
             public void onEvent(final Collection<TreeItem> selectedObjects) {
               final ArrayList<String> ids = new ArrayList<String>(selectedObjects.size());
@@ -737,7 +735,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
 
   @Inject
   public void setObjectSelectionWindowComponentSupplier(
-      @Named("homeFolder") final Supplier<? extends MultiSelectionWindowComponent<TreeItem, ? extends Window>> objectSelectionWindowComponentSupplier) {
+      @Named("concreteObjects") final Supplier<? extends MultiSelectionWindowComponent<TreeItem, ? extends Window>> objectSelectionWindowComponentSupplier) {
     this.objectSelectionWindowComponentSupplier = objectSelectionWindowComponentSupplier;
   }
 

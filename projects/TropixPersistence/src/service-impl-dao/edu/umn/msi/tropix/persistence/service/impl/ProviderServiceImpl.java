@@ -39,7 +39,7 @@ public class ProviderServiceImpl extends ServiceBase implements ProviderService 
     saveProvider(provider);
   }
 
-  public void addUserToObjectsProvider(String adminId, String objectId, String userId) {
+  public void addUserToObjectsProvider(final String adminId, final String objectId, final String userId) {
     final Provider provider = loadProvider(objectId);
     provider.getUsers().add(getUserDao().loadUser(userId));
     saveProvider(provider);

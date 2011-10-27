@@ -221,7 +221,7 @@ public class ComponentsModule extends AbstractGinModule {
     bind(new TypeLiteral<ComponentFactory<PageConfiguration, ? extends CanvasComponent<? extends Canvas>>>() {
     }).to(PageComponentFactoryImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends MultiSelectionWindowComponent<TreeItem, ? extends Window>>>() {
-    }).annotatedWith(Names.named("homeFolder")).to(ObjectSelectionWindowComponentSupplierImpl.class).in(Singleton.class);
+    }).annotatedWith(Names.named("concreteObjects")).to(ObjectSelectionWindowComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends SelectionWindowComponent<TreeItem, ? extends Window>>>() {
     }).annotatedWith(Names.named("sharedFolder")).to(VirtualFolderSelectionWindowComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<ComponentFactory<PageConfiguration, ? extends CanvasComponent<? extends Canvas>>>() {

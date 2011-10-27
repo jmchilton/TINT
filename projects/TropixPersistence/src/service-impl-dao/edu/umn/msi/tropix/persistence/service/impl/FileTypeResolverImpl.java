@@ -42,10 +42,10 @@ class FileTypeResolverImpl implements FileTypeResolver {
     this.fileTypeDao = fileTypeDao;
   }
 
-  public FileType getType(final StockFileExtensionI fileExtension) {
+  public FileType resolveType(final StockFileExtensionI fileExtension) {
     final String extension = fileExtension.getExtension();
     final String shortName = messages.getMessage("file.type" + fileExtension.getExtension()); 
-    return fileTypeDao.getOrCreateType(extension, shortName);
+    return fileTypeDao.createOrGetType(extension, shortName);
   }
 
 }

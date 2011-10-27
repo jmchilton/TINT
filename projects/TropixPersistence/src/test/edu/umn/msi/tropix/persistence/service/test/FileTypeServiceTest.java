@@ -46,6 +46,14 @@ public class FileTypeServiceTest extends ServiceTest {
     tempUser = createTempUser();
     userId = tempUser.getCagridId();
   }
+
+  @Test
+  public void testGetFileTypeForNameIsCaseInsensitve() {    
+    final String fileName = "dbtest.FAstA";
+    final FileType fileType = fileTypeService.getFileTypeForName(userId, fileName);
+    Assert.assertEquals(fileTypeService.loadPrimaryFileTypeWithExtension(userId, StockFileExtensionEnum.FASTA.getExtension()).getExtension(), fileType.getExtension());
+  }
+
   
   @Test
   public void testGetFileTypeForName() {    

@@ -86,7 +86,7 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
   }
 
   protected FileType getFileType(final StockFileExtensionI stockFileExtension) {
-    return fileTypeResolver.getType(stockFileExtension);
+    return fileTypeResolver.resolveType(stockFileExtension);
   }
 
   @SuppressWarnings("unchecked")

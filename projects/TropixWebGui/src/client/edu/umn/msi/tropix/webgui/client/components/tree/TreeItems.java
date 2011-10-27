@@ -133,15 +133,18 @@ public class TreeItems {
    * @return
    */
   public static boolean allTropixObjectTreeItemsWithSameRoot(final Collection<TreeItem> treeItems) {
-    TreeItem firstItem = null;
+    TropixObjectTreeItem firstItem = null;
     boolean result = true;
     for(final TreeItem item : treeItems) {
-      if(firstItem == null) {
-        firstItem = item;
+      if(!(item instanceof TropixObjectTreeItem)) {
+        result = false;
+        break;
       }
-      if(item instanceof TropixObjectTreeItem && item.getRoot() == firstItem.getRoot()) {
-        continue;
-      } else {
+      final TropixObjectTreeItem tropixObjectTreeItem = (TropixObjectTreeItem) item;
+      if(firstItem == null) {
+        firstItem = tropixObjectTreeItem;
+      }
+      if(tropixObjectTreeItem.getTropixObjectTreeItemRoot() != firstItem.getTropixObjectTreeItemRoot()) {
         result = false;
         break;
       }

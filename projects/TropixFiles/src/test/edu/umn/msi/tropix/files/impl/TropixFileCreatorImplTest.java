@@ -32,7 +32,7 @@ public class TropixFileCreatorImplTest {
   @Test(groups = "unit")
   public void testAssingsFileTypeIfNeeded() {
     fileTypeId = null;
-    fileName = "FooCow.ebwt.zip";
+    fileName = "FooCow.EBWT.zip";
     final FileType fileType = new FileType();
     fileType.setId(UUID.randomUUID().toString());
     fileTypeId = fileType.getId();

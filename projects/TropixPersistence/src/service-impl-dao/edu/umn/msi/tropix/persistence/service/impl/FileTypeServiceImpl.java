@@ -68,7 +68,7 @@ class FileTypeServiceImpl implements FileTypeService {
     if(fileType == null) {
       for(final StockFileExtensionI stockExtension : StockFileExtensionEnum.values()) {
         if(stockExtension.getExtension().toLowerCase().equals(extension.toLowerCase())) {
-          fileType = fileTypeResolver.getType(stockExtension);
+          fileType = fileTypeResolver.resolveType(stockExtension);
         }
       }
     }

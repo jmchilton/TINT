@@ -1,6 +1,6 @@
 package edu.umn.msi.tropix.galaxy.service;
 
-import org.python.google.common.collect.Lists;
+import com.google.common.collect.Lists;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.galaxy.GalaxyDataUtils;

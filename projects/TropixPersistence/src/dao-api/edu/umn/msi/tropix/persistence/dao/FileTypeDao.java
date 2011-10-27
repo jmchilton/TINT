@@ -25,7 +25,7 @@ package edu.umn.msi.tropix.persistence.dao;
 import edu.umn.msi.tropix.models.FileType;
 
 public interface FileTypeDao extends Dao<FileType> {
-  FileType getOrCreateType(final String extension, final String shortName);
+  FileType createOrGetType(final String extension, final String shortName);
   
   FileType getType(final String extension);
 }

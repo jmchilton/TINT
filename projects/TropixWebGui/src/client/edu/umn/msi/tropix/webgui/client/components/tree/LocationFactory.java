@@ -46,5 +46,7 @@ public interface LocationFactory {
   Iterable<TreeItem> getTropixObjectSourceRootItems(@Nullable TropixObjectTreeItemExpander expander);
 
   Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable TropixObjectTreeItemExpander expander);
+  
+  Iterable<TreeItem> getConcreteTropixObjectRootItems(@Nullable TropixObjectTreeItemExpander expander);
 
 }

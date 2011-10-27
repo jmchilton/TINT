@@ -19,7 +19,7 @@ package edu.umn.msi.tropix.galaxy;
 import java.util.List;
 import java.util.Map;
 
-import org.python.google.common.base.Joiner;
+import com.google.common.base.Joiner;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;

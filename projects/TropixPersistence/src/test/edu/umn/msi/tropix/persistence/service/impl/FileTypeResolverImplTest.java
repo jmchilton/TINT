@@ -38,7 +38,7 @@ public class FileTypeResolverImplTest extends ServiceTest {
   @Test
   public void testResolveEach() {
     for(StockFileExtensionI extension : StockFileExtensionEnum.values()) {
-      final FileType fileType = resolver.getType(extension);
+      final FileType fileType = resolver.resolveType(extension);
       assert fileType != null;
     }
   }

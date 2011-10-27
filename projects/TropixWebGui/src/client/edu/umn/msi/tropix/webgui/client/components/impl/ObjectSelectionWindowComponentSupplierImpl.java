@@ -22,8 +22,6 @@
 
 package edu.umn.msi.tropix.webgui.client.components.impl;
 
-import java.util.Arrays;
-
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
@@ -43,12 +41,10 @@ public class ObjectSelectionWindowComponentSupplierImpl extends SelectionWindowC
   public ObjectSelectionWindowComponentSupplierImpl(final LocationFactory locationFactory, final Session session) {
     super.setWindowSupplier(PopOutWindowBuilder.titled("Select Objects").modal());
     final TreeComponentFactoryImpl treeFactory = new TreeComponentFactoryImpl();
-
     treeFactory.setDefaultTreeOptionsSupplier(new Supplier<TreeOptions>() {
       public TreeOptions get() {
         final TreeOptions treeOptions = new TreeOptions();
-        treeOptions.setInitialItems(Arrays.<TreeItem>asList(locationFactory.getTropixObjectTreeItem(null, session.getUser().getHomeFolder(),
-            TropixObjectTreeItemExpanders.get())));
+        treeOptions.setInitialItems(locationFactory.getConcreteTropixObjectRootItems(TropixObjectTreeItemExpanders.get()));
         treeOptions.setSelectionPredicate(TreeItemPredicates.getIsTropixObjectTreeItemPredicate());
         treeOptions.setSelectionType(SelectionType.MULTIPlE);
         return treeOptions;

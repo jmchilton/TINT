@@ -51,6 +51,17 @@ public enum StockFileExtensionEnum implements StockFileExtensionI {
     return databaseName;
   }
   
+  public StockFileExtensionEnum loadForExtension(final String extension) {
+    StockFileExtensionEnum fileExtension = null;
+    for(StockFileExtensionEnum stockFileExtension : values()) {
+      if(stockFileExtension.getExtension().equals(extension)) {
+        fileExtension = stockFileExtension;
+        break;
+      }
+    }
+    return fileExtension;
+  }
+  
   @Nullable
   public static StockFileExtensionEnum loadForFile(final TropixFile tropixFile) {
     StockFileExtensionEnum fileExtension = null;
