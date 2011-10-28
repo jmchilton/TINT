@@ -30,9 +30,9 @@ public class PasswordAuthenticatorImpl implements PasswordAuthenticator {
   public boolean authenticate(final String username, 
       final String password, 
       final ServerSession session) {
+    session.getIoSession().getRemoteAddress();
     LOG.debug(String.format("Attempting to authenticate username [%s]", username));
     final AuthenticationToken usernamePasswordToken = new AuthenticationToken(username, password, "Local");
-    
     final Authentication authentication = authenticationProvider.authenticate(usernamePasswordToken);
     Preconditions.checkState(authentication instanceof CredentialAuthentication);
     boolean isAuthenticated = authentication.isAuthenticated();

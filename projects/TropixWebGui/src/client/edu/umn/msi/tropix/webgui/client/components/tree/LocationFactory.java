@@ -28,8 +28,7 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.webgui.client.components.tree.impl.TropixObjectTreeItemImpl;
 
 public interface LocationFactory {
-  TropixObjectTreeItem getTropixObjectTreeItem(@Nullable TreeItem parent, TropixObject object,
-      TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
+  TropixObjectTreeItem getTropixObjectTreeItem(@Nullable TreeItem parent, TropixObject object, TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
 
   TropixObjectTreeItem getTropixObjectTreeItem(TropixObjectTreeItemImpl parent, TropixObject object);
 

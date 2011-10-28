@@ -27,28 +27,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface TreeItem {
-  /**
-   * This should not return null, root can be itself.
-   */
-  TreeItem getRoot();
-
-  /**
-   * May return null if this item is a root item.
-   */
-  TreeItem getParent();
-
-  String getId();
-
-  boolean isFolder();
-
+public interface TreeItem extends Location {
   String getIcon();
-
-  String getType();
-
-  String getName();
-
-  String getSort();
 
   Date getCreationDate();
 
@@ -57,5 +37,4 @@ public interface TreeItem {
   void getChildren(AsyncCallback<List<TreeItem>> children);
 
   void refresh(AsyncCallback<Void> callback);
-
 }

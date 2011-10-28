@@ -35,6 +35,7 @@ import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.PageConfiguration;
+import edu.umn.msi.tropix.webgui.client.components.tree.Location;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
@@ -119,7 +120,7 @@ public class PageManager extends WidgetSupplierImpl<Layout> implements Listener<
 
   private void load(final TreeItem treeItem) {
     this.loadedObject = treeItem;
-    final TreeItem parentItem = treeItem.getParent();
+    final Location parentItem = treeItem.getParent();
     if(parentItem != null && TreeItems.isIncomingRequestsItem(parentItem)) {
       final Request request = (Request) ((TropixObjectTreeItem) loadedObject).getObject();
       this.setCanvas(incomingRequestComponentFactory.get(request));

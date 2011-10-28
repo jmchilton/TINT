@@ -54,23 +54,23 @@ public class TreeItems {
   public static final String MY_OUTGOING_REQUESTS_ID = "-6";
   public static final String MY_GROUP_FOLDERS_ID = "-7";
 
-  public static boolean isMyGroupFoldersItem(final TreeItem treeItem) {
+  public static boolean isMyGroupFoldersItem(final Location treeItem) {
     return TreeItems.MY_GROUP_FOLDERS_ID.equals(treeItem.getId());
   }
 
-  public static boolean isMySharedFoldersItem(final TreeItem treeItem) {
+  public static boolean isMySharedFoldersItem(final Location treeItem) {
     return TreeItems.MY_SHARED_FOLDERS_ID.equals(treeItem.getId());
   }
 
-  public static boolean isIncomingRequestsItem(final TreeItem treeItem) {
+  public static boolean isIncomingRequestsItem(final Location treeItem) {
     return TreeItems.MY_INCOMING_REQUESTS_ID.equals(treeItem.getId());
   }
 
-  public static boolean isOutgoingRequestsItem(final TreeItem treeItem) {
+  public static boolean isOutgoingRequestsItem(final Location treeItem) {
     return TreeItems.MY_OUTGOING_REQUESTS_ID.equals(treeItem.getId());
   }
 
-  public static boolean isMyRecentActivityItem(final TreeItem treeItem) {
+  public static boolean isMyRecentActivityItem(final Location treeItem) {
     return TreeItems.MY_RECENT_ACTIVITY_ID.equals(treeItem.getId());
   }
 
@@ -82,9 +82,9 @@ public class TreeItems {
     return idMap;
   }
 
-  public static List<String> getAncestorIds(final TreeItem initialItem) {
+  public static List<String> getAncestorIds(final Location initialItem) {
     final LinkedList<String> ancestorIds = new LinkedList<String>();
-    TreeItem currentItem = initialItem;
+    Location currentItem = initialItem;
     while(currentItem.getParent() != null) {
       currentItem = currentItem.getParent();
       ancestorIds.addFirst(currentItem.getId());
@@ -165,7 +165,7 @@ public class TreeItems {
    * @param treeItem2
    * @return
    */
-  public static boolean alike(final TreeItem treeItem1, final TreeItem treeItem2) {
+  public static boolean alike(final Location treeItem1, final Location treeItem2) {
     boolean result;
     if(!treeItem1.getId().equals(treeItem2.getId())) {
       result = false;

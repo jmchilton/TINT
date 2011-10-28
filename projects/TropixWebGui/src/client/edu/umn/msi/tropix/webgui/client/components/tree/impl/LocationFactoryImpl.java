@@ -354,23 +354,34 @@ public class LocationFactoryImpl implements LocationFactory {
   }
 
   public Iterable<TreeItem> getAllRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getSharedRootItem(expander), getMyRecentActivityItem(),
-        getMyRecentSearchesItem(), getIncomingRequestsItem(), getOutgoingRequestsItem(), getGroupFoldersRootItem(expander)), moduleManager);
+    return Iterables.filter(
+             Arrays.asList(getHomeRootItem(expander), 
+                           getSharedRootItem(expander), 
+                           getMyRecentActivityItem(),
+                           getMyRecentSearchesItem(), 
+                           getIncomingRequestsItem(), 
+                           getOutgoingRequestsItem(), 
+                           getGroupFoldersRootItem(expander)), moduleManager);
   }
   
   public Iterable<TreeItem> getConcreteTropixObjectRootItems(final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getGroupFoldersRootItem(expander)), moduleManager);
+    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), 
+                                          getGroupFoldersRootItem(expander)), moduleManager);
   }
 
 
   public Iterable<TreeItem> getTropixObjectSourceRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
     return Iterables.filter(
-        Arrays.asList(getHomeRootItem(expander), getSharedRootItem(expander), getGroupFoldersRootItem(expander), getMyRecentActivityItem(),
-            getMyRecentSearchesItem()), moduleManager);
+        Arrays.asList(getHomeRootItem(expander), 
+                      getSharedRootItem(expander), 
+                      getGroupFoldersRootItem(expander), 
+                      getMyRecentActivityItem(),
+                      getMyRecentSearchesItem()), moduleManager);
   }
 
   public Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getIncomingRequestsItem(), getGroupFoldersRootItem(expander)), moduleManager);
+    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getIncomingRequestsItem(), 
+                            getGroupFoldersRootItem(expander)), moduleManager);
   }
 
   private TropixObjectTreeItemExpander getExpander(@Nullable final TropixObjectTreeItemExpander expander) {

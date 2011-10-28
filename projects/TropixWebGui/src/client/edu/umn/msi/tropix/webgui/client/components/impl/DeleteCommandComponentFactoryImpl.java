@@ -31,6 +31,7 @@ import com.smartgwt.client.util.SC;
 
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.tree.Location;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
@@ -48,7 +49,7 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
       return false;
     }
     final TreeItem firstItem = treeItems.iterator().next();
-    final TreeItem rootItem = firstItem.getRoot();
+    final Location rootItem = firstItem.getRoot();
 
     // If some items are root shared folders and not others don't allow delete...
     if(TreeItems.isMySharedFoldersItem(rootItem)) {
@@ -67,7 +68,7 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
     return new Command() {
       public void execute() {
         final TreeItem firstItem = treeItems.iterator().next();
-        final TreeItem rootItem = firstItem.getRoot();
+        final Location rootItem = firstItem.getRoot();
         final boolean isVirtual = TreeItems.isMySharedFoldersItem(rootItem);
         final boolean isVirtualRoot = isVirtual && TreeItems.isMySharedFoldersItem(firstItem.getParent());
         final Collection<String> ids = new ArrayList<String>(treeItems.size());

@@ -29,4 +29,5 @@ public interface TropixObjectTreeItem extends TreeItem {
   TropixObjectTreeItem getTropixObjectTreeItemRoot();
 
   TropixObject getObject();
+  
 }

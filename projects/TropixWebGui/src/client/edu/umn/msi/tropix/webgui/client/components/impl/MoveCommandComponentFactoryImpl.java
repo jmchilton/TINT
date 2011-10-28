@@ -42,6 +42,7 @@ import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.tree.Location;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
@@ -80,7 +81,7 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
          && TreeItems.allParentsAreFolder(treeItems))) {
      return false;
     }
-    final TreeItem rootItem = treeItems.iterator().next().getRoot();
+    final Location rootItem = treeItems.iterator().next().getRoot();
     // Don't let you delete from searches, recent activity, etc...
     return rootItem instanceof TropixObjectTreeItem || TreeItems.isMySharedFoldersItem(rootItem) || TreeItems.isMyGroupFoldersItem(rootItem);
   }
