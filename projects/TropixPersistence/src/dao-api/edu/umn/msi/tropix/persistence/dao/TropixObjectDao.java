@@ -142,4 +142,6 @@ public interface TropixObjectDao {
 
   TropixObject getPath(String userId, List<String> asList);
 
+  boolean isAnOwner(final String userId, final String objectId);
+
 }

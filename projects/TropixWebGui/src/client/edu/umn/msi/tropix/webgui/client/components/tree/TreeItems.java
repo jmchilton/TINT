@@ -31,7 +31,9 @@ import java.util.List;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Location;
 
+// TODO: Move more items to Locations
 public class TreeItems {
   // Used in items
   public static final String ATTRIBUTE_TYPE = "type";
@@ -45,34 +47,6 @@ public class TreeItems {
   // Managed internally by the tree
   public static final String ATTRIBUTE_PARENT_ID = "parent";
   public static final String ATTRIBUTE_OBJECT = "object";
-
-  public static final String MY_SHARED_FOLDERS_ID = "-1";
-  public static final String TROPIX_HOME_ID = "-2";
-  public static final String MY_RECENT_ACTIVITY_ID = "-3";
-  public static final String MY_RECENT_SEARCHES_ID = "-4";
-  public static final String MY_INCOMING_REQUESTS_ID = "-5";
-  public static final String MY_OUTGOING_REQUESTS_ID = "-6";
-  public static final String MY_GROUP_FOLDERS_ID = "-7";
-
-  public static boolean isMyGroupFoldersItem(final Location treeItem) {
-    return TreeItems.MY_GROUP_FOLDERS_ID.equals(treeItem.getId());
-  }
-
-  public static boolean isMySharedFoldersItem(final Location treeItem) {
-    return TreeItems.MY_SHARED_FOLDERS_ID.equals(treeItem.getId());
-  }
-
-  public static boolean isIncomingRequestsItem(final Location treeItem) {
-    return TreeItems.MY_INCOMING_REQUESTS_ID.equals(treeItem.getId());
-  }
-
-  public static boolean isOutgoingRequestsItem(final Location treeItem) {
-    return TreeItems.MY_OUTGOING_REQUESTS_ID.equals(treeItem.getId());
-  }
-
-  public static boolean isMyRecentActivityItem(final Location treeItem) {
-    return TreeItems.MY_RECENT_ACTIVITY_ID.equals(treeItem.getId());
-  }
 
   public static HashMap<String, TreeItem> getIdMap(final Iterable<TreeItem> items) {
     final HashMap<String, TreeItem> idMap = new HashMap<String, TreeItem>();
@@ -148,33 +122,6 @@ public class TreeItems {
         result = false;
         break;
       }
-    }
-    return result;
-  }
-
-  /**
-   * Two tree items are "alike" if they meet the following two conditions
-   * <ol>
-   * <li>Have the same ids.</li>
-   * <li>Have the same parent ids, or both have no parents.</li>
-   * </ol>
-   * This condition may need to be amended as new types of objects are added, but it works for now to capture the concept of two distinct objects
-   * along with a unique path to them.
-   * 
-   * @param treeItem1
-   * @param treeItem2
-   * @return
-   */
-  public static boolean alike(final Location treeItem1, final Location treeItem2) {
-    boolean result;
-    if(!treeItem1.getId().equals(treeItem2.getId())) {
-      result = false;
-    } else if(treeItem1.getParent() == null) {
-      result = treeItem2.getParent() == null;
-    } else if(treeItem2.getParent() == null) {
-      result = false;
-    } else {
-      result = treeItem1.getParent().getId().equals(treeItem2.getParent().getId());
     }
     return result;
   }

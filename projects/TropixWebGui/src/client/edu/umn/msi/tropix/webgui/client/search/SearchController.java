@@ -38,9 +38,9 @@ import edu.umn.msi.gwt.mvc.ChangeListener;
 import edu.umn.msi.gwt.mvc.Controller;
 import edu.umn.msi.gwt.mvc.Model;
 import edu.umn.msi.tropix.client.search.models.GridData;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.catalog.beans.ServiceBean;
 import edu.umn.msi.tropix.webgui.client.components.ResultComponent;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
 import edu.umn.msi.tropix.webgui.client.modules.RequiresAnyModule;
 import edu.umn.msi.tropix.webgui.client.search.SearchModel.SearchType;
@@ -64,7 +64,7 @@ public class SearchController extends Controller implements Supplier<Tab>, Requi
     public void modelChanged(final ChangeEvent event) {
       final SearchModel searchModel = (SearchModel) event.item;
       if(searchModel.getSearchType().equals(SearchModel.SearchType.LOCAL) && searchModel.isComplete()) {
-        SearchController.this.updateMediator.onEvent(new LocationUpdateMediator.AddUpdateEvent(searchModel.getId(), null, TreeItems.MY_RECENT_SEARCHES_ID));
+        SearchController.this.updateMediator.onEvent(new LocationUpdateMediator.AddUpdateEvent(searchModel.getId(), null, Locations.MY_RECENT_SEARCHES_ID));
       }
     }
   };

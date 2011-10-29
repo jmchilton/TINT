@@ -63,13 +63,12 @@ public class ObjectServiceImpl implements ObjectService {
 
   ObjectServiceImpl() {
   }
-  
+
   @ServiceMethod(readOnly = true)
   public TropixObjectContext getObjectContext(final String objectId) {
     final boolean modifiable = tropixObjectService.canModify(userSession.getGridId(), objectId);
-    final String ownerId = tropixObjectService.getOwnerId(objectId);
-    final boolean owns = userSession.getGridId().equals(ownerId);
-    return new TropixObjectContext(modifiable, owns);
+    final boolean canModifySharing = tropixObjectService.canModifySharing(userSession.getGridId(), objectId);
+    return new TropixObjectContext(modifiable, canModifySharing);
   }
 
   private List<TropixObject> sanitizeObjects(final TropixObject[] objects) {
@@ -264,8 +263,8 @@ public class ObjectServiceImpl implements ObjectService {
       objects = tropixObjectService.getChildren(this.userSession.getGridId(), objectId);
     }
     return BeanSanitizerUtils.sanitizeArray(beanSanitizer, objects);
-  }  
-  
+  }
+
   @Inject
   public void setPermissionFunction(@Named("permissionFunction") final Function<PermissionReport, Permission> permissionFunction) {
     this.permissionFunction = permissionFunction;

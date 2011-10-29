@@ -38,11 +38,12 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
-import edu.umn.msi.tropix.webgui.client.components.tree.Location;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
@@ -83,7 +84,7 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
     }
     final Location rootItem = treeItems.iterator().next().getRoot();
     // Don't let you delete from searches, recent activity, etc...
-    return rootItem instanceof TropixObjectTreeItem || TreeItems.isMySharedFoldersItem(rootItem) || TreeItems.isMyGroupFoldersItem(rootItem);
+    return rootItem instanceof TropixObjectTreeItem || Locations.isMySharedFoldersItem(rootItem) || Locations.isMyGroupFoldersItem(rootItem);
   }
 
   public Command get(final Collection<TreeItem> treeItems) {

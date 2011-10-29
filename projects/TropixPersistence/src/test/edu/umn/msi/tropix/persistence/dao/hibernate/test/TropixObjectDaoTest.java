@@ -138,20 +138,6 @@ public class TropixObjectDaoTest extends DaoTest {
   }
 
   @Test
-  public void getOwnerId() {
-    final String id1 = newObject(), userId = newUser();
-    makeFile(id1);
-
-    final String roleId = newPermission("owner");
-    makeDirectPermission(roleId);
-    this.addObjectPermission(roleId, id1);
-    this.addUserPermission(roleId, userId);
-    flush();
-    final String ownerId = objectDao.getOwnerId(id1);
-    assert ownerId.equals(userId) : ownerId;
-  }
-
-  @Test
   public void getAssociation() {
     final String fileId = newObject(), runId = newObject();
     makeFile(fileId);
@@ -496,6 +482,36 @@ public class TropixObjectDaoTest extends DaoTest {
   }
 
   @Test
+  public void getOwnerId() {
+    final String userId = newUser();
+    final String roleId = newDirectPermissionForUser(userId);
+    final String id1 = newObjectWithPermission(roleId);
+
+    flush();
+    final String ownerId = objectDao.getOwnerId(id1);
+    assert ownerId.equals(userId) : ownerId;
+  }
+
+  @Test
+  public void testUserIsOwner() {
+    final String userId = newUser();
+    final String roleId = newDirectPermissionForUser(userId);
+    final String id1 = newObjectWithPermission(roleId);
+    flush();
+    assert objectDao.isAnOwner(userId, id1);
+  }
+
+  @Test
+  public void testProviderIsOwner() {
+    final String userId = newUser();
+    final String groupId = newGroupWithUser(userId);
+    final String providerId = newProviderForGroup(groupId);
+    final String objectId = newObjectWithPermission(providerId);
+    flush();
+    assert objectDao.isAnOwner(userId, objectId);
+  }
+
+  @Test
   public void testGetGroupFolder() {
     final String userId = newUser();
     final String groupId = newGroupWithUser(userId);
@@ -677,6 +693,18 @@ public class TropixObjectDaoTest extends DaoTest {
     execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID, ROOT) VALUES ('%s','%d')", objectId, root ? 1 : 0);
   }
 
+  private String newDirectPermissionForUser(final String userId) {
+    final String roleId = newDirectPermission();
+    addUserPermission(roleId, userId);
+    return roleId;
+  }
+
+  private String newDirectPermission() {
+    final String roleId = newPermission();
+    makeDirectPermission(roleId);
+    return roleId;
+  }
+
   public String newObjectWithPermission(final String permissionId) {
     final String objectId = newObject();
     addObjectPermission(permissionId, objectId);
@@ -684,7 +712,7 @@ public class TropixObjectDaoTest extends DaoTest {
   }
 
   public String newProviderForGroup(final String groupId) {
-    final String providerId = newPermission();
+    final String providerId = newPermission("write");
     makeProvider(providerId);
     addGroupPermission(providerId, groupId);
     return providerId;

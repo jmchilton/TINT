@@ -40,18 +40,19 @@ import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
-import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 import edu.umn.msi.tropix.persistence.service.security.SecurityProvider;
 
-@Aspect @Order(10) // This must be applied before AutoUserAspect so not just anyone can create a user, so this has Order 10 that has Order 20
+@Aspect
+@Order(10)
+// This must be applied before AutoUserAspect so not just anyone can create a user, so this has Order 10 that has Order 20
 class SecurityAspect {
   private static final Log LOG = LogFactory.getLog(SecurityAspect.class);
   private static int count = 0;
   private static final ReflectionHelper REFLECTION_HELPER = ReflectionHelpers.getInstance();
   private TropixObjectDao tropixObjectDao;
   private SecurityProvider securityProvider;
-    
+
   SecurityAspect(final TropixObjectDao tropixObjectDao, final SecurityProvider securityProvider) {
     LOG.debug("Constructing SecurityAspect number " + ++count);
     this.tropixObjectDao = tropixObjectDao;
@@ -97,8 +98,7 @@ class SecurityAspect {
     }
     if(containsAnnotation(Owns.class, annotations)) {
       for(final String objectId : objectIds) {
-        final User owner = tropixObjectDao.getOwner(objectId);
-        if(owner == null || !owner.getCagridId().equals(userId)) {
+        if(!tropixObjectDao.isAnOwner(userId, objectId)) {
           throw new RuntimeException("User " + userId + " does not own object with id " + objectId);
         }
       }
@@ -154,5 +154,5 @@ class SecurityAspect {
     }
 
   }
-  
+
 }

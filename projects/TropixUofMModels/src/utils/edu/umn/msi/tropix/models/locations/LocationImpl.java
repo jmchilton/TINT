@@ -1,11 +1,8 @@
-package edu.umn.msi.tropix.webgui.client.components.tree.impl;
+package edu.umn.msi.tropix.models.locations;
 
 import java.util.Date;
 
 import javax.annotation.Nullable;
-
-import edu.umn.msi.tropix.webgui.client.components.tree.Location;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 
 public class LocationImpl implements Location {
   private final Location parent;
@@ -28,8 +25,8 @@ public class LocationImpl implements Location {
     }
   }
 
-  public TreeItem getParent() {
-    return (TreeItem) this.parent;
+  public Location getParent() {
+    return this.parent;
   }
 
   public Location getRoot() {

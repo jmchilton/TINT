@@ -33,5 +33,7 @@ public interface NewWizardConstants extends Constants {
 
   String sharedFolderDescription();
 
+  String groupFolderDescription();
+
   NewWizardConstants INSTANCE = GWT.create(NewWizardConstants.class);
 }

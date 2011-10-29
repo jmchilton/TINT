@@ -29,9 +29,10 @@ import com.google.gwt.user.client.Command;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
-import edu.umn.msi.tropix.webgui.client.components.tree.Location;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
@@ -52,16 +53,16 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
     final Location rootItem = firstItem.getRoot();
 
     // If some items are root shared folders and not others don't allow delete...
-    if(TreeItems.isMySharedFoldersItem(rootItem)) {
+    if(Locations.isMySharedFoldersItem(rootItem)) {
       for(final TreeItem treeItem : treeItems) {
-        if(TreeItems.isMySharedFoldersItem(treeItem.getParent()) != TreeItems.isMySharedFoldersItem(firstItem.getParent())) {
+        if(Locations.isMySharedFoldersItem(treeItem.getParent()) != Locations.isMySharedFoldersItem(firstItem.getParent())) {
           return false;
         }
       }
     }
 
     // Don't let you delete from searches, etc...
-    return firstItem instanceof TropixObjectTreeItem && (rootItem instanceof TropixObjectTreeItem || TreeItems.isMySharedFoldersItem(rootItem) || TreeItems.isMyRecentActivityItem(rootItem));
+    return firstItem instanceof TropixObjectTreeItem && (rootItem instanceof TropixObjectTreeItem || Locations.isMySharedFoldersItem(rootItem) || Locations.isMyRecentActivityItem(rootItem));
   }
 
   public Command get(final Collection<TreeItem> treeItems) {
@@ -69,8 +70,8 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
       public void execute() {
         final TreeItem firstItem = treeItems.iterator().next();
         final Location rootItem = firstItem.getRoot();
-        final boolean isVirtual = TreeItems.isMySharedFoldersItem(rootItem);
-        final boolean isVirtualRoot = isVirtual && TreeItems.isMySharedFoldersItem(firstItem.getParent());
+        final boolean isVirtual = Locations.isMySharedFoldersItem(rootItem);
+        final boolean isVirtualRoot = isVirtual && Locations.isMySharedFoldersItem(firstItem.getParent());
         final Collection<String> ids = new ArrayList<String>(treeItems.size());
         for(final TreeItem treeItem : treeItems) {
           ids.add(treeItem.getId());

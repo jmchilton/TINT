@@ -22,10 +22,14 @@
 
 package edu.umn.msi.tropix.client.test;
 
+import gov.nih.nci.cagrid.metadata.ServiceMetadata;
+import info.minnesotapartnership.tropix.directory.models.Person;
+
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Resource;
 import javax.xml.namespace.QName;
 
 import org.springframework.test.context.ContextConfiguration;
@@ -33,6 +37,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
 
 import edu.umn.msi.tropix.client.directory.GridUser;
 import edu.umn.msi.tropix.client.metadata.MetadataResolver;
@@ -43,10 +48,12 @@ import edu.umn.msi.tropix.client.services.QueueGridService;
 import edu.umn.msi.tropix.common.jobqueue.queuestatus.QueueStatus;
 import edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldMetadata;
 import edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldVersion;
-import gov.nih.nci.cagrid.metadata.ServiceMetadata;
 
 @ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/client/test/testApplicationContext.xml")
 public class SpringTests extends AbstractTestNGSpringContextTests {
+
+  @Resource
+  private Supplier<Multimap<String, Person>> directoryServicePersonSupplier;
 
   @SuppressWarnings({"unchecked", "unused"})
   @Test
@@ -55,6 +62,15 @@ public class SpringTests extends AbstractTestNGSpringContextTests {
     // edu.umn.msi.tropix.labs.catalog.impl.LocalCatalogInstanceImpl catalog = new edu.umn.msi.tropix.labs.catalog.impl.LocalCatalogInstanceImpl();
     // catalog.setHost("http://appdev1.msi.umn.edu:8080/");
     // catalog.getCatalogOntAPI().addCategory("Laboratory Service", "A laboratory service", new CategoryFieldAssociation[0]);
+
+    Multimap<String, Person> persons = directoryServicePersonSupplier.get();
+    System.out.println("Persons");
+    for(Person person : persons.values()) {
+      System.out.println(person.getCagridIdentity());
+    }
+    System.out.println("/Persons");
+    if(true)
+      throw new RuntimeException();
 
     Supplier<Iterable<QueueGridService>> bowtieServiceSupplier = (Supplier<Iterable<QueueGridService>>) applicationContext
         .getBean("rawExtractGridServiceSupplier");

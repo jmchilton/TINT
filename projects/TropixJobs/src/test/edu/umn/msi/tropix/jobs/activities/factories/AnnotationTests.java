@@ -71,9 +71,14 @@ public class AnnotationTests {
       // Make sure the class is make as a ManageBean to DI context picks it up.
       assert factoryClass.getAnnotation(ManagedBean.class) != null : "Factory class " + factoryClass + " is not annotated with @ManagedBean";
 
-      assert factoryClass.getDeclaredConstructors().length == 1;
-      final Constructor<?> constructor = factoryClass.getDeclaredConstructors()[0];
-      assert constructor.getParameterTypes().length == 0 || constructor.getAnnotation(Inject.class) != null;
+      // assert factoryClass.getDeclaredConstructors().length == 1;
+      boolean found_injected_constructor = false;
+      for(Constructor<?> constructor : factoryClass.getDeclaredConstructors()) {
+        if(constructor.getParameterTypes().length == 0 || constructor.getAnnotation(Inject.class) != null) {
+          found_injected_constructor = true;
+        }
+      }
+      assert found_injected_constructor;
 
       final ActivityFactoryFor factoryAnnotation = factoryClass.getAnnotation(ActivityFactoryFor.class);
       // Make sure this class specifies which ActivityDescription it acts an ActivityFactory for.

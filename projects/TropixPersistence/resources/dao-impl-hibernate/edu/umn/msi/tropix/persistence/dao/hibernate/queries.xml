@@ -223,6 +223,29 @@
       o.id = :objectId 
     and 
       role.role='owner' 
+  ]]></query>
+  <query name="isUserOwner"><![CDATA[
+    select count(distinct o)
+    from TropixObject o
+         inner join o.permissions p
+         left join p.users u
+    where 
+        o.id = :objectId
+      and    
+        u.cagridId = :userId 
+      and p.role = 'owner'
+  ]]></query>
+  <query name="isGroupOwner"><![CDATA[
+    select count(distinct o)
+    from Provider p 
+         inner join p.objects o
+         left join p.users u
+         left join p.groups g
+         left join g.users gu
+    where 
+        o.id = :objectId
+      and    
+        (gu.cagridId = :userId and p.role = 'write')
   ]]></query>  
   <query name="getOwnerId"><![CDATA[
   select u.cagridId 

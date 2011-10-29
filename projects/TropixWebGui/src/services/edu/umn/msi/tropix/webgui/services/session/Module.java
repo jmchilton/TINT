@@ -32,17 +32,18 @@ import java.io.Serializable;
  * 
  */
 public enum Module implements Serializable {
-  GUEST, 
-  USER, 
-  LOCAL, 
-  GRID, 
-  ADMIN, 
-  SHARING, 
-  PROTIP, 
-  GENETIP, 
-  GALAXY, 
-  LOCAL_SEARCH, 
-  REQUEST, 
-  CATALOG, 
+  BASE,
+  GUEST,
+  USER,
+  LOCAL,
+  GRID,
+  ADMIN,
+  SHARING,
+  PROTIP,
+  GENETIP,
+  GALAXY,
+  LOCAL_SEARCH,
+  REQUEST,
+  CATALOG,
   GRID_SEARCH;
 }

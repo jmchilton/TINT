@@ -37,6 +37,7 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
@@ -80,12 +81,10 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       final TreeOptions treeOptions = new TreeOptions();
       if(destinationType == MetadataOptions.DestinationType.ALL) {
         treeOptions.setInitialItems(locationFactory.getTropixObjectDestinationRootItems(null));
-      } else if(destinationType == MetadataOptions.DestinationType.HOME) {
-        treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null)));
       } else {
         treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null),
-                                                  locationFactory.getMySharedFoldersItem(null),
-                                                  locationFactory.getMyGroupFoldersItem(null)));
+            locationFactory.getMySharedFoldersItem(null),
+            locationFactory.getMyGroupFoldersItem(null)));
       }
       treeOptions.setShowPredicate(TreeItemPredicates.getDestinationsPredicate(true));
       if(destinationType != MetadataOptions.DestinationType.FOLDER) {
@@ -93,7 +92,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       } else {
         treeOptions.setSelectionPredicate(new Predicate<TreeItem>() {
           public boolean apply(final TreeItem treeItem) {
-            return !TreeItems.isMyGroupFoldersItem(treeItem);
+            return !Locations.isMyGroupFoldersItem(treeItem);
           }
         });
       }
@@ -126,7 +125,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
         final TropixObjectTreeItem toItem = (TropixObjectTreeItem) treeItem;
         return toItem.getObject() instanceof Folder || toItem.getObject() instanceof VirtualFolder;
       } else {
-        return TreeItems.isMySharedFoldersItem(treeItem);
+        return Locations.isMySharedFoldersItem(treeItem);
       }
     }
 

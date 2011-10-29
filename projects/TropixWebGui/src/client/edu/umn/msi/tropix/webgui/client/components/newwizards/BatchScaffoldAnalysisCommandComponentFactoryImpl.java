@@ -48,7 +48,6 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.StringParameterSet;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitScaffoldAnalysisDescription;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
-import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions.DestinationType;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleTypeWizardPageImpl.ScaffoldSampleType;
@@ -218,7 +217,7 @@ public class BatchScaffoldAnalysisCommandComponentFactoryImpl extends WizardComm
     }
 
     private void intializeMetadataPages() {
-      singleMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.scaffoldWizardAnalysisType(), DestinationType.HOME);
+      singleMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.scaffoldWizardAnalysisType());
       batchMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.scaffoldWizardAnalysisBatchType());
       metadataWizardPages = WizardPageGroup.getWizardPageGroupFor(singleMetadataWizardPage, batchMetadataWizardPage);
     }

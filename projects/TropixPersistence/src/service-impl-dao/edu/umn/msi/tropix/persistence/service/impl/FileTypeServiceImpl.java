@@ -37,7 +37,7 @@ import edu.umn.msi.tropix.persistence.service.FileTypeService;
 class FileTypeServiceImpl implements FileTypeService {
   private final FileTypeDao fileTypeDao;
   private final FileTypeResolver fileTypeResolver;
-  
+
   @Inject
   FileTypeServiceImpl(final FileTypeDao fileTypeDao, final FileTypeResolver fileTypeResolver) {
     this.fileTypeDao = fileTypeDao;
@@ -45,7 +45,7 @@ class FileTypeServiceImpl implements FileTypeService {
   }
 
   public FileType create(final String userId, final FileType fileType) {
-    return fileTypeDao.saveObject(fileType); 
+    return fileTypeDao.saveObject(fileType);
   }
 
   public FileType[] listFileTypes(final String userId) {
@@ -77,8 +77,11 @@ class FileTypeServiceImpl implements FileTypeService {
 
   public FileType getFileTypeForName(final String userId, final String fileName) {
     int indexOf = 0;
-    FileType fileType;
+    FileType fileType = null;
     while(true) {
+      if(fileName == null) {
+        break;
+      }
       indexOf = fileName.indexOf('.', indexOf);
       if(indexOf == -1) {
         fileType = loadPrimaryFileTypeWithExtension(userId, StockFileExtensionEnum.UNKNOWN.getExtension());

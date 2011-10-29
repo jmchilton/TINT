@@ -27,6 +27,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.umn.msi.tropix.models.locations.Location;
+
 public interface TreeItem extends Location {
   String getIcon();
 

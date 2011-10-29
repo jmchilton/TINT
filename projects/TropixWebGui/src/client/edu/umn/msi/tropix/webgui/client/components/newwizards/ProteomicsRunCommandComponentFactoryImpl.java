@@ -51,7 +51,6 @@ import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.DynamicUploadComponent;
-import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions.DestinationType;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
@@ -141,7 +140,7 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
               final String serviceAddress = thermoServicesSelectionPage.getGridService().getServiceAddress();
               final CreateTropixFileDescription createRawFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
               createRawFileDescription.setExtension(StockFileExtensionEnum.THERMO_RAW.getExtension());
-              
+
               final SubmitThermofinniganRunJobDescription submitDescription = ActivityDescriptions.createSubmitThermo(createRawFileDescription,
                   serviceAddress, calculatedName);
               final PollJobDescription pollJobDescription = ActivityDescriptions.buildPollDescription(submitDescription);
@@ -203,7 +202,7 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
     private final ProteomicsRunSourceTypeWizardPageImpl sourcePage = new ProteomicsRunSourceTypeWizardPageImpl(false);
 
     private void intializeMetadataPages() {
-      singleMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardType(), DestinationType.HOME);
+      singleMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardType());
       batchMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardBatchType());
       metadataWizardPages = WizardPageGroup.getWizardPageGroupFor(singleMetadataWizardPage, batchMetadataWizardPage);
     }

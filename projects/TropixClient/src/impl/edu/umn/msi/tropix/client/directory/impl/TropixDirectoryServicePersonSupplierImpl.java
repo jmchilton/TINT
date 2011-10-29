@@ -22,15 +22,15 @@
 
 package edu.umn.msi.tropix.client.directory.impl;
 
+import info.minnesotapartnership.tropix.directory.TropixDirectoryService;
+import info.minnesotapartnership.tropix.directory.models.Person;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import info.minnesotapartnership.tropix.directory.TropixDirectoryService;
-import info.minnesotapartnership.tropix.directory.models.Person;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
@@ -48,7 +48,7 @@ public class TropixDirectoryServicePersonSupplierImpl implements Supplier<Multim
 
   public Multimap<String, Person> get() {
     final Credential proxy = proxySupplier.get();
-    //LOG.trace("Host proxy obtained " + proxy);
+    // LOG.trace("Host proxy obtained " + proxy);
     Multimap<String, Person> personMap = HashMultimap.create();
     for(final Entry<String, String> institutionAddressEntry : institutionToServiceAddressMap.entrySet()) {
       final String institution = institutionAddressEntry.getKey();
@@ -71,7 +71,6 @@ public class TropixDirectoryServicePersonSupplierImpl implements Supplier<Multim
     return personMap;
   }
 
-
   public void setInstitutionToServiceAddressMap(final Map<String, String> institutionToServiceAddressMap) {
     this.institutionToServiceAddressMap = institutionToServiceAddressMap;
   }
@@ -82,6 +81,6 @@ public class TropixDirectoryServicePersonSupplierImpl implements Supplier<Multim
 
   public void setProxySupplier(final Supplier<Credential> proxySupplier) {
     this.proxySupplier = proxySupplier;
-  }  
+  }
 
 }

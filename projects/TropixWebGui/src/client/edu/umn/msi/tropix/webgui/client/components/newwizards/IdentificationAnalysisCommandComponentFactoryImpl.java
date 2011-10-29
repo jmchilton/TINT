@@ -48,7 +48,6 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitIdentificationAnaly
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
-import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions.DestinationType;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.LocationSelectionComponentImpl.InputType;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
@@ -84,8 +83,7 @@ public class IdentificationAnalysisCommandComponentFactoryImpl extends WizardCom
       final InputType inputType = batch ? null : RunInputTypeEnum.RUN;
       final IdentificationAnalysisInputsWizardPageImpl inputPage = new IdentificationAnalysisInputsWizardPageImpl(getTreeComponentFactory(),
           getLocationFactory(), getLocations(), inputType, false);
-      final MetadataWizardPageImpl metadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.idWizardAnalysisType(),
-          (batch ? DestinationType.HOME : DestinationType.ALL));
+      final MetadataWizardPageImpl metadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.idWizardAnalysisType());
       final MetadataInputComponent metadataCanvasSupplier = metadataWizardPage.getMetadataCanvasSupplier();
       final AsyncCallback<Void> callback = new AsyncCallbackImpl<Void>();
 

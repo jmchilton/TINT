@@ -38,12 +38,12 @@ import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.WrappedAsyncCallback;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -75,17 +75,17 @@ public class LocationFactoryImpl implements LocationFactory {
   }
 
   public TreeItem getMySharedFoldersItem(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
-    return new MySharedFoldersItemImpl(tropixObjectTreeItemExpander);
+    return new MySharedFoldersItemImpl(getExpander(tropixObjectTreeItemExpander));
   }
 
   public TreeItem getMyGroupFoldersItem(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
-    return new MyGroupFoldersItemImpl(tropixObjectTreeItemExpander);
+    return new MyGroupFoldersItemImpl(getExpander(tropixObjectTreeItemExpander));
   }
 
   public TreeItem getTropixHomeItem() {
     return new TreeItemImpl(null) {
       {
-        this.setId(TreeItems.TROPIX_HOME_ID);
+        this.setId(Locations.TROPIX_HOME_ID);
         this.setIcon(Resources.OBJECT_16);
         this.setType("");
         this.setName("Tropix Home");
@@ -98,15 +98,17 @@ public class LocationFactoryImpl implements LocationFactory {
     };
   }
 
-  public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final TreeItem parent, 
-                                                      final TropixObject object, 
-                                                      final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+  public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final TreeItem parent,
+      final TropixObject object,
+      final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     return new TropixObjectTreeItemImpl(parent, object, tropixObjectTreeItemExpander);
   }
 
-  public TropixObjectTreeItem getTropixObjectTreeItem(final TropixObjectTreeItemImpl parent, final TropixObject object) {
-    return new TropixObjectTreeItemImpl(parent, object);
-  }
+  /*
+   * public TropixObjectTreeItem getTropixObjectTreeItem(final TropixObjectTreeItemImpl parent, final TropixObject object) {
+   * return new TropixObjectTreeItemImpl(parent, object);
+   * }
+   */
 
   static class MySharedFoldersItemImpl extends TreeItemImpl implements RequiresModules {
     private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;
@@ -115,7 +117,7 @@ public class LocationFactoryImpl implements LocationFactory {
     MySharedFoldersItemImpl(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
       super(null);
       this.tropixObjectTreeItemExpander = tropixObjectTreeItemExpander;
-      this.setId(TreeItems.MY_SHARED_FOLDERS_ID);
+      this.setId(Locations.MY_SHARED_FOLDERS_ID);
       this.setIcon(Resources.ROOT_SHARED_FOLDER_16);
       this.setType("");
       this.setName("My Shared Folders");
@@ -148,7 +150,7 @@ public class LocationFactoryImpl implements LocationFactory {
 
     MyIncomingRequestsItemImpl(final TreeItem parent) {
       super(parent);
-      this.setId(TreeItems.MY_INCOMING_REQUESTS_ID);
+      this.setId(Locations.MY_INCOMING_REQUESTS_ID);
       this.setIcon(Resources.INCOMING_REQUEST_16);
       this.setType("");
       this.setName("My Incoming Requests");
@@ -177,7 +179,7 @@ public class LocationFactoryImpl implements LocationFactory {
 
     MyOutgoingRequestsItemImpl(final TreeItem parent) {
       super(parent);
-      this.setId(TreeItems.MY_OUTGOING_REQUESTS_ID);
+      this.setId(Locations.MY_OUTGOING_REQUESTS_ID);
       this.setIcon(Resources.OUTGOING_REQUEST_16);
       this.setType("");
       this.setName("My Outgoing Requests");
@@ -207,8 +209,11 @@ public class LocationFactoryImpl implements LocationFactory {
 
     protected MyGroupFoldersItemImpl(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
       super(null);
+      if(tropixObjectTreeItemExpander == null) {
+        throw new NullPointerException("null tropix object tree item expander");
+      }
       this.tropixObjectTreeItemExpander = tropixObjectTreeItemExpander;
-      this.setId(TreeItems.MY_GROUP_FOLDERS_ID);
+      this.setId(Locations.MY_GROUP_FOLDERS_ID);
       this.setIcon(Resources.GROUP_ABSOLUTE);
       this.setType("");
       this.setName("My Group Folders");
@@ -240,7 +245,7 @@ public class LocationFactoryImpl implements LocationFactory {
 
     MyRecentActivityItemImpl(final TreeItem parent) {
       super(parent);
-      this.setId(TreeItems.MY_RECENT_ACTIVITY_ID);
+      this.setId(Locations.MY_RECENT_ACTIVITY_ID);
       this.setIcon(Resources.RECENT_ACTIVITY_16);
       this.setType("");
       this.setName("My Recent Activity");
@@ -272,7 +277,7 @@ public class LocationFactoryImpl implements LocationFactory {
 
     MyRecentSearchesItem(final TreeItem parent) {
       super(parent);
-      this.setId(TreeItems.MY_RECENT_SEARCHES_ID);
+      this.setId(Locations.MY_RECENT_SEARCHES_ID);
       this.setIcon(Resources.MY_RECENT_SEARCHES_16);
       this.setFolder(true);
       this.setName("My Recent Searches");
@@ -355,38 +360,36 @@ public class LocationFactoryImpl implements LocationFactory {
 
   public Iterable<TreeItem> getAllRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
     return Iterables.filter(
-             Arrays.asList(getHomeRootItem(expander), 
-                           getSharedRootItem(expander), 
-                           getMyRecentActivityItem(),
-                           getMyRecentSearchesItem(), 
-                           getIncomingRequestsItem(), 
-                           getOutgoingRequestsItem(), 
-                           getGroupFoldersRootItem(expander)), moduleManager);
-  }
-  
-  public Iterable<TreeItem> getConcreteTropixObjectRootItems(final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), 
-                                          getGroupFoldersRootItem(expander)), moduleManager);
+        Arrays.asList(getHomeRootItem(expander),
+            getSharedRootItem(expander),
+            getMyRecentActivityItem(),
+            getMyRecentSearchesItem(),
+            getIncomingRequestsItem(),
+            getOutgoingRequestsItem(),
+            getGroupFoldersRootItem(expander)), moduleManager);
   }
 
+  public Iterable<TreeItem> getConcreteTropixObjectRootItems(final TropixObjectTreeItemExpander expander) {
+    return Iterables.filter(Arrays.asList(getHomeRootItem(expander),
+        getGroupFoldersRootItem(expander)), moduleManager);
+  }
 
   public Iterable<TreeItem> getTropixObjectSourceRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
     return Iterables.filter(
-        Arrays.asList(getHomeRootItem(expander), 
-                      getSharedRootItem(expander), 
-                      getGroupFoldersRootItem(expander), 
-                      getMyRecentActivityItem(),
-                      getMyRecentSearchesItem()), moduleManager);
+        Arrays.asList(getHomeRootItem(expander),
+            getSharedRootItem(expander),
+            getGroupFoldersRootItem(expander),
+            getMyRecentActivityItem(),
+            getMyRecentSearchesItem()), moduleManager);
   }
 
   public Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
-    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getIncomingRequestsItem(), 
-                            getGroupFoldersRootItem(expander)), moduleManager);
+    return Iterables.filter(Arrays.asList(getHomeRootItem(expander), getIncomingRequestsItem(),
+        getGroupFoldersRootItem(expander)), moduleManager);
   }
 
   private TropixObjectTreeItemExpander getExpander(@Nullable final TropixObjectTreeItemExpander expander) {
     return expander == null ? TropixObjectTreeItemExpanders.get() : expander;
   }
-
 
 }

@@ -148,7 +148,7 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
         });
         layout.addMember(button);
       } else {
-        if(pageConfiguration.getTropixObjectContext().isOwner()) {
+        if(pageConfiguration.getTropixObjectContext().canModifySharing()) {
           init();
         } else {
           layout.addMember(SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingNoPermission()));

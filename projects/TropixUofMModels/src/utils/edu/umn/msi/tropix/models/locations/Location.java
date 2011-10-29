@@ -1,4 +1,4 @@
-package edu.umn.msi.tropix.webgui.client.components.tree;
+package edu.umn.msi.tropix.models.locations;
 
 public interface Location {
 

@@ -30,7 +30,7 @@ import edu.umn.msi.tropix.webgui.client.utils.Listener;
 public interface MetadataInputComponentFactory extends ComponentFactory<MetadataInputComponentFactory.MetadataOptions, MetadataInputComponent> {
   public class MetadataOptions {
     public enum DestinationType {
-      ALL, HOME, FOLDER
+      ALL, FOLDER
     };
 
     private final String objectType;

@@ -67,6 +67,7 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedEvent;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedHandler;
 
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.impl.SelectionComponentBaseImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
@@ -535,7 +536,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
         outerfor: for(final TreeNode node : nodes) {
           final TreeItem item = (TreeItem) node.getAttributeAsObject(TreeItems.ATTRIBUTE_OBJECT);
           for(final TreeItem selectedItem : this.selectedItems) {
-            final boolean itemAlike = TreeItems.alike(item, selectedItem);
+            final boolean itemAlike = Locations.alike(item, selectedItem);
             // System.out.println("Checking selection of " + selectedItem + " alike? " + itemAlike);
             if(itemAlike && this.validSelection(item)) {
               // System.out.println("Selecting a record");

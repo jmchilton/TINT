@@ -22,7 +22,7 @@
 
 package edu.umn.msi.tropix.webgui.client.mediators;
 
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerList;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerLists;
@@ -97,7 +97,7 @@ public class LocationUpdateMediator implements Listener<LocationUpdateMediator.U
     this.listeners.onEvent(updateEvent);
     if(updateEvent instanceof AddUpdateEvent) {
       // Upon adding stuff, update recent activity as well...
-      this.listeners.onEvent(new UpdateEvent(TreeItems.MY_RECENT_ACTIVITY_ID, this));
+      this.listeners.onEvent(new UpdateEvent(Locations.MY_RECENT_ACTIVITY_ID, this));
     }
   }
 }

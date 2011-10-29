@@ -696,7 +696,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
   }
 
   public boolean canModifySharing(final String gridId, final String objectId) {
-    return gridId.equals(getOwnerId(objectId));
+    return getTropixObjectDao().isAnOwner(gridId, objectId);
   }
 
   public TropixFile loadFileWithFileId(final String gridId, final String fileId) {

@@ -127,7 +127,8 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
   private ComponentFactory<Note, ? extends CanvasComponent<? extends Canvas>> noteComponentFactory;
   private NavigationSelectionMediator navigationSelectionMediator;
   private ParametersPanelFactory parametersPanelFactory;
-  private LocationCommandComponentFactory<? extends Command> deleteCommandComponentFactory, renameCommandComponentFactory, changeDescriptionCommandComponentFactory;
+  private LocationCommandComponentFactory<? extends Command> deleteCommandComponentFactory, renameCommandComponentFactory,
+      changeDescriptionCommandComponentFactory;
   private final HashMap<String, Boolean> expandedMap = new HashMap<String, Boolean>();
   private ModuleManager moduleManager;
 
@@ -260,7 +261,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
     @Override
     public void visitFolder(final Folder folder) {
       this.addAssociations(folder, "Contents", "contents", true);
-      if(tropixObjectContext.isOwner()) {
+      if(tropixObjectContext.isModifiable()) {
         this.addOperation("Create New Subfolder", new Command() {
           public void execute() {
             actionMediator.handleEvent(LocationActionEventImpl.forItems("newItemFolder", Arrays.<TreeItem>asList(tropixObjectTreeItem)));

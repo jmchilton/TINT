@@ -72,7 +72,8 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
     }
   }
 
-  public TropixObjectTreeItemImpl(@Nullable final TreeItem parent, final TropixObject object, final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+  public TropixObjectTreeItemImpl(@Nullable final TreeItem parent, final TropixObject object,
+      final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     super(parent);
     this.init(object);
     if(parent != null && parent instanceof TropixObjectTreeItem) {
@@ -85,7 +86,6 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
 
   public TropixObjectTreeItemImpl(final TropixObjectTreeItemImpl parent, final TropixObject object) {
     super(parent);
-    assert parent != null;
     this.tropixObjectTreeItemRoot = parent.getTropixObjectTreeItemRoot();
     this.init(object);
     this.tropixObjectTreeItemExpander = parent.tropixObjectTreeItemExpander;

@@ -25,12 +25,11 @@ package edu.umn.msi.tropix.webgui.client.components.tree;
 import javax.annotation.Nullable;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.webgui.client.components.tree.impl.TropixObjectTreeItemImpl;
 
 public interface LocationFactory {
   TropixObjectTreeItem getTropixObjectTreeItem(@Nullable TreeItem parent, TropixObject object, TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
 
-  TropixObjectTreeItem getTropixObjectTreeItem(TropixObjectTreeItemImpl parent, TropixObject object);
+  //TropixObjectTreeItem getTropixObjectTreeItem(TropixObjectTreeItemImpl parent, TropixObject object);
 
   TreeItem getMySharedFoldersItem(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
 

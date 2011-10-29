@@ -23,6 +23,7 @@
   
   <!-- Other Tropix Modules-->
   <inherits name="edu.umn.msi.tropix.models.Beans" />
+  <inherits name="edu.umn.msi.tropix.models.locations.Locations" />
   <inherits name="edu.umn.msi.tropix.models.proteomics.ProteomicsModels" />
   <inherits name="edu.umn.msi.tropix.models.utils.TropixModelUtils" />
   <inherits name="edu.umn.msi.tropix.jobs.activities.Activities" />

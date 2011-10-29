@@ -49,7 +49,6 @@ import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
-import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions.DestinationType;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
@@ -258,8 +257,7 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
     };
     private final ScaffoldSampleTypeWizardPageImpl scaffoldOptionsPage = new ScaffoldSampleTypeWizardPageImpl(false);
 
-    private final MetadataWizardPageImpl metadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.idWorkflowResultType(),
-        DestinationType.HOME);
+    private final MetadataWizardPageImpl metadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.idWorkflowResultType());
     private final ParametersWizardPage parametersPage;
     private final ConditionalScaffoldSelectionWizardPageImpl scaffoldSelectionPage;
 

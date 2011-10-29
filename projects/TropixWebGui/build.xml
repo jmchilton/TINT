@@ -108,7 +108,7 @@
 
   <target name="start-test-server" depends="prepare,defineClasspaths" >
     <start-jetty port="8181" />
-    <sleep hours="1" />
+    <sleep hours="8" />
   </target>
   
   <target name="prepare" depends="resolve-dependencies">
@@ -134,19 +134,17 @@
 
   <macrodef name="compile-gwt">
     <attribute name="module" />
+    <attribute name="style" default="OBF" />
+    <attribute name="draft" default="" />
     <sequential>
-      <java classpathref="gwt.compile.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="1G" >
-        <arg value="-war" />
-        <arg value="${build.war.dir}" />
-        <arg value="-deploy" /> 
-        <arg value="${build.war.dir}/WEB-INF/deploy" />
-        <arg value="@{module}" />
+      <java classpathref="gwt.compile.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="1G">
+        <arg line="-war ${build.war.dir} -deploy ${build.war.dir}/WEB-INF/deploy -style @{style} @{draft} @{module}" />
       </java>
     </sequential>
   </macrodef>
 
   <target name="compile-gwt-firefox_">
-    <compile-gwt module="edu.umn.msi.tropix.webgui.TropixGuiFirefox" />
+    <compile-gwt module="edu.umn.msi.tropix.webgui.TropixGuiFirefox" draft="-draftCompile" style="PRETTY" />
   </target>
 
   <target name="compile-gwt_">

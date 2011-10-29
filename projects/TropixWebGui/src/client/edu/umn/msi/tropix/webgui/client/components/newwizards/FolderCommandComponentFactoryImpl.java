@@ -38,13 +38,14 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.CreateFolderDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions.DestinationType;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.constants.NewWizardConstants;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
@@ -75,7 +76,7 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
       }
     };
   }
-  
+
   @Override
   public WizardCommand get(final Collection<TreeItem> locations) {
     return new WizardCommand(locations) {
@@ -108,11 +109,16 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
               if(treeItem == null) {
                 return;
               }
+              final Location rootLocation = treeItem.getRoot();
               String description;
-              if(TreeItems.isMySharedFoldersItem(treeItem)) {
+              if(Locations.isMySharedFoldersItem(treeItem)) {
                 description = NewWizardConstants.INSTANCE.rootSharedFolderDescription();
               } else if(((TropixObjectTreeItem) treeItem).getObject() instanceof Folder) {
-                description = NewWizardConstants.INSTANCE.folderDescription();
+                if(Locations.isMyGroupFoldersItem(rootLocation)) {
+                  description = NewWizardConstants.INSTANCE.groupFolderDescription();
+                } else {
+                  description = NewWizardConstants.INSTANCE.folderDescription();
+                }
               } else {
                 description = NewWizardConstants.INSTANCE.sharedFolderDescription();
               }

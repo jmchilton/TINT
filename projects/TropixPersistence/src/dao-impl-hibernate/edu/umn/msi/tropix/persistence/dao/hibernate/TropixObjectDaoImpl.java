@@ -462,6 +462,20 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     return vp.getRootVirtualFolder().getId();
   }
 
+  public boolean isAnOwner(final String userId, final String objectId) {
+    final Query query = super.getSession().getNamedQuery("isUserOwner");
+    query.setParameter("objectId", objectId);
+    query.setParameter("userId", userId);
+    if((Long) query.uniqueResult() > 0L) {
+      return true;
+    } else {
+      final Query groupQuery = super.getSession().getNamedQuery("isGroupOwner");
+      groupQuery.setParameter("objectId", objectId);
+      groupQuery.setParameter("userId", userId);
+      return (Long) groupQuery.uniqueResult() > 0L;
+    }
+  }
+
   public long virtualHierarchyCount(final String objectId, final String rootId) {
     final Query query = super.getSession().getNamedQuery("virtualHierarchyCount");
     query.setParameter("objectId", objectId);

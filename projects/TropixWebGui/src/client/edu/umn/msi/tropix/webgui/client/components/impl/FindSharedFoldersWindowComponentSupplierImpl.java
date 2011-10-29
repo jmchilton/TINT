@@ -35,10 +35,10 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.WindowComponent;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator.UpdateEvent;
@@ -98,7 +98,7 @@ public class FindSharedFoldersWindowComponentSupplierImpl implements Supplier<Wi
     private void addSharedFolder(final String folderId) {
       final AsyncCallbackImpl<Void> callback = new AsyncCallbackImpl<Void>() {
         public void onSuccess(final Void ignore) {
-          LocationUpdateMediator.getInstance().onEvent(new UpdateEvent(TreeItems.MY_SHARED_FOLDERS_ID, null));
+          LocationUpdateMediator.getInstance().onEvent(new UpdateEvent(Locations.MY_SHARED_FOLDERS_ID, null));
           get().destroy();
         }
       };

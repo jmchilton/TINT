@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 public class TropixObjectContext implements Serializable {
   private static final long serialVersionUID = 1L;
-  private boolean modifiable = false, owner = false;
+  private boolean modifiable = false, canModifySharing = false;
 
   /*
    * Required for GWT serialization.
@@ -34,16 +34,16 @@ public class TropixObjectContext implements Serializable {
   protected TropixObjectContext() {
   }
 
-  public TropixObjectContext(final boolean modifiable, final boolean owner) {
+  public TropixObjectContext(final boolean modifiable, final boolean canModifySharing) {
     this.modifiable = modifiable;
-    this.owner = owner;
+    this.canModifySharing = canModifySharing;
   }
 
   public boolean isModifiable() {
     return modifiable;
   }
 
-  public boolean isOwner() {
-    return owner;
+  public boolean canModifySharing() {
+    return canModifySharing;
   }
 }

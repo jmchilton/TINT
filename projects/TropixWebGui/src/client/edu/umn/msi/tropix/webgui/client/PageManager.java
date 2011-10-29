@@ -32,12 +32,12 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import edu.umn.msi.tropix.models.Request;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.PageConfiguration;
-import edu.umn.msi.tropix.webgui.client.components.tree.Location;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.NavigationSelectionMediator;
@@ -121,7 +121,7 @@ public class PageManager extends WidgetSupplierImpl<Layout> implements Listener<
   private void load(final TreeItem treeItem) {
     this.loadedObject = treeItem;
     final Location parentItem = treeItem.getParent();
-    if(parentItem != null && TreeItems.isIncomingRequestsItem(parentItem)) {
+    if(parentItem != null && Locations.isIncomingRequestsItem(parentItem)) {
       final Request request = (Request) ((TropixObjectTreeItem) loadedObject).getObject();
       this.setCanvas(incomingRequestComponentFactory.get(request));
     } else if(treeItem instanceof TropixObjectTreeItem) {
