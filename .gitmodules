@@ -1,0 +1,3 @@
+[submodule "vagrant/modules/rsyslog"]
+	path = vagrant/modules/rsyslog
+	url = git://gitorious.org/puppet-rsyslog/puppet-rsyslog.git
