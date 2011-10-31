@@ -24,11 +24,16 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <property name="properties">
       <map>
         <entry key="proxy.lifetime" value="43200" />
-        <entry key="ssh.port" value="8021" />      
+        <entry key="ssh.port" value="8021" />
+        <entry key="ssh.use.syslog" value="true" />
+        <entry key="ssh.log.format" value="PASSWORD" />
       </map>
     </property>
   </bean>
   
+  <bean class="edu.umn.msi.tropix.ssh.SystemLoggerSupplierImpl" id="sshSyslogSupplier">
+  </bean>
+    
   <!-- Storage core. -->
   <import resource="classpath:edu/umn/msi/tropix/files/creator/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/client/authentication/context.xml" />

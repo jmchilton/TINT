@@ -20,27 +20,36 @@ import edu.umn.msi.tropix.client.authentication.CredentialAuthentication;
 public class PasswordAuthenticatorImpl implements PasswordAuthenticator {
   private static final Log LOG = LogFactory.getLog(PasswordAuthenticatorImpl.class);
   public static final AttributeKey CREDENTIAL_KEY = new AttributeKey();
-  private AuthenticationProvider authenticationProvider;
+  private final AuthenticationProvider authenticationProvider;
+  private final FailedAttemptLogger failedAttemptLogger;
 
   @Inject
-  public PasswordAuthenticatorImpl(final AuthenticationProvider authenticationProvider) {
+  public PasswordAuthenticatorImpl(final AuthenticationProvider authenticationProvider,
+                                   final FailedAttemptLogger failedAttemptLogger) {
     this.authenticationProvider = authenticationProvider;
+    this.failedAttemptLogger = failedAttemptLogger;
   }
 
   public boolean authenticate(final String username, 
       final String password, 
       final ServerSession session) {
-    session.getIoSession().getRemoteAddress();
     LOG.debug(String.format("Attempting to authenticate username [%s]", username));
     final AuthenticationToken usernamePasswordToken = new AuthenticationToken(username, password, "Local");
-    final Authentication authentication = authenticationProvider.authenticate(usernamePasswordToken);
-    Preconditions.checkState(authentication instanceof CredentialAuthentication);
-    boolean isAuthenticated = authentication.isAuthenticated();
-    LOG.info("Authenticated? " + isAuthenticated + " " + authentication);
-    if(isAuthenticated) {
-      session.setAttribute(CREDENTIAL_KEY, ((CredentialAuthentication) authentication).getCredential());
+    boolean isAuthenticated = false;
+    try {
+      final Authentication authentication = authenticationProvider.authenticate(usernamePasswordToken);
+      Preconditions.checkState(authentication instanceof CredentialAuthentication);
+      isAuthenticated = authentication.isAuthenticated();
+      LOG.info("Authenticated? " + isAuthenticated + " " + authentication);
+      if(isAuthenticated) {
+        session.setAttribute(CREDENTIAL_KEY, ((CredentialAuthentication) authentication).getCredential());
+      } 
+      return isAuthenticated;
+    } finally {
+      if(!isAuthenticated) {
+        failedAttemptLogger.logFailedAttempt(username, password, session.getIoSession());
+      }
     }
-    return isAuthenticated;
   }
 
 }

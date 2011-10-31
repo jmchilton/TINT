@@ -23,6 +23,8 @@ import javax.inject.Inject;
 
 import net.jmchilton.concurrent.Semaphore;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import edu.umn.msi.tropix.common.shutdown.ShutdownException;
@@ -37,6 +39,7 @@ import edu.umn.msi.tropix.storage.client.StorageDataFactory;
 
 @ManagedBean @ActivityFactoryFor(UploadFileDescription.class)
 class UploadFileActivityFactoryImpl implements ActivityFactory<UploadFileDescription> {
+  private static final Log LOG = LogFactory.getLog(UploadFileActivityFactoryImpl.class);
   private final FactorySupport factorySupport;
   private final Semaphore semaphore;
 
@@ -48,7 +51,9 @@ class UploadFileActivityFactoryImpl implements ActivityFactory<UploadFileDescrip
   UploadFileActivityFactoryImpl(final FactorySupport factorySupport,
                                 @Value("${max.simultaneous.storage.uploads?:0}") final int maxSimultaneousUploads) {
     this.factorySupport = factorySupport;
-    this.semaphore = new Semaphore(maxSimultaneousUploads > 0 ? maxSimultaneousUploads : Integer.MAX_VALUE, true);
+    final int actualMaxUploads = maxSimultaneousUploads > 0 ? maxSimultaneousUploads : Integer.MAX_VALUE;
+    LOG.debug("Setting max simulataneous uplods to " + actualMaxUploads);
+    this.semaphore = new Semaphore(actualMaxUploads, true);
   }
   
   class UploadActivityImpl extends BaseActivityImpl<UploadFileDescription> {

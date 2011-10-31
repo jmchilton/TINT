@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 
 @ManagedBean
 public class SshServerWrapper {
-  public static final int DEFAULT_PORT = 4597;
+  public static final int DEFAULT_PORT = 8021;
   private static final Log LOG = LogFactory.getLog(SshServerWrapper.class);
   private final PasswordAuthenticator passwordAuthenticator; 
   private final FileSystemFactory fileSystemFactory;

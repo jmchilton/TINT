@@ -1,7 +1,7 @@
 class mysql {
 
     $packages = ["mysql-server", "libmysqlclient16", "libmysqlclient-dev"]
-    package { $packages: ensure => installed}
+    package { $packages: ensure => installed }
 
     file { "my.cnf":
         path => "/etc/mysql/my.cnf",
