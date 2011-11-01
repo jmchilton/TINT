@@ -25,8 +25,10 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
       <map>
         <entry key="proxy.lifetime" value="43200" />
         <entry key="ssh.port" value="8021" />
-        <entry key="ssh.use.syslog" value="true" />
+        <entry key="ssh.use.syslog" value="false" />
         <entry key="ssh.log.format" value="PASSWORD" />
+        <entry key="ssh.authentication.source" value="Local" />
+        <entry key="storage.service.url" value="local://" />
       </map>
     </property>
   </bean>

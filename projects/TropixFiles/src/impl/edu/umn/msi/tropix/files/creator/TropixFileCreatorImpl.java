@@ -4,6 +4,7 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
 import org.apache.camel.Produce;
+import org.springframework.beans.factory.annotation.Value;
 
 import edu.umn.msi.tropix.files.NewFileMessageQueue;
 import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
@@ -17,31 +18,37 @@ import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 public class TropixFileCreatorImpl implements TropixFileCreator {
   private final TropixObjectService tropixObjectService;
   private final FileTypeService fileTypeService;
+  private final String defaultStorageServiceUrl;
   private NewFileMessageQueue queue;
 
   @Produce(uri = NewFileMessageQueue.ROUTE)
   public void setNewFileMessageQueue(final NewFileMessageQueue queue) {
     this.queue = queue;
   }
-  
+
   @Inject
   public TropixFileCreatorImpl(final TropixObjectService tropixObjectService,
-                               final FileTypeService fileTypeService) {
+      final FileTypeService fileTypeService,
+      @Value("${storage.service.url}") final String storageServiceUrl) {
     this.tropixObjectService = tropixObjectService;
     this.fileTypeService = fileTypeService;
+    this.defaultStorageServiceUrl = storageServiceUrl;
   }
 
-  public TropixFile createFile(final Credential credential, 
-                               final String destinationId, 
-                               final TropixFile file, 
-                               final String inputFileTypeId) {
+  public TropixFile createFile(final Credential credential,
+      final String destinationId,
+      final TropixFile file,
+      final String inputFileTypeId) {
     final String fileTypeId;
     if(inputFileTypeId == null) {
       final String fileName = file.getName();
       final FileType fileType = fileTypeService.getFileTypeForName(credential.getIdentity(), fileName);
-      fileTypeId = fileType != null ? fileType.getId() : null;              
+      fileTypeId = fileType != null ? fileType.getId() : null;
     } else {
       fileTypeId = inputFileTypeId;
+    }
+    if(file.getStorageServiceUrl() == null && defaultStorageServiceUrl != null) {
+      file.setStorageServiceUrl(defaultStorageServiceUrl);
     }
     final TropixFile savedFile = tropixObjectService.createFile(credential.getIdentity(), destinationId, file, fileTypeId);
     final NewFileMessage message = new NewFileMessage();
@@ -53,7 +60,7 @@ public class TropixFileCreatorImpl implements TropixFileCreator {
     message.setCredential(credential);
     queue.newFile(message);
     return savedFile;
-    
+
   }
-  
+
 }

@@ -28,6 +28,9 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -39,17 +42,18 @@ import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
 import edu.umn.msi.tropix.common.xml.XMLUtility;
 
 public class AuthenticationSourceManagerImpl implements AuthenticationSourceManager {
+  private static final Log LOG = LogFactory.getLog(AuthenticationSourceManagerImpl.class);
   private static final XMLUtility<AuthenticationSources> XML_UTILITY = new XMLUtility<AuthenticationSources>(AuthenticationSources.class);
   private final Map<String, AuthenticationSource> authenticationSources = Maps.newLinkedHashMap();
-  
+
   public AuthenticationSourceManagerImpl() {
     authenticationSources.put("Local", new AuthenticationSource());
   }
-  
+
   public Collection<String> getAuthenticationSourceKeys() {
     return ImmutableList.copyOf(authenticationSources.keySet());
   }
-  
+
   private static class AuthenticationSource {
     private String name = "Local";
     private String dorianUrl = "local";
@@ -57,12 +61,15 @@ public class AuthenticationSourceManagerImpl implements AuthenticationSourceMana
   }
 
   public void setAuthenticationSourcesFile(@Nullable final File sourcesFile) {
-    if(sourcesFile == null || !sourcesFile.exists()) {
-      return; 
+    boolean sourcesFileExists = sourcesFile == null || !sourcesFile.exists();
+    LOG.info(String.format("Authentication sources file exists - %b", sourcesFileExists));
+    if(sourcesFileExists) {
+      return;
     }
 
     final AuthenticationSources sources = XML_UTILITY.deserialize(sourcesFile);
-    Preconditions.checkState(sources.getAuthenticationSource().size() > 0, "Authentication sources file " + sourcesFile + " defines no authentication sources.");
+    Preconditions.checkState(sources.getAuthenticationSource().size() > 0, "Authentication sources file " + sourcesFile
+        + " defines no authentication sources.");
     authenticationSources.clear();
     for(final Object sourceObject : sources.getAuthenticationSource()) {
       final AuthenticationSource source = new AuthenticationSource();
@@ -72,6 +79,7 @@ public class AuthenticationSourceManagerImpl implements AuthenticationSourceMana
         source.dorianUrl = caGridAuthenticationSource.getDorianServiceUrl();
         source.authenticationUrl = caGridAuthenticationSource.getAuthenticationServiceUrl();
       }
+      LOG.info(String.format("Adding authentication source with name %s - %s", source.name, source));
       authenticationSources.put(source.name, source);
     }
   }
@@ -84,5 +92,5 @@ public class AuthenticationSourceManagerImpl implements AuthenticationSourceMana
     options.setIfsUrl(source.dorianUrl);
     return options;
   }
-  
+
 }

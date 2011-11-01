@@ -57,7 +57,7 @@ public class TropixFileCreatorImplTest {
   
   private void create(final String inputFileTypeId) {
     file.setName(fileName);
-    final TropixFileCreatorImpl creator = new TropixFileCreatorImpl(objectService, fileTypeService);
+    final TropixFileCreatorImpl creator = new TropixFileCreatorImpl(objectService, fileTypeService, null);
     EasyMock.expect(
         objectService.createFile(EasyMock.eq(credential.getIdentity()), EasyMock.eq("foldId"), EasyMock.same(file), EasyMock.eq(fileTypeId))).andStubReturn(resultFile);
     EasyMock.expect(objectService.getOwnerId(resultFile.getId())).andStubReturn("ownerUserId");

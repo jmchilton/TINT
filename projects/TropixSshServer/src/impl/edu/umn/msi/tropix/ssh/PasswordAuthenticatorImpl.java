@@ -5,9 +5,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.sshd.common.Session.AttributeKey;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.session.ServerSession;
-import org.apache.sshd.common.Session.AttributeKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 
@@ -22,19 +23,22 @@ public class PasswordAuthenticatorImpl implements PasswordAuthenticator {
   public static final AttributeKey CREDENTIAL_KEY = new AttributeKey();
   private final AuthenticationProvider authenticationProvider;
   private final FailedAttemptLogger failedAttemptLogger;
+  private final String authenticationSource;
 
   @Inject
   public PasswordAuthenticatorImpl(final AuthenticationProvider authenticationProvider,
-                                   final FailedAttemptLogger failedAttemptLogger) {
+      final FailedAttemptLogger failedAttemptLogger,
+      @Value("${ssh.authentication.source}") final String authenticationSource) {
     this.authenticationProvider = authenticationProvider;
     this.failedAttemptLogger = failedAttemptLogger;
+    this.authenticationSource = authenticationSource;
   }
 
-  public boolean authenticate(final String username, 
-      final String password, 
+  public boolean authenticate(final String username,
+      final String password,
       final ServerSession session) {
-    LOG.debug(String.format("Attempting to authenticate username [%s]", username));
-    final AuthenticationToken usernamePasswordToken = new AuthenticationToken(username, password, "Local");
+    LOG.debug(String.format("Attempting to authenticate username [%s] against auth source [%s]", username, authenticationSource));
+    final AuthenticationToken usernamePasswordToken = new AuthenticationToken(username, password, authenticationSource);
     boolean isAuthenticated = false;
     try {
       final Authentication authentication = authenticationProvider.authenticate(usernamePasswordToken);
@@ -43,7 +47,7 @@ public class PasswordAuthenticatorImpl implements PasswordAuthenticator {
       LOG.info("Authenticated? " + isAuthenticated + " " + authentication);
       if(isAuthenticated) {
         session.setAttribute(CREDENTIAL_KEY, ((CredentialAuthentication) authentication).getCredential());
-      } 
+      }
       return isAuthenticated;
     } finally {
       if(!isAuthenticated) {

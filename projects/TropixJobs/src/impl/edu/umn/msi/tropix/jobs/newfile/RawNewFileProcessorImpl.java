@@ -13,6 +13,7 @@ import edu.umn.msi.tropix.files.NewFileMessageQueue.NewFileMessage;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDependency;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescriptions;
+import edu.umn.msi.tropix.jobs.activities.descriptions.CommitObjectDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateProteomicsRunDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
@@ -27,10 +28,10 @@ import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 public class RawNewFileProcessorImpl implements NewFileProcessor {
   private final ActivityClient activityClient;
   private final Supplier<String> rawExtractServiceUrlSupplier;
-  
+
   @Inject
-  public RawNewFileProcessorImpl(final ActivityClient activityClient, 
-                                 @Named("rawExtractServiceUrlSupplier") final Supplier<String> rawExtractServiceUrlSupplier) {
+  public RawNewFileProcessorImpl(final ActivityClient activityClient,
+      @Named("rawExtractServiceUrlSupplier") final Supplier<String> rawExtractServiceUrlSupplier) {
     this.activityClient = activityClient;
     this.rawExtractServiceUrlSupplier = rawExtractServiceUrlSupplier;
   }
@@ -49,12 +50,14 @@ public class RawNewFileProcessorImpl implements NewFileProcessor {
     final CreateTropixFileDescription createMzxmlDescription = ActivityDescriptions.buildCreateResultFile(pollJobDescription);
     createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createMzxmlDescription).produces("objectId")
         .consumes("mzxmlFileId").build());
+    final CommitObjectDescription commitDescription = ActivityDescriptions.createCommitDescription(createProteomicsRunDescription);
 
     final Set<ActivityDescription> descriptions = Sets.newHashSet();
-    descriptions.add(createProteomicsRunDescription);
     descriptions.add(submitDescription);
     descriptions.add(pollJobDescription);
     descriptions.add(createMzxmlDescription);
+    descriptions.add(createProteomicsRunDescription);
+    descriptions.add(commitDescription);
     activityClient.submit(descriptions, message.getCredential());
   }
 
