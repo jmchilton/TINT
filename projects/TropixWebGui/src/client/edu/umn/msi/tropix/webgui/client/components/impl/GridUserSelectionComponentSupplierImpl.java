@@ -39,25 +39,26 @@ public class GridUserSelectionComponentSupplierImpl implements Supplier<GridUser
 
   static class GridUserSelectionComponentImpl extends SelectionComponentBaseImpl<GridUser, ListGrid> implements GridUserSelectionComponent {
     private final RestDataSource dataSource = new RestDataSource();
-    
+
     GridUserSelectionComponentImpl() {
-      final OperationBinding fetch = new OperationBinding();  
-      fetch.setOperationType(DSOperationType.FETCH);  
+      final OperationBinding fetch = new OperationBinding();
+      fetch.setOperationType(DSOperationType.FETCH);
       fetch.setDataProtocol(DSProtocol.POSTMESSAGE);
       dataSource.setOperationBindings(fetch);
-      dataSource.setFetchDataURL("xml/data.xml?id=gridUser");  
+      dataSource.setFetchDataURL("xml/data.xml?id=gridUser");
       dataSource.setDataFormat(DSDataFormat.JSON);
-      
+
       // Using short field names to reduce data transferred
       final DataSourceTextField firstNameField = new DataSourceTextField("f", "First Name");
       final DataSourceTextField lastNameField = new DataSourceTextField("l", "Last Name");
       final DataSourceTextField gridIdField = new DataSourceTextField("g", "Grid Identity");
+      final DataSourceTextField usernameField = new DataSourceTextField("u", "Username");
       final DataSourceTextField instField = new DataSourceTextField("i", "Institution");
       gridIdField.setPrimaryKey(true);
-      
-      this.dataSource.setFields(lastNameField, firstNameField, instField, gridIdField);
+
+      this.dataSource.setFields(lastNameField, firstNameField, instField, usernameField, gridIdField);
       final ListGrid grid = new ListGrid();
-      
+
       grid.setFilterOnKeypress(true);
       grid.setShowAllRecords(false);
       grid.setUseAllDataSourceFields(true);

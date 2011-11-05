@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.ManagedBean;
@@ -20,20 +21,21 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputStreamCoercible;
 import edu.umn.msi.tropix.files.creator.TropixFileCreator;
+import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
-
-import edu.umn.msi.tropix.grid.credentials.Credential;
 
 @ManagedBean
 public class SshFileFactoryImpl implements SshFileFactory {
@@ -44,11 +46,13 @@ public class SshFileFactoryImpl implements SshFileFactory {
   private final StorageManager storageManager;
   private final FolderService folderService;
 
+  private static final Set<String> META_OBJECT_PATHS = Sets.newHashSet("/", "/My Home");
+
   @Inject
   public SshFileFactoryImpl(final TropixObjectService tropixObjectService,
-                            final TropixFileCreator tropixFileCreator,
-                            final StorageManager storageManager,
-                            final FolderService folderService) {
+      final TropixFileCreator tropixFileCreator,
+      final StorageManager storageManager,
+      final FolderService folderService) {
     this.tropixObjectService = tropixObjectService;
     this.tropixFileCreator = tropixFileCreator;
     this.storageManager = storageManager;
@@ -64,6 +68,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     private String identity;
     private String virtualPath;
     private TropixObject object;
+    private Location location = null;
 
     private void initObject() {
       if(object == null) {
@@ -73,8 +78,13 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     private TropixObject getTropixObject(final String path) {
-      final List<String> pathPieces = Utils.pathPieces(path);
-      return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
+      List<String> pathPieces = Utils.pathPieces(path);
+      if(pathPieces.size() > 0 && pathPieces.get(0).equals("My Home")) {
+        pathPieces = pathPieces.subList(1, pathPieces.size());
+        return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
+      } else {
+        return null;
+      }
     }
 
     SshFileImpl(final Credential credential, final String virtualPath) {
@@ -83,7 +93,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       this.virtualPath = virtualPath;
     }
 
-    public String getAbsolutePath() {     
+    public String getAbsolutePath() {
       final String absolutePath = Utils.cleanAndExpandPath(virtualPath);
       log(String.format("getAbsolutePath called, result is %s", absolutePath));
       return absolutePath;
@@ -105,7 +115,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
         initObject();
         return !(object instanceof TropixFile);
       } else {
-        return false;        
+        return false;
       }
     }
 
@@ -115,21 +125,26 @@ public class SshFileFactoryImpl implements SshFileFactory {
         initObject();
         return (object instanceof TropixFile);
       } else {
-        return false;        
+        return false;
       }
     }
 
     public boolean doesExist() {
       log("doesExist");
-      initObject();
-      final boolean doesExist = object != null;
-      log(String.format("Checking doesExist %b", doesExist));
+      boolean doesExist = false;
+      if(isMetaLocation()) {
+        doesExist = true;
+      } else {
+        initObject();
+        doesExist = object != null;
+        log(String.format("Checking doesExist %b", doesExist));
+      }
       return doesExist;
     }
 
     public boolean isRemovable() {
       log("isRemovable");
-      return true;
+      return !isMetaLocation() && doesExist();
     }
 
     public SshFile getParentFile() {
@@ -155,7 +170,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       initObject();
       return object instanceof TropixFile;
     }
-    
+
     private String getFileId() {
       Preconditions.checkState(isTropixFile(), "getFileId called for non-file object");
       final TropixFile file = (TropixFile) object;
@@ -201,10 +216,10 @@ public class SshFileFactoryImpl implements SshFileFactory {
           tropixObjectService.update(identity, object);
           moved = true;
         }
-        //destinationFile.virtualPath
-        //if(destinationIsFolder) {
+        // destinationFile.virtualPath
+        // if(destinationIsFolder) {
         //
-        //}
+        // }
       }
       log(String.format("In move - moved? %b", moved));
       return moved;
@@ -215,7 +230,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       log(String.format("Checking is readable - %b", readable));
       return readable;
     }
-    
+
     private void log(final String message) {
       if(LOG.isDebugEnabled()) {
         LOG.debug(String.format("For virtual path <%s> - %s", virtualPath, message));
@@ -225,9 +240,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     public boolean isWritable() {
       log("Checking is writable");
       initObject();
-      // TODO: Refine, objects not writable but are sort of directories
-      // return isDirectory();
-      return object == null || object instanceof Folder;
+      return object instanceof Folder || (object == null && parentIsFolder());
     }
 
     public void handleClose() throws IOException {
@@ -253,15 +266,14 @@ public class SshFileFactoryImpl implements SshFileFactory {
       final TropixObject parentObject = getTropixObject(parentPath);
       return parentObject;
     }
-    
+
     private boolean parentIsFolder() {
       return getParentFolder() instanceof Folder;
     }
-    
+
     private Folder parentAsFolder() {
       return (Folder) getParentFolder();
     }
-    
 
     public OutputStream createOutputStream(final long offset) throws IOException {
       if(!parentIsFolder()) {
@@ -270,7 +282,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
         final String newFileId = UUID.randomUUID().toString();
         final UploadCallback uploadCallback = storageManager.upload(newFileId, identity);
         Preconditions.checkNotNull(uploadCallback);
-        final File tempFile = FILE_UTILS.createTempFile(); 
+        final File tempFile = FILE_UTILS.createTempFile();
         return new FileOutputStream(tempFile) {
           @Override
           public void close() throws IOException {
@@ -291,7 +303,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
             }
           }
         };
-        
+
       }
     }
 
@@ -313,7 +325,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
         } else {
           uniqueName.put(objectName, false);
         }
-      }      
+      }
       final ImmutableList.Builder<SshFile> children = ImmutableList.builder();
       for(TropixObject object : objects) {
         final String name = object.getName();
@@ -325,6 +337,10 @@ public class SshFileFactoryImpl implements SshFileFactory {
       return children.build();
     }
 
+    private boolean isMetaLocation() {
+      return META_OBJECT_PATHS.contains(getAbsolutePath());
+    }
+
     public boolean create() throws IOException {
       log("Attempting create");
       return !isTropixFile();
@@ -333,10 +349,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
     public boolean isExecutable() {
       log("Checking executable");
       return true; // TODO: Revert
-      //throw new UnsupportedOperationException();
+      // throw new UnsupportedOperationException();
     }
 
   }
-
 
 }

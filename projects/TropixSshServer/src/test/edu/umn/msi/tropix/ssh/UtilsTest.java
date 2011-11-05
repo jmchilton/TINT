@@ -21,11 +21,13 @@ public class UtilsTest {
 
   @Test(groups = "unit")
   public void testCleanAndExpandPath() {
-    assertCleanedPathIs("/moo/cow", "C:\\moo\\cow");
+    assertCleanedPathIs("/My Home/moo/cow", "C:\\moo\\cow");
     assertCleanedPathIs("/moo/cow", "/moo/cow");
     assertCleanedPathIs("/", "/");
-    assertCleanedPathIs("/a/b/c", "a/b/c");
-    assertCleanedPathIs("/", ".");
+    assertCleanedPathIs("/My Home/a/b/c", "a/b/c");
+    assertCleanedPathIs("/My Home", ".");
+    assertCleanedPathIs("/", "./..");
+    assertCleanedPathIs("/My Home", "./../My Home/");
     assertCleanedPathIs("/", "/..");
   }
 

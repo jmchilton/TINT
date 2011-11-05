@@ -9,16 +9,20 @@ import org.apache.commons.io.FilenameUtils;
 import com.google.common.collect.Lists;
 
 class Utils {
+  private static final String DEFAULT_PREFIX = "/My Home/";
 
   public static String cleanAndExpandPath(final String inputPath) {
     String path = inputPath;
     final String prefix = FilenameUtils.getPrefix(path);
     if(prefix != null && !prefix.equals("/")) {
-      path = "/" + path.substring(prefix.length());
+      path = DEFAULT_PREFIX + path.substring(prefix.length());
     }
     String result = FilenameUtils.separatorsToUnix(FilenameUtils.normalize(path));
     if(result == null) { // For instance /.. or /moo/../.., just reset back to /
       result = "/";
+    }
+    if(!result.equals("/") && result.endsWith("/")) {
+      result = result.substring(0, result.length() - 1);
     }
     return result;
   }
@@ -46,9 +50,9 @@ class Utils {
       return cleanAndExpandPath(path + "/..");
     }
   }
-  
+
   public static String join(final String parentPath, final String name) {
-    return parentPath + (parentPath.endsWith("/") ? "" : "/")  + name;
+    return parentPath + (parentPath.endsWith("/") ? "" : "/") + name;
   }
 
 }

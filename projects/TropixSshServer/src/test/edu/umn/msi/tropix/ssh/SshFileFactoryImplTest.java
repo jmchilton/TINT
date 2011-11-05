@@ -14,9 +14,9 @@ import org.easymock.EasyMock;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.io.FileContext;
@@ -25,6 +25,8 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.files.creator.TropixFileCreator;
+import edu.umn.msi.tropix.grid.credentials.Credential;
+import edu.umn.msi.tropix.grid.credentials.Credentials;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -32,10 +34,11 @@ import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
-import edu.umn.msi.tropix.grid.credentials.Credential;
-import edu.umn.msi.tropix.grid.credentials.Credentials;
 
 public class SshFileFactoryImplTest {
+  private static final Object[] HOME_DIR_REPRESENTATIONS = new Object[] {".", "/My Home/", "/My Home", "../My Home"};
+  private static final Object[] ROOT_DIR_REPRESENTATIONS = new Object[] {"/", "..", "../.."};
+
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private SshFileFactoryImpl sshFileFactoryImpl;
   private TropixFileCreator tropixFileCreator;
@@ -50,7 +53,7 @@ public class SshFileFactoryImplTest {
   private TropixObject backingObject;
   private File tempFile;
   private Credential credential;
-  
+
   @BeforeMethod(groups = "unit")
   public void init() {
     tropixObjectService = EasyMock.createMock(TropixObjectService.class);
@@ -61,7 +64,7 @@ public class SshFileFactoryImplTest {
     id = UUID.randomUUID().toString();
     credential = Credentials.getMock(id);
     fileId = UUID.randomUUID().toString();
-    path = "/test/path";
+    path = "test/path";
 
     folderId = null;
     backingObject = null;
@@ -91,9 +94,9 @@ public class SshFileFactoryImplTest {
 
   @Test(groups = "unit")
   public void testIsDirectory() {
-    path = "/test/path";
+    path = "/My Home/test/path";
     backingObject = new Folder();
-    expectGetPath();
+    expectGetPath(new String[] {"test", "path"});
     replayAndSetFile();
     assert sshFile.isDirectory();
   }
@@ -107,14 +110,58 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit")
   public void testGetPath() {
     replayAndSetFile();
-    assert sshFile.getAbsolutePath().equals("/test/path");
+    assert sshFile.getAbsolutePath().equals("/My Home/test/path");
   }
 
   @Test(groups = "unit")
-  public void testRemovable() {
-    // For now, everything should just return false
+  public void testGetPathAbsolute() {
+    path = "/My Home/test/path";
     replayAndSetFile();
-    assert sshFile.isRemovable();
+    Assert.assertEquals(sshFile.getAbsolutePath(), "/My Home/test/path");
+  }
+
+  @Test(groups = "unit")
+  public void testEmptyObjectNotRemovable() {
+    backingObject = null;
+    expectGetPath();
+    assert !removable();
+  }
+
+  @Test(groups = "unit")
+  public void testOwnedObjectRemovable() {
+    backingObject = new Folder();
+    expectGetPath();
+    assert removable();
+  }
+
+  @DataProvider(name = "homeDirectoryPaths")
+  public Object[][] getHomeDirectoryPaths() {
+    return expandArray(HOME_DIR_REPRESENTATIONS);
+  }
+
+  private Object[][] expandArray(final Object[] array) {
+    final Object[][] expandedArray = new Object[array.length][];
+    for(int i = 0; i < array.length; i++) {
+      expandedArray[i] = new Object[] {array[i]};
+    }
+    return expandedArray;
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testMyHomeNotRemovable(String homePath) {
+    setPathToMyHomeAndExpectGet(homePath);
+    assert !removable();
+  }
+
+  @Test(groups = "unit")
+  public void testRootNotRemovable() {
+    setPathToRoot();
+    assert !removable();
+  }
+
+  private boolean removable() {
+    replayAndSetFile();
+    return sshFile.isRemovable();
   }
 
   @Test(groups = "unit")
@@ -148,12 +195,12 @@ public class SshFileFactoryImplTest {
   }
 
   /*
-  @Test(groups = "unit")
-  public void testCannotMove() {
-    replayAndSetFile();
-    assert !sshFile.move(null);
-  }
-  */
+   * @Test(groups = "unit")
+   * public void testCannotMove() {
+   * replayAndSetFile();
+   * assert !sshFile.move(null);
+   * }
+   */
 
   @Test(groups = "unit")
   public void testReadable() {
@@ -161,7 +208,7 @@ public class SshFileFactoryImplTest {
     replayAndSetFile();
     assert sshFile.isReadable();
   }
-  
+
   @Test(groups = "unit")
   public void testExecutable() {
     // Nothing should be executable?
@@ -177,7 +224,6 @@ public class SshFileFactoryImplTest {
     assert sshFile.isWritable();
   }
 
-
   @Test(groups = "unit")
   public void testSize() {
     EasyMock.expect(storageManager.getLength(expectFileId(), expectId())).andReturn(13L);
@@ -192,36 +238,38 @@ public class SshFileFactoryImplTest {
     replayAndSetFileWithContents("test contents".getBytes());
     assert sshFile.getLastModified() == 13L;
   }
-  
+
   @Test(groups = "unit")
   public void testInputStream() throws IOException {
     replayAndSetFileWithContents("test contents".getBytes());
     assert InputContexts.toString(InputContexts.forInputStream(sshFile.createInputStream(0))).equals("test contents");
   }
-  
+
   @Test(groups = "unit")
   public void testInputStreamWithOffset() throws IOException {
     replayAndSetFileWithContents("test contents".getBytes());
     assert InputContexts.toString(InputContexts.forInputStream(sshFile.createInputStream(1))).equals("est contents");
   }
-  
+
   @Test(groups = "unit")
   public void testOutputStream() throws IOException {
-    expectDirectoryWithPath(path);
-    path = "/test/path/file-name";
+    expectDirectoryWithPath(null);
+    path = "test/path/file-name";
     final Capture<TropixFile> fileCapture = EasyMockUtils.newCapture();
-    EasyMock.expect(tropixFileCreator.createFile(EasyMock.same(credential), EasyMock.eq(folderId), EasyMock.capture(fileCapture), EasyMock.<String>isNull())).andReturn(null);
+    EasyMock.expect(
+        tropixFileCreator.createFile(EasyMock.same(credential), EasyMock.eq(folderId), EasyMock.capture(fileCapture), EasyMock.<String>isNull()))
+        .andReturn(null);
     UploadCallback callback = new UploadCallback() {
       private String contents;
-      
+
       public void onUpload(final InputStream inputStream) {
         contents = InputContexts.toString(InputContexts.forInputStream(inputStream));
       }
-      
+
       public String toString() {
         return contents;
       }
-      
+
     };
     final Capture<String> fileIdCapture = EasyMockUtils.newCapture();
     EasyMock.expect(storageManager.upload(EasyMock.capture(fileIdCapture), expectId())).andReturn(callback);
@@ -235,10 +283,10 @@ public class SshFileFactoryImplTest {
     assert fileCapture.getValue().getFileId().equals(fileIdCapture.getValue());
     assert fileCapture.getValue().getCommitted();
   }
-  
+
   @Test(groups = "unit")
   public void testList() {
-    expectDirectoryWithPath(path);
+    expectDirectoryWithPath(null);
     final TropixObject object1 = objectWithName("name1"), object2 = objectWithName("name2"), object3 = objectWithName("name3");
     final TropixObject objectWithDuplicateName = objectWithName("name2");
     EasyMock.expect(tropixObjectService.getChildren(id, folderId)).andReturn(new TropixObject[] {object1, object2, object3, objectWithDuplicateName});
@@ -249,45 +297,140 @@ public class SshFileFactoryImplTest {
     for(SshFile child : children) {
       uniqueNames.add(child.getName());
     }
-    //assert uniqueNames.equals(Sets.newHashSet("name1", "name2", "name3"));
+    // assert uniqueNames.equals(Sets.newHashSet("name1", "name2", "name3"));
   }
-  
+
   private TropixObject objectWithName(final String name) {
     final TropixObject object = new TropixObject();
     object.setCommitted(true);
     object.setName(name);
-    return object;    
+    return object;
   }
 
   @Test(groups = "unit")
   public void testValidMkdir() {
-    expectDirectoryWithPath(path);
-    path = "/test/path/subdir";
+    expectDirectoryWithPath(null);
+    path = "test/path/subdir";
     final Capture<Folder> newFolder = EasyMockUtils.newCapture();
     EasyMock.expect(folderService.createFolder(expectId(), EasyMock.eq(folderId), EasyMock.capture(newFolder))).andReturn(new Folder());
     replayAndSetFile();
     assert sshFile.mkdir();
     assert newFolder.getValue().getName().equals("subdir");
   }
-  
-  private void expectDirectoryWithPath(final String path) {    
+
+  @Test(groups = "unit")
+  public void testSomePathOutsideAValidRootDoesNotExist() {
+    path = "/test";
+    assert !exists();
+  }
+
+  @Test(groups = "unit")
+  public void testHomeExists() {
+    setPathToMyHomeAndExpectGet();
+    assert exists();
+  }
+
+  @Test(groups = "unit")
+  public void testHomeReadable() {
+    setPathToMyHome();
+    replayAndSetFile();
+    assert sshFile.isReadable();
+  }
+
+  @Test(groups = "unit")
+  public void testHomeExecutable() {
+    setPathToMyHome();
+    replayAndSetFile();
+    assert sshFile.isExecutable();
+  }
+
+  @Test(groups = "unit")
+  public void testHomeIsDirectory() {
+    setPathToMyHomeAndExpectGet();
+    replayAndSetFile();
+    assert sshFile.isDirectory();
+  }
+
+  @Test(groups = "unit")
+  public void testRootReadable() {
+    setPathToRoot();
+    assert sshFile.isReadable();
+  }
+
+  @Test(groups = "unit")
+  public void testRootIsExecutable() {
+    setPathToRoot();
+    replayAndSetFile();
+    assert sshFile.isReadable();
+  }
+
+  @Test(groups = "unit")
+  public void testRootIsNotWritable() {
+    setPathToRoot();
+    replayAndSetFile();
+    assert !sshFile.isWritable();
+  }
+
+  @Test(groups = "unit")
+  public void testRootExists() {
+    setPathToRoot();
+    assert exists();
+  }
+
+  private void setPathToMyHomeAndExpectGet() {
+    setPathToMyHomeAndExpectGet("/My Home/");
+  }
+
+  private void setPathToMyHomeAndExpectGet(final String myHomePath) {
+    path = myHomePath;
+    backingObject = new Folder();
+    expectDirectoryWithPath(new String[0]);
+  }
+
+  private boolean exists() {
+    replayAndSetFile();
+    return sshFile.doesExist();
+  }
+
+  private void setPathToRoot() {
+    path = "/";
+  }
+
+  private void setPathToMyHome() {
+    path = "/My Home/";
+  }
+
+  private void expectDirectoryWithPath(final String[] pathPieces) {
     final Folder folder = new Folder();
     folderId = UUID.randomUUID().toString();
     folder.setId(folderId);
-    backingObject = folder;
-    expectGetPath();    
+    // backingObject = folder;
+    expectGetPath(folder, pathPieces);
+  }
+
+  private void expectGetPath(final TropixObject tropixObject) {
+    expectGetPath(tropixObject, null);
+  }
+
+  private void expectGetPath(final TropixObject tropixObject, final String[] pathArray) {
+    EasyMock.expect(tropixObjectService.getPath(expectId(), pathArray == null ? expectPathArray() : EasyMock.aryEq(pathArray))).andStubReturn(
+        tropixObject);
+  }
+
+  private void expectGetPath(final String[] pathPieces) {
+    expectGetPath(backingObject, pathPieces);
   }
 
   private void expectGetPath() {
-    EasyMock.expect(tropixObjectService.getPath(expectId(), expectPathArray())).andStubReturn(backingObject);
+    expectGetPath(backingObject);
   }
 
   private void replayAndSetFile() {
     EasyMockUtils.replayAll(tropixObjectService, storageManager, folderService, tropixFileCreator);
-    
+
     sshFile = sshFileFactoryImpl.getFile(credential, path);
   }
-  
+
   private String expectFileId() {
     return EasyMock.eq(fileId);
   }
@@ -303,7 +446,12 @@ public class SshFileFactoryImplTest {
   }
 
   private String[] expectPathArray() {
-    return EasyMock.aryEq(Iterables.toArray(Utils.pathPieces(path), String.class));
+    String localPath = path;
+    if(path.startsWith("/")) {
+      localPath = path.substring(1);
+    }
+    final String[] pathPieces = localPath.split("/");
+    return EasyMock.aryEq(pathPieces);
   }
 
   private String expectId() {

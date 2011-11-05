@@ -154,9 +154,9 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     }
 
     public native Collection<TreeNode> findAllNodesWithId(final String id) /*-{
-      var jsTree = this.@edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl$TreeComponentImpl::tree.@com.smartgwt.client.core.BaseClass::getOrCreateJsObj()();
-      var nodesJs = jsTree.findAll("id", id);
-      return @edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl::getTreeNodes(Lcom/google/gwt/core/client/JavaScriptObject;)(nodesJs);
+			var jsTree = this.@edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl$TreeComponentImpl::tree.@com.smartgwt.client.core.BaseClass::getOrCreateJsObj()();
+			var nodesJs = jsTree.findAll("id", id);
+			return @edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl::getTreeNodes(Lcom/google/gwt/core/client/JavaScriptObject;)(nodesJs);
     }-*/;
 
     private class CustomTreeGrid extends TreeGrid {
@@ -267,7 +267,10 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
       dateField.setType(ListGridFieldType.DATE);
       dateField.setHidden(true);
       dateField.setRequired(false);
-      get().setFields(nameField, dateField, typeField);
+      final TreeGridField sortField = new TreeGridField(TreeItems.ATTRIBUTE_SORT, "Default Sort");
+      sortField.setHidden(true);
+      sortField.setRequired(false);
+      get().setFields(nameField, dateField, typeField, sortField);
     }
 
     private void initDragAndDrop() {

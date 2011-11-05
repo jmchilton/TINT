@@ -33,13 +33,23 @@ public class GridUserFunctionImpl implements Function<GridUser, Map<String, Stri
 
   public Map<String, String> apply(final GridUser gridUser) {
     final Map<String, String> map = Maps.newHashMapWithExpectedSize(4);
-    // Using short field names to reduce data transferred, this is not a 
+    // Using short field names to reduce data transferred, this is not a
     // premature optimization.
     map.put("f", gridUser.getFirstName());
     map.put("l", gridUser.getLastName());
     map.put("g", gridUser.getGridId());
+    map.put("u", getUsername(gridUser));
     map.put("i", gridUser.getInstitution());
     return map;
+  }
+
+  private String getUsername(final GridUser gridUser) {
+    final String gridId = gridUser.getGridId();
+    String username = null;
+    if(gridId != null) {
+      username = gridId.substring(gridId.lastIndexOf('=') + 1);
+    }
+    return username;
   }
 
 }
