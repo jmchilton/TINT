@@ -18,7 +18,7 @@
   <dependencies>
     <dependency org="globus" name="core-backports" rev="4.0.3" conf="default->default" />
 
-    <dependency org="h2database" name="h2" rev="1.1.117" conf="default->default" />
+    <dependency org="com.h2database" name="h2" rev="1.3.161" conf="default->default" />
     <dependency org="net.jmchilton" name="runtime-interruptions" rev="0.1" />
     <dependency org="net.jmchilton" name="spring-collections" rev="0.1" />
     <dependency org="com.sun.xml" name="jaxb-impl" rev="2.0" />
