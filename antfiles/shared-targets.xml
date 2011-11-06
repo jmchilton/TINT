@@ -61,6 +61,34 @@
       <fileset dir="${ext.findbugs.dir}" includes="**/*.jar" />
     </classpath>
   </taskdef>
+
+  <macrodef name="generate-ddl">
+    <attribute name="unit" />
+    <attribute name="conf" />
+    <attribute name="classpathref" default="run.classpath"  />
+    <sequential>
+      <delete file="${build.dir}/ddl/META-INF/persistence.xml" />
+      <mkdir dir="${build.dir}/ddl/META-INF" />
+      <copy file="${resources.dir}/@{conf}/META-INF/@{unit}/persistence.xml" 
+	    toDir="${build.dir}/ddl/META-INF" />
+      <taskdef name="hibernatetool"
+	       classname="org.hibernate.tool.ant.HibernateToolTask" 
+	       classpathref="@{classpathref}" />
+      <hibernatetool destdir="${build.dir}">
+	<classpath>
+	  <pathelement path="${build.dir}/ddl" />
+	  <path refid="@{classpathref}" />
+	</classpath>
+	<jpaconfiguration persistenceunit="@{unit}" /> <!-- configurationfile="META-INF/@{unit}/persistence.xml" />-->
+	<hbm2ddl outputfilename="@{unit}-ddl.sql"
+		 export="false"
+		 create="true"
+		 format="true"
+		 haltonerror="true" />
+      </hibernatetool>
+    </sequential>
+  </macrodef>
+
   
   <macrodef name="runfindbugs">
     <attribute name="output" default="xml" />

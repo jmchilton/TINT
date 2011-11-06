@@ -17,11 +17,10 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 <value>classpath:edu/umn/msi/tropix/persistence/test/db.properties</value>
 </property>
 <property name="ignoreUnresolvablePlaceholders" value="true" />
-
 </bean>
 
  
-  <bean class="edu.umn.msi.tropix.common.spring.H2DefaultsPropertyPlaceholderConfigurer">
+  <bean class="edu.umn.msi.tropix.common.spring.MigratingH2DefaultsPropertyPlaceholderConfigurer">
     <constructor-arg value="metadata" />
     <constructor-arg value="true" />
   </bean>  

@@ -22,13 +22,16 @@
       <path refid="ivy.path" />
       <path refid="ext.globus.classpath" />
     </path>
+    <path id="run.classpath">
+      <pathelement path="${resources.dir}/api" />
+      <pathelement path="${resources.dir}/impl" />
+      <path refid="compile.classpath" />
+    </path>
     <path id="test.classpath">
       <pathelement path="${build.test.classes.dir}/" />
       <pathelement path="${build.classes.dir}/test" />
-      <pathelement path="${resources.dir}/api" />
-      <pathelement path="${resources.dir}/impl" />
       <pathelement path="${resources.dir}/test" />
-      <path refid="compile.classpath" />
+      <path refid="run.classpath" />
     </path>
   </target>
 
@@ -75,5 +78,9 @@
   <target name="all" depends="jars" />
 
   <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+
+  <target name="generate-ddl" depends="compile-java">
+    <generate-ddl unit="jobs" conf="api" />
+  </target>
   
 </project>

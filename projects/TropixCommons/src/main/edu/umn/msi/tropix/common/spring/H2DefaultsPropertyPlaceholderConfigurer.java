@@ -43,6 +43,7 @@ import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 
 public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlaceholderConfigurer implements ApplicationContextAware {
+  public static final String H2_DIALECT_CLASS_NAME = "edu.umn.msi.tropix.common.spring.H2Dialect";
   private static final Log LOG = LogFactory.getLog(H2DefaultsPropertyPlaceholderConfigurer.class);
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private ApplicationContext context;
@@ -70,6 +71,10 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
   }
 
   private void init() {
+    setProperties(getDefaultProperties());
+  }
+  
+  protected Map<String, String> getDefaultProperties() {
     String configDir;
     final String beanName = shortname + "ConfigDir";
     if(configPathSupplier != null) {
@@ -82,14 +87,16 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
       configDir = System.getProperty("user.home") + File.separator + ".tropix" + File.separator + File.separator + shortname;
     }
     LOG.debug("Initializing H2 database properties with shortname " + shortname + " and configDir " + configDir);
+
     final Map<String, String> defaultProperties = Maps.newHashMap();
     defaultProperties.put(shortname + ".db.username", "sa");
     defaultProperties.put(shortname + ".db.password", "");
     defaultProperties.put(shortname + ".db.driver", "org.h2.Driver");
-    defaultProperties.put(shortname + ".db.dialect", "org.hibernate.dialect.H2Dialect");
+    defaultProperties.put(shortname + ".db.dialect", H2_DIALECT_CLASS_NAME);
     defaultProperties.put(shortname + ".db.showsql", "false");
+    
     if(testing) {
-      defaultProperties.put(shortname + ".db.hbm2ddl", "create");
+      defaultProperties.put(getHbm2DdlPropertyName(), "create");
       defaultProperties.put(shortname + ".db.url", "jdbc:h2:mem:" + shortname + ";DB_CLOSE_DELAY=-1");
     } else {
       final String dbPath = getDbPath(new File(configDir), shortname);
@@ -100,10 +107,16 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
         final Collection<String> fileNames = Collections2.transform(FILE_UTILS.listFiles(dbDir), FileFunctions.getNameFunction());
         filesExist = !Collections2.filter(fileNames, StringPredicates.startsWith("db")).isEmpty();
       }
-      defaultProperties.put(shortname + ".db.hbm2ddl", filesExist ? "update" : "create");
+      defaultProperties.put(getHbm2DdlPropertyName(), filesExist ? "update" : "create");
     }
-    setProperties(defaultProperties);
+    return defaultProperties;
   }
+  
+  protected String getHbm2DdlPropertyName() {
+    return shortname + ".db.hbm2ddl";
+  }
+  
+
 
   public H2DefaultsPropertyPlaceholderConfigurer(final String shortname, final boolean testing) {
     this.shortname = shortname;
@@ -113,8 +126,10 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
   private String getDbPath(final File configDir, final String shortName) {
     return new File(configDir, "db").getAbsolutePath();
   }
-
+  
   public void setApplicationContext(final ApplicationContext context) throws BeansException {
     this.context = context;
   }
+  
+  
 }
