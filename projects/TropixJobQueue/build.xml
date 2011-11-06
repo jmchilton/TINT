@@ -33,12 +33,15 @@
       <path refid="ivy.path" />
       <path refid="ext.globus.classpath" />
     </path>
+    <path id="run.classpath">
+      <pathelement path="${resources.dir}/main" />
+      <path refid="compile.classpath" />
+    </path>
     <path id="test.classpath">
       <pathelement path="${build.test.classes.dir}/" /> 
       <pathelement path="${build.classes.dir}/test" />
-      <pathelement path="${resources.dir}/main" />
       <pathelement path="${resources.dir}/test" />
-      <path refid="compile.classpath" />
+      <path refid="run.classpath" />
     </path>
   </target>
 
@@ -126,19 +129,11 @@
       <fileset dir="${ext.dir}" includes="**/*.jar"/>
     </copy>
   </target>
-
-  <target name="generate-queue-ddl" depends="compile-java">
-    <hibernatetool destdir="${build.dir}">
-      <classpath>
-        <path location="${build.classes.dir}" />
-      </classpath>
-      <jpaconfiguration persistenceunit="jobqueue" configurationfile="META-INF/jobqueue/persistence.xml" />
-      <hbm2ddl outputfilename="queue.ddl"
-               export="false"
-               create="true"
-               format="true"
-               haltonerror="true" />
-    </hibernatetool>
+  
+  <target name="generate-ddl" depends="compile-java">
+    <generate-ddl unit="jobclient" conf="main" />
+    <generate-ddl unit="systemjobqueue" conf="main" />
+    <generate-ddl unit="gramjobqueue" conf="main" />
   </target>
 
   <target name="all" depends="jars" />

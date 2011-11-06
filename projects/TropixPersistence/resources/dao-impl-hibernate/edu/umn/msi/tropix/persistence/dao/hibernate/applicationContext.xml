@@ -83,13 +83,6 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </property>
   </bean>
 
-<!-- 
-  <bean id="metadataFlyway" class="edu.umn.msi.tropix.common.spring.DatabaseMigrator">
-    <property name="url" value="${metadata.db.url}" />
-    <property name="dataSource" ref="dataSource"/>
-    <property name="baseDir" value="edu/umn/msi/tropix/models/migrations" />
-  </bean>
- -->
   <bean id="dataSource"  class="edu.umn.msi.tropix.common.spring.MigratingDataSource" scope="singleton">
     <property name="driverClassName" value="${metadata.db.driver}" /> 
     <property name="url" value="${metadata.db.url}" />

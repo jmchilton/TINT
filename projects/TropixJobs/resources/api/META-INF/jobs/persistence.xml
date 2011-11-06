@@ -53,7 +53,7 @@
     <properties>
       <property name="hibernate.archive.autodetection" value="class"/>
       <property name="hibernate.hbm2ddl.auto" value="create"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
     </properties>
   </persistence-unit>
