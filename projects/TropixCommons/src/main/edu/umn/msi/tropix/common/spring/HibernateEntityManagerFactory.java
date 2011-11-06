@@ -43,7 +43,7 @@ public class HibernateEntityManagerFactory extends LocalContainerEntityManagerFa
   }
 
   public void setAutoDdl(final String autoDdl) {
-    getPropertyMap().put("hibernate.hbm2ddl.auto", autoDdl);
+    getPropertyMap().put("hibernate.hbm2ddl.auto", "migrate".equals(autoDdl) ? "validate" : autoDdl);
   }
 
   public void setShowSql(final boolean showSql) {

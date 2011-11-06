@@ -197,11 +197,11 @@
 			<property name="externalId" type="string" column="EXTERNAL_ID"/>
 			<property name="requestorId" type="string" column="REQUESTOR_ID"/>
 			<property name="serviceId" type="string" column="SERVICE_ID"/>
-			<property name="contact" type="string"><column name="CONTACT" sql-type="longtext" /></property>
+			<property name="contact" type="string"><column name="CONTACT" sql-type="clob" /></property>
 			<property name="destination" type="string" column="DESTINATION"/>
 			<property name="serviceInfo" type="string" column="SERVICE_INFO"/>
 			<property name="state" type="string" column="STATE"/>
-			<property name="report" type="string"><column name="REPORT" sql-type="longtext" /></property>
+			<property name="report" type="string"><column name="REPORT" sql-type="clob" /></property>
 			<!-- Associations mapping for the Request class -->
 			<set name="contents" lazy="true">
 				<cache usage="read-write" />

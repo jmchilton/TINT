@@ -30,7 +30,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <constructor-arg value="metadata" />
   </bean>
 
-  <bean class="edu.umn.msi.tropix.common.spring.H2DefaultsPropertyPlaceholderConfigurer">
+  <bean class="edu.umn.msi.tropix.common.spring.MigratingH2DefaultsPropertyPlaceholderConfigurer">
     <constructor-arg value="metadata" />
   </bean>
    
@@ -83,11 +83,20 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </property>
   </bean>
 
-  <bean id="dataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource" scope="singleton">
+<!-- 
+  <bean id="metadataFlyway" class="edu.umn.msi.tropix.common.spring.DatabaseMigrator">
+    <property name="url" value="${metadata.db.url}" />
+    <property name="dataSource" ref="dataSource"/>
+    <property name="baseDir" value="edu/umn/msi/tropix/models/migrations" />
+  </bean>
+ -->
+  <bean id="dataSource"  class="edu.umn.msi.tropix.common.spring.MigratingDataSource" scope="singleton">
     <property name="driverClassName" value="${metadata.db.driver}" /> 
     <property name="url" value="${metadata.db.url}" />
     <property name="username" value="${metadata.db.username}" />
     <property name="password" value="${metadata.db.password}" />
+    <property name="autoDdl" value="${metadata.db.hbm2ddl}" />
+    <property name="migrationPackage" value="edu.umn.msi.tropix.models.migrations" />
   </bean>
 
   <tx:advice id="daoTransactionAdvice" transaction-manager="transactionManager">

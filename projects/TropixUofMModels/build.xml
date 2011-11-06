@@ -67,7 +67,7 @@
   
   <target name="init" />
   
-  <target name="schemaexport">
+  <target name="schemaexport" depends="resolve-dependencies">
     <taskdef name="schemaexport"
              classname="org.hibernate.tool.hbm2ddl.SchemaExportTask"
              classpathref="compile.classpath" />
