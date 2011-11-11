@@ -7,20 +7,30 @@ group { "puppet":
   ensure => "present"
 }
 
+class security {
+
+  file { "/etc/security/limits.conf":
+    owner => 'root',
+    content => '*                         soft  nofile  16384\n*                         hard  nofile  65536'
+  }
+
+}
+
 node "webapp" {
+  include security
   include aptitude
   include mysql
   include rsyslog
+  include sshguard
 
-  class { 'fail2ban::configure': 
-             full_jails => ["[tintssh]enabled=true\nfilter=ssh\nport=all"] 
-        }
+  include tint_metadata
 
-  #fail2ban::filter { 'tintssh' : 
-  #		       failregex => "^.*Failed (?:password|publickey) for .* from <HOST>(?: port \d*)?(?: tintssh\d*)?$" }
-  
   tomcat::deployment { 'tint-ssh' :
     path => '/tint/projects/TropixSshServer/build/wars/tint-ssh.war'
+  }
+
+  tomcat::deployment { 'tint' :
+    path => '/tint/projects/TropixWebGui/build/wars/tint.war'
   }
 
 }

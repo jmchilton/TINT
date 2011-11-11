@@ -180,3 +180,6 @@
 /tools/cargo-downloads
 /tools/cargo-extracts
 *~
+
+# /vagrant/
+/vagrant/.vagrant
