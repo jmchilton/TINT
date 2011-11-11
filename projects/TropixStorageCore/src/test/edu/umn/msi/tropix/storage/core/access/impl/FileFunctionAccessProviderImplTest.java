@@ -24,6 +24,8 @@ package edu.umn.msi.tropix.storage.core.access.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import org.easymock.classextension.EasyMock;
@@ -35,6 +37,7 @@ import com.google.common.base.Function;
 import edu.umn.msi.tropix.common.io.FileCoercible;
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
+import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.common.test.TempDirectoryTest;
 
@@ -54,7 +57,7 @@ public class FileFunctionAccessProviderImplTest extends TempDirectoryTest {
     id = UUID.randomUUID().toString();
     tempFile = getFile("test");
   }
-  
+
   private void expectMap() {
     expectMap(id, tempFile);
   }
@@ -75,18 +78,28 @@ public class FileFunctionAccessProviderImplTest extends TempDirectoryTest {
   }
 
   @Test(groups = "unit")
+  public void prepareUpload() throws IOException {
+    final File toFile = getFile("abc/def");
+    expectMap(id, toFile);
+    final OutputStream outputStream = provider.getPutFileOutputStream(id);
+    InputContexts.forString("Hello World!").get(outputStream);
+    outputStream.close();
+    assert "Hello World!".equals(FILE_UTILS.readFileToString(toFile));
+  }
+
+  @Test(groups = "unit")
   public void getFile() {
     expectMap();
     assert ((FileCoercible) provider.getFile(id)).asFile().equals(tempFile);
   }
-  
+
   @Test(groups = "unit")
   public void getLength() {
     getFileUtils().writeStringToFile(tempFile, "test");
     expectMap();
     assert provider.getLength(id) == 4;
   }
-  
+
   @Test(groups = "unit")
   public void getDateModified() {
     getFileUtils().writeStringToFile(tempFile, "test");

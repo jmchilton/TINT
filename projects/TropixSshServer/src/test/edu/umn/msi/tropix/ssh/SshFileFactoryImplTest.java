@@ -1,8 +1,8 @@
 package edu.umn.msi.tropix.ssh;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +17,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.io.FileContext;
@@ -33,7 +34,6 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
-import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 
 public class SshFileFactoryImplTest {
   private static final Object[] HOME_DIR_REPRESENTATIONS = new Object[] {".", "/My Home/", "/My Home", "../My Home"};
@@ -134,36 +134,6 @@ public class SshFileFactoryImplTest {
     assert removable();
   }
 
-  @DataProvider(name = "homeDirectoryPaths")
-  public Object[][] getHomeDirectoryPaths() {
-    return expandArray(HOME_DIR_REPRESENTATIONS);
-  }
-
-  private Object[][] expandArray(final Object[] array) {
-    final Object[][] expandedArray = new Object[array.length][];
-    for(int i = 0; i < array.length; i++) {
-      expandedArray[i] = new Object[] {array[i]};
-    }
-    return expandedArray;
-  }
-
-  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
-  public void testMyHomeNotRemovable(String homePath) {
-    setPathToMyHomeAndExpectGet(homePath);
-    assert !removable();
-  }
-
-  @Test(groups = "unit")
-  public void testRootNotRemovable() {
-    setPathToRoot();
-    assert !removable();
-  }
-
-  private boolean removable() {
-    replayAndSetFile();
-    return sshFile.isRemovable();
-  }
-
   @Test(groups = "unit")
   public void testGetParentOfRoot() { // API says should just return root again
     path = "/";
@@ -184,23 +154,14 @@ public class SshFileFactoryImplTest {
   }
 
   @Test(groups = "unit")
-  public void testCannotDelete() {
+  public void testCanDeleteOwnedObject() {
     backingObject = new TropixObject();
     backingObject.setId(UUID.randomUUID().toString());
     expectGetPath();
     tropixObjectService.delete(expectId(), EasyMock.eq(backingObject.getId()));
-    replayAndSetFile();
-    assert sshFile.delete();
+    assert delete();
     EasyMock.verify(tropixObjectService);
   }
-
-  /*
-   * @Test(groups = "unit")
-   * public void testCannotMove() {
-   * replayAndSetFile();
-   * assert !sshFile.move(null);
-   * }
-   */
 
   @Test(groups = "unit")
   public void testReadable() {
@@ -252,6 +213,22 @@ public class SshFileFactoryImplTest {
   }
 
   @Test(groups = "unit")
+  public void testCanTruncateNonExistentFile() throws IOException {
+    backingObject = null;
+    expectGetPath();
+    replayAndSetFile();
+    sshFile.truncate();
+  }
+
+  @Test(groups = "unit", expectedExceptions = RuntimeException.class)
+  public void testCannotTruncateExistingFile() throws IOException {
+    backingObject = new TropixFile();
+    expectGetPath();
+    replayAndSetFile();
+    sshFile.truncate();
+  }
+
+  @Test(groups = "unit")
   public void testOutputStream() throws IOException {
     expectDirectoryWithPath(null);
     path = "test/path/file-name";
@@ -259,26 +236,15 @@ public class SshFileFactoryImplTest {
     EasyMock.expect(
         tropixFileCreator.createFile(EasyMock.same(credential), EasyMock.eq(folderId), EasyMock.capture(fileCapture), EasyMock.<String>isNull()))
         .andReturn(null);
-    UploadCallback callback = new UploadCallback() {
-      private String contents;
-
-      public void onUpload(final InputStream inputStream) {
-        contents = InputContexts.toString(InputContexts.forInputStream(inputStream));
-      }
-
-      public String toString() {
-        return contents;
-      }
-
-    };
     final Capture<String> fileIdCapture = EasyMockUtils.newCapture();
-    EasyMock.expect(storageManager.upload(EasyMock.capture(fileIdCapture), expectId())).andReturn(callback);
+    final ByteArrayOutputStream underlyingOutputStream = new ByteArrayOutputStream();
+    EasyMock.expect(storageManager.prepareUploadStream(EasyMock.capture(fileIdCapture), expectId())).andReturn(underlyingOutputStream);
     replayAndSetFile();
     final OutputStream outputStream = sshFile.createOutputStream(0);
     outputStream.write("Test".getBytes());
     outputStream.close();
-    EasyMock.verify(storageManager);
-    assert callback.toString().equals("Test");
+
+    assert new String(underlyingOutputStream.toByteArray()).equals("Test");
     assert fileCapture.getValue().getName().equals("file-name");
     assert fileCapture.getValue().getFileId().equals(fileIdCapture.getValue());
     assert fileCapture.getValue().getCommitted();
@@ -290,8 +256,7 @@ public class SshFileFactoryImplTest {
     final TropixObject object1 = objectWithName("name1"), object2 = objectWithName("name2"), object3 = objectWithName("name3");
     final TropixObject objectWithDuplicateName = objectWithName("name2");
     EasyMock.expect(tropixObjectService.getChildren(id, folderId)).andReturn(new TropixObject[] {object1, object2, object3, objectWithDuplicateName});
-    replayAndSetFile();
-    final List<SshFile> children = sshFile.listSshFiles();
+    final List<SshFile> children = list();
     Assert.assertEquals(children.size(), 4);
     final Set<String> uniqueNames = Sets.newHashSet();
     for(SshFile child : children) {
@@ -300,11 +265,11 @@ public class SshFileFactoryImplTest {
     // assert uniqueNames.equals(Sets.newHashSet("name1", "name2", "name3"));
   }
 
-  private TropixObject objectWithName(final String name) {
-    final TropixObject object = new TropixObject();
-    object.setCommitted(true);
-    object.setName(name);
-    return object;
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testListRoot(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    final Set<String> names = listAndGetNames();
+    assert names.contains("My Home");
   }
 
   @Test(groups = "unit")
@@ -325,60 +290,264 @@ public class SshFileFactoryImplTest {
   }
 
   @Test(groups = "unit")
-  public void testHomeExists() {
-    setPathToMyHomeAndExpectGet();
+  public void testCanMovePlainFile() {
+    final TropixFile test = new TropixFile();
+    test.setId(UUID.randomUUID().toString());
+    expectGetPath(test, new String[] {"test"});
+    expectGetPath(null, new String[] {"test2"});
+    Folder folder = new Folder();
+    folder.setId(UUID.randomUUID().toString());
+    expectGetPath(folder, new String[] {});
+    tropixObjectService.move(expectId(), EasyMock.eq(test.getId()), EasyMock.eq(folder.getId()));
+    expectRename(test, "test2");
+    replay();
+    assert getFile("/My Home/test").move(getFile("/My Home/test2"));
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeCannotBeMoved(final String homeDirectoryPath) {
+    replay();
+    assert !getFile("/My Home").move(getFile("/My Home/test2"));
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeGetName(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
+    assert getName().equals("My Home");
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeGetAbsolutePath(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
+    assert getAbsolutePath().equals("/My Home");
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeExists(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
     assert exists();
   }
 
-  @Test(groups = "unit")
-  public void testHomeReadable() {
-    setPathToMyHome();
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeReadable(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
     replayAndSetFile();
     assert sshFile.isReadable();
   }
 
-  @Test(groups = "unit")
-  public void testHomeExecutable() {
-    setPathToMyHome();
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeExecutable(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
     replayAndSetFile();
     assert sshFile.isExecutable();
   }
 
-  @Test(groups = "unit")
-  public void testHomeIsDirectory() {
-    setPathToMyHomeAndExpectGet();
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeIsDirectory(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
     replayAndSetFile();
     assert sshFile.isDirectory();
   }
 
-  @Test(groups = "unit")
-  public void testRootReadable() {
-    setPathToRoot();
-    assert sshFile.isReadable();
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeIsNotFile(final String homeDirectoryPath) {
+    setPathToMyHomeAndExpectGet(homeDirectoryPath);
+    assert !sshFile.isFile();
   }
 
-  @Test(groups = "unit")
-  public void testRootIsExecutable() {
-    setPathToRoot();
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testMyHomeNotRemovable(String homePath) {
+    setPathToMyHomeAndExpectGet(homePath);
+    assert !removable();
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testMyHomeGetSize(String homePath) {
+    setPathToMyHomeAndExpectGet(homePath);
+    replayAndSetFile();
+    assert sshFile.getSize() == 0;
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths", expectedExceptions = IllegalStateException.class)
+  public void testHomeCannotBeTruncated(String homePath) throws IOException {
+    setPathToMyHomeAndExpectGet(homePath);
+    replayAndSetFile();
+    sshFile.truncate();
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeCannotBeDeleted(String homePath) throws IOException {
+    setPathToMyHomeAndExpectGet(homePath);
+    assert !delete();
+  }
+
+  @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
+  public void testHomeCannotBeMkdired(final String homePath) throws IOException {
+    setPathToMyHomeAndExpectGet(homePath);
+    assert !mkdir();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootCannotBeMoved(final String rootDirectoryPath) {
+    replay();
+    assert !getFile(rootDirectoryPath).move(getFile("/My Home/test2"));
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootGetName(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    assert getName().equals("");
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootReadable(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
     replayAndSetFile();
     assert sshFile.isReadable();
   }
 
-  @Test(groups = "unit")
-  public void testRootIsNotWritable() {
-    setPathToRoot();
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootIsExecutable(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    replayAndSetFile();
+    assert sshFile.isReadable();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootIsNotWritable(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
     replayAndSetFile();
     assert !sshFile.isWritable();
   }
 
-  @Test(groups = "unit")
-  public void testRootExists() {
-    setPathToRoot();
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootNotRemovable(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    assert !removable();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootIsNotFile(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    replayAndSetFile();
+    assert !sshFile.isFile();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootExists(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
     assert exists();
   }
 
-  private void setPathToMyHomeAndExpectGet() {
-    setPathToMyHomeAndExpectGet("/My Home/");
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootGetAbsolutePath(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    assert getAbsolutePath().equals("/");
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootIsDirectory(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    replayAndSetFile();
+    assert sshFile.isDirectory();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootGetSize(final String rootDirectoryPath) {
+    setPathToRoot(rootDirectoryPath);
+    replayAndSetFile();
+    assert sshFile.getSize() == 0;
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths", expectedExceptions = IllegalStateException.class)
+  public void testRootCannotBeTruncated(final String rootDirectoryPath) throws IOException {
+    setPathToRoot(rootDirectoryPath);
+    replayAndSetFile();
+    sshFile.truncate();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootCannotBeDeleted(final String rootDirectoryPath) throws IOException {
+    setPathToRoot(rootDirectoryPath);
+    assert !delete();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testRootCannotBeMkdired(final String rootDirectoryPath) throws IOException {
+    setPathToRoot(rootDirectoryPath);
+    assert !mkdir();
+  }
+
+  @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
+  public void testCannotBeMkdirBeneathRoot(final String rootDirectoryPath) throws IOException {
+    setPathToRoot(rootDirectoryPath + "/cow");
+    assert !mkdir();
+  }
+
+  private boolean mkdir() {
+    replayAndSetFile();
+    return sshFile.mkdir();
+  }
+
+  private TropixObject objectWithName(final String name) {
+    final TropixObject object = new TropixObject();
+    object.setCommitted(true);
+    object.setName(name);
+    return object;
+  }
+
+  @DataProvider(name = "homeDirectoryPaths")
+  public Object[][] getHomeDirectoryPaths() {
+    return expandArray(HOME_DIR_REPRESENTATIONS);
+  }
+
+  @DataProvider(name = "rootDirectoryPaths")
+  public Object[][] getRootDirectoryPaths() {
+    return expandArray(ROOT_DIR_REPRESENTATIONS);
+  }
+
+  private Object[][] expandArray(final Object[] array) {
+    final Object[][] expandedArray = new Object[array.length][];
+    for(int i = 0; i < array.length; i++) {
+      expandedArray[i] = new Object[] {array[i]};
+    }
+    return expandedArray;
+  }
+
+  private boolean delete() {
+    replayAndSetFile();
+    boolean deleted = sshFile.delete();
+    return deleted;
+  }
+
+  private List<SshFile> list() {
+    replayAndSetFile();
+    final List<SshFile> children = sshFile.listSshFiles();
+    return children;
+  }
+
+  private Set<String> listAndGetNames() {
+    final Set<String> names = Sets.newHashSet();
+    final List<SshFile> children = list();
+    for(final SshFile file : children) {
+      names.add(file.getName());
+    }
+    return names;
+  }
+
+  private boolean removable() {
+    replayAndSetFile();
+    return sshFile.isRemovable();
+  }
+
+  private String getName() {
+    replayAndSetFile();
+    return sshFile.getName();
+  }
+
+  private String getAbsolutePath() {
+    replayAndSetFile();
+    return sshFile.getAbsolutePath();
   }
 
   private void setPathToMyHomeAndExpectGet(final String myHomePath) {
@@ -392,12 +561,8 @@ public class SshFileFactoryImplTest {
     return sshFile.doesExist();
   }
 
-  private void setPathToRoot() {
-    path = "/";
-  }
-
-  private void setPathToMyHome() {
-    path = "/My Home/";
+  private void setPathToRoot(String rootDirectoryPath) {
+    path = rootDirectoryPath;
   }
 
   private void expectDirectoryWithPath(final String[] pathPieces) {
@@ -426,9 +591,16 @@ public class SshFileFactoryImplTest {
   }
 
   private void replayAndSetFile() {
-    EasyMockUtils.replayAll(tropixObjectService, storageManager, folderService, tropixFileCreator);
+    replay();
+    sshFile = getFile(path);
+  }
 
-    sshFile = sshFileFactoryImpl.getFile(credential, path);
+  private void replay() {
+    EasyMockUtils.replayAll(tropixObjectService, storageManager, folderService, tropixFileCreator);
+  }
+
+  private SshFile getFile(final String path) {
+    return sshFileFactoryImpl.getFile(credential, path);
   }
 
   private String expectFileId() {
@@ -456,6 +628,13 @@ public class SshFileFactoryImplTest {
 
   private String expectId() {
     return EasyMock.eq(id);
+  }
+
+  private void expectRename(final TropixObject object, final String to) {
+    final TropixObject loadedObject = new TropixObject();
+    EasyMock.expect(tropixObjectService.load(expectId(), EasyMock.eq(object.getId()))).andReturn(loadedObject);
+    tropixObjectService.update(expectId(),
+        EasyMockUtils.<TropixObject>isBeanWithProperties(ImmutableMap.<String, Object>builder().put("name", to).build()));
   }
 
 }

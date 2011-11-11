@@ -30,6 +30,14 @@ http://www.springframework.org/schema/jms http://www.springframework.org/schema/
         <entry key="messaging.broker.start" value="false" />
         <entry key="messaging.broker.url" value="tcp://localhost:61610" /> 
         <entry key="messaging.broker.persist" value="false" />
+
+        <!--  Unable to get these to work with camel namespace.
+        <entry key="camel.connector.create" value="true" />
+        <entry key="camel.connector.registry.port" value="1099" />
+        <entry key="camel.connector.service.url" value="/jmxrmi/camel" />
+        <entry key="camel.connector.domain" value="org.apache.camel" />
+        -->        
+        
       </map>
     </property>
   </bean>    

@@ -23,24 +23,27 @@
 package edu.umn.msi.tropix.storage.core;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
 
 public interface StorageManager {
-  
+
   static interface UploadCallback {
-    
+
     void onUpload(InputStream inputStream);
-    
+
   }
 
   long getDateModified(final String id, final String gridId);
-  
+
   long getLength(final String id, final String gridId);
-  
+
   HasStreamInputContext download(String id, String gridId);
 
   UploadCallback upload(String id, String gridId);
+
+  OutputStream prepareUploadStream(final String id, final String gridId);
 
   boolean delete(String id, String gridId);
 

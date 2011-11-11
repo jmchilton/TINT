@@ -1,7 +1,5 @@
 package edu.umn.msi.tropix.ssh;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,6 +11,7 @@ import java.util.UUID;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
+import org.apache.commons.io.output.ProxyOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.sshd.server.SshFile;
@@ -35,7 +34,6 @@ import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
-import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 
 @ManagedBean
 public class SshFileFactoryImpl implements SshFileFactory {
@@ -93,12 +91,14 @@ public class SshFileFactoryImpl implements SshFileFactory {
       this.virtualPath = virtualPath;
     }
 
+    // Remove trailing / for directories, is this expected?
     public String getAbsolutePath() {
       final String absolutePath = Utils.cleanAndExpandPath(virtualPath);
       log(String.format("getAbsolutePath called, result is %s", absolutePath));
       return absolutePath;
     }
 
+    // What should this return for root?
     public String getName() {
       final String name = Utils.name(virtualPath);
       log(String.format("getName called, result is %s", name));
@@ -162,7 +162,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean setLastModified(final long time) {
-      log("setLastModified");
+      // log("setLastModified");
       return false;
     }
 
@@ -190,25 +190,38 @@ public class SshFileFactoryImpl implements SshFileFactory {
       return storageManager.download(getFileId(), identity);
     }
 
-    // TODO: Actually truncate
     public void truncate() throws IOException {
       log("truncate");
+      if(doesExist()) {
+        // TODO: Handle this better
+        throw new IllegalStateException("Cannot truncate this file, please delete and add a new file.");
+      }
     }
 
     public boolean delete() {
       log("delete");
-      initObject();
-      tropixObjectService.delete(identity, object.getId());
-      return true;
+      if(isMetaLocation() || !doesExist()) {
+        return false;
+      } else {
+        initObject();
+        tropixObjectService.delete(identity, object.getId());
+        return true;
+      }
     }
 
     public boolean move(final SshFile destination) {
       log("move");
+      if(isMetaLocation()) {
+        return false;
+      }
       initObject();
       boolean moved = false;
       if(parentIsFolder() && destination instanceof SshFileImpl) {
         final SshFileImpl destinationFile = (SshFileImpl) destination;
-        if(!destinationFile.doesExist() && destinationFile.parentIsFolder()) {
+        final boolean validDestination = !destinationFile.doesExist() && destinationFile.parentIsFolder();
+        System.out.println(destinationFile.doesExist());
+        log("Move valid destination - " + validDestination);
+        if(validDestination) {
           final String objectId = object.getId();
           tropixObjectService.move(identity, objectId, destinationFile.parentAsFolder().getId());
           final TropixObject object = tropixObjectService.load(identity, objectId);
@@ -216,10 +229,6 @@ public class SshFileFactoryImpl implements SshFileFactory {
           tropixObjectService.update(identity, object);
           moved = true;
         }
-        // destinationFile.virtualPath
-        // if(destinationIsFolder) {
-        //
-        // }
       }
       log(String.format("In move - moved? %b", moved));
       return moved;
@@ -277,33 +286,33 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public OutputStream createOutputStream(final long offset) throws IOException {
       if(!parentIsFolder()) {
-        throw new IllegalStateException("Invalid path to create output stream from " + virtualPath);
+        final String errorMessage = "Invalid path to create output stream from " + virtualPath;
+        LOG.warn(errorMessage);
+        throw new IllegalStateException(errorMessage);
+      } else if(offset > 0) {
+        final String errorMessage = "Server only supports offsets of 0 - path " + virtualPath;
+        LOG.warn(errorMessage);
+        throw new IllegalStateException(errorMessage);
       } else {
         final String newFileId = UUID.randomUUID().toString();
-        final UploadCallback uploadCallback = storageManager.upload(newFileId, identity);
-        Preconditions.checkNotNull(uploadCallback);
-        final File tempFile = FILE_UTILS.createTempFile();
-        return new FileOutputStream(tempFile) {
+        final OutputStream outputStream = storageManager.prepareUploadStream(newFileId, identity);
+        return new ProxyOutputStream(outputStream) {
           @Override
           public void close() throws IOException {
             try {
               super.close();
             } finally {
-              try {
-                uploadCallback.onUpload(FILE_UTILS.getFileInputStream(tempFile));
-                final Folder parentFolder = parentAsFolder();
-                final TropixFile tropixFile = new TropixFile();
-                tropixFile.setName(getName());
-                tropixFile.setCommitted(true);
-                tropixFile.setFileId(newFileId);
-                tropixFileCreator.createFile(credential, parentFolder.getId(), tropixFile, null);
-              } finally {
-                FILE_UTILS.deleteQuietly(tempFile);
-              }
+              LOG.debug("Preparing file for tropixfilecreator");
+              final Folder parentFolder = parentAsFolder();
+              final TropixFile tropixFile = new TropixFile();
+              tropixFile.setName(getName());
+              tropixFile.setCommitted(true);
+              tropixFile.setFileId(newFileId);
+              tropixFileCreator.createFile(credential, parentFolder.getId(), tropixFile, null);
+              LOG.debug("File created " + virtualPath);
             }
           }
         };
-
       }
     }
 
@@ -314,27 +323,35 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public List<SshFile> listSshFiles() {
-      initObject();
-      log("listSshFiles");
-      final TropixObject[] objects = tropixObjectService.getChildren(identity, object.getId());
-      final Map<String, Boolean> uniqueName = Maps.newHashMap();
-      for(TropixObject object : objects) {
-        final String objectName = object.getName();
-        if(!uniqueName.containsKey(objectName)) {
-          uniqueName.put(objectName, true);
-        } else {
-          uniqueName.put(objectName, false);
+      final ImmutableList.Builder<SshFile> children = ImmutableList.builder();
+      if(isRoot()) {
+        children.add(getFile(credential, "My Home"));
+      } else {
+        initObject();
+        log("listSshFiles");
+        final TropixObject[] objects = tropixObjectService.getChildren(identity, object.getId());
+        final Map<String, Boolean> uniqueName = Maps.newHashMap();
+        for(TropixObject object : objects) {
+          final String objectName = object.getName();
+          if(!uniqueName.containsKey(objectName)) {
+            uniqueName.put(objectName, true);
+          } else {
+            uniqueName.put(objectName, false);
+          }
+        }
+        for(TropixObject object : objects) {
+          final String name = object.getName();
+          final String derivedName = uniqueName.get(name) ? name : String.format("%s [id:%s]", name, object.getId());
+          final String childName = Utils.join(virtualPath, derivedName);
+          LOG.debug(String.format("Creating child with name [%s]", childName));
+          children.add(getFile(credential, childName));
         }
       }
-      final ImmutableList.Builder<SshFile> children = ImmutableList.builder();
-      for(TropixObject object : objects) {
-        final String name = object.getName();
-        final String derivedName = uniqueName.get(name) ? name : String.format("%s [id:%s]", name, object.getId());
-        final String childName = Utils.join(virtualPath, derivedName);
-        LOG.debug(String.format("Creating child with name [%s]", childName));
-        children.add(getFile(credential, childName));
-      }
       return children.build();
+    }
+
+    private boolean isRoot() {
+      return "/".equals(getAbsolutePath());
     }
 
     private boolean isMetaLocation() {

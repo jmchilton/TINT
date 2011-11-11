@@ -79,10 +79,7 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
   }
 
   public long putFile(final String id, final InputStream tempFile) {
-    final File file = getRawFile(id);
-    FILE_UTILS.mkdirs(file.getParentFile());
-    Preconditions.checkState(file.getParentFile().exists(), "Failed to create the required directory to store the given file");
-    final OutputStream outputStream = FILE_UTILS.getFileOutputStream(file);
+    final OutputStream outputStream = prepareFileForUpload(id);
     try {
       return IO_UTILS.copy(tempFile, outputStream);
     } finally {
@@ -90,8 +87,21 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
     }
   }
 
+  private OutputStream prepareFileForUpload(final String id) {
+    final File file = getRawFile(id);
+    FILE_UTILS.mkdirs(file.getParentFile());
+    Preconditions.checkState(file.getParentFile().exists(), "Failed to create the required directory to store the given file");
+    final OutputStream outputStream = FILE_UTILS.getFileOutputStream(file);
+    return outputStream;
+  }
+
   public void setFileFunction(final Function<String, File> fileFunction) {
     this.fileFunction = fileFunction;
+  }
+
+  public OutputStream getPutFileOutputStream(final String id) {
+    final OutputStream outputStream = prepareFileForUpload(id);
+    return outputStream;
   }
 
 }

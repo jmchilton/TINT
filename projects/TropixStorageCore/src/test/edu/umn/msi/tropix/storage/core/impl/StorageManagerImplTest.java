@@ -23,7 +23,10 @@
 package edu.umn.msi.tropix.storage.core.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
@@ -34,6 +37,7 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
+import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.test.MockObjectCollection;
 import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 import edu.umn.msi.tropix.persistence.service.FileService;
@@ -84,7 +88,7 @@ public class StorageManagerImplTest {
     mockObjects.replay();
     assert !service.canUpload(fileId, gridId);
     mockObjects.verifyAndReset();
-    EasyMock.expect(authorizationProvider.canUpload(fileId, gridId)).andReturn(true);
+    allowUpload();
     mockObjects.replay();
     assert service.canUpload(fileId, gridId);
     mockObjects.verifyAndReset();
@@ -98,7 +102,6 @@ public class StorageManagerImplTest {
     EasyMock.expect(authorizationProvider.canDownload(fileId, gridId)).andReturn(true);
   }
 
-  
   @Test(groups = "unit")
   public void canDownload() throws RemoteException {
     expectCannotDownload();
@@ -152,7 +155,7 @@ public class StorageManagerImplTest {
     mockObjects.replay();
     service.download(fileId, gridId);
   }
-  
+
   @Test(groups = "unit", expectedExceptions = RuntimeException.class)
   public void lengthAccessException() throws RemoteException {
     expectCannotDownload();
@@ -182,7 +185,7 @@ public class StorageManagerImplTest {
     mockObjects.replay();
     assert service.getLength(fileId, gridId) == 13L;
   }
-  
+
   @Test(groups = "unit")
   public void download() throws RemoteException {
     final HasStreamInputContext file = EasyMock.createMock(HasStreamInputContext.class);
@@ -194,23 +197,52 @@ public class StorageManagerImplTest {
   }
 
   @Test(groups = "unit", dataProvider = "bool1", dataProviderClass = TestNGDataProviders.class)
+  public void uploadStream(final boolean shouldCommit) throws IOException {
+    handleShouldCommit(shouldCommit);
+    allowUpload();
+    final ByteArrayOutputStream underlyingOutputStream = new ByteArrayOutputStream();
+    EasyMock.expect(accessProvider.getPutFileOutputStream(fileId)).andReturn(underlyingOutputStream);
+    mockObjects.replay();
+    final OutputStream outputStream = service.prepareUploadStream(fileId, gridId);
+    mockObjects.verifyAndReset();
+    expectFinalizeAndReplay(shouldCommit, 3L);
+    InputContexts.forString("moo").get(outputStream);
+    outputStream.close();
+    mockObjects.verifyAndReset();
+    assert new String(underlyingOutputStream.toByteArray()).equals("moo");
+  }
+
+  @Test(groups = "unit", dataProvider = "bool1", dataProviderClass = TestNGDataProviders.class)
   public void upload(final boolean shouldCommit) throws RemoteException {
-    if(shouldCommit) {
-      service.setCommittingCallerIds(Lists.newArrayList(gridId));
-    }
-    EasyMock.expect(authorizationProvider.canUpload(fileId, gridId)).andReturn(true);
+    handleShouldCommit(shouldCommit);
+    allowUpload();
     mockObjects.replay();
     final InputStream inputStream = new ByteArrayInputStream("moo".getBytes());
     final UploadCallback callback = service.upload(fileId, gridId);
     mockObjects.verifyAndReset();
-    EasyMock.expect(accessProvider.putFile(EasyMock.eq(fileId), EasyMock.same(inputStream))).andReturn(123456L);
-    fileService.recordLength(fileId, 123456L);
+    final long length = 3L;
+    EasyMock.expect(accessProvider.putFile(EasyMock.eq(fileId), EasyMock.same(inputStream))).andReturn(length);
+    expectFinalizeAndReplay(shouldCommit, length);
+    callback.onUpload(inputStream);
+    mockObjects.verifyAndReset();
+  }
+
+  private void expectFinalizeAndReplay(final boolean shouldCommit, final long length) {
+    fileService.recordLength(fileId, length);
     if(shouldCommit) {
       fileService.commit(fileId);
     }
     mockObjects.replay();
-    callback.onUpload(inputStream);
-    mockObjects.verifyAndReset();
+  }
+
+  private void allowUpload() {
+    EasyMock.expect(authorizationProvider.canUpload(fileId, gridId)).andReturn(true);
+  }
+
+  private void handleShouldCommit(final boolean shouldCommit) {
+    if(shouldCommit) {
+      service.setCommittingCallerIds(Lists.newArrayList(gridId));
+    }
   }
 
 }

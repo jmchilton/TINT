@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.storage.core.access;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
 
@@ -31,12 +32,17 @@ public interface AccessProvider {
 
   /**
    * Stores stream to file uniquely referenced by
-   * id.  
-   * @param id Unique identifier for file.
-   * @param inputStream Contents to save to file.
+   * id.
+   * 
+   * @param id
+   *          Unique identifier for file.
+   * @param inputStream
+   *          Contents to save to file.
    * @return The number of bytes in resulting file.
    */
   long putFile(String id, InputStream inputStream);
+
+  OutputStream getPutFileOutputStream(String id);
 
   boolean deleteFile(String id);
 

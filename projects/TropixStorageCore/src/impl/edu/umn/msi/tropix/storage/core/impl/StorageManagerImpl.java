@@ -22,9 +22,13 @@
 
 package edu.umn.msi.tropix.storage.core.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.annotation.Nullable;
+
+import org.apache.commons.io.output.CountingOutputStream;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -42,8 +46,8 @@ public class StorageManagerImpl implements StorageManager {
   private AuthorizationProvider authorizationProvider;
   private AccessProvider accessProvider;
   private FileService fileService;
-  //Ids of callers who need the files uploaded to be committed, such as request services  
-  private Iterable<String> committingCallerIds = Lists.newArrayList(); 
+  // Ids of callers who need the files uploaded to be committed, such as request services
+  private Iterable<String> committingCallerIds = Lists.newArrayList();
 
   public void setCommittingCallerIds(final Iterable<String> committingCallerIds) {
     this.committingCallerIds = committingCallerIds;
@@ -77,25 +81,46 @@ public class StorageManagerImpl implements StorageManager {
     return accessProvider.getLength(id);
   }
 
-  
   public boolean exists(final String id) {
     return accessProvider.fileExists(id);
   }
 
   public UploadCallback upload(final String id, final String gridId) {
-    if(!authorizationProvider.canUpload(id, gridId)) {
-      throw new RuntimeException("User " + gridId + " cannot upload file " + id);
-    }
+    ensureCanUpload(id, gridId);
     return new UploadCallback() {
       public void onUpload(final InputStream inputStream) {
         try {
           long fileLength = accessProvider.putFile(id, inputStream);
-          if(Iterables.contains(committingCallerIds, gridId)) {
-            fileService.commit(id);
-          }
-          fileService.recordLength(id, fileLength);
+          finalizeUpload(id, gridId, fileLength);
         } finally {
           IO_UTILS.closeQuietly(inputStream);
+        }
+      }
+    };
+  }
+
+  private void finalizeUpload(final String id, final String gridId, final long fileLength) {
+    if(Iterables.contains(committingCallerIds, gridId)) {
+      fileService.commit(id);
+    }
+    fileService.recordLength(id, fileLength);
+  }
+
+  private void ensureCanUpload(final String id, final String gridId) {
+    if(!authorizationProvider.canUpload(id, gridId)) {
+      throw new RuntimeException("User " + gridId + " cannot upload file " + id);
+    }
+  }
+
+  public OutputStream prepareUploadStream(final String id, final String gridId) {
+    ensureCanUpload(id, gridId);
+    return new CountingOutputStream(accessProvider.getPutFileOutputStream(id)) {
+      @Override
+      public void close() throws IOException {
+        try {
+          super.close();
+        } finally {
+          finalizeUpload(id, gridId, getByteCount());
         }
       }
     };
