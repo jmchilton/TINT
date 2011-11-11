@@ -37,6 +37,8 @@ import edu.umn.msi.tropix.storage.core.StorageManager;
 
 public class SshFileFactoryImplTest {
   private static final Object[] HOME_DIR_REPRESENTATIONS = new Object[] {".", "/My Home/", "/My Home", "../My Home"};
+  private static final Object[] GROUP_FOLDERS_DIR_REPRESENTATIONS = new Object[] {"../My Group Folders", "/My Group Folders/", "/My Group Folders",
+      "../My Group Folders/"};
   private static final Object[] ROOT_DIR_REPRESENTATIONS = new Object[] {"/", "..", "../.."};
 
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
@@ -97,8 +99,7 @@ public class SshFileFactoryImplTest {
     path = "/My Home/test/path";
     backingObject = new Folder();
     expectGetPath(new String[] {"test", "path"});
-    replayAndSetFile();
-    assert sshFile.isDirectory();
+    assert isDirectory();
   }
 
   @Test(groups = "unit")
@@ -166,23 +167,20 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit")
   public void testReadable() {
     // Everything in your directory structure should be readable
-    replayAndSetFile();
-    assert sshFile.isReadable();
+    assert isReadable();
   }
 
   @Test(groups = "unit")
   public void testExecutable() {
     // Nothing should be executable?
-    replayAndSetFile();
-    assert sshFile.isExecutable();
+    assert isExecutable();
   }
 
   @Test(groups = "unit")
   public void testDirectoriesAreWritable() {
     backingObject = new Folder();
     expectGetPath();
-    replayAndSetFile();
-    assert sshFile.isWritable();
+    assert writable();
   }
 
   @Test(groups = "unit")
@@ -216,16 +214,14 @@ public class SshFileFactoryImplTest {
   public void testCanTruncateNonExistentFile() throws IOException {
     backingObject = null;
     expectGetPath();
-    replayAndSetFile();
-    sshFile.truncate();
+    truncate();
   }
 
   @Test(groups = "unit", expectedExceptions = RuntimeException.class)
-  public void testCannotTruncateExistingFile() throws IOException {
+  public void testCannotTruncateExistingFile() {
     backingObject = new TropixFile();
     expectGetPath();
-    replayAndSetFile();
-    sshFile.truncate();
+    truncate();
   }
 
   @Test(groups = "unit")
@@ -270,6 +266,7 @@ public class SshFileFactoryImplTest {
     setPathToRoot(rootDirectoryPath);
     final Set<String> names = listAndGetNames();
     assert names.contains("My Home");
+    assert names.contains("My Group Folders");
   }
 
   @Test(groups = "unit")
@@ -331,28 +328,25 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
   public void testHomeReadable(final String homeDirectoryPath) {
     setPathToMyHomeAndExpectGet(homeDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.isReadable();
+    assert isReadable();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
   public void testHomeExecutable(final String homeDirectoryPath) {
     setPathToMyHomeAndExpectGet(homeDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.isExecutable();
+    assert isExecutable();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
   public void testHomeIsDirectory(final String homeDirectoryPath) {
     setPathToMyHomeAndExpectGet(homeDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.isDirectory();
+    assert isDirectory();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
   public void testHomeIsNotFile(final String homeDirectoryPath) {
     setPathToMyHomeAndExpectGet(homeDirectoryPath);
-    assert !sshFile.isFile();
+    assert !isFile();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
@@ -364,15 +358,13 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
   public void testMyHomeGetSize(String homePath) {
     setPathToMyHomeAndExpectGet(homePath);
-    replayAndSetFile();
-    assert sshFile.getSize() == 0;
+    assert getSize() == 0;
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths", expectedExceptions = IllegalStateException.class)
-  public void testHomeCannotBeTruncated(String homePath) throws IOException {
+  public void testHomeCannotBeTruncated(String homePath) {
     setPathToMyHomeAndExpectGet(homePath);
-    replayAndSetFile();
-    sshFile.truncate();
+    truncate();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
@@ -387,6 +379,7 @@ public class SshFileFactoryImplTest {
     assert !mkdir();
   }
 
+  // ROOT DIRECTORY TESTS
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootCannotBeMoved(final String rootDirectoryPath) {
     replay();
@@ -402,22 +395,19 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootReadable(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.isReadable();
+    assert isReadable();
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootIsExecutable(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.isReadable();
+    assert isExecutable();
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootIsNotWritable(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    assert !sshFile.isWritable();
+    assert !writable();
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
@@ -429,8 +419,7 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootIsNotFile(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    assert !sshFile.isFile();
+    assert !isFile();
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
@@ -448,22 +437,19 @@ public class SshFileFactoryImplTest {
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootIsDirectory(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.isDirectory();
+    assert isDirectory();
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
   public void testRootGetSize(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    assert sshFile.getSize() == 0;
+    assert getSize() == 0;
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths", expectedExceptions = IllegalStateException.class)
-  public void testRootCannotBeTruncated(final String rootDirectoryPath) throws IOException {
+  public void testRootCannotBeTruncated(final String rootDirectoryPath) {
     setPathToRoot(rootDirectoryPath);
-    replayAndSetFile();
-    sshFile.truncate();
+    truncate();
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
@@ -484,9 +470,85 @@ public class SshFileFactoryImplTest {
     assert !mkdir();
   }
 
+  // MY GROUP FOLDERS TEST
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersCannotBeMoved(final String groupFoldersDirectoryPath) {
+    replay();
+    assert !getFile(groupFoldersDirectoryPath).move(getFile("/My Home/test2"));
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersName(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert getName().equals("My Group Folders");
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersIsReadable(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert isReadable();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersIsExecutable(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert isExecutable();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersIsNotWritable(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert !writable();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersNotRemovable(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert !removable();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersIsNotFile(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert !isFile();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersExists(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert exists();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFolderAbsolutePath(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert getAbsolutePath().equals("/My Group Folders");
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersIsDirectory(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert isDirectory();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersGetSize(final String groupFoldersDirectoryPath) {
+    path = groupFoldersDirectoryPath;
+    assert getSize() == 0;
+  }
+
   private boolean mkdir() {
     replayAndSetFile();
     return sshFile.mkdir();
+  }
+
+  private void truncate() {
+    replayAndSetFile();
+    try {
+      sshFile.truncate();
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private TropixObject objectWithName(final String name) {
@@ -504,6 +566,11 @@ public class SshFileFactoryImplTest {
   @DataProvider(name = "rootDirectoryPaths")
   public Object[][] getRootDirectoryPaths() {
     return expandArray(ROOT_DIR_REPRESENTATIONS);
+  }
+
+  @DataProvider(name = "groupFoldersDirectoryPaths")
+  public Object[][] getGroupFoldersDirectoryPaths() {
+    return expandArray(GROUP_FOLDERS_DIR_REPRESENTATIONS);
   }
 
   private Object[][] expandArray(final Object[] array) {
@@ -535,6 +602,21 @@ public class SshFileFactoryImplTest {
     return names;
   }
 
+  private boolean isDirectory() {
+    replayAndSetFile();
+    return sshFile.isDirectory();
+  }
+
+  private boolean isReadable() {
+    replayAndSetFile();
+    return sshFile.isReadable();
+  }
+
+  private boolean isExecutable() {
+    replayAndSetFile();
+    return sshFile.isExecutable();
+  }
+
   private boolean removable() {
     replayAndSetFile();
     return sshFile.isRemovable();
@@ -556,9 +638,24 @@ public class SshFileFactoryImplTest {
     expectDirectoryWithPath(new String[0]);
   }
 
+  private boolean writable() {
+    replayAndSetFile();
+    return sshFile.isWritable();
+  }
+
+  private boolean isFile() {
+    replayAndSetFile();
+    return sshFile.isFile();
+  }
+
   private boolean exists() {
     replayAndSetFile();
     return sshFile.doesExist();
+  }
+
+  private long getSize() {
+    replayAndSetFile();
+    return sshFile.getSize();
   }
 
   private void setPathToRoot(String rootDirectoryPath) {

@@ -44,7 +44,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
   private final StorageManager storageManager;
   private final FolderService folderService;
 
-  private static final Set<String> META_OBJECT_PATHS = Sets.newHashSet("/", "/My Home");
+  private static final Set<String> META_OBJECT_PATHS = Sets.newHashSet("/", "/My Home", "/My Group Folders");
 
   @Inject
   public SshFileFactoryImpl(final TropixObjectService tropixObjectService,
@@ -326,6 +326,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       final ImmutableList.Builder<SshFile> children = ImmutableList.builder();
       if(isRoot()) {
         children.add(getFile(credential, "My Home"));
+        children.add(getFile(credential, "My Group Folders"));
       } else {
         initObject();
         log("listSshFiles");
