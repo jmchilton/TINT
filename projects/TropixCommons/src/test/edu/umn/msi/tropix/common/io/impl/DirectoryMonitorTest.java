@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.concurrent.Executor;
 
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

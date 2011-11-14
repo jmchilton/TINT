@@ -19,7 +19,7 @@ package edu.umn.msi.tropix.proteomics.convert.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

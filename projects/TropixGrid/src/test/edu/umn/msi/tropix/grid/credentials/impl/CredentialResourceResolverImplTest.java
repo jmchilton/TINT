@@ -23,7 +23,7 @@
 package edu.umn.msi.tropix.grid.credentials.impl;
 
 import org.cagrid.gaards.cds.delegated.stubs.types.DelegatedCredentialReference;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.credential.types.CaGridDelegatedCredentialResource;

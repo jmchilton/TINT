@@ -20,10 +20,10 @@ import static edu.umn.msi.tropix.common.test.EasyMockUtils.verifyAndReset;
 import static org.easymock.EasyMock.anyDouble;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.exec.generated.JobDescriptionType;
 import org.testng.annotations.Test;
 

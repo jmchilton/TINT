@@ -7,21 +7,27 @@
   <configurations>
     <conf name="stubs" visibility="public" />
     <conf name="api"  visibility="public" />
-    <conf name="impl" description="Default" extends="api,stubs" visibility="public" />
-    <conf name="test" description="Tests" extends="impl" visibility="public" />
+    <conf name="impl-common" visibility="public" extends="api,stubs" />
+    <conf name="fs-impl" description="Filesystem Implementation" extends="impl-common" visibility="public" />
+    <conf name="gridfs-impl" description="GridFS (mongodb) Implementation" extends="impl-common" visibility="public" />
+    <conf name="impls" description="All implementations" extends="fs-impl,gridfs-impl" visibility="public" />
+    <conf name="test" description="Tests" extends="impls" visibility="public" />
     <conf name="all" description="All Dependencies" extends="test" visibility="private" />
   </configurations>
 
   <publications>
     <artifact name="tropix-storage-core-stubs" type="jar" conf="api" ext="jar" />
     <artifact name="tropix-storage-core-api" type="jar" conf="api" ext="jar" />
-    <artifact name="tropix-storage-core-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-storage-core-impl-common" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-storage-core-fs-impl" type="jar" conf="fs-impl" ext="jar" />
+    <artifact name="tropix-storage-core-gridfs-impl" type="jar" conf="gridfs-impl" ext="jar" />
     <artifact name="tropix-storage-core-test" type="jar" conf="test" ext="jar" />
   </publications>
   
   <dependencies>
-    <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl->service-impl-dao" />
+    <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl-common->service-impl-dao" />
     <dependency org="msi.umn.edu" name="tropix-grid" rev="${ivy.project.version}" />
+    <dependency org="org.mongodb" name="mongo-java-driver" rev="2.7.0" conf="gridfs-impl->master" />
   </dependencies>  
 
 </ivy-module>

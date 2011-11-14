@@ -23,7 +23,7 @@
 package edu.umn.msi.tropix.grid.io.transfer.impl;
 
 import org.cagrid.transfer.context.stubs.types.TransferServiceContextReference;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

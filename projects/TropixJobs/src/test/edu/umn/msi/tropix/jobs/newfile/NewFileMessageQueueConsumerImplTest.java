@@ -3,7 +3,7 @@ package edu.umn.msi.tropix.jobs.newfile;
 import java.util.List;
 import java.util.UUID;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;

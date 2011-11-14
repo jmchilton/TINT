@@ -17,7 +17,7 @@
 package edu.umn.msi.tropix.common.jobqueue.execution.gram;
 
 import org.apache.axis.message.addressing.EndpointReferenceType;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.exec.generated.StateEnumeration;
 import org.globus.wsrf.impl.security.authorization.NoAuthorization;
 import org.oasis.wsrf.properties.ResourceUnknownFaultType;

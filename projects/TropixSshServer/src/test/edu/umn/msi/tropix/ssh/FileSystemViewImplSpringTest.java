@@ -9,7 +9,7 @@ import org.apache.sshd.common.Session;
 import org.apache.sshd.server.FileSystemFactory;
 import org.apache.sshd.server.FileSystemView;
 import org.apache.sshd.server.SshFile;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 

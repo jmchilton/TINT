@@ -25,7 +25,7 @@ package edu.umn.msi.tropix.client.catalog.impl;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Iterables;

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

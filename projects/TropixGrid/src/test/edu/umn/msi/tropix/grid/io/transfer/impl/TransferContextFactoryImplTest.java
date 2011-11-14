@@ -30,7 +30,7 @@ import java.io.FileOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.cagrid.transfer.context.stubs.types.TransferServiceContextReference;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.gsi.GlobusCredential;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

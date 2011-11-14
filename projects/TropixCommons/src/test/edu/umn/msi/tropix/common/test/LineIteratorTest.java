@@ -28,7 +28,7 @@ import java.io.PipedWriter;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.io.LineIterator;

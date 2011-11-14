@@ -30,7 +30,7 @@ import java.util.Iterator;
 
 import org.apache.axis.message.addressing.AttributedURI;
 import org.apache.axis.message.addressing.EndpointReferenceType;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Function;

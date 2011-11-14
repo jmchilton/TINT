@@ -35,7 +35,7 @@ import gov.nih.nci.cagrid.dorian.stubs.types.UserPolicyFault;
 import gov.nih.nci.cagrid.opensaml.SAMLAssertion;
 
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.gsi.GlobusCredential;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

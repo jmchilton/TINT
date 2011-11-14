@@ -24,7 +24,7 @@ package edu.umn.msi.tropix.persistence.service.impl;
 
 import java.util.UUID;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.models.FileType;

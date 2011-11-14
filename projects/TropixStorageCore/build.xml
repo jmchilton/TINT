@@ -13,12 +13,16 @@
     <path id="source.classpath">
       <pathelement path="${build.src.dir}/stubs" />
       <pathelement path="${src.dir}/api" />
-      <pathelement path="${src.dir}/impl" />
+      <pathelement path="${src.dir}/impl-common" />
+      <pathelement path="${src.dir}/fs-impl" />
+      <pathelement path="${src.dir}/gridfs-impl" />
     </path>
     <path id="compile.classpath">
       <pathelement path="${build.classes.dir}/stubs" />
       <pathelement path="${build.classes.dir}/api" />
-      <pathelement path="${build.classes.dir}/impl" />
+      <pathelement path="${build.classes.dir}/impl-common" />
+      <pathelement path="${build.classes.dir}/fs-impl" />
+      <pathelement path="${build.classes.dir}/gridfs-impl" />
       <path refid="ivy.path" />
       <path refid="ext.globus.classpath" />
     </path>
@@ -26,7 +30,9 @@
       <pathelement path="${build.test.classes.dir}" /> 
       <pathelement path="${build.classes.dir}/test" />
       <pathelement path="${resources.dir}/test" />
-      <pathelement path="${resources.dir}/impl" />
+      <pathelement path="${resources.dir}/impl-common" />
+      <pathelement path="${resources.dir}/fs-impl" />
+      <pathelement path="${resources.dir}/gridfs-impl" />
       <pathelement path="${resources.dir}/api" />
       <path refid="compile.classpath" />
     </path>
@@ -77,7 +83,7 @@
   </target>
 
   <target name="javadoc" depends="prepare">
-    <dojavadoc confs="api, impl" />
+    <dojavadoc confs="api,impl-common,fs-impl" />
   </target>
 
   <target name="findbugs" description="Runs findbugs on java artifacts" depends="jar">

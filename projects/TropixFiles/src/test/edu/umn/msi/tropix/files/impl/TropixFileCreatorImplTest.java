@@ -3,7 +3,7 @@ package edu.umn.msi.tropix.files.impl;
 import java.util.UUID;
 
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

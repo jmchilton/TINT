@@ -26,7 +26,7 @@ import java.util.Iterator;
 
 import info.minnesotapartnership.tropix.directory.models.Person;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Multimap;

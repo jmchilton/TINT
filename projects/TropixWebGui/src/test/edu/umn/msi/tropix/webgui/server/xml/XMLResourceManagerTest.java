@@ -25,7 +25,7 @@ package edu.umn.msi.tropix.webgui.server.xml;
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

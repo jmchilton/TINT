@@ -22,7 +22,7 @@
 
 package edu.umn.msi.tropix.common.spring;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.Test;
 

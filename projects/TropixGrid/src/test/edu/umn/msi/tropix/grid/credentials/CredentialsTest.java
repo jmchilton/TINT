@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.gsi.GlobusCredential;
 import org.testng.annotations.Test;
 

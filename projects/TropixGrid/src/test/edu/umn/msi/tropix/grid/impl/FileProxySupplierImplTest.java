@@ -25,7 +25,7 @@ package edu.umn.msi.tropix.grid.impl;
 import java.io.InputStream;
 import java.util.List;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GlobusCredentialException;
 import org.testng.annotations.Test;

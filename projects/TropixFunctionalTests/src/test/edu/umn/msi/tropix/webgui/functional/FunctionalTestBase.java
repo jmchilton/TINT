@@ -13,7 +13,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.Selenium;
 

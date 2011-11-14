@@ -23,7 +23,7 @@
 package edu.umn.msi.tropix.common.test;
 
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.collect.Closure;

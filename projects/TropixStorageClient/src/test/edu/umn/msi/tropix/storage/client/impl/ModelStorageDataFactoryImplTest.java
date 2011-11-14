@@ -25,7 +25,7 @@ package edu.umn.msi.tropix.storage.client.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.test.EasyMockUtils;

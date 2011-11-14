@@ -18,7 +18,7 @@ package edu.umn.msi.tropix.proteomics.scaffold.impl;
 
 import java.io.IOException;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.jobqueue.progress.ProgressTrackerCallback;

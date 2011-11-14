@@ -27,7 +27,7 @@ import java.rmi.RemoteException;
 import org.apache.axis.message.addressing.EndpointReferenceType;
 import org.cagrid.gaards.cds.client.DelegatedCredentialUserClient;
 import org.cagrid.gaards.cds.delegated.stubs.types.DelegatedCredentialReference;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.gsi.GlobusCredential;
 import org.testng.annotations.Test;
 

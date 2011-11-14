@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

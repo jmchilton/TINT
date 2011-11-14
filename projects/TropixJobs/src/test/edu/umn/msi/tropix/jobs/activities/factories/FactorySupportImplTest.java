@@ -16,7 +16,7 @@
 
 package edu.umn.msi.tropix.jobs.activities.factories;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.files.PersistentModelStorageDataFactory;

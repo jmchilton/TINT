@@ -24,7 +24,7 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-grid" rev="${ivy.project.version}" conf="api->default" />
-    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="impl-http-transfer->impl" />
+    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="impl-http-transfer->impls" />
     <dependency org="msi.umn.edu" name="tropix-http-transfer" rev="${ivy.project.version}" conf="impl-http-transfer->embedded" />
     <dependency org="msi.umn.edu" name="tropix-storage-service" rev="${ivy.project.version}" conf="impl-cagrid-service->client" />
   </dependencies>  

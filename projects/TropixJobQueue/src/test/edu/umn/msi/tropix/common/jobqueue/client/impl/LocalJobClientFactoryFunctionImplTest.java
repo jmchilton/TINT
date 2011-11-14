@@ -16,7 +16,7 @@
 
 package edu.umn.msi.tropix.common.jobqueue.client.impl;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

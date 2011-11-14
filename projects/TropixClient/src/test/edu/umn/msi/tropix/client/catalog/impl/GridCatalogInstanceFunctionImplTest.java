@@ -26,7 +26,7 @@ import info.minnesotapartnership.tropix.catalog.TropixCatalogService;
 
 import java.util.concurrent.Callable;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Suppliers;

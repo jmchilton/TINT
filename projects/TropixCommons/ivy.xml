@@ -47,7 +47,8 @@
     <dependency org="javax.annotation" name="com.springsource.javax.annotation" rev="1.0.0" conf="default->compile"/>
 
 
-    <dependency org="org.easymock" name="com.springsource.org.easymock.classextension" rev="2.5.2" conf="default->runtime"/>
+    <dependency org="org.easymock" name="easymock" rev="3.0" conf="default->master"/>
+    <dependency org="org.objenesis" name="objenesis" rev="1.2" conf="default->master" />
 
     <dependency org="net.sourceforge.ehcache" name="com.springsource.net.sf.ehcache" rev="1.6.2" conf="default->runtime" />
 

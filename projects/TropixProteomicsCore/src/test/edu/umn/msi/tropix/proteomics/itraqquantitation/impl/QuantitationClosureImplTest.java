@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.easymock.IArgumentMatcher;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

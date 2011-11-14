@@ -34,7 +34,7 @@ import org.cagrid.transfer.context.stubs.types.TransferServiceContextReference;
 import org.cagrid.transfer.descriptor.DataDescriptor;
 import org.cagrid.transfer.descriptor.DataStorageDescriptor;
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

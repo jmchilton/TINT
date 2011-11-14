@@ -29,7 +29,7 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 public class HibernatePropertiesFactoryBean extends PropertiesFactoryBean {
   public void setProperties(final Properties properties) {
     if("migrate".equals(properties.get("hibernate.hbm2ddl.auto"))) {
-      properties.put("hibernate.hbm2ddl.auto", "validate");
+      properties.put("hibernate.hbm2ddl.auto", "");
     }
     super.setProperties(properties);
   }

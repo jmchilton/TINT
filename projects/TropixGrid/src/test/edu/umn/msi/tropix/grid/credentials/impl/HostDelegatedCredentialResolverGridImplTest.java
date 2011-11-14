@@ -22,7 +22,7 @@
 
 package edu.umn.msi.tropix.grid.credentials.impl;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.globus.gsi.GlobusCredential;
 import org.globus.gsi.GlobusCredentialException;
 import org.testng.annotations.Test;

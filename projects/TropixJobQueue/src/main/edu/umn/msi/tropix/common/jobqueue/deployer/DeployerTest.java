@@ -2,7 +2,7 @@ package edu.umn.msi.tropix.common.jobqueue.deployer;
 
 import java.io.File;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 

@@ -32,7 +32,7 @@ import org.apache.axis.message.addressing.EndpointReferenceType;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.io.IOUtils;
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;

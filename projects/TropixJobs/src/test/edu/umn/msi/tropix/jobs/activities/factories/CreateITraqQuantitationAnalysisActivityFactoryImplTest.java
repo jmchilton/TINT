@@ -18,7 +18,7 @@ package edu.umn.msi.tropix.jobs.activities.factories;
 
 import java.util.UUID;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;

@@ -22,7 +22,7 @@
 
 package edu.umn.msi.tropix.client.credential.impl;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;

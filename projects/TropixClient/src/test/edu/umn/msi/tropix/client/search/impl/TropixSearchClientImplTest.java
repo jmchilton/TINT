@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Objects;

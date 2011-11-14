@@ -30,7 +30,7 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.easymock.Capture;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Function;

@@ -350,25 +350,25 @@ public class SshFileFactoryImplTest {
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
-  public void testMyHomeNotRemovable(String homePath) {
+  public void testMyHomeNotRemovable(final String homePath) {
     setPathToMyHomeAndExpectGet(homePath);
     assert !removable();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
-  public void testMyHomeGetSize(String homePath) {
+  public void testMyHomeGetSize(final String homePath) {
     setPathToMyHomeAndExpectGet(homePath);
     assert getSize() == 0;
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths", expectedExceptions = IllegalStateException.class)
-  public void testHomeCannotBeTruncated(String homePath) {
+  public void testHomeCannotBeTruncated(final String homePath) {
     setPathToMyHomeAndExpectGet(homePath);
     truncate();
   }
 
   @Test(groups = "unit", dataProvider = "homeDirectoryPaths")
-  public void testHomeCannotBeDeleted(String homePath) throws IOException {
+  public void testHomeCannotBeDeleted(final String homePath) throws IOException {
     setPathToMyHomeAndExpectGet(homePath);
     assert !delete();
   }
@@ -658,7 +658,7 @@ public class SshFileFactoryImplTest {
     return sshFile.getSize();
   }
 
-  private void setPathToRoot(String rootDirectoryPath) {
+  private void setPathToRoot(final String rootDirectoryPath) {
     path = rootDirectoryPath;
   }
 

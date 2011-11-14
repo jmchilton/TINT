@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;

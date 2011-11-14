@@ -27,7 +27,7 @@
   </publications>
   
   <dependencies>
-    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="service->impl" />
+    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="service->impls" />
     <dependency org="msi.umn.edu" name="interfaces" rev="1.1" conf="service->spring-client" />
 
     <dependency rev="1.2" org="caGrid" name="core" conf="client->default;test->test"/>

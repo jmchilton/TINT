@@ -29,14 +29,14 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
+import edu.umn.msi.tropix.common.test.FreshConfigTest;
 
 @ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/storage/core/context.xml")
-public class TropixStorageCoreIntegrationTest extends AbstractTestNGSpringContextTests {
+public class TropixStorageCoreIntegrationTest extends FreshConfigTest {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   
   @Inject
