@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -35,6 +36,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -46,6 +48,7 @@ import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
 import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
@@ -753,8 +756,19 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
   }
 
   public TropixObject getPath(final String userId, final String[] inputNames) {
-    final String[] names = inputNames == null ? new String[0] : inputNames;
-    return getTropixObjectDao().getPath(userId, Arrays.asList(names));
+    Preconditions.checkArgument(inputNames != null && inputNames.length > 0);
+    final String rootLocationName = inputNames[0];
+    final List<String> restOfNames = Arrays.asList(inputNames).subList(1, inputNames.length);
+    TropixObject object = null;
+    if(Locations.MY_HOME.equals(rootLocationName)) {
+      object = getTropixObjectDao().getHomeDirectoryPath(userId, restOfNames);
+    } else if(Locations.MY_GROUP_FOLDERS.equals(rootLocationName)) {
+      object = getTropixObjectDao().getGroupDirectoryPath(userId, restOfNames);
+    } else if(Locations.MY_SHARED_FOLDERS.equals(rootLocationName)) {
+      object = getTropixObjectDao().getSharedDirectoryPath(userId, restOfNames);
+    } else {
+      throw new IllegalArgumentException(String.format("Unknown root location name %s", rootLocationName));
+    }
+    return object;
   }
-
 }

@@ -22,8 +22,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import edu.umn.msi.tropix.common.io.FileUtils;
-import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputStreamCoercible;
 import edu.umn.msi.tropix.files.creator.TropixFileCreator;
 import edu.umn.msi.tropix.grid.credentials.Credential;
@@ -31,6 +29,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
@@ -38,13 +37,14 @@ import edu.umn.msi.tropix.storage.core.StorageManager;
 @ManagedBean
 public class SshFileFactoryImpl implements SshFileFactory {
   private static final Log LOG = LogFactory.getLog(SshFileFactoryImpl.class);
-  private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private final TropixObjectService tropixObjectService;
   private final TropixFileCreator tropixFileCreator;
   private final StorageManager storageManager;
   private final FolderService folderService;
 
-  private static final Set<String> META_OBJECT_PATHS = Sets.newHashSet("/", "/My Home", "/My Group Folders");
+  private static final String HOME_DIRECTORY_PATH = "/" + Locations.MY_HOME;
+  private static final String MY_GROUP_FOLDERS_PATH = "/" + Locations.MY_GROUP_FOLDERS;
+  private static final Set<String> META_OBJECT_PATHS = Sets.newHashSet("/", HOME_DIRECTORY_PATH, MY_GROUP_FOLDERS_PATH);
 
   @Inject
   public SshFileFactoryImpl(final TropixObjectService tropixObjectService,
@@ -77,8 +77,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     private TropixObject getTropixObject(final String path) {
       List<String> pathPieces = Utils.pathPieces(path);
-      if(pathPieces.size() > 0 && pathPieces.get(0).equals("My Home")) {
-        pathPieces = pathPieces.subList(1, pathPieces.size());
+      if(pathPieces.size() > 0 && Locations.isValidBaseLocation(pathPieces.get(0))) {
         return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
       } else {
         return null;
@@ -111,7 +110,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean isDirectory() {
       log("isDirectory");
-      if(doesExist()) {
+      if(isMetaLocationOrRootFolder()) {
+        return true;
+      } else if(doesExist()) {
         initObject();
         return !(object instanceof TropixFile);
       } else {
@@ -121,7 +122,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean isFile() {
       log("isDirectory");
-      if(doesExist()) {
+      if(isMetaLocationOrRootFolder()) {
+        return false;
+      } else if(doesExist()) {
         initObject();
         return (object instanceof TropixFile);
       } else {
@@ -162,13 +165,16 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean setLastModified(final long time) {
-      // log("setLastModified");
       return false;
     }
 
     private boolean isTropixFile() {
-      initObject();
-      return object instanceof TropixFile;
+      if(isMetaLocationOrRootFolder()) {
+        return false;
+      } else {
+        initObject();
+        return object instanceof TropixFile;
+      }
     }
 
     private String getFileId() {
@@ -248,16 +254,29 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean isWritable() {
       log("Checking is writable");
-      initObject();
-      return object instanceof Folder || (object == null && parentIsFolder());
+      if(isHomeDirectory()) {
+        return true;
+      } else if(isMetaLocation()) {
+        return false;
+      } else {
+        initObject();
+        return object instanceof Folder || (object == null && parentIsFolder());
+      }
     }
 
     public void handleClose() throws IOException {
     }
 
+    private boolean isMetaLocationOrRootFolder() {
+      return isMetaLocation() || isRootGroupFolder();
+    }
+
     // TODO: Check uniqueness
     public boolean mkdir() {
       log("Creating directory");
+      if(isMetaLocationOrRootFolder()) {
+        return false;
+      }
       final TropixObject parentObject = getParentFolder();
       if(!(parentObject instanceof Folder)) {
         return false;
@@ -325,34 +344,54 @@ public class SshFileFactoryImpl implements SshFileFactory {
     public List<SshFile> listSshFiles() {
       final ImmutableList.Builder<SshFile> children = ImmutableList.builder();
       if(isRoot()) {
-        children.add(getFile(credential, "My Home"));
-        children.add(getFile(credential, "My Group Folders"));
+        children.add(getFile(credential, Locations.MY_HOME));
+        children.add(getFile(credential, Locations.MY_GROUP_FOLDERS));
+      } else if(isMyGroupFolders()) {
+        final TropixObject[] objects = folderService.getGroupFolders(identity);
+        buildSshFiles(objects, children);
       } else {
         initObject();
         log("listSshFiles");
         final TropixObject[] objects = tropixObjectService.getChildren(identity, object.getId());
-        final Map<String, Boolean> uniqueName = Maps.newHashMap();
-        for(TropixObject object : objects) {
-          final String objectName = object.getName();
-          if(!uniqueName.containsKey(objectName)) {
-            uniqueName.put(objectName, true);
-          } else {
-            uniqueName.put(objectName, false);
-          }
-        }
-        for(TropixObject object : objects) {
-          final String name = object.getName();
-          final String derivedName = uniqueName.get(name) ? name : String.format("%s [id:%s]", name, object.getId());
-          final String childName = Utils.join(virtualPath, derivedName);
-          LOG.debug(String.format("Creating child with name [%s]", childName));
-          children.add(getFile(credential, childName));
-        }
+        buildSshFiles(objects, children);
       }
       return children.build();
     }
 
+    private <T extends TropixObject> void buildSshFiles(final T[] objects, final ImmutableList.Builder<SshFile> children) {
+      final Map<String, Boolean> uniqueName = Maps.newHashMap();
+      for(TropixObject object : objects) {
+        final String objectName = object.getName();
+        if(!uniqueName.containsKey(objectName)) {
+          uniqueName.put(objectName, true);
+        } else {
+          uniqueName.put(objectName, false);
+        }
+      }
+      for(TropixObject object : objects) {
+        final String name = object.getName();
+        final String derivedName = uniqueName.get(name) ? name : String.format("%s [id:%s]", name, object.getId());
+        final String childName = Utils.join(virtualPath, derivedName);
+        LOG.debug(String.format("Creating child with name [%s]", childName));
+        children.add(getFile(credential, childName));
+      }
+    }
+
     private boolean isRoot() {
       return "/".equals(getAbsolutePath());
+    }
+
+    private boolean isMyGroupFolders() {
+      return ("/" + Locations.MY_GROUP_FOLDERS).equals(getAbsolutePath());
+    }
+
+    private boolean isRootGroupFolder() {
+      List<String> pieces = Utils.pathPieces(virtualPath);
+      return pieces.size() == 2 && pieces.get(0).equals(Locations.MY_GROUP_FOLDERS);
+    }
+
+    private boolean isHomeDirectory() {
+      return getAbsolutePath().equals(HOME_DIRECTORY_PATH);
     }
 
     private boolean isMetaLocation() {
@@ -366,8 +405,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean isExecutable() {
       log("Checking executable");
-      return true; // TODO: Revert
-      // throw new UnsupportedOperationException();
+      return true;
     }
 
   }

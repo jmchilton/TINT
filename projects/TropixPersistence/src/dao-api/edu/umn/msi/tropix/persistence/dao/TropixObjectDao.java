@@ -140,7 +140,11 @@ public interface TropixObjectDao {
 
   long ownedObjectsVirtualHierarchyCount(String userGridId, String rootVirtualFolderId);
 
-  TropixObject getPath(String userId, List<String> asList);
+  TropixObject getHomeDirectoryPath(String userId, List<String> asList);
+
+  TropixObject getGroupDirectoryPath(String userId, List<String> asList);
+
+  TropixObject getSharedDirectoryPath(String userId, List<String> asList);
 
   boolean isAnOwner(final String userId, final String objectId);
 

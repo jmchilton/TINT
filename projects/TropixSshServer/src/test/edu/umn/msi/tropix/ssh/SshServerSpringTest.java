@@ -1,5 +1,7 @@
 package edu.umn.msi.tropix.ssh;
 
+import static org.testng.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,16 +27,15 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 import edu.umn.msi.tropix.common.test.FreshConfigTest;
-import static org.testng.Assert.*;
-
 
 @ContextConfiguration(locations = "test-context.xml")
 public class SshServerSpringTest extends FreshConfigTest {
 
   @Inject
   private SshServerWrapper sshServer;
-  
+
   @Inject
   private TestDataCreator testDataCreator;
 
@@ -45,28 +46,26 @@ public class SshServerSpringTest extends FreshConfigTest {
   private ChannelExec c;
 
   private ChannelSftp sftpChannel;
-  
-  
 
   @AfterClass(alwaysRun = true)
   public void tearDownServer() {
-    sshServer.stop(); 
+    sshServer.stop();
   }
 
   @Override
   protected void initializeConfigDir(final ConfigDirBuilder configDirBuilder) {
     final ConfigDirBuilder sshConfigDirBuilder = configDirBuilder.createSubConfigDir("ssh");
-    sshConfigDirBuilder.getOutputContext("hostkey.pem").put(getClass().getResource("hostkey.pem"));    
+    sshConfigDirBuilder.getOutputContext("hostkey.pem").put(getClass().getResource("hostkey.pem"));
   }
-  
+
   @BeforeClass(alwaysRun = true)
   public void initServer() throws JSchException {
     testDataCreator.create();
     sshServer.start();
-    
+
     final JSch jsch = new JSch();
     session = jsch.getSession("admin", "localhost", SshServerWrapper.DEFAULT_PORT);
-    final java.util.Properties config = new java.util.Properties(); 
+    final java.util.Properties config = new java.util.Properties();
     config.put("StrictHostKeyChecking", "no");
     session.setConfig(config);
     session.setPassword("admin");
@@ -80,22 +79,22 @@ public class SshServerSpringTest extends FreshConfigTest {
 
   @Test(groups = "spring")
   public void testCanMoveObjectsInFolders() throws SftpException {
-    sftpChannel.rename(TestDataCreator.TO_MOVE_FILE_NAME, "/toloc");
-    sftpChannel.lstat("/toloc");
+    sftpChannel.rename(TestDataCreator.TO_MOVE_FILE_NAME, "toloc");
+    sftpChannel.lstat("toloc");
   }
-  
+
   private String buildPath(final String... args) {
     return Joiner.on("/").join(args);
   }
-  
+
   @Test(groups = "spring")
   public void testDelete() throws SftpException {
-    Iterable iterable  = sftpChannel.ls(".");
+    final Iterable<?> iterable = sftpChannel.ls(".");
     for(Object object : iterable) {
-      com.jcraft.jsch.ChannelSftp.LsEntry entry = (LsEntry) object; 
+      com.jcraft.jsch.ChannelSftp.LsEntry entry = (LsEntry) object;
       System.out.println(entry.getFilename());
     }
-    //assert sftpChannel.lstat("to_delete") == null;
+    // assert sftpChannel.lstat("to_delete") == null;
     sftpChannel.put(new ByteArrayInputStream("Hello World!".getBytes()), "to_delete");
     assert sftpChannel.lstat("to_delete") != null;
     sftpChannel.rm("to_delete"); // Will throw exception if fails
@@ -103,54 +102,54 @@ public class SshServerSpringTest extends FreshConfigTest {
 
   @Test(groups = "spring")
   public void testReadAndWrite() throws Exception {
-    this.sendFile("/moo", "moo", "Hello World");
-    assertEquals(this.readFile("/moo"), "Hello World");
+    this.sendFile("/My Home/moo", "moo", "Hello World");
+    assertEquals(this.readFile("/My Home/moo"), "Hello World");
   }
-  
+
   @Test(groups = "spring")
   public void testReadAndWriteRelative() throws Exception {
-    this.sendFile("moo2", "moo2", "Hello World");
-    assertEquals(this.readFile("/moo2"), "Hello World");    
+    this.sendFile("./moo2", "moo2", "Hello World");
+    assertEquals(this.readFile("./moo2"), "Hello World");
   }
-  
+
   @BeforeMethod(groups = "spring")
   public void initSftp() throws JSchException {
     sftpChannel = (ChannelSftp) session.openChannel("sftp");
     sftpChannel.connect();
   }
-  
+
   @AfterMethod(groups = "spring")
   public void closeSftp() {
     sftpChannel.exit();
   }
-  
+
   @Test(groups = "spring")
   public void testMkDir() throws JSchException, SftpException {
     sftpChannel.mkdir("./moodir");
     sftpChannel.cd("./moodir");
   }
-  
+
   @Test(groups = "spring")
   public void testCannotWriteExistingFile() throws SftpException {
     SftpATTRS attrs = sftpChannel.stat("Test Folder/Subfile");
     assert attrs.getPermissionsString().contains("r");
     assert !attrs.getPermissionsString().contains("w");
   }
-  
+
   @Test(groups = "spring")
   public void testCannotWriteNonFolderObject() throws SftpException {
     SftpATTRS attrs = sftpChannel.stat("HUMAN");
     assert attrs.getPermissionsString().contains("r");
     assert !attrs.getPermissionsString().contains("w");
   }
-  
+
   @Test(groups = "spring")
   public void testCantWriteToFolders() throws SftpException {
     SftpATTRS attrs = sftpChannel.stat("Test Folder");
     assert attrs.getPermissionsString().contains("r");
     assert attrs.getPermissionsString().contains("w");
   }
-  
+
   @Test(groups = "spring")
   public void testCantWriteToCwd() throws SftpException {
     SftpATTRS attrs = sftpChannel.stat(".");
@@ -158,30 +157,30 @@ public class SshServerSpringTest extends FreshConfigTest {
     assert attrs.getPermissionsString().contains("w");
   }
 
-  //@Test(groups = "spring", expectedExceptions = Exception.class)
-  //public void testCannotWriteToAbsentDir() throws Exception {
-  //  this.sendFile("/moo-absent/cow", "cow", "Hello World", false);
-  //}
-  
+  // @Test(groups = "spring", expectedExceptions = Exception.class)
+  // public void testCannotWriteToAbsentDir() throws Exception {
+  // this.sendFile("/moo-absent/cow", "cow", "Hello World", false);
+  // }
+
   protected void sendFile(final String path, final String name, final String data) throws Exception {
     sendFile(path, name, data, true);
   }
-  
+
   private void writeAndFlush(final String data, final boolean checkAck) throws IOException {
     latestChannelOutputStream.write(data.getBytes());
     flush(checkAck);
   }
-  
+
   private void writeAndFlush0() throws IOException {
     latestChannelOutputStream.write(0);
     flush(false);
   }
-  
+
   private void flush(final boolean checkAck) throws IOException {
     latestChannelOutputStream.flush();
     if(checkAck) {
       assertEquals(0, latestChannelInputStream.read());
-    }    
+    }
   }
 
   // From org.apache.sshd.ScpTest.java
@@ -191,7 +190,7 @@ public class SshServerSpringTest extends FreshConfigTest {
     if(checkAck) {
       assertEquals(0, latestChannelInputStream.read());
     }
-    writeAndFlush("C7777 "+ data.length() + " " + name + "\n", checkAck);
+    writeAndFlush("C7777 " + data.length() + " " + name + "\n", checkAck);
     writeAndFlush(data, checkAck);
     writeAndFlush0();
     Thread.sleep(100);
@@ -204,8 +203,8 @@ public class SshServerSpringTest extends FreshConfigTest {
     latestChannelOutputStream = c.getOutputStream();
     latestChannelInputStream = c.getInputStream();
     c.connect();
-    
-  }  
+
+  }
 
   // From org.apache.sshd.ScpTest.java
   protected String readFile(final String path) throws Exception {
@@ -213,7 +212,7 @@ public class SshServerSpringTest extends FreshConfigTest {
     final String header = readLine(latestChannelInputStream);
     writeAndFlush0();
 
-    int length = Integer.parseInt(header.substring(6, header.indexOf(' ', 6)));    
+    int length = Integer.parseInt(header.substring(6, header.indexOf(' ', 6)));
     byte[] buffer = new byte[length];
     length = latestChannelInputStream.read(buffer, 0, buffer.length);
     assertEquals(length, buffer.length);
@@ -229,16 +228,16 @@ public class SshServerSpringTest extends FreshConfigTest {
   // From org.apache.sshd.ScpTest.java
   private String readLine(final InputStream in) throws IOException {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    for (;;) {
+    for(;;) {
       int c = in.read();
-      if (c == '\n') {
+      if(c == '\n') {
         return baos.toString();
-      } else if (c == -1) {
+      } else if(c == -1) {
         throw new IOException("End of stream");
       } else {
         baos.write(c);
       }
     }
-  } 
+  }
 
 }

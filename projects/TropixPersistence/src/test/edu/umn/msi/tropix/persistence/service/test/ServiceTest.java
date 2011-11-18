@@ -36,6 +36,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.google.common.collect.Sets;
+
 import edu.umn.msi.tropix.common.message.MessageSource;
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.Folder;
@@ -180,12 +182,33 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return provider;
   }
 
+  protected Folder createTempGroupFolder(final User user, final String name) {
+    final User owner = createTempUser();
+
+    final Group group = createTempGroup(user);
+
+    final Folder folder = newFolder();
+    saveWithName(folder, name, owner);
+
+    final Provider provider = createTempProvider();
+    provider.setObjects(Sets.<TropixObject>newHashSet(folder));
+    provider.setGroups(Sets.<Group>newHashSet(group));
+    provider.setUsers(Sets.<User>newHashSet(owner));
+    saveProvider(provider);
+
+    return folder;
+  }
+
   protected void initTempRequest(final Request request) {
     final Provider provider = createTempProvider();
     request.setProvider(provider);
     request.setContents(new HashSet<TropixObject>());
     tropixObjectDao.saveOrUpdateTropixObject(request);
     provider.getObjects().add(request);
+    saveProvider(provider);
+  }
+
+  private void saveProvider(final Provider provider) {
     daoFactory.getDao(Provider.class).saveObject(provider);
   }
 

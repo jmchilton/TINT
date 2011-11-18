@@ -570,47 +570,84 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
    * }
    */
 
-  public TropixObject getPath(final String userId, final List<String> pathParts) {
+  private void addConstraintForPathPart(final String pathPart, final int index, final StringBuilder whereBuilder, final LinkedList<String> parameters) {
+    final Matcher matcher = ID_FROM_PATH_PATTERN.matcher(pathPart);
+    final boolean containsId = matcher.matches();
+    if(containsId) {
+      whereBuilder.append(String.format(" and o%d.id = :o%dconst", index, index));
+      parameters.addFirst(matcher.group(1));
+    } else {
+      parameters.addFirst(pathPart);
+      whereBuilder.append(String.format(" and o%d.name = :o%dconst", index, index));
+    }
+  }
+
+  public TropixObject getHomeDirectoryPath(final String userId, final List<String> pathParts) {
     if(LOG.isDebugEnabled()) {
       LOG.debug(String.format("getPath called with userId %s and path parts %s", userId, Iterables.toString(pathParts)));
     }
     final StringBuilder joins = new StringBuilder(), wheres = new StringBuilder();
-
     final ListIterator<String> pathPartsIter = pathParts.listIterator(pathParts.size());
     final LinkedList<String> parameters = Lists.newLinkedList();
     while(pathPartsIter.hasPrevious()) {
       int index = pathPartsIter.previousIndex() + 1;
       final String pathPart = pathPartsIter.previous();
-      final Matcher matcher = ID_FROM_PATH_PATTERN.matcher(pathPart);
-      final boolean containsId = matcher.matches();
 
       int nextObjectBackIndex = pathPartsIter.previousIndex() + 1;
       joins.append(String.format(" inner join o%d.permissionParents as o%d ", index, nextObjectBackIndex));
       wheres.append(String.format(" and o%d.deletedTime is null", index));
       wheres.append(String.format(" and o%d.committed is true", index));
-      if(containsId) {
-        wheres.append(String.format(" and o%d.id = :o%dconst", index, index));
-        parameters.addFirst(matcher.group(1));
-      } else {
-        parameters.addFirst(pathPart);
-        wheres.append(String.format(" and o%d.name = :o%dconst", index, index));
-      }
-      index++;
+      addConstraintForPathPart(pathPart, index, wheres, parameters);
     }
 
     final String queryString = String.format("select %s from  User u, TropixObject o%d %s where u.cagridId = :userId %s and u.homeFolder.id = o0.id",
         String.format("o%d", pathParts.size()),
         pathParts.size(),
         joins.toString(), wheres.toString());
+    return executePathQuery(userId, queryString, 1, parameters);
+  }
+
+  private TropixObject executePathQuery(final String userId, final String queryString, final int firstIndex, final List<String> parameters) {
     final Query query = super.getSession().createQuery(queryString);
     query.setParameter("userId", userId);
-    int index = 1;
+    int index = firstIndex;
     for(String parameter : parameters) {
       String parameterName = String.format("o%dconst", index++);
       query.setParameter(parameterName, parameter);
     }
     final TropixObject result = (TropixObject) query.uniqueResult();
     return result;
+  }
+
+  public TropixObject getGroupDirectoryPath(String userId, List<String> pathParts) {
+    final StringBuilder joins = new StringBuilder(), wheres = new StringBuilder();
+    final ListIterator<String> pathPartsIter = pathParts.listIterator(pathParts.size());
+    final LinkedList<String> parameters = Lists.newLinkedList();
+    while(pathPartsIter.hasPrevious()) {
+      int index = pathPartsIter.previousIndex();
+      final String pathPart = pathPartsIter.previous();
+      wheres.append(String.format(" and o%d.deletedTime is null", index));
+      wheres.append(String.format(" and o%d.committed is true", index));
+      addConstraintForPathPart(pathPart, index, wheres, parameters);
+      if(pathPartsIter.hasPrevious()) {
+        int nextObjectBackIndex = pathPartsIter.previousIndex();
+        joins.append(String.format(" inner join o%d.permissionParents as o%d ", index, nextObjectBackIndex));
+      }
+    }
+
+    final String queryString = String
+        .format(
+            "select %s from TropixObject o%d %s inner join o0.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.parentFolder is null %s",
+            String.format("o%d", pathParts.size() - 1),
+            pathParts.size() - 1,
+            joins.toString(),
+            wheres.toString());
+    System.out.println(queryString);
+    return executePathQuery(userId, queryString, 0, parameters);
+  }
+
+  public TropixObject getSharedDirectoryPath(String userId, List<String> asList) {
+    return null;
   }
 
 }

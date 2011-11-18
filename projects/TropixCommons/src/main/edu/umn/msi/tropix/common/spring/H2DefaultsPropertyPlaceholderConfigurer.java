@@ -73,7 +73,7 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
   private void init() {
     setProperties(getDefaultProperties());
   }
-  
+
   protected Map<String, String> getDefaultProperties() {
     String configDir;
     final String beanName = shortname + "ConfigDir";
@@ -94,7 +94,7 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
     defaultProperties.put(shortname + ".db.driver", "org.h2.Driver");
     defaultProperties.put(shortname + ".db.dialect", H2_DIALECT_CLASS_NAME);
     defaultProperties.put(shortname + ".db.showsql", "false");
-    
+
     if(testing) {
       defaultProperties.put(getHbm2DdlPropertyName(), "create");
       defaultProperties.put(shortname + ".db.url", "jdbc:h2:mem:" + shortname + ";DB_CLOSE_DELAY=-1");
@@ -111,12 +111,10 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
     }
     return defaultProperties;
   }
-  
+
   protected String getHbm2DdlPropertyName() {
     return shortname + ".db.hbm2ddl";
   }
-  
-
 
   public H2DefaultsPropertyPlaceholderConfigurer(final String shortname, final boolean testing) {
     this.shortname = shortname;
@@ -126,10 +124,9 @@ public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlacehol
   private String getDbPath(final File configDir, final String shortName) {
     return new File(configDir, "db").getAbsolutePath();
   }
-  
+
   public void setApplicationContext(final ApplicationContext context) throws BeansException {
     this.context = context;
   }
-  
-  
+
 }

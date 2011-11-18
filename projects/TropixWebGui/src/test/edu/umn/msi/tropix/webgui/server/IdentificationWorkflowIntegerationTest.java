@@ -19,6 +19,7 @@ import edu.umn.msi.tropix.client.services.IdentificationGridService;
 import edu.umn.msi.tropix.client.services.ScaffoldGridService;
 import edu.umn.msi.tropix.common.io.InputContext;
 import edu.umn.msi.tropix.common.io.InputContexts;
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CommonMetadataProvider;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateIdentificationAnalysisDescription;

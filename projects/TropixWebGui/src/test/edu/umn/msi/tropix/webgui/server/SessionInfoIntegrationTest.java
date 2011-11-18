@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.client.services.Constants;
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.persistence.service.FileTypeService;
 import edu.umn.msi.tropix.webgui.client.ConfigurationOptions;

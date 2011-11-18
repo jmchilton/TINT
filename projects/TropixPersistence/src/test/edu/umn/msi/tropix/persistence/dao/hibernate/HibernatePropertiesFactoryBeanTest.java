@@ -14,7 +14,7 @@ public class HibernatePropertiesFactoryBeanTest {
     final HibernatePropertiesFactoryBean bean = new HibernatePropertiesFactoryBean();
     bean.setProperties(properties);
     bean.afterPropertiesSet();
-    assert bean.getObject().get("hibernate.hbm2ddl.auto").equals("verify");
+    assert bean.getObject().get("hibernate.hbm2ddl.auto").equals("");
   }
-  
+
 }

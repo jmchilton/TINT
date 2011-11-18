@@ -24,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.io.InputContexts;
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;

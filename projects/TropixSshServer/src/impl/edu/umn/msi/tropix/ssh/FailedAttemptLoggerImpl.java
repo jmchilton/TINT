@@ -24,46 +24,45 @@ public class FailedAttemptLoggerImpl implements FailedAttemptLogger {
   private enum Type {
     KEYBOARD("sshd[12345]: Failed keyboard-iteractive/pam for invalid user %s from %s port %d ssh2"),
     PASSWORD("sshd[12345]: Failed password for %s from %s port %d ssh2");
-    
+
     private String format;
-    
+
     private Type(final String format) {
       this.format = format;
     }
   }
-  
-  private void setType(@Value("#{${ssh.log.format}:PASSWORD}") final String logType) {
+
+  public void setType(@Value("${ssh.log.format}") final String logType) {
     this.type = Type.valueOf(logType);
   }
-  
+
   @Inject
   public FailedAttemptLoggerImpl(@Named("sshSyslogSupplier") final Supplier<SyslogIF> syslogSupplier) {
     this(syslogSupplier.get());
   }
 
-  
   public FailedAttemptLoggerImpl(@Nullable final SyslogIF syslog) {
     this.syslog = syslog;
   }
 
-  public void logFailedAttempt(final String username, 
-                               final String password, 
-                               final IoSession ioSession) {
+  public void logFailedAttempt(final String username,
+      final String password,
+      final IoSession ioSession) {
     LOG.debug("Logging failed auth attempt to " + syslog);
     if(syslog != null) {
       syslog.info(logMessage(username, ioSession));
     }
   }
-  
+
   private String getIpAddress(final IoSession ioSession) {
     InetSocketAddress socketAddress = (InetSocketAddress) ioSession.getRemoteAddress();
     return socketAddress.getAddress().getHostAddress();
   }
-  
+
   private int getRemoteReport(final IoSession ioSession) {
     InetSocketAddress socketAddress = (InetSocketAddress) ioSession.getRemoteAddress();
     return socketAddress.getPort();
-    
+
   }
 
   private String logMessage(final String username, final IoSession ioSession) {

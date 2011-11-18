@@ -31,6 +31,7 @@ import org.testng.annotations.Test;
 
 import com.google.common.base.Suppliers;
 
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;

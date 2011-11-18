@@ -34,8 +34,8 @@ import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 
 public class H2DefaultsPropertyPlaceholderConfigurerTest {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
-  
-  @Test(groups = "unit", dataProvider="bool1", dataProviderClass=TestNGDataProviders.class)
+
+  @Test(groups = "unit", dataProvider = "bool1", dataProviderClass = TestNGDataProviders.class)
   public void testFromConfigDirectory(final boolean dirExists) {
     final File tempDir = FILE_UTILS.createTempDirectory();
     try {
@@ -45,13 +45,15 @@ public class H2DefaultsPropertyPlaceholderConfigurerTest {
       } else {
         FILE_UTILS.touch(new File(tempDir, "db.moo.log"));
       }
-      final H2DefaultsPropertyPlaceholderConfigurer configurer = new H2DefaultsPropertyPlaceholderConfigurer("moo", Suppliers.ofInstance(tempDir.getAbsolutePath()));
+      final H2DefaultsPropertyPlaceholderConfigurer configurer = new H2DefaultsPropertyPlaceholderConfigurer("moo", Suppliers.ofInstance(tempDir
+          .getAbsolutePath()));
       assert configurer.resolvePlaceholder("moo.db.username", null).equals("sa");
       assert configurer.resolvePlaceholder("moo.db.password", null).equals("");
       assert configurer.resolvePlaceholder("moo2.db.username", null) == null;
-      
+
       assert configurer.resolvePlaceholder("moo.db.driver", null).equals("org.h2.Driver");
-      assert configurer.resolvePlaceholder("moo.db.dialect", null).equals("org.hibernate.dialect.H2Dialect");
+      // TODO: Once hibernate is updated, revert this to official hibernate dialect for H2.
+      assert configurer.resolvePlaceholder("moo.db.dialect", null).equals(H2Dialect.class.getName());
       assert configurer.resolvePlaceholder("moo.db.showsql", null).equals("false");
       if(!dirExists) {
         assert configurer.resolvePlaceholder("moo.db.hbm2ddl", null).equals("create");

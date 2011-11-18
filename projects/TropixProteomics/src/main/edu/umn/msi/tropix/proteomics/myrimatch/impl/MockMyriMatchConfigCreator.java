@@ -4,7 +4,7 @@ import java.io.File;
 
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
-import edu.umn.msi.tropix.common.test.FreshConfigTest.ConfigDirBuilder;
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 
 public class MockMyriMatchConfigCreator {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();

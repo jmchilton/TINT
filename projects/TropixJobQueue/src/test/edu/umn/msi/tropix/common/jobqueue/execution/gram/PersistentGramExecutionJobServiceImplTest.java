@@ -19,15 +19,15 @@ package edu.umn.msi.tropix.common.jobqueue.execution.gram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.jobqueue.execution.ExecutionState;
+import edu.umn.msi.tropix.common.test.FreshConfigTransactionalTest;
 
 @ContextConfiguration(locations = {"classpath:edu/umn/msi/tropix/common/test/gramDatabaseContext.xml"})
 @TransactionConfiguration(transactionManager = "gramQueueTransactionManager", defaultRollback = true)
-public class PersistentGramExecutionJobServiceImplTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PersistentGramExecutionJobServiceImplTest extends FreshConfigTransactionalTest {
   @Autowired
   private GramExecutionJobService persistentGramExecutionJobServiceImpl;
 

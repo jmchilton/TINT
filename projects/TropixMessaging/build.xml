@@ -20,6 +20,8 @@
       <path refid="source.classpath" />
     </path>
     <path id="test.classpath">
+      <pathelement path="${resources.dir}/api" />
+      <pathelement path="${resources.dir}/impl" />
       <pathelement path="${build.test.classes.dir}" /> 
       <pathelement path="${build.classes.dir}/test" />
       <pathelement path="${resources.dir}/test" />

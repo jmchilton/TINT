@@ -31,9 +31,13 @@ import edu.umn.msi.tropix.grid.credentials.Credentials;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
+
+// TODO: TEST CANNOT MOVE FILES FROM GROUP FOLDERS TO HOME DIRECTORIES AND VISE VERSA!
+// TODO: More tests on root group folders and sub group folders.
 
 public class SshFileFactoryImplTest {
   private static final Object[] HOME_DIR_REPRESENTATIONS = new Object[] {".", "/My Home/", "/My Home", "../My Home"};
@@ -98,7 +102,7 @@ public class SshFileFactoryImplTest {
   public void testIsDirectory() {
     path = "/My Home/test/path";
     backingObject = new Folder();
-    expectGetPath(new String[] {"test", "path"});
+    expectGetPath(new String[] {Locations.MY_HOME, "test", "path"});
     assert isDirectory();
   }
 
@@ -269,6 +273,15 @@ public class SshFileFactoryImplTest {
     assert names.contains("My Group Folders");
   }
 
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testListGroupDirectory(final String groupDirectoryPath) {
+    path = groupDirectoryPath;
+    final Folder moo = new Folder();
+    moo.setName("Moo");
+    EasyMock.expect(folderService.getGroupFolders(id)).andStubReturn(new Folder[] {moo});
+    assert listAndGetNames().contains("Moo");
+  }
+
   @Test(groups = "unit")
   public void testValidMkdir() {
     expectDirectoryWithPath(null);
@@ -290,11 +303,11 @@ public class SshFileFactoryImplTest {
   public void testCanMovePlainFile() {
     final TropixFile test = new TropixFile();
     test.setId(UUID.randomUUID().toString());
-    expectGetPath(test, new String[] {"test"});
-    expectGetPath(null, new String[] {"test2"});
+    expectGetPath(test, new String[] {Locations.MY_HOME, "test"});
+    expectGetPath(null, new String[] {Locations.MY_HOME, "test2"});
     Folder folder = new Folder();
     folder.setId(UUID.randomUUID().toString());
-    expectGetPath(folder, new String[] {});
+    expectGetPath(folder, new String[] {Locations.MY_HOME});
     tropixObjectService.move(expectId(), EasyMock.eq(test.getId()), EasyMock.eq(folder.getId()));
     expectRename(test, "test2");
     replay();
@@ -537,6 +550,30 @@ public class SshFileFactoryImplTest {
     assert getSize() == 0;
   }
 
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths", expectedExceptions = IllegalStateException.class)
+  public void testMyGroupFoldersCannotBeTruncated(final String groupFoldersDirectoryPath) {
+    setPathToRoot(groupFoldersDirectoryPath);
+    truncate();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersCannotBeDeleted(final String groupFoldersDirectoryPath) throws IOException {
+    setPathToRoot(groupFoldersDirectoryPath);
+    assert !delete();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testMyGroupFoldersCannotBeMkdired(final String groupFoldersDirectoryPath) throws IOException {
+    setPathToRoot(groupFoldersDirectoryPath);
+    assert !mkdir();
+  }
+
+  @Test(groups = "unit", dataProvider = "groupFoldersDirectoryPaths")
+  public void testCannotBeMkdirBeneathMyGroupFolders(final String groupFoldersDirectoryPath) throws IOException {
+    setPathToRoot(groupFoldersDirectoryPath + "/cow");
+    assert !mkdir();
+  }
+
   private boolean mkdir() {
     replayAndSetFile();
     return sshFile.mkdir();
@@ -635,7 +672,7 @@ public class SshFileFactoryImplTest {
   private void setPathToMyHomeAndExpectGet(final String myHomePath) {
     path = myHomePath;
     backingObject = new Folder();
-    expectDirectoryWithPath(new String[0]);
+    expectDirectoryWithPath(new String[] {Locations.MY_HOME});
   }
 
   private boolean writable() {
@@ -718,6 +755,8 @@ public class SshFileFactoryImplTest {
     String localPath = path;
     if(path.startsWith("/")) {
       localPath = path.substring(1);
+    } else {
+      localPath = "My Home/" + localPath;
     }
     final String[] pathPieces = localPath.split("/");
     return EasyMock.aryEq(pathPieces);
