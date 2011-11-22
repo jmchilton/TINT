@@ -45,6 +45,7 @@
 /projects/TropixGalaxy/bin
 /projects/TropixGalaxy/test-output
 /projects/TropixGalaxy/temp-testng-customsuite.xml
+/projects/TropixGalaxy/velocity.log
 
 # /projects/TropixGalaxyLibs/
 /projects/TropixGalaxyLibs/build
@@ -163,6 +164,8 @@
 /projects/TropixWebGui/tropix.trace
 /projects/TropixWebGui/tropix.warn
 /projects/TropixWebGui/gwt-client.log
+/projects/TropixWebGui/logs
+
 
 # /projects/TropixWebGuiConstants/
 /projects/TropixWebGuiConstants/build

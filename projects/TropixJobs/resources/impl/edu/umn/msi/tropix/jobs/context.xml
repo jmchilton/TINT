@@ -84,10 +84,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
   <!-- Import all base contexts for ProTIP services. -->
   <import resource="classpath:edu/umn/msi/tropix/proteomics/service/allServicesContext.xml" />
-
   <!-- Import all base contexts for GeneTIP services. -->
   <import resource="classpath:edu/umn/msi/tropix/genomics/service/allServicesContext.xml" />
-  
+
   <import resource="classpath:edu/umn/msi/tropix/galaxy/service/baseGalaxyContext.xml" />
 
 </beans>

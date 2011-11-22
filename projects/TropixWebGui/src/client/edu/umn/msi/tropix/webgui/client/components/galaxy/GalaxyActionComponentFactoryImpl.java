@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.webgui.client.components.galaxy;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -45,12 +46,14 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.galaxy.inputs.Input;
 import edu.umn.msi.tropix.galaxy.inputs.RootInput;
+import edu.umn.msi.tropix.galaxy.tool.Conditional;
 import edu.umn.msi.tropix.galaxy.tool.Data;
 import edu.umn.msi.tropix.galaxy.tool.InputType;
 import edu.umn.msi.tropix.galaxy.tool.Outputs;
 import edu.umn.msi.tropix.galaxy.tool.Param;
 import edu.umn.msi.tropix.galaxy.tool.ParamOption;
 import edu.umn.msi.tropix.galaxy.tool.ParamType;
+import edu.umn.msi.tropix.galaxy.tool.Repeat;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescriptions;
@@ -92,8 +95,8 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
 
   @Inject
   public GalaxyActionComponentFactoryImpl(final MetadataInputComponentFactory metadataInputComponentFactory,
-                                          final TreeComponentFactory treeComponentFactory, 
-                                          final LocationFactory locationFactory) {
+      final TreeComponentFactory treeComponentFactory,
+      final LocationFactory locationFactory) {
     this.treeComponentFactory = treeComponentFactory;
     this.locationFactory = locationFactory;
   }
@@ -101,13 +104,13 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
   private interface Validator {
     boolean isValid();
   }
-  
+
   class GalaxyActionComponentImpl extends WindowComponentImpl<Window> implements HasValidation, ChangedHandler {
     private final ListenerList<Boolean> validationListeners = ListenerLists.getInstance();
     private final GalaxyTool galaxyTool;
     private final VLayout layout = new VLayout();
     private final List<TextItem> outputNameItems = Lists.newArrayList();
-    private final List<Validator> validators = Lists.newArrayList(); 
+    private final List<Validator> validators = Lists.newArrayList();
     private TreeComponent parentTreeComponent;
 
     private Tool tool;
@@ -119,14 +122,14 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
         init();
       }
     };
-    
+
     final Input getInput(final Param param, final FormItem formItem) {
       final Input input = new Input();
       input.setName(param.getName());
       formItem.addChangedHandler(new ChangedHandler() {
         public void onChanged(final ChangedEvent event) {
           input.setValue(StringUtils.toString(formItem.getValue().toString()));
-        }              
+        }
       });
       formItem.addChangedHandler(this);
       if(StringUtils.hasText(param.getValue())) {
@@ -136,7 +139,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       }
       return input;
     }
-    
+
     final Canvas buildInputCanvas(final List<Input> inputs, final List<InputType> inputDefinitions) {
       final VLayout layout = new VLayout();
       layout.setMembersMargin(4);
@@ -165,22 +168,27 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
                   }
                 }
                 return isValid;
-              }              
+              }
             });
             layout.addMember(new ItemWrapper(textItem));
           } else if(paramType == ParamType.SELECT) {
             final SelectItem selectItem = new SelectItem(param.getName(), param.getLabel());
             inputs.add(getInput(param, selectItem));
             final LinkedHashMap<String, String> optionMap = Maps.newLinkedHashMap();
+            String selectedValue = null;
             for(ParamOption option : param.getOption()) {
+              if(option.isSelected() || selectedValue == null) {
+                selectedValue = option.getValue();
+              }
               optionMap.put(option.getValueAttribute(), option.getValue());
             }
             selectItem.setValueMap(optionMap);
+            selectItem.setValue(selectedValue);
             validators.add(new Validator() {
               public boolean isValid() {
                 final String value = StringUtils.toString(selectItem.getValue());
                 return optionMap.containsKey(value);
-              }              
+              }
             });
             layout.addMember(new ItemWrapper(selectItem));
           } else if(paramType == ParamType.BOOLEAN) {
@@ -191,7 +199,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
               public void onChanged(final ChangedEvent event) {
                 final Boolean checked = (Boolean) checkItem.getValue();
                 input.setValue(StringUtils.toString(checked ? param.getTruevalue() : param.getFalsevalue()));
-              }              
+              }
             });
             if(value != null && value.equals(param.getTruevalue())) {
               checkItem.setValue(true);
@@ -216,12 +224,12 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
               public void onEvent(final TreeItem location) {
                 input.setValue(location.getId());
                 onUpdate();
-              }              
+              }
             });
             validators.add(new Validator() {
               public boolean isValid() {
                 return treeComponent.getSelection() != null;
-              }              
+              }
             });
             inputs.add(input);
             final TreeGrid treeGrid = treeComponent.get();
@@ -232,14 +240,78 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             final Label label = SmartUtils.smartParagraph(param.getLabel() + ":");
             layout.addMember(label);
             layout.addMember(treeGrid);
-            
+
           }
+
+        } else if(inputDefinition instanceof Repeat) {
+          final Repeat repeat = (Repeat) inputDefinition;
+          final Input repeatInput = new Input();
+          repeatInput.setName(repeat.getName());
+          inputs.add(repeatInput);
+
+          final String title = repeat.getTitle();
+          final Label label = SmartUtils.smartParagraph(title + "s");
+          layout.addMember(label);
+          final VLayout repeatsLayout = new VLayout();
+          repeatsLayout.setMembersMargin(4);
+          repeatsLayout.setWidth100();
+          layout.addMember(repeatsLayout);
+          final List<RepeatChunkLayout> repeatChunkLayouts = new LinkedList<RepeatChunkLayout>();
+
+          final Command relabel = new Command() {
+            public void execute() {
+              int index = 1;
+              for(RepeatChunkLayout layout : repeatChunkLayouts) {
+                layout.setGroupTitle(title + " " + index);
+                index++;
+              }
+            }
+          };
+
+          final Button repeatButton = SmartUtils.getButton("Add new " + title, new Command() {
+            public void execute() {
+              final RepeatChunkLayout repeatChunk = new RepeatChunkLayout();
+              repeatsLayout.addMember(repeatChunk);
+              repeatChunk.addMember(buildInputCanvas(repeatChunk.repeatInstanceInput.getInput(), repeat.getInputElement()));
+              final Button removeButton = SmartUtils.getButton("Remove " + title, new Command() {
+                public void execute() {
+                  repeatChunkLayouts.remove(repeatChunk);
+                  repeatsLayout.removeMember(repeatChunk);
+                  repeatInput.getInput().remove(repeatChunk.repeatInstanceInput);
+                  relabel.execute();
+                }
+              });
+              removeButton.setAutoFit(true);
+              repeatChunk.addMember(removeButton);
+              repeatChunkLayouts.add(repeatChunk);
+              relabel.execute();
+            }
+          });
+          repeatButton.setAutoFit(true);
+          layout.addMember(repeatButton);
+        } else if(inputDefinition instanceof Conditional) {
+          final Conditional conditional = (Conditional) inputDefinition;
+
         }
       }
       onUpdate();
       return layout;
     }
-    
+
+    private class RepeatChunkLayout extends VLayout {
+
+      final Input repeatInstanceInput = new Input();
+
+      RepeatChunkLayout() {
+        setIsGroup(true);
+        setMembersMargin(4);
+        setPadding(10);
+
+        repeatInstanceInput.setName("*REPEAT_INSTANCE*");
+      }
+
+    }
+
     private void init() {
       final TreeOptions treeOptions = new TreeOptions();
       treeOptions.setInitialItems(locationFactory.getTropixObjectDestinationRootItems(null));
@@ -259,7 +331,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       validators.add(new Validator() {
         public boolean isValid() {
           return parentTreeComponent.getSelection() != null;
-        }        
+        }
       });
       final Label outputLocationLabel = SmartUtils.smartParagraph("Select location for output files");
 
@@ -277,7 +349,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
         });
       }
       outputForm.setItems(outputNameItems.toArray(new TextItem[outputNameItems.size()]));
-      
+
       final VLayout outputLayout = new VLayout();
       outputLayout.setGroupTitle("Outputs");
       outputLayout.setIsGroup(true);
@@ -290,7 +362,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       outputLayout.addMember(treeGrid);
       outputLayout.addMember(outputNameLabel);
       outputLayout.addMember(outputForm);
-      
+
       layout.addMember(outputLayout);
 
       final RootInput rootInput = new RootInput();
@@ -335,7 +407,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             }
             JobSubmitService.Util.getInstance().submit(descriptions, new AsyncCallbackImpl<Void>());
             destroy();
-          } catch(RuntimeException e) { 
+          } catch(RuntimeException e) {
             e.printStackTrace();
             throw e;
           }
@@ -344,21 +416,21 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       layout.addMember(submitButton);
       SmartUtils.enabledWhenValid(submitButton, this);
     }
-    
+
     private void onUpdate() {
       final boolean isValid = isValid();
       System.out.println("Is valid " + isValid);
       validationListeners.onEvent(isValid);
     }
-    
+
     GalaxyActionComponentImpl(final GalaxyActionEvent event) {
       galaxyTool = event.getGalaxyTool();
-      layout.setOverflow(Overflow.AUTO);      
-      //layout.setWidth(600);
-      //layout.setHeight(500);
+      layout.setOverflow(Overflow.AUTO);
+      // layout.setWidth(600);
+      // layout.setHeight(500);
       layout.setPadding(10);
       layout.setMembersMargin(10);
-      final Window window = PopOutWindowBuilder.titled(galaxyTool.getName()).withContents(layout).get();
+      final Window window = PopOutWindowBuilder.titled(galaxyTool.getName()).withContents(layout).sized(600, 600).get();
       setWidget(window);
       GalaxyService.Util.getInstance().loadTool(galaxyTool.getId(), callback);
     }
@@ -381,11 +453,11 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
     public void onChanged(final ChangedEvent event) {
       onUpdate();
     }
-    
+
   }
 
   public WindowComponent<Window> get(final GalaxyActionEvent input) {
     return new GalaxyActionComponentImpl(input);
   }
-  
+
 }

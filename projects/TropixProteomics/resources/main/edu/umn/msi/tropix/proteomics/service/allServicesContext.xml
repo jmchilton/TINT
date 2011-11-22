@@ -23,6 +23,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseMyriMatchContext.xml" />
   <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseIdPickerContext.xml" />
   <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseTagReconContext.xml" />
-  <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseInspectContext.xml" />
+  <!-- <import resource="classpath:edu/umn/msi/tropix/proteomics/service/baseInspectContext.xml" /> -->
   
 </beans>

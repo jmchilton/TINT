@@ -32,20 +32,26 @@ import edu.umn.msi.tropix.galaxy.tool.Param;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
 
 public class GalaxyXmlUtilsTest {
-  
+
   // Tests that typical real Galaxy XML file can be loaded
   @Test(groups = "unit")
   public void testLoadOut2Xml() {
     GalaxyXmlUtils.load(GalaxyTests.class.getResourceAsStream("out2xml.xml"));
   }
-  
+
+  @Test(groups = "unit")
+  public void testLabels() {
+    Param param = (Param) GalaxyXmlUtils.load(GalaxyTests.class.getResourceAsStream("out2xml.xml")).getInputs().getInputElement().get(0);
+    assert param.getLabel() != null;
+    assert param.getLabel().equals("Zipped Sequest Output");
+  }
+
   // Tests that typical real Galaxy XML file can be loaded
   @Test(groups = "unit")
   public void testLoadDecoyFasta() {
     GalaxyXmlUtils.load(GalaxyTests.class.getResourceAsStream("decoy_fasta.xml"));
   }
-  
-  
+
   @Test(groups = "unit")
   public void convertsInputXml() {
     final RootInput inputs = new RootInput();
@@ -59,7 +65,7 @@ public class GalaxyXmlUtilsTest {
     assert convertedInput.getName().equals("Name1");
     assert convertedInput.getValue().equals("Value1");
   }
-  
+
   @Test(groups = "unit")
   public void convertToolXmlFromCaGrid() {
     final edu.umn.msi.tropix.galaxy.tool.cagrid.Tool tool = new edu.umn.msi.tropix.galaxy.tool.cagrid.Tool();
@@ -90,15 +96,13 @@ public class GalaxyXmlUtilsTest {
     tool.setConfigfiles(new ConfigFiles());
     tool.getConfigfiles().getConfigfile().add(file);
 
-    
-    
     final Tool convertedTool = convert(convert(tool));
     final Command convertedCommand = convertedTool.getCommand();
     assert convertedCommand.getInterpreter().equals("python");
     assert convertedCommand.getValue().equals("moo.py --cow");
     assert ((Param) convertedTool.getInputs().getInputElement().get(0)).getLabel().equals("This is the label");
   }
-  
+
   @Test(groups = "unit")
   public void testConstructor() {
     new GalaxyXmlUtils();

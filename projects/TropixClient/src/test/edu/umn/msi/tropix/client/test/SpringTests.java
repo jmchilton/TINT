@@ -33,7 +33,6 @@ import javax.annotation.Resource;
 import javax.xml.namespace.QName;
 
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Supplier;
@@ -46,11 +45,12 @@ import edu.umn.msi.tropix.client.services.GridService;
 import edu.umn.msi.tropix.client.services.IdentificationGridService;
 import edu.umn.msi.tropix.client.services.QueueGridService;
 import edu.umn.msi.tropix.common.jobqueue.queuestatus.QueueStatus;
+import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldMetadata;
 import edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldVersion;
 
 @ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/client/test/testApplicationContext.xml")
-public class SpringTests extends AbstractTestNGSpringContextTests {
+public class SpringTests extends FreshConfigTest {
 
   @Resource
   private Supplier<Multimap<String, Person>> directoryServicePersonSupplier;
