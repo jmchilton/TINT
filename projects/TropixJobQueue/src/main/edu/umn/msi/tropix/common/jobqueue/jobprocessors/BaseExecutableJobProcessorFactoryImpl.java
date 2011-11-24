@@ -17,6 +17,7 @@
 package edu.umn.msi.tropix.common.jobqueue.jobprocessors;
 
 import org.globus.exec.generated.JobDescriptionType;
+import org.globus.gsi.GlobusCredential;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.google.common.base.Preconditions;
@@ -48,7 +49,11 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
     final StagingDirectory stagingDirectory = getAndSetupStagingDirectory(config);
     
     if(requireGlobusCredential) {
-      Preconditions.checkState(config.getCredential().getGlobusCredential() != null);
+      final Credential credential = config.getCredential();
+      Preconditions.checkState(credential != null, "Valid globus credential required, but no credential found.");
+      final GlobusCredential globusCredential = credential.getGlobusCredential();
+      Preconditions.checkState(globusCredential != null, "Valid globus credential required, but credential has no associated globus credential.");
+      Preconditions.checkState(globusCredential.getTimeLeft() > 0, "Valid globus credential required, but credential is timed-out.");
     }
 
     // Create jobDescription
