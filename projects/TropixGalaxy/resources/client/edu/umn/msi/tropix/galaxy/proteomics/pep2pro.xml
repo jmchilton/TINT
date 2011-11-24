@@ -1,0 +1,12 @@
+<tool id="pep2pro" version="0.1" name="pep2pro">
+  <description></description>
+  <command interpreter="python">pep2pro.py $sequences $output</command>
+  <inputs>
+    <param format="txt" name="sequences" type="data" label="Sequences"/>
+  </inputs>
+  <outputs>
+    <data format="tabular" name="output" label="pep2pro for ${sequences.name}"/>
+  </outputs>
+  <help>
+  </help>
+</tool>

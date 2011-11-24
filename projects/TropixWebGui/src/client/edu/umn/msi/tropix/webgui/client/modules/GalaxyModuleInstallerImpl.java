@@ -40,7 +40,7 @@ import edu.umn.msi.tropix.webgui.services.session.Module;
 public class GalaxyModuleInstallerImpl extends BaseModuleInstallerImpl implements ModuleInstaller {
   private ActionMediator actionMediator;
   private ComponentFactory<GalaxyActionEvent, ? extends Command> galaxyActionComponentFactory;
-
+  
   @Inject
   public void setActionMediator(final ActionMediator actionMediator) {
     this.actionMediator = actionMediator;
@@ -51,7 +51,7 @@ public class GalaxyModuleInstallerImpl extends BaseModuleInstallerImpl implement
     this.galaxyActionComponentFactory = galaxyActionComponentFactory;
   }
 
-  public void installNewItemModels(final Session session, final NewItemContext newItemContext) {
+  public void installToolItemModels(final Session session, final NewItemContext newItemContext) {
     for(final GalaxyTool tool : session.getGalaxyTools()) {
       final String toolName = tool.getName();
       final String toolDescription = tool.getDescription();
@@ -70,6 +70,10 @@ public class GalaxyModuleInstallerImpl extends BaseModuleInstallerImpl implement
 
   public Module getModule() {
     return Module.GALAXY;
+  }
+
+  public void installNewItemModels(final Session session, final NewItemContext newItemContext) {
+    
   }
   
 }

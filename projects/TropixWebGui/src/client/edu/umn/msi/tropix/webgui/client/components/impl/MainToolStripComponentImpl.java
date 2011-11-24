@@ -48,6 +48,7 @@ import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.toolbar.ToolStripMenuButton;
 
 import edu.umn.msi.tropix.webgui.client.Resources;
+import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.MainToolStripComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
@@ -65,6 +66,8 @@ import edu.umn.msi.tropix.webgui.client.models.NewItemFolderActionEventImpl;
 import edu.umn.msi.tropix.webgui.client.models.NewItemFolderImpl;
 import edu.umn.msi.tropix.webgui.client.models.NewItemModel;
 import edu.umn.msi.tropix.webgui.client.models.RootNewItemFolder;
+import edu.umn.msi.tropix.webgui.client.modules.GalaxyModuleInstallerImpl;
+import edu.umn.msi.tropix.webgui.client.modules.ModuleInstaller;
 import edu.umn.msi.tropix.webgui.client.modules.ModuleManager;
 import edu.umn.msi.tropix.webgui.client.utils.Iterables;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
@@ -83,7 +86,14 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
   private ActionMediator actionMediator;
   private LocationFactory locationFactory;
   private LoginMediator loginMediator;
+  private GalaxyModuleInstallerImpl galaxyInstaller;
+  private Session session;
 
+  @Inject
+  public void setSession(final Session session) {
+    this.session = session;
+  }
+  
   @Inject
   public void setLoginMediator(final LoginMediator loginMediator) {
     this.loginMediator = loginMediator;
@@ -123,6 +133,12 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     this.navigationSelectionMediator = mediator;
     mediator.addNavigationSelectionChangedListener(this);
   }
+  
+  @Inject
+  public void setGalaxyInstaller(@Named("galaxyInstaller") final ModuleInstaller galaxyModuleInstaller) {
+    this.galaxyInstaller = (GalaxyModuleInstallerImpl) galaxyModuleInstaller;
+  }
+  
 
   private static class TitledMenu extends Menu {
     private final String menuTitle;
@@ -251,6 +267,17 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
 
   private TitledMenu getToolsAdmin() {
     final MenuBuilder menuBuilder = new MenuBuilder();
+    if(moduleManager.containsModules(Module.GALAXY)) {
+      final NewItemFolderImpl folder = new NewItemFolderImpl("Root", "Root new folder");
+      galaxyInstaller.installToolItemModels(session, folder);
+      final Menu toolsMenu = getNewItemMenu(folder.getChildren(), folder);
+      final MenuItem newItem = new MenuItem();
+      newItem.setSubmenu(toolsMenu);
+      newItem.setTitle("Galaxy Tools...");
+      newItem.setIcon(Resources.ANALYSIS_16);
+      menuBuilder.addMenuItem(newItem);
+      menuBuilder.addSeparator();
+    }
     if(moduleManager.containsModules(Module.USER, Module.REQUEST)) {
       menuBuilder.addMenuItem(getDialogMenuItem("Manage Service Providers", "manageCatalogProviders", Resources.PARAMETERS_16));
     }
@@ -307,7 +334,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
   private TitledMenu getFileMenu() {
     final MenuBuilder menuBuilder = new MenuBuilder();
     if(moduleManager.containsModules(Module.USER)) {
-      final Menu newMenu = getNewItemMenu(rootNewItemFolder.getChildren());
+      final Menu newMenu = getNewItemMenu(rootNewItemFolder.getChildren(), rootNewItemFolder);
       final MenuItem newItem = new MenuItem();
       newItem.setSubmenu(newMenu);
       newItem.setTitle("New...");
@@ -402,7 +429,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
   };
 
   // TODO: Refactor to MenuItem getNewItemMenuItem(NewItemFolder newItemFolder)
-  public Menu getNewItemMenu(final List<NewItemModel> inputList) {
+  public Menu getNewItemMenu(final List<NewItemModel> inputList, final NewItemFolder rootNewItemFolder) {
     final ArrayList<NewItemModel> list = new ArrayList<NewItemModel>(inputList);
     Collections.sort(list, NEW_ITEM_MODEL_COMPARATOR);
     final Menu menu = new Menu();
@@ -415,7 +442,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
       menuItem.setTitle(newItem.getName());
       if(newItem instanceof NewItemFolderImpl) {
         menuItem.setTitle(menuItem.getTitle() + "...");
-        final Menu subMenu = this.getNewItemMenu(((NewItemFolder) newItem).getChildren());
+        final Menu subMenu = this.getNewItemMenu(((NewItemFolder) newItem).getChildren(), rootNewItemFolder);
         menuItem.setSubmenu(subMenu);
         menuItem.setIcon(Resources.FOLDER_NEW);
       } else {
@@ -424,7 +451,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
       menuItem.addClickHandler(new ClickHandler() {
         public void onClick(final MenuItemClickEvent event) {
           if(newItem instanceof NewItemFolderImpl) {
-            actionMediator.handleEvent(NewItemFolderActionEventImpl.forNewItemFolder((NewItemFolderImpl) newItem, treeItem));
+            actionMediator.handleEvent(NewItemFolderActionEventImpl.forNewItemFolder((NewItemFolderImpl) newItem, rootNewItemFolder, treeItem));
           } else {
             actionMediator.handleEvent(LocationActionEventImpl.forItems("newItem" + newItem.getName(), treeItem));
           }

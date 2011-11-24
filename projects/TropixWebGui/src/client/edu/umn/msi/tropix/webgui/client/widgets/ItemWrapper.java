@@ -25,13 +25,19 @@ package edu.umn.msi.tropix.webgui.client.widgets;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 
 public class ItemWrapper extends Form {
+  private FormItem formItem;
   
   public ItemWrapper(final FormItem formItem) {
     super(formItem);
-    this.setCellSpacing(0);
+    this.formItem = formItem;
+    this.setCellPadding(0);
     this.setMargin(0);
     this.setPadding(0);
     this.setCellPadding(0);
+  }
+  
+  public FormItem getFormItem() {
+    return formItem;
   }
 
 }

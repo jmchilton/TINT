@@ -29,20 +29,25 @@ import edu.umn.msi.tropix.webgui.client.mediators.ActionMediator.ActionEvent;
 
 public final class NewItemFolderActionEventImpl implements ActionEvent {
   private final NewItemFolderImpl newItemFolder;
+  private final NewItemFolder rootNewItemFolder;
   private final Collection<TreeItem> items;
 
-  private NewItemFolderActionEventImpl(final NewItemFolderImpl newItemFolder, final Collection<TreeItem> items) {
+  private NewItemFolderActionEventImpl(final NewItemFolderImpl newItemFolder, final NewItemFolder rootNewItemFolder, final Collection<TreeItem> items) {
     this.newItemFolder = newItemFolder;
     this.items = items;
-
+    this.rootNewItemFolder = rootNewItemFolder;
   }
 
-  public static NewItemFolderActionEventImpl forNewItemFolder(final NewItemFolderImpl newItemFolder, final Collection<TreeItem> items) {
-    return new NewItemFolderActionEventImpl(newItemFolder, items);
+  public static NewItemFolderActionEventImpl forNewItemFolder(final NewItemFolderImpl newItemFolder, final NewItemFolder rootNewItemFolder, final Collection<TreeItem> items) {
+    return new NewItemFolderActionEventImpl(newItemFolder, rootNewItemFolder, items);
   }
 
   public String getActionType() {
     return "itemFolder";
+  }
+  
+  public NewItemFolder getRootItemFolder() {
+    return rootNewItemFolder;
   }
 
   public NewItemFolderImpl getNewItemFolder() {

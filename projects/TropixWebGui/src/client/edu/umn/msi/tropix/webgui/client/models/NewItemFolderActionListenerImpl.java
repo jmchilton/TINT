@@ -53,12 +53,12 @@ import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.TextBlock;
 
 public class NewItemFolderActionListenerImpl implements Listener<ActionEvent> {
-  private final RootNewItemFolder rootNewItemFolder;
+  //private final RootNewItemFolder rootNewItemFolder;
   private final ActionMediator actionMediator;
 
   @Inject
-  public NewItemFolderActionListenerImpl(final RootNewItemFolder rootNewItemFolder, final ActionMediator actionMediator) {
-    this.rootNewItemFolder = rootNewItemFolder;
+  public NewItemFolderActionListenerImpl(final ActionMediator actionMediator) {
+    //this.rootNewItemFolder = rootNewItemFolder;
     this.actionMediator = actionMediator;
     actionMediator.registerActionListener("itemFolder", this);
   }
@@ -123,7 +123,7 @@ public class NewItemFolderActionListenerImpl implements Listener<ActionEvent> {
     tree.setOpenProperty("open");
     tree.setNameProperty("name");
     tree.setIdField("name");
-    tree.setRoot(this.getTreeNode(this.rootNewItemFolder, new ArrayList<TreeNode>(), event.getNewItemFolder()));
+    tree.setRoot(this.getTreeNode(event.getRootItemFolder(), new ArrayList<TreeNode>(), event.getNewItemFolder()));
     final TreeGrid treeGrid = new TreeGrid();
     treeGrid.setHeight("75%");
     treeGrid.setWidth100();
@@ -147,7 +147,7 @@ public class NewItemFolderActionListenerImpl implements Listener<ActionEvent> {
     window.show();
   }
 
-  public TreeNode getTreeNode(final NewItemFolderImpl newItemsFolder, final List<TreeNode> parentNodes, final NewItemModel selectedModel) {
+  public TreeNode getTreeNode(final NewItemFolder newItemsFolder, final List<TreeNode> parentNodes, final NewItemModel selectedModel) {
     final TreeNode treeNode = new TreeNode();
     if(newItemsFolder == selectedModel) {
       treeNode.setAttribute("open", true);

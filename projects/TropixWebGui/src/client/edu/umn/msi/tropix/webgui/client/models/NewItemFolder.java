@@ -24,7 +24,7 @@ package edu.umn.msi.tropix.webgui.client.models;
 
 import java.util.List;
 
-public interface NewItemFolder {
+public interface NewItemFolder extends NewItemModel {
 
   List<NewItemModel> getChildren();
 

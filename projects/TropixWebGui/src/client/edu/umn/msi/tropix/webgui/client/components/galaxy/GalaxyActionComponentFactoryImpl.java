@@ -25,8 +25,11 @@ package edu.umn.msi.tropix.webgui.client.components.galaxy;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 import com.smartgwt.client.types.Alignment;
@@ -46,7 +49,9 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.galaxy.inputs.Input;
 import edu.umn.msi.tropix.galaxy.inputs.RootInput;
+import edu.umn.msi.tropix.galaxy.tool.ChangeFormat;
 import edu.umn.msi.tropix.galaxy.tool.Conditional;
+import edu.umn.msi.tropix.galaxy.tool.ConditionalWhen;
 import edu.umn.msi.tropix.galaxy.tool.Data;
 import edu.umn.msi.tropix.galaxy.tool.InputType;
 import edu.umn.msi.tropix.galaxy.tool.Outputs;
@@ -55,6 +60,7 @@ import edu.umn.msi.tropix.galaxy.tool.ParamOption;
 import edu.umn.msi.tropix.galaxy.tool.ParamType;
 import edu.umn.msi.tropix.galaxy.tool.Repeat;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
+import edu.umn.msi.tropix.galaxy.tool.WhenData;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescriptions;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription;
@@ -74,6 +80,7 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
+import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandChangedHandlerImpl;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerList;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerLists;
@@ -81,7 +88,6 @@ import edu.umn.msi.tropix.webgui.client.utils.Lists;
 import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.utils.Sets;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
-import edu.umn.msi.tropix.webgui.client.widgets.Form;
 import edu.umn.msi.tropix.webgui.client.widgets.HasValidation;
 import edu.umn.msi.tropix.webgui.client.widgets.ItemWrapper;
 import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
@@ -109,7 +115,8 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
     private final ListenerList<Boolean> validationListeners = ListenerLists.getInstance();
     private final GalaxyTool galaxyTool;
     private final VLayout layout = new VLayout();
-    private final List<TextItem> outputNameItems = Lists.newArrayList();
+    // private final List<TextItem> outputNameItems = Lists.newArrayList();
+    private final Map<String, String> dataNameMap = Maps.newLinkedHashMap();
     private final List<Validator> validators = Lists.newArrayList();
     private TreeComponent parentTreeComponent;
 
@@ -172,25 +179,8 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             });
             layout.addMember(new ItemWrapper(textItem));
           } else if(paramType == ParamType.SELECT) {
-            final SelectItem selectItem = new SelectItem(param.getName(), param.getLabel());
-            inputs.add(getInput(param, selectItem));
-            final LinkedHashMap<String, String> optionMap = Maps.newLinkedHashMap();
-            String selectedValue = null;
-            for(ParamOption option : param.getOption()) {
-              if(option.isSelected() || selectedValue == null) {
-                selectedValue = option.getValue();
-              }
-              optionMap.put(option.getValueAttribute(), option.getValue());
-            }
-            selectItem.setValueMap(optionMap);
-            selectItem.setValue(selectedValue);
-            validators.add(new Validator() {
-              public boolean isValid() {
-                final String value = StringUtils.toString(selectItem.getValue());
-                return optionMap.containsKey(value);
-              }
-            });
-            layout.addMember(new ItemWrapper(selectItem));
+            final ItemWrapper selectCanvas = selectCanvasForParam(param, inputs);
+            layout.addMember(selectCanvas);
           } else if(paramType == ParamType.BOOLEAN) {
             final CheckboxItem checkItem = new CheckboxItem(param.getName(), param.getLabel());
             final Input input = new Input();
@@ -222,6 +212,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             input.setName(param.getName());
             treeComponent.addSelectionListener(new Listener<TreeItem>() {
               public void onEvent(final TreeItem location) {
+                dataNameMap.put(param.getName(), location.getName());
                 input.setValue(location.getId());
                 onUpdate();
               }
@@ -291,16 +282,84 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
           layout.addMember(repeatButton);
         } else if(inputDefinition instanceof Conditional) {
           final Conditional conditional = (Conditional) inputDefinition;
+          final Param conditionParam = conditional.getParam();
+          
+          final Input conditionInput = new Input();
+          conditionInput.setName(conditional.getName());
 
+          final ItemWrapper selectCanvas = selectCanvasForParam(conditionParam, conditionInput.getInput());
+          final FormItem conditionFormItem = selectCanvas.getFormItem();
+
+          //final VLayout whenLayout = new VLayout();
+          //whenLayout.setMembersMargin(4);
+          //whenLayout.setWidth100();
+          //layout.addMember(whenLayout);
+
+          
+          //final List<Canvas> conditionMembers = new ArrayList<Canvas>();
+          //final List<Input> inputMembers = new ArrayList<Input>();
+          final Command handleConditionChange = new Command() {
+            private Canvas whenCanvas = null;
+            public void execute() {
+              // Clear out old conditions...
+              conditionInput.getInput().clear();
+              if(whenCanvas != null) {
+                layout.removeMember(whenCanvas);
+                whenCanvas = null;
+              }
+              //SmartUtils.removeAllMembers(whenLayout);
+         
+              inputs.add(conditionInput);
+              String conditionValue = null;
+              if(conditionFormItem.getValue() != null) {
+                conditionValue = conditionFormItem.getValue().toString();
+              }
+              ConditionalWhen matchingWhen = null;              
+              for(final ConditionalWhen when : conditional.getWhen()) {
+                if(when.getValue().equals(conditionValue)) {
+                  matchingWhen = when;
+                  break;
+                }
+              }
+              if(matchingWhen != null) {
+                whenCanvas = buildInputCanvas(conditionInput.getInput(), matchingWhen.getInputElement());
+                layout.addMember(whenCanvas);
+              }
+            }            
+          };
+          conditionFormItem.addChangedHandler(new CommandChangedHandlerImpl(handleConditionChange));
+          layout.addMember(selectCanvas);
         }
-      }
+      } 
       onUpdate();
       return layout;
     }
 
-    private class RepeatChunkLayout extends VLayout {
+    private ItemWrapper selectCanvasForParam(final Param param, final List<Input> inputs) {
+      final SelectItem selectItem = new SelectItem(param.getName(), param.getLabel());
+      inputs.add(getInput(param, selectItem));
+      final LinkedHashMap<String, String> optionMap = Maps.newLinkedHashMap();
+      String selectedValue = null;
+      for(ParamOption option : param.getOption()) {
+        if(option.isSelected() || selectedValue == null) {
+          selectedValue = option.getValue();
+        }
+        optionMap.put(option.getValueAttribute(), option.getValue());
+      }
+      selectItem.setValueMap(optionMap);
+      selectItem.setValue(selectedValue);
+      validators.add(new Validator() {
+        public boolean isValid() {
+          final String value = StringUtils.toString(selectItem.getValue());
+          return optionMap.containsKey(value);
+        }
+      });
+      final ItemWrapper selectCanvas = new ItemWrapper(selectItem);
+      return selectCanvas;
+    }
 
-      final Input repeatInstanceInput = new Input();
+    private class RepeatChunkLayout extends VLayout {
+      private final Input repeatInstanceInput = new Input();
 
       RepeatChunkLayout() {
         setIsGroup(true);
@@ -335,20 +394,20 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       });
       final Label outputLocationLabel = SmartUtils.smartParagraph("Select location for output files");
 
-      final Label outputNameLabel = SmartUtils.smartParagraph("Specify names for output files");
-      final Form outputForm = new Form();
-      final List<Data> outputs = tool.getOutputs().getData();
-      for(final Data data : outputs) {
-        final TextItem textItem = new TextItem(data.getName(), data.getLabel());
-        textItem.addChangedHandler(this);
-        outputNameItems.add(textItem);
-        validators.add(new Validator() {
-          public boolean isValid() {
-            return StringUtils.hasText(textItem.getValue());
-          }
-        });
-      }
-      outputForm.setItems(outputNameItems.toArray(new TextItem[outputNameItems.size()]));
+      //final Label outputNameLabel = SmartUtils.smartParagraph("Specify names for output files");
+      //final Form outputForm = new Form();
+      //final List<Data> outputs = tool.getOutputs().getData();
+      //for(final Data data : outputs) {
+      //final TextItem textItem = new TextItem(data.getName(), data.getLabel());
+      //  textItem.addChangedHandler(this);
+      //  outputNameItems.add(textItem);
+      //  validators.add(new Validator() {
+      //    public boolean isValid() {
+      //      return StringUtils.hasText(textItem.getValue());
+      //    }
+      //  });
+      //}
+      //outputForm.setItems(outputNameItems.toArray(new TextItem[outputNameItems.size()]));
 
       final VLayout outputLayout = new VLayout();
       outputLayout.setGroupTitle("Outputs");
@@ -360,10 +419,9 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
 
       outputLayout.addMember(outputLocationLabel);
       outputLayout.addMember(treeGrid);
-      outputLayout.addMember(outputNameLabel);
-      outputLayout.addMember(outputForm);
+      //outputLayout.addMember(outputNameLabel);
+      //outputLayout.addMember(outputForm);
 
-      layout.addMember(outputLayout);
 
       final RootInput rootInput = new RootInput();
       final VLayout inputsLayout = new VLayout();
@@ -376,6 +434,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       inputsLayout.setWidth("95%");
 
       layout.addMember(inputsLayout);
+      layout.addMember(outputLayout);
       final Button submitButton = SmartUtils.getButton("Submit Job", Resources.GO, new Command() {
         public void execute() {
           try {
@@ -392,11 +451,46 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             if(outputs != null) {
               int index = 0;
               for(Data data : outputs.getData()) {
+                String format = data.getFormat();
+                final ChangeFormat changeFormat = data.getChangeFormat();
+                if(changeFormat != null && changeFormat.getWhen() != null) {
+                  for(final WhenData whenData : changeFormat.getWhen()) {
+                    final String inputName = whenData.getInput();
+                    for(final Input input : rootInput.getInput()) {
+                      if(inputName.equals(input.getName())) {
+                        if(whenData.getValue().equals(input.getValue())) {
+                          format = whenData.getFormat();
+                          break;
+                        }
+                      }
+                    }                    
+                  }
+                }
+                String outputName = data.getLabel();
+                if(!StringUtils.hasText(outputName)) {
+                  outputName = tool.getName();
+                  boolean first = true;
+                  for(final Map.Entry<String, String> dataNameEntry : dataNameMap.entrySet()) {
+                    if(first) {
+                      outputName += " on ";
+                    } else {
+                      outputName += " and ";
+                    }
+                    outputName += dataNameEntry.getValue();
+                  }
+                }
+                final RegExp replaceRegExp = RegExp.compile("\\$\\{([\\w]+)\\.([\\w]+)\\}");
+                while(replaceRegExp.test(outputName)) {
+                  final MatchResult matcher = replaceRegExp.exec(outputName);
+                  final String match = matcher.getGroup(0);
+                  final String dataName = matcher.getGroup(1);
+                  outputName.replace(match, dataNameMap.get(dataName));
+                }
+                                
                 final CreateTropixFileDescription createResultDescription = ActivityDescriptions.buildCreateResultFile(pollJobDescription, index);
-                createResultDescription.setName(outputNameItems.get(index).getValue().toString() + "." + data.getFormat());
+                createResultDescription.setName(outputName + "." + format);
                 createResultDescription.setDestinationId(parentTreeComponent.getSelection().getId());
                 createResultDescription.setCommitted(true);
-                final String format = data.getFormat();
                 if(StringUtils.hasText(format)) {
                   final String extension = GalaxyFormatUtils.formatToExtension(format);
                   createResultDescription.setExtension(extension);
