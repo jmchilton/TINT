@@ -13,6 +13,7 @@
         <xs:element name="configfiles" type="ConfigFiles" minOccurs="0" />
         <xs:element name="outputs" type="Outputs" minOccurs="0" />
         <xs:element name="inputs" type="Inputs" minOccurs="0" />
+	<xs:element name="tests" type="Tests" minOccurs="0" />
         <xs:element name="help" type="xs:string" minOccurs="0" />
       </xs:sequence>
       <xs:attribute name="id" type="xs:string" use="required" />
@@ -21,6 +22,35 @@
       <xs:attribute name="hidden" type="xs:boolean" default="false" />
     </xs:complexType>
   </xs:element>
+
+  <xs:complexType name="Tests">
+    <xs:sequence>
+      <xs:element name="test" type="Test" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Test">
+    <xs:sequence>
+      <xs:element name="param" type="TestParam" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="output" type="TestOutput" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TestParam">
+    <xs:sequence>
+      <xs:element name="embeddedValue" type="xs:string" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="value" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="TestOutput">
+    <xs:sequence>
+      <xs:element name="embeddedValue" type="xs:string" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="file" type="xs:string" />
+  </xs:complexType>
 
   <xs:complexType name="Inputs">
     <xs:sequence>
@@ -74,10 +104,10 @@
     <xs:complexContent>
       <xs:extension base="InputType">
 	<xs:sequence>
-	  <xs:element name="label" type="xs:string" />
-	  <xs:element name="help" type="xs:string" />
 	  <xs:element name="option" type="ParamOption" minOccurs="0" maxOccurs="unbounded" />
 	</xs:sequence>
+    <xs:attribute name="label" type="xs:string" />
+    <xs:attribute name="help" type="xs:string" />
 	<xs:attribute name="type" type="ParamType" use="required" />
 	<xs:attribute name="value" type="xs:string" />
 	<xs:attribute name="optional" type="xs:string" default="false" />
@@ -169,7 +199,6 @@
       <xs:enumeration value="literal" />
     </xs:restriction>
   </xs:simpleType>
-
 
   <xs:complexType name="ChangeFormat">
     <xs:sequence>
