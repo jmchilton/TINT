@@ -8,7 +8,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 
   <context:annotation-config/> 
 
-  <import resource="integrationContext.xml" />
-  <import resource="tool/repository/testContext.xml" />
-
+  <import resource="service/baseGalaxyContext.xml" />
+  
 </beans>

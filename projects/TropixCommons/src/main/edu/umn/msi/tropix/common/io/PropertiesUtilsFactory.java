@@ -2,6 +2,7 @@ package edu.umn.msi.tropix.common.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +27,7 @@ public class PropertiesUtilsFactory {
   
   private static class PropertiesUtilsImpl implements PropertiesUtils {
     private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
+    private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
     
     public Properties load(final String propertiesAsString) {
       return load(new ByteArrayInputStream(propertiesAsString.getBytes()));
@@ -41,6 +43,11 @@ public class PropertiesUtilsFactory {
         IO_UTILS.closeQuietly(inputStream);
       }
       return properties;
+    }
+    
+    public Properties load(final File file) {
+      final Reader reader = FILE_UTILS.getFileReader(file);
+      return load(reader);
     }
     
     public Properties load(@WillClose final Reader reader) {

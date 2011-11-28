@@ -11,16 +11,14 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
   <bean class="edu.umn.msi.tropix.galaxy.tool.repository.ClassPathToolSourceImpl">
     <constructor-arg>
       <list>
-        <value>/edu/umn/msi/tropix/galaxy/proteomics/filter_by_an_id.xml</value>
-        <value>/edu/umn/msi/tropix/galaxy/proteomics/msconvert.xml</value>
-        <!-- 
-        <value>/edu/umn/msi/tropix/galaxy/proteomics/</value>
-        <value>/edu/umn/msi/tropix/galaxy/proteomics/</value>
-        -->
+        <value>/edu/umn/msi/tropix/galaxy/client/proteomics/filter_by_an_id.xml</value>
+        <value>/edu/umn/msi/tropix/galaxy/client/proteomics/msconvert.xml</value>
+        <value>/edu/umn/msi/tropix/galaxy/client/proteomics/pep2pro.xml</value>
       </list>
     </constructor-arg> 
+    <constructor-arg value="edu.umn.msi.tropix.galaxy.client.proteomics.GalaxyProteomicsResources" />
   </bean>
 
-  <import resource="classpath:edu/umn/msi/tropix/galaxy/tool/repository/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/galaxy/client/context.xml" />
   
 </beans>

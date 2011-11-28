@@ -295,7 +295,8 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
           //whenLayout.setWidth100();
           //layout.addMember(whenLayout);
 
-          
+          final VLayout whenContainer = new VLayout();
+          whenContainer.setWidth100();
           //final List<Canvas> conditionMembers = new ArrayList<Canvas>();
           //final List<Input> inputMembers = new ArrayList<Input>();
           final Command handleConditionChange = new Command() {
@@ -304,7 +305,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
               // Clear out old conditions...
               conditionInput.getInput().clear();
               if(whenCanvas != null) {
-                layout.removeMember(whenCanvas);
+                whenContainer.removeMember(whenCanvas);
                 whenCanvas = null;
               }
               //SmartUtils.removeAllMembers(whenLayout);
@@ -323,12 +324,14 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
               }
               if(matchingWhen != null) {
                 whenCanvas = buildInputCanvas(conditionInput.getInput(), matchingWhen.getInputElement());
-                layout.addMember(whenCanvas);
+                whenContainer.addMember(whenCanvas);
               }
             }            
           };
           conditionFormItem.addChangedHandler(new CommandChangedHandlerImpl(handleConditionChange));
+          handleConditionChange.execute();
           layout.addMember(selectCanvas);
+          layout.addMember(whenContainer);
         }
       } 
       onUpdate();

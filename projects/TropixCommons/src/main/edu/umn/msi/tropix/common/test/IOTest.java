@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.util.List;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 import com.google.common.collect.Lists;
@@ -44,7 +45,7 @@ public class IOTest {
     closeables = Lists.newArrayList();
   }
 
-  @BeforeClass(groups = "unit")
+  @AfterClass(groups = "unit")
   public void cleanUpTempIO() {
     for(final File tempDirectory : tempDirectories) {
       FILE_UTILS.deleteDirectoryQuietly(tempDirectory);
