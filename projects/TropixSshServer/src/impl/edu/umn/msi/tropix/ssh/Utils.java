@@ -28,13 +28,26 @@ class Utils {
   }
 
   public static List<String> pathPieces(final String path) {
-    File file = new File(cleanAndExpandPath(path)).getAbsoluteFile();
+    return pathPiecesForAbsolutePath(cleanAndExpandPath(path));
+  }
+
+  public static List<String> pathPiecesForAbsolutePath(final String absolutePath) {
+    final List<String> pathPieces = pathPiecesReversedForAbsolutePath(absolutePath);
+    Collections.reverse(pathPieces);
+    return pathPieces;
+  }
+
+  public static int pathPiecesCountForAbsolutePath(final String absolutePath) {
+    return pathPiecesReversedForAbsolutePath(absolutePath).size();
+  }
+
+  private static List<String> pathPiecesReversedForAbsolutePath(final String absolutePath) {
+    File file = new File(absolutePath).getAbsoluteFile();
     final List<String> pathPieces = Lists.newArrayList();
     while(file.getParentFile() != null) {
       pathPieces.add(file.getName());
       file = file.getParentFile();
     }
-    Collections.reverse(pathPieces);
     return pathPieces;
   }
 

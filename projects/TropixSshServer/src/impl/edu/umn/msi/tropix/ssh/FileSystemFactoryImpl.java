@@ -12,7 +12,6 @@ import org.apache.sshd.server.SshFile;
 
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
-
 @ManagedBean
 public class FileSystemFactoryImpl implements FileSystemFactory {
   private final SshFileFactory sshFileFactory;
@@ -29,7 +28,7 @@ public class FileSystemFactoryImpl implements FileSystemFactory {
   public FileSystemView createFileSystemView(final Session session) throws IOException {
     return createFileSystemView((Credential) session.getAttribute(PasswordAuthenticatorImpl.CREDENTIAL_KEY));
   }
-  
+
   private class FileSystemViewImpl implements FileSystemView {
     private final Credential identity;
 

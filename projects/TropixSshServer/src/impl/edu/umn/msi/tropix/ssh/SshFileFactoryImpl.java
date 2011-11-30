@@ -28,7 +28,6 @@ import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
@@ -62,15 +61,16 @@ public class SshFileFactoryImpl implements SshFileFactory {
   }
 
   class SshFileImpl implements SshFile {
-    private Credential credential;
-    private String identity;
-    private String virtualPath;
+    private final Credential credential;
+    private final String identity;
+    private final String virtualPath;
+    private final String absolutePath;
+    private final boolean isMetaLocation;
     private TropixObject object;
-    private Location location = null;
 
     private void initObject() {
       if(object == null) {
-        log("initialize virutal path");
+        log("setting object");
         object = getTropixObject(virtualPath);
       }
     }
@@ -88,11 +88,19 @@ public class SshFileFactoryImpl implements SshFileFactory {
       this.credential = credential;
       this.identity = credential.getIdentity();
       this.virtualPath = virtualPath;
+      this.absolutePath = Utils.cleanAndExpandPath(virtualPath);
+      this.isMetaLocation = META_OBJECT_PATHS.contains(absolutePath);
+      log("Create file for virtualPath " + virtualPath);
+    }
+
+    SshFileImpl(final Credential credential, final String virtualPath, final TropixObject object) {
+      this(credential, virtualPath);
+      this.object = object;
     }
 
     // Remove trailing / for directories, is this expected?
     public String getAbsolutePath() {
-      final String absolutePath = Utils.cleanAndExpandPath(virtualPath);
+      final String absolutePath = this.absolutePath;
       log(String.format("getAbsolutePath called, result is %s", absolutePath));
       return absolutePath;
     }
@@ -104,15 +112,11 @@ public class SshFileFactoryImpl implements SshFileFactory {
       return name;
     }
 
-    private void verifyObjectExists() {
-      Preconditions.checkState(doesExist(), String.format("Operation called on non-existent object with path %s by user %s", virtualPath, identity));
-    }
-
     public boolean isDirectory() {
       log("isDirectory");
       if(isMetaLocationOrRootFolder()) {
         return true;
-      } else if(doesExist()) {
+      } else if(internalDoesExist()) {
         initObject();
         return !(object instanceof TropixFile);
       } else {
@@ -121,10 +125,10 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean isFile() {
-      log("isDirectory");
+      log("isFile");
       if(isMetaLocationOrRootFolder()) {
         return false;
-      } else if(doesExist()) {
+      } else if(internalDoesExist()) {
         initObject();
         return (object instanceof TropixFile);
       } else {
@@ -134,20 +138,23 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean doesExist() {
       log("doesExist");
+      return internalDoesExist();
+    }
+
+    private boolean internalDoesExist() {
       boolean doesExist = false;
-      if(isMetaLocation()) {
+      if(isMetaLocation) {
         doesExist = true;
       } else {
         initObject();
         doesExist = object != null;
-        log(String.format("Checking doesExist %b", doesExist));
       }
       return doesExist;
     }
 
     public boolean isRemovable() {
       log("isRemovable");
-      return !isMetaLocation() && doesExist();
+      return !isMetaLocation && internalDoesExist();
     }
 
     public SshFile getParentFile() {
@@ -198,7 +205,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public void truncate() throws IOException {
       log("truncate");
-      if(doesExist()) {
+      if(internalDoesExist()) {
         // TODO: Handle this better
         throw new IllegalStateException("Cannot truncate this file, please delete and add a new file.");
       }
@@ -206,7 +213,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean delete() {
       log("delete");
-      if(isMetaLocation() || !doesExist()) {
+      if(isMetaLocation || !internalDoesExist()) {
         return false;
       } else {
         initObject();
@@ -217,7 +224,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public boolean move(final SshFile destination) {
       log("move");
-      if(isMetaLocation()) {
+      if(isMetaLocation) {
         return false;
       }
       initObject();
@@ -247,8 +254,8 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     private void log(final String message) {
-      if(LOG.isDebugEnabled()) {
-        LOG.debug(String.format("For virtual path <%s> - %s", virtualPath, message));
+      if(LOG.isTraceEnabled()) {
+        LOG.trace(String.format("For virtual path <%s> - %s", virtualPath, message));
       }
     }
 
@@ -256,7 +263,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       log("Checking is writable");
       if(isHomeDirectory()) {
         return true;
-      } else if(isMetaLocation()) {
+      } else if(isMetaLocation) {
         return false;
       } else {
         initObject();
@@ -268,7 +275,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     private boolean isMetaLocationOrRootFolder() {
-      return isMetaLocation() || isRootGroupFolder();
+      return isMetaLocation || isRootGroupFolder();
     }
 
     // TODO: Check uniqueness
@@ -342,26 +349,29 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public List<SshFile> listSshFiles() {
+      log("listSshFiles");
       final ImmutableList.Builder<SshFile> children = ImmutableList.builder();
       if(isRoot()) {
-        children.add(getFile(credential, Locations.MY_HOME));
-        children.add(getFile(credential, Locations.MY_GROUP_FOLDERS));
+        children.add(getFile(credential, HOME_DIRECTORY_PATH));
+        children.add(getFile(credential, MY_GROUP_FOLDERS_PATH));
       } else if(isMyGroupFolders()) {
         final TropixObject[] objects = folderService.getGroupFolders(identity);
         buildSshFiles(objects, children);
       } else {
         initObject();
-        log("listSshFiles");
         final TropixObject[] objects = tropixObjectService.getChildren(identity, object.getId());
         buildSshFiles(objects, children);
       }
       return children.build();
     }
 
+    // Hacking this to make sure names are unique in a case-insensitive manner because MySQL
+    // likes are case-insensitive for the current schema. At some point we should update the name column
+    // according to http://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html.
     private <T extends TropixObject> void buildSshFiles(final T[] objects, final ImmutableList.Builder<SshFile> children) {
       final Map<String, Boolean> uniqueName = Maps.newHashMap();
       for(TropixObject object : objects) {
-        final String objectName = object.getName();
+        final String objectName = object.getName().toUpperCase();
         if(!uniqueName.containsKey(objectName)) {
           uniqueName.put(objectName, true);
         } else {
@@ -370,32 +380,31 @@ public class SshFileFactoryImpl implements SshFileFactory {
       }
       for(TropixObject object : objects) {
         final String name = object.getName();
-        final String derivedName = uniqueName.get(name) ? name : String.format("%s [id:%s]", name, object.getId());
+        final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
         final String childName = Utils.join(virtualPath, derivedName);
         LOG.debug(String.format("Creating child with name [%s]", childName));
-        children.add(getFile(credential, childName));
+        children.add(new SshFileImpl(credential, childName, object));
       }
     }
 
     private boolean isRoot() {
-      return "/".equals(getAbsolutePath());
+      return "/".equals(absolutePath);
     }
 
     private boolean isMyGroupFolders() {
-      return ("/" + Locations.MY_GROUP_FOLDERS).equals(getAbsolutePath());
+      return MY_GROUP_FOLDERS_PATH.equals(absolutePath);
     }
 
     private boolean isRootGroupFolder() {
-      List<String> pieces = Utils.pathPieces(virtualPath);
-      return pieces.size() == 2 && pieces.get(0).equals(Locations.MY_GROUP_FOLDERS);
+      boolean isRootGroupFolder = false;
+      if(absolutePath.startsWith(MY_GROUP_FOLDERS_PATH)) {
+        isRootGroupFolder = Utils.pathPiecesCountForAbsolutePath(absolutePath) == 2;
+      }
+      return isRootGroupFolder;
     }
 
     private boolean isHomeDirectory() {
-      return getAbsolutePath().equals(HOME_DIRECTORY_PATH);
-    }
-
-    private boolean isMetaLocation() {
-      return META_OBJECT_PATHS.contains(getAbsolutePath());
+      return HOME_DIRECTORY_PATH.equals(absolutePath);
     }
 
     public boolean create() throws IOException {
