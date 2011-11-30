@@ -1,5 +1,6 @@
 package edu.umn.msi.tropix.common.io;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Properties;
@@ -18,6 +19,8 @@ public interface PropertiesUtils {
   Properties load(final String propertiesAsString);
   
   Properties load(@WillClose final Reader reader);
+  
+  Properties load(final File file);
 
   String toString(Properties properties);
   

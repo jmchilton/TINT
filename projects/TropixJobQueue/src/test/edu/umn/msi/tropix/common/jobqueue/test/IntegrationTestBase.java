@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
 
 import com.google.common.collect.Lists;
@@ -45,12 +44,13 @@ import edu.umn.msi.tropix.common.jobqueue.service.JobQueueContext;
 import edu.umn.msi.tropix.common.jobqueue.status.StageEnumeration;
 import edu.umn.msi.tropix.common.jobqueue.status.Status;
 import edu.umn.msi.tropix.common.jobqueue.ticket.Ticket;
+import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.storage.client.StorageData;
 import edu.umn.msi.tropix.storage.client.StorageDataFactory;
 import edu.umn.msi.tropix.transfer.types.TransferResource;
 
 @ContextConfiguration(locations = "integrationTestContext.xml")
-public class IntegrationTestBase extends AbstractTestNGSpringContextTests {
+public class IntegrationTestBase extends FreshConfigTest {
   private static final Log LOG = LogFactory.getLog(IntegrationTestBase.class);
   
   @Autowired

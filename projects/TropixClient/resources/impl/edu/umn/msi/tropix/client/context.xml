@@ -430,6 +430,6 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
     </property>
   </bean>
   
-  <import resource="classpath:edu/umn/msi/tropix/galaxy/proteomics/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/galaxy/client/proteomics/context.xml" />
 
 </beans>

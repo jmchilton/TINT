@@ -30,7 +30,7 @@ pf.close()
 num =  0
 for pep in peptideList:
     num += 1
-    searchResults[pep] = []
+    searchResults[pep] = dict()
     conn = httplib.HTTPConnection("www.pep2pro.org")
     getValue = "/UniRef100-IL/" + pep + ".txt"
     conn.request("GET", getValue)

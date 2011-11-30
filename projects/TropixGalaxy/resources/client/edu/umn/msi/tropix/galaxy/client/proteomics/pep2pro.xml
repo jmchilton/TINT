@@ -9,4 +9,10 @@
   </outputs>
   <help>
   </help>
+  <tests>
+    <test>
+      <param name="sequences" value="pep2pro_seqs.txt"/>
+      <output name="output" file="pep2pro_output" />      
+    </test>
+  </tests>
 </tool>

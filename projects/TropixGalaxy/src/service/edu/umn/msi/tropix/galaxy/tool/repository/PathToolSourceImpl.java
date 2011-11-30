@@ -90,6 +90,7 @@ public abstract class PathToolSourceImpl implements ToolSource {
 
   private String getEmbeddedValue(final String path) {
     final InputStream inputStream = getTestDataInputStream(path);
+    Preconditions.checkNotNull(inputStream, String.format("Failed to produce stream for path %s", path));
     return InputContexts.toString(InputContexts.forInputStream(inputStream));
   }
   

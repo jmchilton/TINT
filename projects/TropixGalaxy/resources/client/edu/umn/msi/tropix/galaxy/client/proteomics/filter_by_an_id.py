@@ -82,8 +82,10 @@ def main():
                     work_summary['duplicates'] += 1
                 else:
                     used_sequences.add(entry.sequence)
-                    output.print(entry.header)
-                    output.print(entry.sequence)
+                    output.write(entry.header)
+                    output.write('\n')
+                    output.write(entry.sequence)
+                    output.write('\n')
     finally:
         output.close()
         

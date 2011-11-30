@@ -17,13 +17,17 @@
     <artifact name="tropix-galaxy-stubs" type="jar" conf="stubs" ext="jar" />
     <artifact name="tropix-galaxy-client" type="jar" conf="client" ext="jar" />
     <artifact name="tropix-galaxy-service" type="jar" conf="service" ext="jar" />
-
   </publications>
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-jobqueue" rev="${ivy.project.version}" conf="service->default;test->test" />
     <dependency org="msi.umn.edu" name="tropix-galaxy-libs" rev="${ivy.project.version}" conf="service->main" />
-    <dependency org="apache" name="velocity" rev="1.6.4" />
+    <dependency org="apache" name="velocity" rev="1.6.4"  />
+    <!-- 
+    <dependency org="org.nuiton.jrst" name="jrst" rev="1.4">
+      <exclude org="org.apache.xmlgraphics" />
+    </dependency>
+    -->
   </dependencies>
 
 </ivy-module>
