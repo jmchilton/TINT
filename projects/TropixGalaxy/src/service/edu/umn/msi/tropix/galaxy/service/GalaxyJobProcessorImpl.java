@@ -87,7 +87,8 @@ class GalaxyJobProcessorImpl extends BaseExecutableJobProcessorImpl {
       LOG.debug("RootInput");
       LOG.debug(GalaxyXmlUtils.serialize(rootInput));
     }
-    toolEvaluator.resolve(tool, Contexts.expandPathsAndBuildContext(tool, rootInput, getStagingDirectory()));
+    final Context context = Contexts.expandPathsAndBuildContext(tool, rootInput, getStagingDirectory());
+    toolEvaluator.resolve(tool, context);
     if(LOG.isDebugEnabled()) {
       LOG.debug("Expanded Galaxy Tool");
       LOG.debug(new XMLUtility<Tool>(Tool.class).toString(tool));
@@ -107,7 +108,8 @@ class GalaxyJobProcessorImpl extends BaseExecutableJobProcessorImpl {
   @Override
   protected void doPostprocessing() {
     if(wasCompletedNormally()) {
-      final String standardError = InputContexts.toString(getStagingDirectory().getInputContext(BaseExecutableJobProcessorFactoryImpl.DEFAULT_STANDARD_ERROR_FILE_NAME));
+      final String standardError = InputContexts.toString(getStagingDirectory().getInputContext(
+          BaseExecutableJobProcessorFactoryImpl.DEFAULT_STANDARD_ERROR_FILE_NAME));
       if(StringUtils.hasText(standardError)) {
         throw new IllegalStateException(String.format("Problem executing galaxy tool, standard error was %s", standardError));
       }

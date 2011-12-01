@@ -80,6 +80,7 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
+import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandChangedHandlerImpl;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerList;
@@ -147,7 +148,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       return input;
     }
 
-    final Canvas buildInputCanvas(final List<Input> inputs, final List<InputType> inputDefinitions) {
+    final Canvas buildInputCanvas(final List<Input> inputs, final List<InputType> inputDefinitions, final List<Validator> validators) {
       final VLayout layout = new VLayout();
       layout.setMembersMargin(4);
       for(InputType inputDefinition : inputDefinitions) {
@@ -179,7 +180,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             });
             layout.addMember(new ItemWrapper(textItem));
           } else if(paramType == ParamType.SELECT) {
-            final ItemWrapper selectCanvas = selectCanvasForParam(param, inputs);
+            final ItemWrapper selectCanvas = selectCanvasForParam(param, inputs, validators);
             layout.addMember(selectCanvas);
           } else if(paramType == ParamType.BOOLEAN) {
             final CheckboxItem checkItem = new CheckboxItem(param.getName(), param.getLabel());
@@ -212,7 +213,13 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             input.setName(param.getName());
             treeComponent.addSelectionListener(new Listener<TreeItem>() {
               public void onEvent(final TreeItem location) {
-                dataNameMap.put(param.getName(), location.getName());
+                if(location instanceof TropixObjectTreeItem) {
+                  final String locationName = ((TropixObjectTreeItem) location).getObject().getName();
+                  dataNameMap.put(param.getName(), locationName);
+                } else {
+                  // Never gets here I assume
+                  dataNameMap.put(param.getName(), location.getName());
+                }
                 input.setValue(location.getId());
                 onUpdate();
               }
@@ -233,6 +240,11 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             layout.addMember(treeGrid);
 
           }
+          final String help = param.getHelp();
+          if(StringUtils.hasText(help)) {
+            final Label helpLabel = SmartUtils.smartParagraph("<i>" + help + "</i>");
+            layout.addMember(helpLabel);
+          }
 
         } else if(inputDefinition instanceof Repeat) {
           final Repeat repeat = (Repeat) inputDefinition;
@@ -248,7 +260,6 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
           repeatsLayout.setWidth100();
           layout.addMember(repeatsLayout);
           final List<RepeatChunkLayout> repeatChunkLayouts = new LinkedList<RepeatChunkLayout>();
-
           final Command relabel = new Command() {
             public void execute() {
               int index = 1;
@@ -263,19 +274,24 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             public void execute() {
               final RepeatChunkLayout repeatChunk = new RepeatChunkLayout();
               repeatsLayout.addMember(repeatChunk);
-              repeatChunk.addMember(buildInputCanvas(repeatChunk.repeatInstanceInput.getInput(), repeat.getInputElement()));
+              repeatChunk.addMember(buildInputCanvas(repeatChunk.repeatInstanceInput.getInput(), repeat.getInputElement(),
+                  repeatChunk.repeatValidators));
               final Button removeButton = SmartUtils.getButton("Remove " + title, new Command() {
                 public void execute() {
                   repeatChunkLayouts.remove(repeatChunk);
                   repeatsLayout.removeMember(repeatChunk);
                   repeatInput.getInput().remove(repeatChunk.repeatInstanceInput);
                   relabel.execute();
+                  validators.removeAll(repeatChunk.repeatValidators);
+                  onUpdate();
                 }
               });
               removeButton.setAutoFit(true);
               repeatChunk.addMember(removeButton);
               repeatChunkLayouts.add(repeatChunk);
               relabel.execute();
+              validators.addAll(repeatChunk.repeatValidators);
+              onUpdate();
             }
           });
           repeatButton.setAutoFit(true);
@@ -283,39 +299,46 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
         } else if(inputDefinition instanceof Conditional) {
           final Conditional conditional = (Conditional) inputDefinition;
           final Param conditionParam = conditional.getParam();
-          
+
           final Input conditionInput = new Input();
           conditionInput.setName(conditional.getName());
 
-          final ItemWrapper selectCanvas = selectCanvasForParam(conditionParam, conditionInput.getInput());
+          final ItemWrapper selectCanvas = selectCanvasForParam(conditionParam, conditionInput.getInput(), validators);
           final FormItem conditionFormItem = selectCanvas.getFormItem();
 
-          //final VLayout whenLayout = new VLayout();
-          //whenLayout.setMembersMargin(4);
-          //whenLayout.setWidth100();
-          //layout.addMember(whenLayout);
+          // final VLayout whenLayout = new VLayout();
+          // whenLayout.setMembersMargin(4);
+          // whenLayout.setWidth100();
+          // layout.addMember(whenLayout);
 
           final VLayout whenContainer = new VLayout();
           whenContainer.setWidth100();
-          //final List<Canvas> conditionMembers = new ArrayList<Canvas>();
-          //final List<Input> inputMembers = new ArrayList<Input>();
+          final List<Validator> conditionValidators = Lists.newArrayList();
+          final List<Input> conditionInputs = Lists.newArrayList();
+
+          // final List<Canvas> conditionMembers = new ArrayList<Canvas>();
+          // final List<Input> inputMembers = new ArrayList<Input>();
           final Command handleConditionChange = new Command() {
             private Canvas whenCanvas = null;
+
             public void execute() {
               // Clear out old conditions...
-              conditionInput.getInput().clear();
               if(whenCanvas != null) {
                 whenContainer.removeMember(whenCanvas);
                 whenCanvas = null;
               }
-              //SmartUtils.removeAllMembers(whenLayout);
-         
+              validators.removeAll(conditionValidators);
+              conditionValidators.clear();
+              conditionInput.getInput().removeAll(conditionInputs);
+              conditionInputs.clear();
+              // SmartUtils.removeAllMembers(whenLayout);
+
               inputs.add(conditionInput);
               String conditionValue = null;
               if(conditionFormItem.getValue() != null) {
                 conditionValue = conditionFormItem.getValue().toString();
               }
-              ConditionalWhen matchingWhen = null;              
+              ConditionalWhen matchingWhen = null;
               for(final ConditionalWhen when : conditional.getWhen()) {
                 if(when.getValue().equals(conditionValue)) {
                   matchingWhen = when;
@@ -323,22 +346,25 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
                 }
               }
               if(matchingWhen != null) {
-                whenCanvas = buildInputCanvas(conditionInput.getInput(), matchingWhen.getInputElement());
+                whenCanvas = buildInputCanvas(conditionInputs, matchingWhen.getInputElement(), conditionValidators);
+                validators.addAll(conditionValidators);
+                conditionInput.getInput().addAll(conditionInputs);
                 whenContainer.addMember(whenCanvas);
+                onUpdate();
               }
-            }            
+            }
           };
           conditionFormItem.addChangedHandler(new CommandChangedHandlerImpl(handleConditionChange));
           handleConditionChange.execute();
           layout.addMember(selectCanvas);
           layout.addMember(whenContainer);
         }
-      } 
+      }
       onUpdate();
       return layout;
     }
 
-    private ItemWrapper selectCanvasForParam(final Param param, final List<Input> inputs) {
+    private ItemWrapper selectCanvasForParam(final Param param, final List<Input> inputs, final List<Validator> validators) {
       final SelectItem selectItem = new SelectItem(param.getName(), param.getLabel());
       inputs.add(getInput(param, selectItem));
       final LinkedHashMap<String, String> optionMap = Maps.newLinkedHashMap();
@@ -363,6 +389,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
 
     private class RepeatChunkLayout extends VLayout {
       private final Input repeatInstanceInput = new Input();
+      private final List<Validator> repeatValidators = Lists.newArrayList();
 
       RepeatChunkLayout() {
         setIsGroup(true);
@@ -397,20 +424,20 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       });
       final Label outputLocationLabel = SmartUtils.smartParagraph("Select location for output files");
 
-      //final Label outputNameLabel = SmartUtils.smartParagraph("Specify names for output files");
-      //final Form outputForm = new Form();
-      //final List<Data> outputs = tool.getOutputs().getData();
-      //for(final Data data : outputs) {
-      //final TextItem textItem = new TextItem(data.getName(), data.getLabel());
-      //  textItem.addChangedHandler(this);
-      //  outputNameItems.add(textItem);
-      //  validators.add(new Validator() {
-      //    public boolean isValid() {
-      //      return StringUtils.hasText(textItem.getValue());
-      //    }
-      //  });
-      //}
-      //outputForm.setItems(outputNameItems.toArray(new TextItem[outputNameItems.size()]));
+      // final Label outputNameLabel = SmartUtils.smartParagraph("Specify names for output files");
+      // final Form outputForm = new Form();
+      // final List<Data> outputs = tool.getOutputs().getData();
+      // for(final Data data : outputs) {
+      // final TextItem textItem = new TextItem(data.getName(), data.getLabel());
+      // textItem.addChangedHandler(this);
+      // outputNameItems.add(textItem);
+      // validators.add(new Validator() {
+      // public boolean isValid() {
+      // return StringUtils.hasText(textItem.getValue());
+      // }
+      // });
+      // }
+      // outputForm.setItems(outputNameItems.toArray(new TextItem[outputNameItems.size()]));
 
       final VLayout outputLayout = new VLayout();
       outputLayout.setGroupTitle("Outputs");
@@ -422,13 +449,12 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
 
       outputLayout.addMember(outputLocationLabel);
       outputLayout.addMember(treeGrid);
-      //outputLayout.addMember(outputNameLabel);
-      //outputLayout.addMember(outputForm);
-
+      // outputLayout.addMember(outputNameLabel);
+      // outputLayout.addMember(outputForm);
 
       final RootInput rootInput = new RootInput();
       final VLayout inputsLayout = new VLayout();
-      inputsLayout.addMember(buildInputCanvas(rootInput.getInput(), tool.getInputs().getInputElement()));
+      inputsLayout.addMember(buildInputCanvas(rootInput.getInput(), tool.getInputs().getInputElement(), validators));
       inputsLayout.setGroupTitle("Inputs");
       inputsLayout.setIsGroup(true);
       inputsLayout.setPadding(10);
@@ -466,7 +492,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
                           break;
                         }
                       }
-                    }                    
+                    }
                   }
                 }
                 String outputName = data.getLabel();
@@ -487,9 +513,9 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
                   final MatchResult matcher = replaceRegExp.exec(outputName);
                   final String match = matcher.getGroup(0);
                   final String dataName = matcher.getGroup(1);
-                  outputName.replace(match, dataNameMap.get(dataName));
+                  outputName = outputName.replace(match, dataNameMap.get(dataName));
                 }
-                                
+
                 final CreateTropixFileDescription createResultDescription = ActivityDescriptions.buildCreateResultFile(pollJobDescription, index);
                 createResultDescription.setName(outputName + "." + format);
                 createResultDescription.setDestinationId(parentTreeComponent.getSelection().getId());

@@ -1,7 +1,7 @@
 package edu.umn.msi.tropix.galaxy.xml;
 
 import org.apache.commons.collections.MapUtils;
-import org.nuiton.jrst.JRST;
+//import org.nuiton.jrst.JRST;
 import org.testng.annotations.Test;
 
 public class JrstTest {

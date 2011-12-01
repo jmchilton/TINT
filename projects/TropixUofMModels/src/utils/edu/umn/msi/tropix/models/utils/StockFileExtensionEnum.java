@@ -32,7 +32,8 @@ public enum StockFileExtensionEnum implements StockFileExtensionI {
   FASTA(".fasta"), FASTQ(".fastq"), TEXT(".txt"),
   MZXML(".mzXML"), SCAFFOLD_REPORT(".sfd"), SCAFFOLD3_REPORT(".sf3"),
   TABULAR_XLS(".xls"), BOWTIE_INDEX(".ebwt.zip"), THERMO_RAW(".RAW"),
-  MASCOT_OUTPUT(".dat"), MASCOT_GENERIC_FORMAT(".mgf"), UNKNOWN(""), PEPXML(".pepXML");
+  MASCOT_OUTPUT(".dat"), MASCOT_GENERIC_FORMAT(".mgf"), UNKNOWN(""), PEPXML(".pepXML"),
+  MS2(".ms2"), MZML(".mzML");
 
   private String extension;
 
@@ -43,14 +44,14 @@ public enum StockFileExtensionEnum implements StockFileExtensionI {
   public String getExtension() {
     return extension;
   }
-  
+
   public String stripExtension(final String fileName) {
     final boolean hasExtension = fileName.toUpperCase().endsWith(getExtension().toUpperCase());
     final int length = fileName.length();
     final String databaseName = hasExtension ? fileName.substring(0, length - getExtension().length()) : fileName;
     return databaseName;
   }
-  
+
   public StockFileExtensionEnum loadForExtension(final String extension) {
     StockFileExtensionEnum fileExtension = null;
     for(StockFileExtensionEnum stockFileExtension : values()) {
@@ -61,7 +62,7 @@ public enum StockFileExtensionEnum implements StockFileExtensionI {
     }
     return fileExtension;
   }
-  
+
   @Nullable
   public static StockFileExtensionEnum loadForFile(final TropixFile tropixFile) {
     StockFileExtensionEnum fileExtension = null;

@@ -22,16 +22,21 @@ import edu.umn.msi.tropix.galaxy.tool.Repeat;
 import edu.umn.msi.tropix.galaxy.tool.Tool;
 
 public class ContextBuilder {
-  
+
   private static void populateInputs(final Iterable<InputType> inputs, final Iterable<Input> inputValues, final Map<String, Object> map) {
+    populateInputs(inputs, inputValues, map, false);
+  }
+
+  private static void populateInputs(final Iterable<InputType> inputs, final Iterable<Input> inputValues, final Map<String, Object> map,
+      final boolean allowNull) {
     for(InputType type : inputs) {
       final String name = type.getName();
-      final Input inputValue = GalaxyDataUtils.findInput(name, inputValues);
+      final Input inputValue = GalaxyDataUtils.findInput(name, inputValues, allowNull);
       final Object tree = buildContextForInput(type, inputValue);
       map.put(name, tree);
     }
   }
-  
+
   private static Object buildContextForInput(final InputType inputType, @Nullable final Input inputValue) {
     final Object tree;
     final Map<String, Object> inputProperties = Maps.newHashMap();
@@ -47,7 +52,7 @@ public class ContextBuilder {
       final Context paramTree = (Context) buildContextForInput(param, GalaxyDataUtils.findInput(param.getName(), inputValue.getInput()));
       inputProperties.put(param.getName(), paramTree);
       for(ConditionalWhen when : conditional.getWhen()) {
-        populateInputs(when.getInputElement(), inputValue.getInput(), inputProperties);
+        populateInputs(when.getInputElement(), inputValue.getInput(), inputProperties, true);
       }
       tree = new Context(value, inputProperties);
     } else if(inputType instanceof Repeat) {
@@ -61,22 +66,22 @@ public class ContextBuilder {
         contexts.add(repeatInstanceContext);
       }
       tree = contexts;
-      //inputProperties.put(repeat.getName(), contexts);
+      // inputProperties.put(repeat.getName(), contexts);
     } else {
       throw new IllegalStateException("Unknown inputType " + inputType.getClass().getName());
     }
     return tree;
   }
-  
+
   public Context buildContext(final Tool tool, final RootInput rootInput, final Map<String, String> outputMap) {
     final Map<String, Object> contextContents = Maps.newHashMap();
-    
+
     final List<InputType> inputElements = tool.getInputs().getInputElement();
     populateInputs(inputElements, rootInput.getInput(), contextContents);
-    
+
     final List<Data> outputElements = tool.getOutputs().getData();
     populateOutputs(outputMap, contextContents, outputElements);
-    
+
     final Context context = new Context(contextContents);
     return context;
   }
@@ -89,7 +94,7 @@ public class ContextBuilder {
       final Map<String, Object> map = Maps.newHashMap();
       map.put("format", format);
       map.put("label", label);
-      
+
       final Context tree = new Context(outputMap.get(output.getName()), map);
       contextContents.put(output.getName(), tree);
     }

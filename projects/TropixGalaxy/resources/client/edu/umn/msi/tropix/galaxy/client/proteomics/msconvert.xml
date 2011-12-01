@@ -3,15 +3,28 @@
 
   <command interpreter="python">
     msconvert_wrapper.py 
-    --input=${input} 
+    --input=${type.input} 
     --output=${output} 
-    --fromextension=${input.ext} 
+    --fromextension=${type.input_type} 
     --toextension=${output_type} 
     --binaryencoding=${binary_encoding} 
     --mzencoding=${mz_encoding} 
     --intensityencoding=${intensity_encoding}
     --noindex=${no_index}
     --zlib=${zlib}
+
+    #if $precursor_recalculation == "true"
+    --filter "precursorRecalculation"
+    #end if
+
+    #if $strip_it == "true"
+    --filter "stripIT"
+    #end if
+
+    #if $filter_ms_levels.do_filter == "true"
+    --filter "msLevel [$filter_ms_levels.from, $filter_ms_levels.to]"
+    #end if
+    
     #if len($indices) > 0
     --filter "index
     #for $index in $indices
@@ -26,19 +39,6 @@
     [${scanNumber.from},${scanNumber.to}]
     #end for
     "
-    #end if
-
-    #if $precursor_recalculation.value
-    --filter "precursorRecalculation"
-    #end if
-
-    #if $strip_it.value
-    --filter "stripIT"
-    #end if
-
-    
-    #if $filter_ms_levels.do_filter == "true"
-    --filter "msLevel [$filter_ms_levels.from, $filter_ms_levels.to]"
     #end if
 
   </command>
@@ -82,9 +82,9 @@
       <option value="64">64</option>
       <option value="32" selected="true">32</option>
     </param>
-    <param type="boolean" name="no_index" label="No Index">
+    <param type="boolean"  truevalue="true" falsevalue="false" name="no_index" label="No Index">
     </param>
-    <param type="boolean" name="zlib" label="Use zlib">      
+    <param type="boolean"  truevalue="true" falsevalue="false" name="zlib" label="Use zlib">      
     </param>
     
     <repeat name="indices" title="Filter Indices">
@@ -108,7 +108,6 @@
       </when>
       <when value="false" />
     </conditional>
-
     <!--
     <conditional name="filter_mz_windows">
       <param name="do_filter" type="boolean" label="Filter m/z Values" />
@@ -119,9 +118,8 @@
       <when value="False" />
     </conditional>
     -->
-    <param type="boolean" name="precursor_recalculation" label="Recalculate Precursor" />
-    <param type="boolean" name="strip_it" label="Strip Ion Trap  MS1 Scans" />
-
+    <param type="boolean"  truevalue="true" falsevalue="false"  name="precursor_recalculation" label="Recalculate Precursor" />
+    <param type="boolean"  truevalue="true" falsevalue="false"  name="strip_it" label="Strip Ion Trap  MS1 Scans" />
   </inputs>
   <outputs>
     <data format="mzML" name="output">
@@ -139,4 +137,19 @@
 
   <help>
   </help>
+  <tests>
+    <test>
+      <param name="input_type" value="mgf" />
+      <param name="input" value="two_scans.mgf" />
+      <param name="output_type" value="mzXML" />
+      <param name="binary_encoding" value="64" />
+      <param name="mz_encoding" value="64" />
+      <param name="intensity_encoding" value="64" />
+      <param name="no_index" value="false" />
+      <param name="zlib" value="false" />
+      <param name="do_filter" value="false" />
+      <param name="precursor_recalculation" value="false" />
+      <param name="strip_it" value="false" />
+    </test>
+  </tests>
 </tool>

@@ -12,16 +12,20 @@ public class ProteomicsGalaxyIntegrationTest extends BaseGalaxyIntegrationTest {
 
   @Inject
   private GalaxyToolRepository testToolSource;
-    
+
   @Test(groups = "spring")
   public void testFilterById() throws InterruptedException {
     testTool("filter_by_an_id", testToolSource);
   }
-  
+
   @Test(groups = "spring")
   public void testPep2Pro() {
     testTool("pep2pro", testToolSource);
   }
 
+  // @Test(groups = "spring")
+  public void testMsConvert() {
+    testTool("msconvert", testToolSource);
+  }
 
 }

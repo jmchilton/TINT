@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Joiner;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -97,8 +96,6 @@ public class GalaxyDataUtils {
 
   }
 
-
-  
   public static Input getFullyQualifiedInput(final String label, final Iterable<Input> input) {
     final int periodPos = label.indexOf('.');
     Input childInput;
@@ -108,14 +105,14 @@ public class GalaxyDataUtils {
       final String firstPart = label.substring(0, periodPos);
       final Input firstPartInput = findInput(firstPart, input);
       if(isRepeatInput(firstPartInput)) {
-        childInput = getFullyQualifiedInput(label.substring(periodPos+1), firstPartInput.getInput().iterator().next().getInput());        
+        childInput = getFullyQualifiedInput(label.substring(periodPos + 1), firstPartInput.getInput().iterator().next().getInput());
       } else {
-        childInput = getFullyQualifiedInput(label.substring(periodPos+1), firstPartInput.getInput());        
+        childInput = getFullyQualifiedInput(label.substring(periodPos + 1), firstPartInput.getInput());
       }
     }
     return childInput;
   }
-  
+
   public static boolean isRepeatInput(final Input input) {
     boolean isRepeatInput = false;
     for(final Input childInput : input.getInput()) {
@@ -165,7 +162,7 @@ public class GalaxyDataUtils {
   private static class TreePair {
     private InputType data;
     private Input input;
-    
+
     TreePair(final InputType toolData) {
       this.data = toolData;
       this.input = new Input();
@@ -185,10 +182,9 @@ public class GalaxyDataUtils {
         }
       }
     }
-    
+
   }
- 
-  
+
   public static RootInput buildRootInputSkeleton(final Tool tool) {
     final RootInput rootInput = new RootInput();
     for(final InputType toolInput : tool.getInputs().getInputElement()) {
@@ -198,7 +194,6 @@ public class GalaxyDataUtils {
 
     return rootInput;
   }
-
 
   public interface ParamVisitor {
     void visit(final String key, final Input input, final Param param);
@@ -236,7 +231,6 @@ public class GalaxyDataUtils {
     return flatMap;
   }
 
-
   public static final Predicate<InputType> DATA_PARAM_PREDICATE = new Predicate<InputType>() {
 
     public boolean apply(final InputType input) {
@@ -249,19 +243,19 @@ public class GalaxyDataUtils {
     }
 
   };
-  /*
-  public static void visitDataParams(final Tool tool, final Closure<Param> closure) {
-    for(final InputType inputType : Iterables.filter(buildParamMap(tool).values(), DATA_PARAM_PREDICATE)) {
-      closure.apply((Param) inputType);
-    }
-  }
-   */
 
+  /*
+   * public static void visitDataParams(final Tool tool, final Closure<Param> closure) {
+   * for(final InputType inputType : Iterables.filter(buildParamMap(tool).values(), DATA_PARAM_PREDICATE)) {
+   * closure.apply((Param) inputType);
+   * }
+   * }
+   */
 
   public static Input findInput(final String inputName, final Iterable<Input> inputs) {
     return findInput(inputName, inputs, false);
   }
-  
+
   public static Input findInput(final String inputName, final Iterable<Input> inputs, final boolean allowNull) {
     Preconditions.checkNotNull(inputName);
     Input matchingInput = null;
@@ -276,19 +270,19 @@ public class GalaxyDataUtils {
     return matchingInput;
   }
 
-  
   private static String inputsToString(final Iterable<Input> inputs) {
     String inputsAsString = "";
     if(inputs != null && Iterables.size(inputs) > 0) {
       final List<String> inputsAsStrings = Lists.newArrayList();
       for(final Input input : inputs) {
-        inputsAsStrings.add(String.format("Input[name=%s,value=%s,inputs=%s]", 
-                            input.getName(),
-                            input.getValue(),
-                            inputsToString(input.getInput())));
+        inputsAsStrings.add(String.format("Input[name=%s,value=%s,inputs=%s]",
+            input.getName(),
+            input.getValue(),
+            inputsToString(input.getInput())));
       }
-      inputsAsString = Joiner.on(",").join(inputsAsStrings);      
+      inputsAsString = Joiner.on(",").join(inputsAsStrings);
     }
     return String.format("[%s]", inputsAsString);
   }
+
 }

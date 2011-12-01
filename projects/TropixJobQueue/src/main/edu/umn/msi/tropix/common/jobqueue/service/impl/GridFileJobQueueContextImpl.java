@@ -52,7 +52,7 @@ import edu.umn.msi.tropix.transfer.types.TransferResource;
 // TODO: Use MapMaker for timeout...
 public class GridFileJobQueueContextImpl<T extends JobDescription> extends JobProcessorQueueContextImpl<T> implements FileJobQueueContext, JobProcessorPostProcessedListener<T> {
   private static final Log LOG = LogFactory.getLog(GridFileJobQueueContextImpl.class);
-  private static final long DEFAULT_TIMEOUT = 1000 * 60 * 30;
+  private static final long DEFAULT_TIMEOUT = 1000 * 60 * 120;
   private CredentialResourceResolver credentialResourceResolver;
   private TransferResourceContextFactory transferContextsFactory;
   private Executor executor;
@@ -133,7 +133,7 @@ public class GridFileJobQueueContextImpl<T extends JobDescription> extends JobPr
     if(completedNormally && jobProcessor instanceof FileJobProcessor<?>) {
       final FileJobProcessor<S> fileJobProcessor = (FileJobProcessor<S>) jobProcessor;
       final List<DisposableResource> results = fileJobProcessor.getResults();
-      LOG.debug("Placing " + results.size() + " resluts in in resultMap for ticket " + ticket.getValue());
+      LOG.debug("Placing " + results.size() + " results in in resultMap for ticket " + ticket.getValue());
       resultMap.put(ticket, results);
       timer.schedule(new Runnable() {
         public void run() {

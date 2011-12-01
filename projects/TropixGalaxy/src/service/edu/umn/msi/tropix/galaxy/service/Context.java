@@ -14,26 +14,42 @@ import com.google.common.collect.Maps;
 public class Context {
   private Map<String, Object> backingMap = Maps.newLinkedHashMap();
   private String value;
-  
+
   public Map<String, Object> getBackingMap() {
     return backingMap;
   }
 
   public Context() {
   }
-  
+
   public Context(final String value) {
     this.value = value;
   }
-    
+
   public Object get(final String key) {
     return backingMap.get(key);
   }
-  
+
   public String toString() {
     return value;
   }
-  
+
+  public static String toDebugString(final Context context) {
+    final StringBuilder builder = new StringBuilder();
+    builder.append("Context[value=" + context.value + ",backingMap={");
+    for(Map.Entry<String, Object> entry : context.backingMap.entrySet()) {
+      final String key = entry.getKey();
+      final Object value = entry.getValue();
+      String objectValue = value.toString();
+      if(value instanceof Context) {
+        objectValue = toDebugString((Context) value);
+      }
+      builder.append(key + "=>" + objectValue + ",");
+    }
+    builder.append("}]");
+    return builder.toString();
+  }
+
   public Context(final String value, final Map<String, Object> backingMap) {
     this(value);
     this.backingMap.putAll(backingMap);
@@ -46,7 +62,7 @@ public class Context {
   public void put(final String key, final Object value) {
     backingMap.put(key, value);
   }
-  
+
   public PyObject asPyObject() {
     final PyDictionary dictionary = backingMapAsPyDictionary();
     final PyObject pyName = value == null ? Py.None : asPyString(value);
@@ -66,7 +82,7 @@ public class Context {
     final PyDictionary dictionary = new PyDictionary(pythonObjectMap);
     return dictionary;
   }
-  
+
   private static PyObject getAsPyObject(final Object value) {
     PyObject pyObject = null;
     if(value instanceof String) {
@@ -78,17 +94,18 @@ public class Context {
       @SuppressWarnings("unchecked")
       final Iterable<Object> valueIterable = (Iterable<Object>) value;
       for(final Object child : valueIterable) {
-        list.add(getAsPyObject(child));        
+        list.add(getAsPyObject(child));
       }
       pyObject = list;
     }
-    Preconditions.checkState(pyObject != null, String.format("Failed to convert object %s of class %s to python.", value.toString(), value.getClass().getName()));
+    Preconditions.checkState(pyObject != null,
+        String.format("Failed to convert object %s of class %s to python.", value.toString(), value.getClass().getName()));
     return pyObject;
   }
-  
+
   private static PyString asPyString(final Object object) {
     Preconditions.checkArgument(object instanceof String);
     return new PyString((String) object);
   }
-  
+
 }
