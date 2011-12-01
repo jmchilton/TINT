@@ -45,6 +45,15 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="user.iterable.cache" value="false" />
         <entry key="user.map.concurrency" value="10" />
         <entry key="modules" value="BASE, SHARING, LOCAL_SEARCH, PROTIP, GALAXY" />
+        
+        <entry key="ldap.institution.name" value="LDAP" />
+        <entry key="ldap.id.prefix" value="" />
+        <entry key="ldap.url" value="" />
+        <entry key="ldap.email.label" value="" />
+        <entry key="ldap.firstname.label" value="" />
+        <entry key="ldap.userid.label" value="" />
+        <entry key="ldap.lastname.label" value="" />
+        <entry key="ldap.filter" value="" />        
       </map>
     </property>
   </bean>    
@@ -130,7 +139,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
   </gc:map-to-function>
  -->  
   
-  <bean id="directoryServicePersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.TropixDirectoryServicePersonSupplierImpl">
+  <bean id="directoryServicePersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.CaGridTropixDirectoryServicePersonSupplierImpl">
     <property name="institutionToServiceAddressMap" ref="directoryServices" />
     <property name="proxySupplier" ref="hostProxySupplier" />
     <property name="serviceFactory"> 
@@ -138,6 +147,32 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <constructor-arg value="info.minnesotapartnership.tropix.directory.cagrid.client.TropixDirectoryServiceInterfacesClient" />
       </bean>
     </property>
+  </bean>
+  
+  <bean id="ldapPersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.MapTropixDirectoryServicePersonSupplierImpl">
+    <property name="institutionToServiceAddressMap">
+      <map>
+        <entry key="${ldap.institution.name}" value="local://ldap" />
+      </map>
+    </property>
+    <property name="serviceMap">
+      <map>
+        <entry key="local://ldap" value-ref="ldapDirectoryService" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="ldapDirectoryService" class="edu.umn.msi.tropix.client.directory.impl.LdapTropixDirectoryServiceImpl">
+    <property name="gridIdPrefix" value="${ldap.id.prefix}" /> <!--  /C=US/O=UMN/OU=MSI/OU=caGrid/OU=Users/OU=MSI AuthnSvc IdP/CN -->
+
+    <property name="ldapBase" value="${ldap.base}" /> <!--  value="ou=people, ou=internal, dc=DTC" -->
+    <property name="ldapUrl" value="${ldap.url}" /> <!-- ldaps://owl.msi.umn.edu:636" -->
+
+    <property name="userEmailLabel" value="${ldap.email.label}" /> <!--  value="mail"  -->
+    <property name="userFirstNameLabel" value="${ldap.firstname.label}" /> <!-- value="givenName" /> -->
+    <property name="userIdLabel" value="${ldap.userid.label}" /> <!--  value="cn" /> -->
+    <property name="userLastNameLabel" value="${ldap.lastname.label}" /> <!--  value="sn" /> -->
+    <property name="filter" value="${ldap.filter}" /> <!-- value="(&amp;(cn=*)(pwdChangedTime&gt;=20080912000000Z))" /> -->    
   </bean>
 
   <bean id="localPersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.LocalPersonSupplierImpl">
