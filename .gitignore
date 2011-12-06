@@ -21,6 +21,14 @@
 /projects/TropixClient/test-output
 /projects/TropixClient/temp-testng-customsuite.xml
 
+# /projects/TropixCloud/
+/projects/TropixCloud/build
+/projects/TropixCloud/ext
+/projects/TropixCloud/bin
+/projects/TropixCloud/test-output
+/projects/TropixCloud/temp-testng-customsuite.xml
+
+
 # /projects/TropixCommons/
 /projects/TropixCommons/build
 /projects/TropixCommons/ext

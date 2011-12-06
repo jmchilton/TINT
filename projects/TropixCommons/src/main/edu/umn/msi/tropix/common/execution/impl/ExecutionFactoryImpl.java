@@ -47,7 +47,7 @@ import edu.umn.msi.tropix.common.io.StreamCopier;
 import edu.umn.msi.tropix.common.io.StreamCopiers;
 import edu.umn.msi.tropix.common.logging.ExceptionUtils;
 
-class ExecutionFactoryImpl implements ExecutionFactory {
+public class ExecutionFactoryImpl implements ExecutionFactory {
   private static final Log LOG = LogFactory.getLog(ExecutionFactoryImpl.class);
   private Timer timer = Timers.getDefault();
   private InterruptableExecutor interruptableExecutor = InterruptableExecutors.getDefault();

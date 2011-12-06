@@ -1,0 +1,26 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-cloud" />
+  
+  <configurations>
+    <conf name="api" visibility="public" />
+    <conf name="impl" extends="api" visibility="public" />
+    
+    <conf name="test" description="Tests" extends="api,impl" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-cloud-api" type="jar" conf="api" ext="jar" />
+    <artifact name="tropix-cloud-impl" type="jar" conf="impl" ext="jar" />
+    <artifact name="tropix-cloud-test" type="jar" conf="test" ext="jar" />
+    
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+  </dependencies>  
+
+</ivy-module>
