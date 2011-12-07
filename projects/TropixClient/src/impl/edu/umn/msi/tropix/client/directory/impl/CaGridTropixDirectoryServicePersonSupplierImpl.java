@@ -23,17 +23,13 @@
 package edu.umn.msi.tropix.client.directory.impl;
 
 import info.minnesotapartnership.tropix.directory.TropixDirectoryService;
-import info.minnesotapartnership.tropix.directory.models.Person;
-
-
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Multimap;
 
 import edu.umn.msi.tropix.grid.GridServiceFactory;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
-public class CaGridTropixDirectoryServicePersonSupplierImpl extends BaseTropixDirectoryServicePersonSupplierImpl implements Supplier<Multimap<String, Person>> {
+public class CaGridTropixDirectoryServicePersonSupplierImpl extends BaseTropixDirectoryServicePersonSupplierImpl {
   private GridServiceFactory<TropixDirectoryService> serviceFactory;
   private Supplier<Credential> proxySupplier;
 

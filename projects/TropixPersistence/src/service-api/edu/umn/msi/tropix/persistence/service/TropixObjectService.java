@@ -134,4 +134,6 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   @PersistenceMethod
   TropixObject getPath(@AutoUser @UserId final String userGridId, final String[] names);
 
+  @PersistenceMethod
+  void hideSharedFolder(@UserId final String cagridId, @Reads final String rootSharedFolderId);
 }

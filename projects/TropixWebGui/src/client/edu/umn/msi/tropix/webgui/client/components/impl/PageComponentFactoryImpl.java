@@ -74,6 +74,7 @@ import edu.umn.msi.tropix.models.TissueSample;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
 import edu.umn.msi.tropix.models.utils.TropixObjectVisitorImpl;
@@ -373,6 +374,19 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
       this.addAssociations(scaffoldAnalysis, "Protein Identification Searches", "identificationAnalyses", true);
     }
 
+    private Command getHideSharedFolderCommand(final VirtualFolder virtualFolder) {
+      return new Command() {
+        public void execute() {
+          ObjectService.Util.getInstance().hideSharedFolder(virtualFolder.getId(), new AsyncCallbackImpl<Void>() {
+            @Override
+            public void onSuccess(final Void ignored) {
+              LocationUpdateMediator.getInstance().onEvent(new UpdateEvent(Locations.MY_SHARED_FOLDERS_ID, null));
+            }
+          });
+        }
+      };
+    }
+
     private Command getAddItemsToSharedFolderCommand(final VirtualFolder virtualFolder) {
       return new Command() {
         public void execute() {
@@ -398,6 +412,9 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
 
     @Override
     public void visitVirtualFolder(final VirtualFolder virtualFolder) {
+      if(tropixObjectTreeItem.getParent().getId().equals(Locations.MY_SHARED_FOLDERS_ID)) {
+        this.addOperation("Hide this shared folder", getHideSharedFolderCommand(virtualFolder));
+      }
       if(tropixObjectContext.isModifiable()) {
         this.addOperation("Add items to this shared folder", getAddItemsToSharedFolderCommand(virtualFolder));
       }

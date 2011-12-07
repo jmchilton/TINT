@@ -53,6 +53,7 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
         String userFirstName = attributes.get(userFirstNameLabel).get().toString();
         String userLastName = attributes.get(userLastNameLabel).get().toString();
         String userEmail = attributes.get(userEmailLabel).get().toString();
+        // System.out.println(attributes.get("pwdChangedTime").get().toString());
 
         Person person = new Person();
         person.setCagridIdentity(gridIdPrefix + userId);

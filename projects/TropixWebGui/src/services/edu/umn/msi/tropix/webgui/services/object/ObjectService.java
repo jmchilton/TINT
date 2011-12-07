@@ -98,4 +98,6 @@ public interface ObjectService extends RemoteService {
   long ownedItemsInVirtualHierarchiesCount(final Iterable<String> rootSharedFolderIds);
 
   void removeSharedFolder(final String rootSharedFolderId, final boolean removeOwnedItems);
+
+  void hideSharedFolder(String id);
 }

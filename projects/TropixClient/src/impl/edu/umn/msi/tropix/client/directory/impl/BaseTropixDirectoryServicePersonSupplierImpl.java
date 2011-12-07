@@ -10,12 +10,13 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import edu.umn.msi.tropix.common.logging.ExceptionUtils;
 
-public abstract class BaseTropixDirectoryServicePersonSupplierImpl {
+public abstract class BaseTropixDirectoryServicePersonSupplierImpl implements Supplier<Multimap<String, Person>> {
   private static final Log LOG = LogFactory.getLog(CaGridTropixDirectoryServicePersonSupplierImpl.class);
 
   protected abstract TropixDirectoryService getService(final String address);

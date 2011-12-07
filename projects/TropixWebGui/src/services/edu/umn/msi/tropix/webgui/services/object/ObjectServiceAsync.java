@@ -84,7 +84,9 @@ public interface ObjectServiceAsync {
   void removeSharedFolder(String rootSharedFolderId, boolean removeOwnedItems, AsyncCallback<Void> callback);
 
   void getObjectContext(String objectId, AsyncCallback<TropixObjectContext> callback);
-  
+
   void getChildren(String objectId, TropixObjectType[] filterTypes, AsyncCallback<List<TropixObject>> callback);
+
+  void hideSharedFolder(String id, AsyncCallback<Void> callback);
 
 }

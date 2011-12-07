@@ -265,6 +265,11 @@ public class ObjectServiceImpl implements ObjectService {
     return BeanSanitizerUtils.sanitizeArray(beanSanitizer, objects);
   }
 
+  @ServiceMethod
+  public void hideSharedFolder(final String rootSharedFolderId) {
+    tropixObjectService.hideSharedFolder(userSession.getGridId(), rootSharedFolderId);
+  }
+
   @Inject
   public void setPermissionFunction(@Named("permissionFunction") final Function<PermissionReport, Permission> permissionFunction) {
     this.permissionFunction = permissionFunction;

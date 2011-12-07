@@ -345,6 +345,16 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
       });
     }
 
+    hideSharedFolder(user, folder);
+  }
+
+  public void hideSharedFolder(final String cagridId, final String rootSharedFolderId) {
+    final User user = getUserDao().loadUser(cagridId);
+    final VirtualFolder folder = getTropixObjectDao().loadTropixObject(rootSharedFolderId, VirtualFolder.class);
+    hideSharedFolder(user, folder);
+  }
+
+  private void hideSharedFolder(final User user, final VirtualFolder folder) {
     user.getSharedFolders().remove(folder);
     getUserDao().saveOrUpdateUser(user);
   }
@@ -545,8 +555,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     final Collection<User> virtualFolderUsers = getUserDao().getUsersWithVirtualFolder(root.getId());
     for(final User user : virtualFolderUsers) {
       if(!getSecurityProvider().canRead(root.getId(), user.getCagridId())) {
-        user.getSharedFolders().remove(root);
-        getUserDao().saveOrUpdateUser(user);
+        hideSharedFolder(user, root);
       }
     }
 

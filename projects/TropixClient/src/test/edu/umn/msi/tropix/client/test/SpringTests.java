@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import javax.xml.namespace.QName;
 
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Supplier;
@@ -45,15 +46,14 @@ import edu.umn.msi.tropix.client.services.GridService;
 import edu.umn.msi.tropix.client.services.IdentificationGridService;
 import edu.umn.msi.tropix.client.services.QueueGridService;
 import edu.umn.msi.tropix.common.jobqueue.queuestatus.QueueStatus;
-import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldMetadata;
 import edu.umn.msi.tropix.proteomics.scaffold.metadata.ScaffoldVersion;
 
 @ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/client/test/testApplicationContext.xml")
-public class SpringTests extends FreshConfigTest {
+public class SpringTests extends AbstractTestNGSpringContextTests {
 
   @Resource
-  private Supplier<Multimap<String, Person>> directoryServicePersonSupplier;
+  private Supplier<Multimap<String, Person>> ldapPersonSupplier;
 
   @SuppressWarnings({"unchecked", "unused"})
   @Test
@@ -63,12 +63,15 @@ public class SpringTests extends FreshConfigTest {
     // catalog.setHost("http://appdev1.msi.umn.edu:8080/");
     // catalog.getCatalogOntAPI().addCategory("Laboratory Service", "A laboratory service", new CategoryFieldAssociation[0]);
 
-    Multimap<String, Person> persons = directoryServicePersonSupplier.get();
+    Multimap<String, Person> persons = ldapPersonSupplier.get();
+
     System.out.println("Persons");
+    int count = 0;
     for(Person person : persons.values()) {
+      count++;
       System.out.println(person.getCagridIdentity());
     }
-    System.out.println("/Persons");
+    System.out.println("/Persons" + count);
     if(true)
       throw new RuntimeException();
 

@@ -12,7 +12,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <constructor-arg>
       <list>
         <value>/edu/umn/msi/tropix/galaxy/client/proteomics/filter_by_an_id.xml</value>
-        <value>/edu/umn/msi/tropix/galaxy/client/proteomics/msconvert.xml</value>
+        <!-- <value>/edu/umn/msi/tropix/galaxy/client/proteomics/msconvert.xml</value> -->
         <value>/edu/umn/msi/tropix/galaxy/client/proteomics/pep2pro.xml</value>
       </list>
     </constructor-arg> 
