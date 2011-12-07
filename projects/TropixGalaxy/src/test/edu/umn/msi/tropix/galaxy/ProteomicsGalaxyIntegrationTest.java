@@ -22,6 +22,11 @@ public class ProteomicsGalaxyIntegrationTest extends BaseGalaxyIntegrationTest {
   public void testPep2Pro() {
     testTool("pep2pro", testToolSource);
   }
+  
+  @Test(groups = "spring")
+  public void testCDNATranslation() {
+    testTool("cdna_translation", testToolSource);
+  }
 
   // @Test(groups = "spring")
   public void testMsConvert() {

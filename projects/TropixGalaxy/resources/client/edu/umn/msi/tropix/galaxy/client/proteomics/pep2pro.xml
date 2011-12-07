@@ -2,7 +2,7 @@
   <description></description>
   <command interpreter="python">pep2pro.py $sequences $output</command>
   <inputs>
-    <param format="txt" name="sequences" type="data" label="Sequences"/>
+    <param format="txt" name="sequences" type="data" label="Sequences" help="Plain text file containing peptide sequences to look up." />
   </inputs>
   <outputs>
     <data format="tabular" name="output" label="pep2pro for ${sequences.name}"/>

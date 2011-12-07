@@ -68,6 +68,9 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.PollJobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitGalaxyDescription;
 import edu.umn.msi.tropix.models.GalaxyTool;
+import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.utils.ModelUtils;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
@@ -214,7 +217,15 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             treeComponent.addSelectionListener(new Listener<TreeItem>() {
               public void onEvent(final TreeItem location) {
                 if(location instanceof TropixObjectTreeItem) {
-                  final String locationName = ((TropixObjectTreeItem) location).getObject().getName();
+                  final TropixObject tropixObject = ((TropixObjectTreeItem) location).getObject();
+                  String locationName = tropixObject.getName();
+                  if(tropixObject instanceof TropixFile) {
+                    final TropixFile file = (TropixFile) tropixObject;
+                    final String extension = ModelUtils.getExtension(file);
+                    if(extension != null && locationName.endsWith(extension)) {
+                      locationName = locationName.substring(0, locationName.length() - extension.length());
+                    }
+                  }
                   dataNameMap.put(param.getName(), locationName);
                 } else {
                   // Never gets here I assume
@@ -371,12 +382,12 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
       String selectedValue = null;
       for(ParamOption option : param.getOption()) {
         if(option.isSelected() || selectedValue == null) {
-          selectedValue = option.getValue();
+          selectedValue = option.getValueAttribute();
         }
         optionMap.put(option.getValueAttribute(), option.getValue());
       }
       selectItem.setValueMap(optionMap);
-      selectItem.setValue(selectedValue);
+      //selectItem.setValue(selectedValue);
       validators.add(new Validator() {
         public boolean isValid() {
           final String value = StringUtils.toString(selectItem.getValue());
@@ -384,6 +395,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
         }
       });
       final ItemWrapper selectCanvas = new ItemWrapper(selectItem);
+      selectCanvas.setValue(param.getName(), selectedValue);
       return selectCanvas;
     }
 

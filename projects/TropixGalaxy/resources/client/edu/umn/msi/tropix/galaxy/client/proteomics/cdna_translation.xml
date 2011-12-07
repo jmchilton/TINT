@@ -1,10 +1,13 @@
 <tool id="cdna_translation" version="0.1" name="cDNA sequences to FASTA Database">
   <description></description>
-  <command interpreter="python">cDNA_translation.py $c_dna $with_m --input=$input --output=$output</command>
+  <command interpreter="python">cDNA_translation.py $c_dna --with_m=$translation_method --input=$input --output=$output</command>
   <inputs>
     <param format="fasta" name="input" type="data" label="cDNA sequences"/>
     <param name="c_dna" type="boolean" truevalue="" falsevalue="--c_dna" label="Read only three forward frames" checked="True" />
-    <param name="include_original" type="boolean" truevalue="" falsevalue="--with_m" label="Generate only sequences starting with M" checked="True" />
+    <param name="translation_method"  label="Translation Method" type="select">
+      <option value="true" selected="true">with m</option>
+      <option value="false">without m</option>
+    </param>
   </inputs>
   <outputs>
     <data format="fasta" name="output" label="FASTA database for ${input.name}"/>
@@ -14,10 +17,9 @@
   <tests>
     <test>
       <param name="input" value="cdna_input.fasta"/>
-      <param name="include_original" value="false" />
+      <param name="translation_method" value="false" />
       <param name="c_dna" value="false" />
       <output name="output" file="cdna_output.fasta" />      
     </test>
-  </tests>
-  
+  </tests>  
 </tool>

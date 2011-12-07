@@ -172,11 +172,11 @@ if __name__ == '__main__':
     parser = optparse.OptionParser()
     parser.add_option("--input")
     parser.add_option("--output")
-    parser.add_option("--with_m", action="store_true", default=False)
+    parser.add_option("--with_m", default=False)
     parser.add_option("--c_dna", action="store_true", default=False)
     (options, args) = parser.parse_args()
     
-    if options.with_m:
+    if options.with_m and options.with_m == "true":
         trans_method = "with_m"
     else:
         trans_method = "without_m"
