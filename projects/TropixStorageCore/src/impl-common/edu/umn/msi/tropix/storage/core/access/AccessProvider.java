@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
+import edu.umn.msi.tropix.storage.core.StorageManager;
 
 public interface AccessProvider {
   HasStreamInputContext getFile(String id);
@@ -48,7 +49,12 @@ public interface AccessProvider {
 
   boolean fileExists(String id);
 
+  @Deprecated
   long getLength(String id);
 
+  @Deprecated
   long getDateModified(String id);
+  
+  StorageManager.FileMetadata getFileMetadata(String id);
+  
 }

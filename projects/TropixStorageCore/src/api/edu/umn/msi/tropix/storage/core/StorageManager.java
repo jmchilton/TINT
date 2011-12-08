@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.storage.core;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
 
@@ -34,11 +35,37 @@ public interface StorageManager {
     void onUpload(InputStream inputStream);
 
   }
+  
+  static class FileMetadata {
+    private final long dateModified;
+    
+    private final long length;
+    
+    public FileMetadata(final long dateModified, final long length) {
+      this.dateModified = dateModified;
+      this.length = length;
+    }
 
+    public long getDateModified() {
+      return dateModified;
+    }
+
+    public long getLength() {
+      return length;
+    }
+    
+  }
+
+  @Deprecated
   long getDateModified(final String id, final String gridId);
 
+  @Deprecated
   long getLength(final String id, final String gridId);
 
+  FileMetadata getFileMetadata(final String id, final String gridId);
+  
+  List<FileMetadata> getFileMetadata(final List<String> ids, final String gridId);
+  
   HasStreamInputContext download(String id, String gridId);
 
   UploadCallback upload(String id, String gridId);

@@ -17,6 +17,7 @@ import edu.umn.msi.tropix.common.io.IORuntimeException;
 import edu.umn.msi.tropix.common.io.IOUtils;
 import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.io.OutputContext;
+import edu.umn.msi.tropix.storage.core.StorageManager.FileMetadata;
 import edu.umn.msi.tropix.storage.core.access.AccessProvider;
 
 @Named("gridfsAccessProvider")
@@ -107,6 +108,13 @@ public class GridFsAccessProviderImpl implements AccessProvider {
 
   public long getDateModified(final String id) {
     return getDbFile(id).getUploadDate().getTime();
+  }
+
+  public FileMetadata getFileMetadata(String id) {
+    final GridFSDBFile dbFile = getDbFile(id);
+    final long dateModified = dbFile.getUploadDate().getTime();
+    final long length = dbFile.getLength();
+    return new FileMetadata(dateModified, length);
   }
 
 }

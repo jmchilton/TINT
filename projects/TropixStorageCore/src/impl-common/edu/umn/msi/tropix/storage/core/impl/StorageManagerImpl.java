@@ -25,11 +25,13 @@ package edu.umn.msi.tropix.storage.core.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.output.CountingOutputStream;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -68,19 +70,31 @@ public class StorageManagerImpl implements StorageManager {
   }
 
   public long getDateModified(String id, String gridId) {
-    if(!authorizationProvider.canDownload(id, gridId)) {
-      throw new RuntimeException("User " + gridId + " cannot access file " + id);
-    }
-    return accessProvider.getDateModified(id);
+    return getFileMetadata(id, gridId).getDateModified();
   }
 
   public long getLength(String id, String gridId) {
+    return getFileMetadata(id, gridId).getLength();
+  }
+
+  public FileMetadata getFileMetadata(String id, String gridId) {
     if(!authorizationProvider.canDownload(id, gridId)) {
       throw new RuntimeException("User " + gridId + " cannot access file " + id);
     }
-    return accessProvider.getLength(id);
+    return accessProvider.getFileMetadata(id);
   }
 
+  public List<FileMetadata> getFileMetadata(List<String> ids, String gridId) {
+    final ImmutableList.Builder<FileMetadata> fileMetadataList = ImmutableList.builder();
+    for(final String id : ids) {
+      if(!authorizationProvider.canDownload(id, gridId)) {
+        throw new RuntimeException("User " + gridId + " cannot access file " + id);
+      }
+      fileMetadataList.add(accessProvider.getFileMetadata(id));
+    }
+    return fileMetadataList.build();
+  }
+  
   public boolean exists(final String id) {
     return accessProvider.fileExists(id);
   }

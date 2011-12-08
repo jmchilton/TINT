@@ -66,6 +66,8 @@ public class SshFileFactoryImpl implements SshFileFactory {
     private final String virtualPath;
     private final String absolutePath;
     private final boolean isMetaLocation;
+    private StorageManager.FileMetadata fileMetadata;
+    private boolean fileMetadataSet = false;
     private TropixObject object;
 
     private void initObject() {
@@ -164,8 +166,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     public long getLastModified() {
       log("getLastModified");
-      if(isTropixFile()) {
-        return storageManager.getDateModified(getFileId(), identity);
+      initFileMetadata();
+      if(fileMetadata != null) {
+        return fileMetadata.getDateModified();
       } else {
         return 0L;
       }
@@ -189,11 +192,21 @@ public class SshFileFactoryImpl implements SshFileFactory {
       final TropixFile file = (TropixFile) object;
       return file.getFileId();
     }
+    
+    private void initFileMetadata() {
+      if(!fileMetadataSet) {
+        if(isTropixFile()) {
+          fileMetadata = storageManager.getFileMetadata(getFileId(), identity);
+        }
+        fileMetadataSet = true;
+      }
+    }
 
     public long getSize() {
       log("getSize");
-      if(isTropixFile()) {
-        return storageManager.getLength(getFileId(), identity);
+      initFileMetadata();
+      if(fileMetadata != null) {
+        return fileMetadata.getLength();
       } else {
         return 0;
       }

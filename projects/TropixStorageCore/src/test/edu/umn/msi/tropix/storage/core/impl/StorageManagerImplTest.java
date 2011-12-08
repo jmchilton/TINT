@@ -41,6 +41,7 @@ import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.common.test.MockObjectCollection;
 import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 import edu.umn.msi.tropix.persistence.service.FileService;
+import edu.umn.msi.tropix.storage.core.StorageManager.FileMetadata;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 import edu.umn.msi.tropix.storage.core.access.AccessProvider;
 import edu.umn.msi.tropix.storage.core.authorization.AuthorizationProvider;
@@ -173,7 +174,7 @@ public class StorageManagerImplTest {
   @Test(groups = "unit")
   public void dateModified() throws RemoteException {
     expectCanDownload();
-    EasyMock.expect(accessProvider.getDateModified(fileId)).andReturn(13L);
+    EasyMock.expect(accessProvider.getFileMetadata(fileId)).andReturn(new FileMetadata(13L, 12L));
     mockObjects.replay();
     assert service.getDateModified(fileId, gridId) == 13L;
   }
@@ -181,7 +182,7 @@ public class StorageManagerImplTest {
   @Test(groups = "unit")
   public void length() throws RemoteException {
     expectCanDownload();
-    EasyMock.expect(accessProvider.getLength(fileId)).andReturn(13L);
+    EasyMock.expect(accessProvider.getFileMetadata(fileId)).andReturn(new FileMetadata(12L, 13L));
     mockObjects.replay();
     assert service.getLength(fileId, gridId) == 13L;
   }

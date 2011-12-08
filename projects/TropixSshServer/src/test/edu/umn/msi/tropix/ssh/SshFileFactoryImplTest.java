@@ -35,6 +35,7 @@ import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
+import edu.umn.msi.tropix.storage.core.StorageManager.FileMetadata;
 
 // TODO: TEST CANNOT MOVE FILES FROM GROUP FOLDERS TO HOME DIRECTORIES AND VISE VERSA!
 // TODO: More tests on root group folders and sub group folders.
@@ -189,7 +190,7 @@ public class SshFileFactoryImplTest {
 
   @Test(groups = "unit")
   public void testSize() {
-    EasyMock.expect(storageManager.getLength(expectFileId(), expectId())).andReturn(13L);
+    EasyMock.expect(storageManager.getFileMetadata(expectFileId(), expectId())).andReturn(new FileMetadata(12L, 13L));
     final byte[] testBytes = "test contents".getBytes();
     replayAndSetFileWithContents(testBytes);
     assert sshFile.getSize() == 13L;
@@ -197,7 +198,7 @@ public class SshFileFactoryImplTest {
 
   @Test(groups = "unit")
   public void testLastModified() {
-    EasyMock.expect(storageManager.getDateModified(expectFileId(), expectId())).andReturn(13L);
+    EasyMock.expect(storageManager.getFileMetadata(expectFileId(), expectId())).andReturn(new FileMetadata(13L, 12L));
     replayAndSetFileWithContents("test contents".getBytes());
     assert sshFile.getLastModified() == 13L;
   }

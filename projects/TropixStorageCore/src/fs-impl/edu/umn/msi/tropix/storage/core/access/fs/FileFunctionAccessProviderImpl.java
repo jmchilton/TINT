@@ -35,6 +35,7 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
 import edu.umn.msi.tropix.common.io.IOUtils;
 import edu.umn.msi.tropix.common.io.IOUtilsFactory;
+import edu.umn.msi.tropix.storage.core.StorageManager.FileMetadata;
 import edu.umn.msi.tropix.storage.core.access.AccessProvider;
 
 public class FileFunctionAccessProviderImpl implements AccessProvider {
@@ -77,6 +78,14 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
   public long getDateModified(String id) {
     return getRawFile(id).lastModified();
   }
+  
+  public FileMetadata getFileMetadata(String id) {
+    File rawFile = getRawFile(id);
+    final long dateModified = rawFile.lastModified();
+    final long length = rawFile.length();
+    return new FileMetadata(dateModified, length);
+  }
+
 
   public long putFile(final String id, final InputStream tempFile) {
     final OutputStream outputStream = prepareFileForUpload(id);
@@ -103,5 +112,6 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
     final OutputStream outputStream = prepareFileForUpload(id);
     return outputStream;
   }
+
 
 }
