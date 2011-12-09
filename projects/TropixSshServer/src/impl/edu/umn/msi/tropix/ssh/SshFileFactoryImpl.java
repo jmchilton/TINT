@@ -424,7 +424,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
           final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
           final String childName = Utils.join(virtualPath, derivedName);
           LOG.debug(String.format("Creating child with name [%s]", childName));
-          children.add(new SshFileImpl(credential, childName, object, filesMetadataIterator.next()));
+          children.add(new SshFileImpl(credential, childName, tropixFile, filesMetadataIterator.next()));
         }        
       }
     }
