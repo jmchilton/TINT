@@ -30,6 +30,9 @@ public interface AuthorizationProvider {
 
   @Nullable
   Boolean canDownload(String id, String callerIdentity);
+  
+  @Nullable 
+  Boolean canDownloadAll(final String[] id, final String callerIdentity);
 
   @Nullable
   Boolean canUpload(String id, String callerIdentity);

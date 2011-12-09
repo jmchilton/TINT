@@ -42,7 +42,9 @@ public class IterableAuthorizationProviderImplTest {
     provider.setInPermission(null);
     provider.setOutPermission(false);
     assert null == provider.canDownload(fileId, id1);
+    assert null == provider.canDownloadAll(new String[] {fileId}, id1);
     assert !provider.canDownload(fileId, id2);
+    assert !provider.canDownloadAll(new String[] {fileId}, id2);
     assert !provider.canUpload(fileId, id1);
     assert null == provider.canUpload(fileId, id2);
     assert null == provider.canDelete(fileId, id1);
@@ -52,6 +54,7 @@ public class IterableAuthorizationProviderImplTest {
     provider.setInPermission(true);
     provider.setCanDeleteIds(Lists.<String>newArrayList());
     assert provider.canDownload(fileId, id1);
+    assert provider.canDownloadAll(new String[]{fileId}, id1);
     assert null == provider.canDownload(fileId, id2);
     assert null == provider.canUpload(fileId, id1);
     assert provider.canUpload(fileId, id2);

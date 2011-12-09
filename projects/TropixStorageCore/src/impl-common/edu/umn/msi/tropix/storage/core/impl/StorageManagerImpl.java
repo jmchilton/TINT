@@ -86,10 +86,10 @@ public class StorageManagerImpl implements StorageManager {
 
   public List<FileMetadata> getFileMetadata(List<String> ids, String gridId) {
     final ImmutableList.Builder<FileMetadata> fileMetadataList = ImmutableList.builder();
+    if(!authorizationProvider.canDownloadAll(Iterables.toArray(ids, String.class), gridId)) {
+      throw new RuntimeException("User " + gridId + " cannot access one of files " + Iterables.toString(ids));
+    }
     for(final String id : ids) {
-      if(!authorizationProvider.canDownload(id, gridId)) {
-        throw new RuntimeException("User " + gridId + " cannot access file " + id);
-      }
       fileMetadataList.add(accessProvider.getFileMetadata(id));
     }
     return fileMetadataList.build();

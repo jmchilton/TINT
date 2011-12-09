@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.UUID;
 
 import org.easymock.EasyMock;
@@ -48,7 +49,7 @@ import edu.umn.msi.tropix.storage.core.authorization.AuthorizationProvider;
 
 public class StorageManagerImplTest {
   private StorageManagerImpl service = null;
-  private String gridId = null, fileId = null;
+  private String gridId = null, fileId = null, fileId2;
 
   private MockObjectCollection mockObjects;
   private AccessProvider accessProvider;
@@ -60,6 +61,7 @@ public class StorageManagerImplTest {
     service = new StorageManagerImpl();
     gridId = UUID.randomUUID().toString();
     fileId = UUID.randomUUID().toString();
+    fileId2 = UUID.randomUUID().toString();
     accessProvider = EasyMock.createMock(AccessProvider.class);
     authorizationProvider = EasyMock.createMock(AuthorizationProvider.class);
     fileService = EasyMock.createMock(FileService.class);
@@ -102,6 +104,7 @@ public class StorageManagerImplTest {
   private void expectCanDownload() {
     EasyMock.expect(authorizationProvider.canDownload(fileId, gridId)).andReturn(true);
   }
+  
 
   @Test(groups = "unit")
   public void canDownload() throws RemoteException {
@@ -170,7 +173,25 @@ public class StorageManagerImplTest {
     mockObjects.replay();
     service.getDateModified(fileId, gridId);
   }
+  
+  @Test(groups = "unit", expectedExceptions = RuntimeException.class)
+  public void getMetadatasException() throws RemoteException {
+    EasyMock.expect(authorizationProvider.canDownloadAll(EasyMock.aryEq(new String[] {fileId, fileId2}), EasyMock.eq(gridId))).andReturn(false);
+    mockObjects.replay();
+    service.getFileMetadata(Lists.newArrayList(fileId, fileId2), gridId);
+  }
 
+  @Test(groups = "unit")
+  public void getMetadatas() {
+    EasyMock.expect(authorizationProvider.canDownloadAll(EasyMock.aryEq(new String[] {fileId, fileId2}), EasyMock.eq(gridId))).andReturn(true);
+    EasyMock.expect(accessProvider.getFileMetadata(fileId)).andReturn(new FileMetadata(13L, 12L));
+    EasyMock.expect(accessProvider.getFileMetadata(fileId2)).andReturn(new FileMetadata(14L, 11L));
+    mockObjects.replay();
+    final List<FileMetadata> metadatas = service.getFileMetadata(Lists.newArrayList(fileId, fileId2), gridId);
+    assert metadatas.get(0).getLength() == 12L;
+    assert metadatas.get(1).getLength() == 11L;
+  }
+  
   @Test(groups = "unit")
   public void dateModified() throws RemoteException {
     expectCanDownload();

@@ -67,6 +67,10 @@ public class CascadingAuthorizationProviderImplTest {
     public Boolean canUpload(final String id, final String callerIdentity) {
       return upload;
     }
+    
+    public Boolean canDownloadAll(final String[] ids, final String callerIdentity) {
+      return download;
+    }
 
   }
 
@@ -146,6 +150,11 @@ public class CascadingAuthorizationProviderImplTest {
       authorizer.setReadDefault(false);
       assert !authorizer.canDownload(id, caller);
 
+      authorizer.setReadDefault(true);
+      assert authorizer.canDownloadAll(new String[] {id}, caller);
+      authorizer.setReadDefault(false);
+      assert !authorizer.canDownload(id, caller);
+      
       authorizer.setWriteDefault(true);
       assert authorizer.canUpload(id, caller);
       authorizer.setWriteDefault(false);

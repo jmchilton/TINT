@@ -34,6 +34,7 @@ public class UnsecuredAuthorizationProviderImplTest {
     assert provider.canDelete(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     assert provider.canUpload(UUID.randomUUID().toString(), UUID.randomUUID().toString());
     assert provider.canDownload(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+    assert provider.canDownloadAll(new String[]{UUID.randomUUID().toString()}, UUID.randomUUID().toString());
   }
 
 }

@@ -59,6 +59,10 @@ public class IterableAuthorizationProviderImpl implements AuthorizationProvider 
   }
 
   public Boolean canDownload(final String id, final String callerIdentity) {
+    return canRead(callerIdentity);
+  }
+
+  private Boolean canRead(final String callerIdentity) {
     if(Iterables.contains(canReadIds, callerIdentity)) {
       return inPermission;
     } else {
@@ -72,6 +76,10 @@ public class IterableAuthorizationProviderImpl implements AuthorizationProvider 
     } else {
       return outPermission;
     }
+  }
+
+  public Boolean canDownloadAll(String[] ids, String callerIdentity) {
+    return canRead(callerIdentity);
   }
 
 }

@@ -44,6 +44,21 @@ public class CascadingAuthorizationProviderImpl implements AuthorizationProvider
     }
   }
 
+  private static final class CanDownloadAll implements Function<AuthorizationProvider, Boolean> {
+    private final String callerIdentity;
+    private final String[] ids;
+    
+    private CanDownloadAll(final String callerIdentity, final String[] ids) {
+      this.callerIdentity = callerIdentity;
+      this.ids = ids;
+    }
+    
+    public Boolean apply(final AuthorizationProvider authorizationProvider) {
+      return authorizationProvider.canDownloadAll(ids, callerIdentity);
+    }
+    
+  }
+  
   private static final class CanDownload implements Function<AuthorizationProvider, Boolean> {
     private final String callerIdentity;
     private final String id;
@@ -112,6 +127,10 @@ public class CascadingAuthorizationProviderImpl implements AuthorizationProvider
 
   public Boolean canUpload(final String id, final String callerIdentity) {
     return decide(writeDefault, new CanUpload(callerIdentity, id));
+  }
+
+  public Boolean canDownloadAll(String[] ids, String callerIdentity) {
+    return decide(readDefault, new CanDownloadAll(callerIdentity, ids));
   }
 
 }

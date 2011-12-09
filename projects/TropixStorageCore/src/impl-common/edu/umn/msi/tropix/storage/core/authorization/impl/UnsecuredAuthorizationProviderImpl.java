@@ -38,4 +38,8 @@ public class UnsecuredAuthorizationProviderImpl implements AuthorizationProvider
     return true;
   }
 
+  public Boolean canDownloadAll(String[] id, String callerIdentity) {
+    return true;
+  }
+
 }

@@ -27,6 +27,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import org.easymock.EasyMock;
+import org.easymock.IExpectationSetters;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -36,7 +37,7 @@ import edu.umn.msi.tropix.persistence.service.FileService;
 public class FileServiceAuthorizationProviderImplTest {
   private FileService fileService = null;
   private FileServiceAuthorizationProviderImpl provider = null;
-  private String id = null, caller = null;
+  private String id = null, id2 = null, caller = null;
 
   private static final Boolean[] ANSWERS = new Boolean[] {true, false};
 
@@ -46,39 +47,90 @@ public class FileServiceAuthorizationProviderImplTest {
     fileService = EasyMock.createMock(FileService.class);
     provider.setFileService(fileService);
     id = UUID.randomUUID().toString();
+    id2 = UUID.randomUUID().toString();
     caller = UUID.randomUUID().toString();
   }
 
   @Test(groups = "unit")
+  public void fileServiceOneDoesntExist() {
+    expectIdExists(id); 
+    expectIdDoesntExist(id2);
+    EasyMock.expect(fileService.canReadFile(caller, id)).andStubReturn(true);
+    replay();
+    assert equalBooleans(null, provider.canDownloadAll(new String[]{id, id2}, caller));
+    verify();    
+  }
+  
+  @Test(groups = "unit")
+  public void fileServiceCanDownloadAll() {
+    for(final boolean switchOrder : new boolean[] {true, false}) {
+      for(final Boolean answer : ANSWERS) {
+        expectIdExists(id); 
+        expectIdExists(id2);
+        EasyMock.expect(fileService.canReadFile(caller, id)).andStubReturn(true);
+        EasyMock.expect(fileService.canReadFile(caller, id2)).andStubReturn(answer);
+        replay();
+        if(switchOrder) {
+          assert equalBooleans(answer, provider.canDownloadAll(new String[]{id2, id}, caller));
+        } else {
+          assert equalBooleans(answer, provider.canDownloadAll(new String[]{id, id2}, caller));
+        }
+        verify();
+      }
+      
+    }
+    
+  }
+
+  @Test(groups = "unit")
   public void fileServiceCanRead() {
-    EasyMock.expect(fileService.fileExists(id)).andReturn(false);
-    EasyMock.replay(fileService);
+    expectIdDoesntExist();
+    replay();
     assert null == provider.canDownload(id, caller);
-    EasyMockUtils.verifyAndReset(fileService);
+    verify();
 
     for(final Boolean answer : ANSWERS) {
-      EasyMock.expect(fileService.fileExists(id)).andReturn(true);
+      expectIdExists();
       EasyMock.expect(fileService.canReadFile(caller, id)).andReturn(answer);
-      EasyMock.replay(fileService);
+      replay();
       assert equalBooleans(answer, provider.canDownload(id, caller));
-      EasyMockUtils.verifyAndReset(fileService);
+      verify();
     }
+  }
+
+  private void verify() {
+    EasyMockUtils.verifyAndReset(fileService);
+  }
+
+  private void expectIdDoesntExist(final String id) {
+    EasyMock.expect(fileService.fileExists(id)).andReturn(false);    
+  }
+  
+  private void expectIdDoesntExist() {
+    expectIdDoesntExist(id);
   }
 
   @Test(groups = "unit")
   public void fileServiceCanDelete() {
-    EasyMock.expect(fileService.fileExists(id)).andReturn(false);
-    EasyMock.replay(fileService);
+    expectIdDoesntExist();
+    replay();
     assert null == provider.canDelete(id, caller);
-    EasyMockUtils.verifyAndReset(fileService);
-
+    verify();
     for(final Boolean answer : ANSWERS) {
-      EasyMock.expect(fileService.fileExists(id)).andReturn(true);
+      expectIdExists();
       EasyMock.expect(fileService.canDeleteFile(caller, id)).andReturn(answer);
-      EasyMock.replay(fileService);
+      replay();
       assert equalBooleans(answer, provider.canDelete(id, caller));
-      EasyMockUtils.verifyAndReset(fileService);
+      verify();
     }
+  }
+  
+  private void expectIdExists(final String id) {
+    EasyMock.expect(fileService.fileExists(id)).andStubReturn(true);
+  }
+
+  private void expectIdExists() {
+    expectIdExists(id);
   }
 
   private static boolean equalBooleans(@Nullable final Boolean bool1, @Nullable final Boolean bool2) {
@@ -87,18 +139,22 @@ public class FileServiceAuthorizationProviderImplTest {
 
   @Test(groups = "unit")
   public void fileServiceCanWrite() {
-    EasyMock.expect(fileService.fileExists(id)).andReturn(false);
-    EasyMock.replay(fileService);
+    expectIdDoesntExist();
+    replay();
     assert null == provider.canUpload(id, caller);
-    EasyMockUtils.verifyAndReset(fileService);
+    verify();
 
     for(final Boolean answer : ANSWERS) {
-      EasyMock.expect(fileService.fileExists(id)).andReturn(true);
+      expectIdExists();
       EasyMock.expect(fileService.canWriteFile(caller, id)).andReturn(answer);
-      EasyMock.replay(fileService);
+      replay();
       assert equalBooleans(answer, provider.canUpload(id, caller));
-      EasyMockUtils.verifyAndReset(fileService);
+      verify();
     }
+  }
+
+  private void replay() {
+    EasyMock.replay(fileService);
   }
 
 }
