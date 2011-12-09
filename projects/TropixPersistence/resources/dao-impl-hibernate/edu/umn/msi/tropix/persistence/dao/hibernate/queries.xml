@@ -156,6 +156,19 @@
       and
          o.id = o2.id        
   ]]></query>
+  <query name="canReadAll"><![CDATA[
+    select count(distinct o.id) 
+    from Permission r
+           join r.objects o
+           left join r.users u
+           left join r.groups g
+           left join g.users gu
+    where 
+        o.id in (:objectIds)
+      and 
+        (u.cagridId = :userId or gu.cagridId = :userId)
+  ]]></query>
+  
   <query name="canRead"><![CDATA[
     select count(*) 
     from Permission r

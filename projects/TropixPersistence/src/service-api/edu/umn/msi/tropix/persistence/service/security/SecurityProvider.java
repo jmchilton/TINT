@@ -28,4 +28,5 @@ public interface SecurityProvider {
 
   boolean canModify(String tropixObjectId, String userGridId);
 
+  boolean canReadAll(final Iterable<String> tropixObjectIds, final String userGridId);
 }

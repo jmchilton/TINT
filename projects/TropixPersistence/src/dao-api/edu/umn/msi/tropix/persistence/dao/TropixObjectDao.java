@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.persistence.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import edu.umn.msi.tropix.models.DirectPermission;
 import edu.umn.msi.tropix.models.Folder;
@@ -148,4 +149,10 @@ public interface TropixObjectDao {
 
   boolean isAnOwner(final String userId, final String objectId);
 
+  boolean fileExists(final String fileId);
+  
+  String getFilesObjectId(final String fileId);
+  
+  Set<String> getFilesObjectIds(final Set<String> fileIds);
+  
 }

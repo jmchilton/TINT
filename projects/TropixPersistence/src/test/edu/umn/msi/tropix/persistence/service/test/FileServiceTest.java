@@ -22,9 +22,16 @@
 
 package edu.umn.msi.tropix.persistence.service.test;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
+import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.service.FileService;
@@ -39,35 +46,60 @@ public class FileServiceTest extends ServiceTest {
     fileService.recordLength(fileId, 2312341);
     assert fileService.loadPhysicalFile(fileId).getSize() == 2312341;
   }
-
-  @Test
-  public void canRead() {
+  
+  private TropixFile saveFile(final User owner) {
     final String id = newId(), fileId = newId();
     final TropixFile file = new TropixFile();
     file.setId(id);
     file.setFileId(fileId);
 
-    final User owner = createTempUser();
     saveNewTropixObject(file, owner);
+    return file;
+  }
+
+  @Test
+  public void canRead() {
+    final User owner = createTempUser();
+    final TropixFile file = saveFile(owner);
+    final String fileId = file.getFileId();
 
     assert fileService.canReadFile(owner.getCagridId(), fileId);
 
     final User otherUser = createTempUser();
     assert !fileService.canReadFile(otherUser.getCagridId(), fileId);
 
-    getTropixObjectDao().addRole(id, "read", otherUser);
+    getTropixObjectDao().addRole(file.getId(), "read", otherUser);
     assert fileService.canReadFile(otherUser.getCagridId(), fileId);
+  }
+  
+  @Test(dataProviderClass = TestNGDataProviders.class, dataProvider = "bool1")
+  public void canReadAll(final boolean canRead) {
+    final List<String> fileIds = Lists.newArrayList();
+    final User owner = createTempUser();
+    for(int i = 0; i < 204; i++) {
+      final TropixFile file = saveFile((!canRead && i == 189) ? createTempUser() : owner);
+      final String fileId = file.getFileId();
+      fileIds.add(fileId);
+    }
+
+    assert canRead == fileService.canReadAll(owner.getCagridId(), Iterables.toArray(fileIds, String.class));
+  }
+  
+  
+  @Test
+  public void filesExist() {    
+    final User owner = createTempUser();
+    final TropixFile file = saveFile(owner), file2 = saveFile(owner);
+    
+    assert fileService.filesExist(new String[] {file.getFileId(), file2.getFileId()});
+    assert !fileService.filesExist(new String[] {file.getFileId(), file2.getFileId(), UUID.randomUUID().toString()});        
   }
 
   @Test
   public void delete() {
-    final String id = newId(), fileId = newId();
-    final TropixFile file = new TropixFile();
-    file.setId(id);
-    file.setFileId(fileId);
-
     final User owner = createTempUser();
-    saveNewTropixObject(file, owner);
+    final TropixFile file = saveFile(owner);
+    final String fileId = file.getFileId();
 
     assert !fileService.canDeleteFile(owner.getCagridId(), fileId);
   }

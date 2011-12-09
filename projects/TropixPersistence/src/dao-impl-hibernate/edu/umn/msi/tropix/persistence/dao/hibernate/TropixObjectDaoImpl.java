@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +44,7 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
@@ -475,6 +477,32 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
       return (Long) groupQuery.uniqueResult() > 0L;
     }
   }
+  
+  public boolean fileExists(final String fileId) {
+    final Query query = super.getSession().createQuery("select count(*) from TropixFile f where f.fileId = :fileId");
+    query.setParameter("fileId", fileId);
+    return 0L < (Long) query.uniqueResult();
+  }
+  
+  public String getFilesObjectId(final String fileId) {
+    final Query query = super.getSession().createQuery("select f.id from TropixFile f where f.fileId = :fileId");
+    query.setParameter("fileId", fileId);    
+    return (String) query.uniqueResult();
+  }
+
+  public Set<String> getFilesObjectIds(final Set<String> fileIds) {
+    final Set<String> objectIds = Sets.newHashSet();
+    for(final Iterable<String> fileIdsPartition : Iterables.partition(fileIds, 100)) {
+      final Query query = super.getSession().createQuery("select f.id from TropixFile f where f.fileId in (:fileIds)");
+      query.setParameterList("fileIds", Lists.newArrayList(fileIdsPartition));
+      @SuppressWarnings("unchecked")
+      List<String> partitionObjectIds = query.list();
+      objectIds.addAll(partitionObjectIds);
+    }
+    return objectIds;
+  }
+
+
 
   public long virtualHierarchyCount(final String objectId, final String rootId) {
     final Query query = super.getSession().getNamedQuery("virtualHierarchyCount");
@@ -619,7 +647,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     return result;
   }
 
-  public TropixObject getGroupDirectoryPath(String userId, List<String> pathParts) {
+  public TropixObject getGroupDirectoryPath(final String userId, final List<String> pathParts) {
     final StringBuilder joins = new StringBuilder(), wheres = new StringBuilder();
     final ListIterator<String> pathPartsIter = pathParts.listIterator(pathParts.size());
     final LinkedList<String> parameters = Lists.newLinkedList();
@@ -646,7 +674,8 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     return executePathQuery(userId, queryString, 0, parameters);
   }
 
-  public TropixObject getSharedDirectoryPath(String userId, List<String> asList) {
+  // TODO:
+  public TropixObject getSharedDirectoryPath(final String userId, final List<String> asList) {
     return null;
   }
 

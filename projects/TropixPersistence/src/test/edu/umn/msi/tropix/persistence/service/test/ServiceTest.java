@@ -152,19 +152,21 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return group;
   }
 
-  protected void saveNewTropixObject(final TropixObject tropixObject) {
+  protected TropixObject saveNewTropixObject(final TropixObject tropixObject) {
     tropixObject.setPermissionChildren(new HashSet<TropixObject>());
     tropixObject.setPermissionParents(new HashSet<TropixObject>());
     tropixObject.setParentVirtualFolders(new HashSet<VirtualFolder>());
     tropixObject.setCreationTime("" + System.currentTimeMillis());
     tropixObjectDao.saveOrUpdateTropixObject(tropixObject);
+    return tropixObject;
   }
 
-  protected void saveNewTropixObject(final TropixObject tropixObject, @Nullable final User user) {
+  protected TropixObject saveNewTropixObject(final TropixObject tropixObject, @Nullable final User user) {
     saveNewTropixObject(tropixObject);
     if(user != null) {
       tropixObjectDao.setOwner(tropixObject.getId(), user);
     }
+    return tropixObject;
   }
 
   protected String newId() {

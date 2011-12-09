@@ -22,12 +22,16 @@
 
 package edu.umn.msi.tropix.persistence.service.security.impl;
 
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+
+import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.persistence.dao.hibernate.TropixPersistenceTemplate;
 import edu.umn.msi.tropix.persistence.service.security.SecurityProvider;
@@ -44,7 +48,6 @@ class SecurityProviderImpl extends TropixPersistenceTemplate implements Security
   }
   
   public boolean canModify(final String tropixObjectId, final String userGridId) {
-    
     final Query query = getSession().getNamedQuery("canEdit");
     query.setParameter("userId", userGridId);
     query.setParameter("objectId", tropixObjectId);
@@ -56,6 +59,22 @@ class SecurityProviderImpl extends TropixPersistenceTemplate implements Security
     query.setParameter("userId", userGridId);
     query.setParameter("objectId", tropixObjectId);
     return ((Long) query.uniqueResult()) > 0;
+  }
+  
+  public boolean canReadAll(final Iterable<String> tropixObjectIds, final String userGridId) {
+    boolean canReadAll = true;
+    // break into pieces because of potential limitations with number of expressions allowed by db/hibernate.
+    for(final List<String> objectIdsPartition : Lists.partition(Lists.newArrayList(tropixObjectIds), 100)) {
+      final Query query = getSession().getNamedQuery("canReadAll");
+      query.setParameter("userId", userGridId);
+      
+      query.setParameterList("objectIds", objectIdsPartition);
+      canReadAll = ((Long) query.uniqueResult()) >= objectIdsPartition.size();
+      if(!canReadAll) {
+        break;
+      }
+    }
+    return canReadAll;
   }
 
 }

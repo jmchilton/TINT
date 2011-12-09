@@ -136,7 +136,29 @@ public class TropixObjectDaoTest extends DaoTest {
     makeFile(id1);
     assert objectDao.loadTropixFileWithFileId(id1) == null;
   }
+  
+  @Test
+  public void testFileExists() {
+    final String id1 = newObject();
+    final String fileId = makeFile(id1);
+    assert objectDao.fileExists(fileId);
+  }
 
+  @Test
+  public void testFileExistsFalse() {
+    final String id1 = newObject();
+    final String fileId = makeFile(id1);
+    assert !objectDao.fileExists(id1);
+  }
+  
+  @Test
+  public void testGetFilesObjectId() {
+    final String id1 = newObject();
+    final String fileId = makeFile(id1);
+    assert objectDao.getFilesObjectId(fileId).equals(id1);
+  }
+
+  
   @Test
   public void getAssociation() {
     final String fileId = newObject(), runId = newObject();

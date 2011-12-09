@@ -27,7 +27,6 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import org.easymock.EasyMock;
-import org.easymock.IExpectationSetters;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -53,33 +52,24 @@ public class FileServiceAuthorizationProviderImplTest {
 
   @Test(groups = "unit")
   public void fileServiceOneDoesntExist() {
-    expectIdExists(id); 
+    expectIdExists(id);
     expectIdDoesntExist(id2);
+    EasyMock.expect(fileService.filesExist(EasyMock.aryEq(new String[]{id, id2}))).andReturn(false);
     EasyMock.expect(fileService.canReadFile(caller, id)).andStubReturn(true);
     replay();
     assert equalBooleans(null, provider.canDownloadAll(new String[]{id, id2}, caller));
     verify();    
   }
-  
+
   @Test(groups = "unit")
   public void fileServiceCanDownloadAll() {
-    for(final boolean switchOrder : new boolean[] {true, false}) {
-      for(final Boolean answer : ANSWERS) {
-        expectIdExists(id); 
-        expectIdExists(id2);
-        EasyMock.expect(fileService.canReadFile(caller, id)).andStubReturn(true);
-        EasyMock.expect(fileService.canReadFile(caller, id2)).andStubReturn(answer);
-        replay();
-        if(switchOrder) {
-          assert equalBooleans(answer, provider.canDownloadAll(new String[]{id2, id}, caller));
-        } else {
-          assert equalBooleans(answer, provider.canDownloadAll(new String[]{id, id2}, caller));
-        }
-        verify();
-      }
-      
+    for(final Boolean answer : ANSWERS) {
+      EasyMock.expect(fileService.filesExist(EasyMock.aryEq(new String[] {id, id2}))).andStubReturn(true);
+      EasyMock.expect(fileService.canReadAll(EasyMock.eq(caller), EasyMock.aryEq(new String[] {id, id2}))).andStubReturn(answer);
+      replay();
+      assert equalBooleans(answer, provider.canDownloadAll(new String[]{id, id2}, caller));
+      verify();
     }
-    
   }
 
   @Test(groups = "unit")
@@ -105,7 +95,7 @@ public class FileServiceAuthorizationProviderImplTest {
   private void expectIdDoesntExist(final String id) {
     EasyMock.expect(fileService.fileExists(id)).andReturn(false);    
   }
-  
+
   private void expectIdDoesntExist() {
     expectIdDoesntExist(id);
   }
@@ -124,7 +114,7 @@ public class FileServiceAuthorizationProviderImplTest {
       verify();
     }
   }
-  
+
   private void expectIdExists(final String id) {
     EasyMock.expect(fileService.fileExists(id)).andStubReturn(true);
   }

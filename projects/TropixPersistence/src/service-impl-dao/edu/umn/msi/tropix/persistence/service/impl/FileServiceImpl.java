@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.persistence.service.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.ManagedBean;
 import javax.annotation.Nullable;
@@ -62,10 +63,10 @@ class FileServiceImpl extends ServiceBase implements FileService {
   }
 
   public boolean canReadFile(final String userId, final String fileId) {
-    final TropixFile tropixFile = getTropixObjectDao().loadTropixFileWithFileId(fileId);
-    return getSecurityProvider().canRead(tropixFile.getId(), userId);
+    final String objectId = getTropixObjectDao().getFilesObjectId(fileId);
+    return getSecurityProvider().canRead(objectId, userId);
   }
-
+  
   public boolean canWriteFile(final String userId, final String fileId) {
     final TropixFile file = getTropixObjectDao().loadTropixFileWithFileId(fileId);
     return file == null || getSecurityProvider().canModify(file.getId(), userId);
@@ -179,7 +180,29 @@ class FileServiceImpl extends ServiceBase implements FileService {
   }
 
   public boolean fileExists(final String fileId) {
-    return null != getTropixObjectDao().loadTropixFileWithFileId(fileId);
+    return getTropixObjectDao().fileExists(fileId);
   }
+
+  public boolean filesExist(final String[] fileIds) {
+    boolean allExist = true;
+    for(final String fileId : fileIds) {
+      allExist = fileExists(fileId);
+      if(!allExist) {
+        break;
+      }
+    }
+    return allExist;
+  }
+
+  public boolean canReadAll(final String callerIdentity, final String[] fileIds) {
+    final Set<String> ids = getTropixObjectDao().getFilesObjectIds(Sets.newHashSet(fileIds));
+    //final List<String> ids = Lists.newArrayListWithExpectedSize(fileIds.length);
+    //for(final String fileId : fileIds) {
+    //  final String objectId = getTropixObjectDao().getFilesObjectId(fileId);
+    //  ids.add(objectId);
+    //}
+    return getSecurityProvider().canReadAll(ids, callerIdentity);
+  }
+
 
 }

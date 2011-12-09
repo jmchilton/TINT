@@ -23,9 +23,12 @@
 package edu.umn.msi.tropix.persistence.service.test;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -256,6 +259,30 @@ public class SecurityProviderTest extends ServiceTest {
 
     assert !securityProvider.canRead(object.getId(), "23423");
     assert !securityProvider.canModify(object.getId(), newUser.getCagridId() + "2345");
+  }
+  
+  @Test
+  public void testCanReadAll() {
+    final List<String> objectIds = Lists.newArrayList();
+    final User newUser = createTempUser();
+    for(int i = 0; i < 100; i++) {
+      final TropixObject object = saveNewTropixObject(new TropixObject(), newUser);
+      objectIds.add(object.getId());
+    }
+    assert securityProvider.canReadAll(objectIds, newUser.getCagridId());    
+  }
+  
+  @Test
+  public void testCannotReadAll() {
+    final List<String> objectIds = Lists.newArrayList();
+    final User newUser = createTempUser();
+    for(int i = 0; i < 120; i++) {
+      final TropixObject object = saveNewTropixObject(new TropixObject(), newUser);
+      objectIds.add(object.getId());
+    }
+    final TropixObject otherObject = saveNewTropixObject(new TropixObject());
+    objectIds.add(otherObject.getId());    
+    assert !securityProvider.canReadAll(objectIds, newUser.getCagridId());    
   }
 
 }
