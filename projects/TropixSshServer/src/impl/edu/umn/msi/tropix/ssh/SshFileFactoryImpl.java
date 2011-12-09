@@ -3,6 +3,7 @@ package edu.umn.msi.tropix.ssh;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
+import edu.umn.msi.tropix.storage.core.StorageManager.FileMetadata;
 
 @ManagedBean
 public class SshFileFactoryImpl implements SshFileFactory {
@@ -98,6 +100,12 @@ public class SshFileFactoryImpl implements SshFileFactory {
     SshFileImpl(final Credential credential, final String virtualPath, final TropixObject object) {
       this(credential, virtualPath);
       this.object = object;
+    }
+
+    SshFileImpl(final Credential credential, final String virtualPath, final TropixObject object, final FileMetadata fileMetadata) {
+      this(credential, virtualPath, object);
+      this.fileMetadata = fileMetadata;
+      this.fileMetadataSet = true;
     }
 
     // Remove trailing / for directories, is this expected?
@@ -391,12 +399,33 @@ public class SshFileFactoryImpl implements SshFileFactory {
           uniqueName.put(objectName, false);
         }
       }
+
+      // Optimization: Separate files so we can batch prefetch metadata for them all at once
+      final ImmutableList.Builder<TropixFile> tropixFilesBuilder = ImmutableList.builder();
+      final ImmutableList.Builder<String> tropixFileIds = ImmutableList.builder();
       for(TropixObject object : objects) {
-        final String name = object.getName();
-        final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
-        final String childName = Utils.join(virtualPath, derivedName);
-        LOG.debug(String.format("Creating child with name [%s]", childName));
-        children.add(new SshFileImpl(credential, childName, object));
+        if(object instanceof TropixFile) {
+          TropixFile tropixFile = (TropixFile) object;
+          tropixFilesBuilder.add(tropixFile);
+          tropixFileIds.add(tropixFile.getFileId());
+        } else {
+          final String name = object.getName();
+          final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
+          final String childName = Utils.join(virtualPath, derivedName);
+          LOG.debug(String.format("Creating child with name [%s]", childName));
+          children.add(new SshFileImpl(credential, childName, object));
+        }
+      }
+      final List<TropixFile> tropixFiles = tropixFilesBuilder.build();
+      if(!tropixFiles.isEmpty()) {
+        final Iterator<FileMetadata> filesMetadataIterator = storageManager.getFileMetadata(tropixFileIds.build(), identity).iterator();
+        for(final TropixFile tropixFile : tropixFiles) {
+          final String name = tropixFile.getName();
+          final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
+          final String childName = Utils.join(virtualPath, derivedName);
+          LOG.debug(String.format("Creating child with name [%s]", childName));
+          children.add(new SshFileImpl(credential, childName, object, filesMetadataIterator.next()));
+        }        
       }
     }
 

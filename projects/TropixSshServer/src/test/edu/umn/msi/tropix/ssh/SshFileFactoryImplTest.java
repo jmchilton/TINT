@@ -18,6 +18,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.io.FileContext;
@@ -256,7 +257,7 @@ public class SshFileFactoryImplTest {
     expectDirectoryWithPath(null);
     final TropixObject object1 = objectWithName("name1"), object2 = objectWithName("name2"), object3 = objectWithName("name3");
     final TropixObject objectWithDuplicateName = objectWithName("name2");
-    EasyMock.expect(tropixObjectService.getChildren(id, folderId)).andReturn(new TropixObject[] {object1, object2, object3, objectWithDuplicateName});
+    expectGetChildren(new TropixObject[] {object1, object2, object3, objectWithDuplicateName});
     final List<SshFile> children = list();
     Assert.assertEquals(children.size(), 4);
     final Set<String> uniqueNames = Sets.newHashSet();
@@ -264,6 +265,21 @@ public class SshFileFactoryImplTest {
       uniqueNames.add(child.getName());
     }
     // assert uniqueNames.equals(Sets.newHashSet("name1", "name2", "name3"));
+  }
+
+  
+  @Test(groups = "unit")
+  public void testListWithAFile() {
+    expectDirectoryWithPath(null);
+    final TropixObject object1 = objectWithName("name1");
+    final TropixFile file1 = objectWithName("name2", new TropixFile());
+    file1.setFileId(UUID.randomUUID().toString());
+    EasyMock.expect(storageManager.getFileMetadata(Lists.newArrayList(file1.getFileId()), id)).andReturn(Lists.newArrayList(new FileMetadata(12L, 13L)));
+    expectGetChildren(new TropixObject[] {object1, file1});
+    final List<SshFile> children = list();
+    Assert.assertEquals(children.size(), 2);
+    assert children.get(1).getLastModified() == 12L;
+    assert children.get(1).getSize() == 13L;
   }
 
   @Test(groups = "unit", dataProvider = "rootDirectoryPaths")
@@ -589,8 +605,16 @@ public class SshFileFactoryImplTest {
     }
   }
 
+  private void expectGetChildren(final TropixObject[] tropixObjects) {
+    EasyMock.expect(tropixObjectService.getChildren(id, folderId)).andReturn(tropixObjects);
+  }
+
   private TropixObject objectWithName(final String name) {
     final TropixObject object = new TropixObject();
+    return objectWithName(name, object);
+  }
+
+  private <T extends TropixObject> T objectWithName(final String name, final T object) {
     object.setCommitted(true);
     object.setName(name);
     return object;
