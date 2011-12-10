@@ -14,5 +14,10 @@
 			<key column="GROUP_ID" />
 			<many-to-many class="edu.umn.msi.tropix.models.User" column="USER_ID" />
 		</set>
+		<set name="sharedFolders" table="JOIN_GROUP_SHARED_FOLDER" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="GROUP_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.VirtualFolder" column="VIRTUAL_FOLDER_ID" />
+		</set>
 	</class>
 </hibernate-mapping>

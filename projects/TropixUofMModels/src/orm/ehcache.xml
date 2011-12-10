@@ -9,7 +9,7 @@
 		timeToIdleSeconds="1800"
 		timeToLiveSeconds="100000"
 		overflowToDisk="true"/>
-		
+	<!-- 	
 	<cache name="edu.umn.msi.tropix.models.Run"
 		maxElementsInMemory="500"
 		eternal="false"
@@ -436,5 +436,5 @@
 		timeToIdleSeconds="1800"
 		timeToLiveSeconds="100000"
 		overflowToDisk="true"/>
-			
+    -->			
 </ehcache>

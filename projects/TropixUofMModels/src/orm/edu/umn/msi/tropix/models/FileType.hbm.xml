@@ -8,7 +8,8 @@
 		</id>
 		<!-- Attributes mapping for the FileType class -->
 		<property name="shortName" type="string" column="SHORT_NAME"/>
-		<property name="extension" type="string" column="EXTENSION"/>
+		<property name="extension" type="string" column="EXTENSION"/>		
 		<!-- Associations mapping for the FileType class -->
+		<many-to-one name="parentFileType" class="edu.umn.msi.tropix.models.FileType" column="PARENT_FILE_TYPE_ID" lazy="proxy" />
 	</class>
 </hibernate-mapping>

@@ -238,6 +238,18 @@ public class User implements Serializable {
   public void setSharedFolders(final Collection<VirtualFolder> sharedFolders) {
     this.sharedFolders = sharedFolders;
   }
+  
+  
+  private Collection<UserPreference> preferences;
+
+  public Collection<UserPreference> getPreferences() {
+    return preferences;
+  }
+
+  public void setPreferences(final Collection<UserPreference> preferences) {
+    this.preferences = preferences;
+  }
+
 
   /**
    * An associated edu.umn.msi.tropix.models.Group object's collection

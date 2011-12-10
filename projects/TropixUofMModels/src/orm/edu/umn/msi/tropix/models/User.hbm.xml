@@ -34,5 +34,10 @@
 			<key column="USER_ID" />
 			<many-to-many class="edu.umn.msi.tropix.models.Group" column="GROUP_ID" />
 		</set>
+		<set name="preferences" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="USER_ID" />
+			<one-to-many class="edu.umn.msi.tropix.models.UserPreference" />
+		</set>		
 	</class>
 </hibernate-mapping>

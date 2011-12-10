@@ -8,7 +8,7 @@
 		</id>
 		<!-- Attributes mapping for the GalaxyToolRevision class -->
 		<property name="revisionNum" type="long" column="REVISION_NUM"/>
-		<property name="xml" type="string"><column name="XML" sql-type="clob" /></property>
+		<property name="xml" type="string"><column name="XML" sql-type="longtext" /></property>		
 		<!-- Associations mapping for the GalaxyToolRevision class -->
 		<many-to-one name="tool" class="edu.umn.msi.tropix.models.GalaxyTool" column="GALAXY_TOOL_ID" lazy="proxy" />
 	</class>

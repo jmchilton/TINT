@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="edu.umn.msi.tropix.models">
+	<class name="UserPreference" table="USER_PREFERENCE" lazy="true" polymorphism="explicit">
+		<cache usage="read-write" />
+		<id name="id" type="string" column="ID">
+			<generator class="assigned" />
+		</id>
+		<!-- Attributes mapping for the LogMessage class -->
+		<property name="value" type="string" column="PREFERENCE_VALUE"/>
+		
+		<!-- Associations mapping for the LogMessage class -->
+		<!--  <many-to-one name="user" class="edu.umn.msi.tropix.models.User" column="USER_ID" lazy="proxy" />  -->
+	    <many-to-one name="type" class="edu.umn.msi.tropix.models.UserPreferenceType" column="USER_PREFERENCE_TYPE_ID" lazy="false" />
+	</class>
+</hibernate-mapping>

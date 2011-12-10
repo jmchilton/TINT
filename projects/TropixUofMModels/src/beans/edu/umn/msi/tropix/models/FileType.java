@@ -75,6 +75,16 @@ public class FileType implements Serializable {
   public void setExtension(final String extension) {
     this.extension = extension;
   }
+  
+  private FileType parentFileType;
+
+  public FileType getParentFileType() {
+    return parentFileType;
+  }
+
+  public void setParentFileType(FileType parentFileType) {
+    this.parentFileType = parentFileType;
+  }
 
   /**
    * Compares <code>obj</code> to it self and returns true if they both are same

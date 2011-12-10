@@ -78,6 +78,26 @@ public class Group implements Serializable {
   public void setUsers(final Collection<User> users) {
     this.users = users;
   }
+  
+  private Collection<VirtualFolder> sharedFolders;
+
+  /**
+   * Retreives the value of sharedFolders attribue
+   * 
+   * @return sharedFolders
+   **/
+
+  public Collection<VirtualFolder> getSharedFolders() {
+    return sharedFolders;
+  }
+
+  /**
+   * Sets the value of sharedFolders attribue
+   **/
+
+  public void setSharedFolders(final Collection<VirtualFolder> sharedFolders) {
+    this.sharedFolders = sharedFolders;
+  }  
 
   /**
    * Compares <code>obj</code> to it self and returns true if they both are same
