@@ -18,6 +18,7 @@
   </publications>
 
   <dependencies>
+    <!-- <dependency org="edu.mayo.mprc" name="unimod" rev="3.0-SNAPSHOT" /> -->
     <dependency org="globus" name="core-backports" rev="4.0.3" conf="default->default" />
     <dependency org="msi.umn.edu" name="tropix-commons" conf="default->default;test->test" rev="${ivy.project.version}" />
     <dependency org="com.sun.xml" name="sjsxp" rev="1.0.1" />

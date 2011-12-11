@@ -91,7 +91,7 @@
   <target name="prepare-flyway" depends="jars">
     <get src="${flyway.url}" dest="${build.dir}/flyway.zip" />
     <unzip src="${build.dir}/flyway.zip" dest="${build.dir}" />
-    <copy toDir="${flyway.dir}/lib" flatten="true">
+    <copy toDir="${flyway.dir}/jars" flatten="true">
       <fileset refid="ivy.fileset" />
     </copy>
     <copy toFile="${flyway.dir}/conf/flyway.properties" file="${basedir}/flyway.properties" overwrite="true" />

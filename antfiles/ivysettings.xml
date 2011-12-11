@@ -42,7 +42,7 @@
       <ibiblio name="jboss" root="https://repository.jboss.org/nexus/content/groups/public" m2compatible="true" />
       <ibiblio name="maven2" m2compatible="true" />
       <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true"/>
-      
+      <ibiblio name="mayo" root="http://informatics.mayo.edu/maven/content/groups/public" m2compatible="true" />      
     </chain>
   </resolvers>
 
