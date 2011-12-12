@@ -14,6 +14,7 @@
 		<property name="phone" type="string" column="PHONE"/>
 		<!-- Associations mapping for the User class -->
 		<many-to-one name="homeFolder" class="edu.umn.msi.tropix.models.Folder" column="HOME_FOLDER_ID" unique="true" lazy="proxy" />
+		<many-to-one name="primaryGroup" class="edu.umn.msi.tropix.models.Group" column="PRIMARY_GROUP_ID" unique="false" lazy="proxy" />
 		<set name="parameters" lazy="true">
 			<cache usage="read-write" />
 			<key column="USER_ID" />
@@ -38,6 +39,12 @@
 			<cache usage="read-write" />
 			<key column="USER_ID" />
 			<one-to-many class="edu.umn.msi.tropix.models.UserPreference" />
-		</set>		
+		</set>
+		<set name="tags" table="JOIN_TAG_USER" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="USER_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.Tag" column="TAG_ID" />
+		</set>
+				
 	</class>
 </hibernate-mapping>

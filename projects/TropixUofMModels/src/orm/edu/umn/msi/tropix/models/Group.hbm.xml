@@ -19,5 +19,10 @@
 			<key column="GROUP_ID" />
 			<many-to-many class="edu.umn.msi.tropix.models.VirtualFolder" column="VIRTUAL_FOLDER_ID" />
 		</set>
+		<set name="tags" table="JOIN_TAG_GROUP" lazy="true" inverse="false">
+			<cache usage="read-write" />
+			<key column="GROUP_ID" />
+			<many-to-many class="edu.umn.msi.tropix.models.Tag" column="TAG_ID" />
+		</set>		
 	</class>
 </hibernate-mapping>

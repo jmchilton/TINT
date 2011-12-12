@@ -78,6 +78,16 @@ public class TropixFile extends TropixObject implements Serializable {
     this.fileType = fileType;
   }
 
+  public String originalName;
+  
+  public String getOriginalName() {
+    return originalName;
+  }
+
+  public void setOriginalName(String originalName) {
+    this.originalName = originalName;
+  }
+
   /**
    * Compares <code>obj</code> to it self and returns true if they both are same
    * 

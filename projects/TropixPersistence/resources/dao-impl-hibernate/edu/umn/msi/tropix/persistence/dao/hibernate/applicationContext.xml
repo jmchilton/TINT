@@ -81,6 +81,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
         <value>edu/umn/msi/tropix/models/FileType.hbm.xml</value>
         <value>edu/umn/msi/tropix/models/UserPreference.hbm.xml</value>
         <value>edu/umn/msi/tropix/models/UserPreferenceType.hbm.xml</value>
+        <value>edu/umn/msi/tropix/models/Tag.hbm.xml</value>
       </list>
     </property>
   </bean>

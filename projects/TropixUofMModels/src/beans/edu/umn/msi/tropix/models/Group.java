@@ -99,6 +99,26 @@ public class Group implements Serializable {
     this.sharedFolders = sharedFolders;
   }  
 
+  private Collection<Tag> tags;
+
+  /**
+   * Retreives the value of tags attribue
+   * 
+   * @return sharedFolders
+   **/
+
+  public Collection<Tag> getTags() {
+    return tags;
+  }
+
+  /**
+   * Sets the value of tags attribue
+   **/
+
+  public void setTags(final Collection<Tag> tags) {
+    this.tags = tags;
+  }    
+  
   /**
    * Compares <code>obj</code> to it self and returns true if they both are same
    * 

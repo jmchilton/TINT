@@ -57,6 +57,7 @@
 			<key column="OBJECT_ID" />
 			<!-- Attributes mapping for the TropixFile class -->
 			<property name="storageServiceUrl" type="string" column="STORAGE_SERVICE_URL"/>
+			<property name="originalName" type="string" column="ORIGINAL_NAME"/>
 			<property name="fileId" type="string" column="FILE_ID"/>
 			<!-- Associations mapping for the TropixFile class -->
 			<many-to-one name="fileType" class="edu.umn.msi.tropix.models.FileType" column="FILE_TYPE_ID" lazy="false" />

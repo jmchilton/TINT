@@ -1,0 +1,1 @@
+alter table FILE add column ORIGINAL_NAME varchar(255);
