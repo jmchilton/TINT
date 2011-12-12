@@ -1,4 +1,5 @@
 create table TAG (ID varchar(255) not null, TAG_NAME varchar(255), primary key (ID));
+${if_mysql} ALTER TABLE TAG ENGINE = INNODB;
 
 create table JOIN_TAG_OBJECT (TAG_ID varchar(255) not null, OBJECT_ID varchar(255) not null, primary key (TAG_ID, OBJECT_ID)); 
 ${if_mysql} ALTER TABLE JOIN_TAG_OBJECT ENGINE = INNODB;
