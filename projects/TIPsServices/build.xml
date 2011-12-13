@@ -115,7 +115,7 @@
          template="${outlines.dir}/@{name}/template.xml"
          applicationcontext="${outlines.dir}/@{name}/applicationContext.xml">
         <lib>
-          <fileset refid="${ivy.fileset}" />
+          <fileset refid="ivy.fileset" />
           <fileset dir="${jars.dir}" includes="**/*.jar" />
         </lib>
         <schema>
