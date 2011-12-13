@@ -65,7 +65,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
   <bean id="sequestApplicationDeployerProperties" class="edu.umn.msi.tropix.common.jobqueue.deployer.DeployerProperties">
     <property name="properties">
       <map>
-        <entry key="sequest.path" value="${scaffold.path}" />
+        <entry key="sequest.path" value="${sequest.path}" />
       </map>
     </property>
     <property name="deployer">
