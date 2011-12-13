@@ -23,6 +23,15 @@ import edu.umn.msi.tropix.common.jobqueue.jobprocessors.BaseExecutableJobProcess
 public class IdentificationJobProcessorImpl<T> extends BaseExecutableJobProcessorImpl implements IdentificationJobProcessor<T> {
   private InputContext mzxml, database;
   private T parameters;
+  private String databaseName;
+  
+  protected String getDatabaseName() {
+    return databaseName;
+  }
+  
+  public void setDatabaseName(final String databaseName) {
+    this.databaseName = databaseName;
+  }
 
   protected T getParameters() {
     return parameters;

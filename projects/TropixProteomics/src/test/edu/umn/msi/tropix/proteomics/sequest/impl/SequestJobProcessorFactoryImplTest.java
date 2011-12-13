@@ -183,6 +183,7 @@ public class SequestJobProcessorFactoryImplTest {
     factory.setIncludeDta(writeDta);
     factory.setIncludeParams(writeParams);
     factory.setAllowedDroppedFiles(numAllowedDropped);
+    
     final File tempDir = FileUtilsFactory.getInstance().createTempDirectory();
     try {
       if(mockTracker) {
@@ -209,13 +210,13 @@ public class SequestJobProcessorFactoryImplTest {
       final ByteArrayOutputContextImpl dbOutput = new ByteArrayOutputContextImpl(), paramOutput = new ByteArrayOutputContextImpl();
 
       if(!initialized) {
-        EasyMock.expect(stagingDirectory.getOutputContext("db.fasta")).andReturn(dbOutput);
+        EasyMock.expect(stagingDirectory.getOutputContext("_moo.fasta")).andReturn(dbOutput);
         databasePopulator.get(dbOutput);
 
         EasyMock.expect(stagingDirectory.getOutputContext("sequest.params")).andReturn(paramOutput);
         EasyMock.expect(converter.mzxmlToDTA(isA(InputStream.class), (MzXMLToDTAOptions) isNull())).andReturn(dtaList);
         EasyMock.expect(dtaListWriter.writeFiles(stagingDirectory, dtaList)).andReturn(Lists.newArrayList(path + sep + "a.123.125.1.dta", path + sep + "a.127.128.2.dta"));
-        EasyMock.expect(sequestParameterTranslator.getSequestParameters(same(parameters), eq(path + sep + "db.fasta"))).andReturn("CONTENTS");
+        EasyMock.expect(sequestParameterTranslator.getSequestParameters(same(parameters), eq(path + sep + "_moo.fasta"))).andReturn("CONTENTS");
 
         EasyMock.expect(stagingDirectoryFactory.get(credential)).andReturn(stagingDirectory);
         stagingDirectory.setup();
@@ -286,8 +287,10 @@ public class SequestJobProcessorFactoryImplTest {
         JobDescriptionUtils.setProxy(jobDescription, credential);
         jobProcessor = factory.recover(ExecutableJobDescriptions.forJobDescriptionType(jobDescription));
       }
+      
       jobProcessor.setZipUtils(zipUtils);
       jobProcessor.setDatabase(databasePopulator);
+      jobProcessor.setDatabaseName("../@moo.fasta");
       jobProcessor.setInputMzXML(mzxmlPopulator);
       jobProcessor.setInputParameters(parameters);
 

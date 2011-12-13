@@ -22,5 +22,5 @@ import edu.umn.msi.tropix.credential.types.CredentialResource;
 import edu.umn.msi.tropix.transfer.types.TransferResource;
 
 public interface IdentificationJobQueueContext<T> extends FileJobQueueContext {
-  void submitJob(TransferResource mzxml, TransferResource database, CredentialResource dcReference, T parameters);
+  void submitJob(TransferResource mzxml, TransferResource database, CredentialResource dcReference, T parameters, final String databaseFileName);
 }

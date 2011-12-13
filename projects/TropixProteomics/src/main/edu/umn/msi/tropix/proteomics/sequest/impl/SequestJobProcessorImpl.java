@@ -54,7 +54,6 @@ public class SequestJobProcessorImpl extends IdentificationJobProcessorImpl<Sequ
   private static final Log LOG = LogFactory.getLog(SequestJobProcessorImpl.class);
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
   private static final Supplier<File> TEMP_FILE_SUPPLIER = TempFileSuppliers.getDefaultTempFileSupplier();
-  private static final String DB_PATH = "db.fasta";
   private static final String PARAMS_PATH = "sequest.params";
   private static final String FILES_PATH = "dta_files";
   private DTAListWriter dtaListWriter;
@@ -83,14 +82,20 @@ public class SequestJobProcessorImpl extends IdentificationJobProcessorImpl<Sequ
       }
     }
   }
+  
+  private String getSequestDatabaseName() {
+    return SequestUtils.sanitizeDatabaseName(super.getDatabaseName());
+  }
 
   @Override
   protected void doPreprocessing() {
     LOG.debug("Attempting to download database file for sequest job");
-    getDatabase().get(getStagingDirectory().getOutputContext(DB_PATH));
+    getDatabase().get(getStagingDirectory().getOutputContext(getSequestDatabaseName()));
 
     LOG.debug("About to translate sequest parameters");
-    final String paramFileContents = parameterTranslator.getSequestParameters(getParameters(), Directories.buildAbsolutePath(getStagingDirectory(), DB_PATH));
+    final SequestParameters inputParameters = getParameters();
+    
+    final String paramFileContents = parameterTranslator.getSequestParameters(getParameters(), Directories.buildAbsolutePath(getStagingDirectory(), getSequestDatabaseName()));
     LOG.debug("About to write sequest parameters to param file ");
     getStagingDirectory().getOutputContext(PARAMS_PATH).put(paramFileContents.getBytes());
 

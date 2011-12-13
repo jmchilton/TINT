@@ -25,12 +25,13 @@ import edu.umn.msi.tropix.common.jobqueue.description.ExecutableJobDescription;
 public class IdentificationJobProcessorBuilderImpl<T, U extends IdentificationJobProcessor<T>> implements IdentificationJobProcessorBuilder<T> {
   private JobProcessorFactory<ExecutableJobDescription> jobProcessorFactory;
 
-  public FileJobProcessor<ExecutableJobDescription> buildJob(final JobProcessorConfiguration config, final InputContext mzxmlPopulator, final T parameters, final InputContext databasePopulator) {
+  public FileJobProcessor<ExecutableJobDescription> buildJob(final JobProcessorConfiguration config, final InputContext mzxmlPopulator, final T parameters, final InputContext databasePopulator, final String databaseName) {
     @SuppressWarnings("unchecked")
     final U jobProcessor = (U) jobProcessorFactory.create(config);
     jobProcessor.setDatabase(databasePopulator);
     jobProcessor.setInputMzXML(mzxmlPopulator);
     jobProcessor.setInputParameters(parameters);
+    jobProcessor.setDatabaseName(databaseName);
     return jobProcessor;
   }
 

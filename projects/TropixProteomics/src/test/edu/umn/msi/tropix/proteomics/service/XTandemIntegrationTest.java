@@ -54,7 +54,7 @@ public class XTandemIntegrationTest extends IntegrationTestBase {
     final XTandemParameters parameters = new XTandemParameters();
     ParameterUtils.setParametersFromProperties(ProteomicsTests.getResourceAsStream("xTandemInclusive.properties"), parameters);
 
-    xTandemService.submitJob(refs.get(0), refs.get(1), null, XMLConversionUtilities.convert(parameters));
+    xTandemService.submitJob(refs.get(0), refs.get(1), null, XMLConversionUtilities.convert(parameters), "HUMAN.fasta");
     
     final Job job = new Job();
     job.setJobType("xtandem");

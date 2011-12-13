@@ -46,6 +46,7 @@ public class IdentificationJobProcessorBuilderImplTest {
     processor.setDatabase(databasePopulator);
     processor.setInputMzXML(mzxmlPopulator);
     processor.setInputParameters(parameters);
+    processor.setDatabaseName("db.fasta");
 
     final JobProcessorConfiguration configuration = JobProcessorConfigurationFactories.getInstance().get(Credentials.getMock("moo"));
     @SuppressWarnings("unchecked")
@@ -53,7 +54,7 @@ public class IdentificationJobProcessorBuilderImplTest {
     builder.setJobProcessorFactory(processorFactory);
     expect(processorFactory.create(configuration)).andReturn(processor);
     replay(processorFactory, processor);
-    builder.buildJob(configuration, mzxmlPopulator, parameters, databasePopulator);
+    builder.buildJob(configuration, mzxmlPopulator, parameters, databasePopulator, "db.fasta");
     verify(processorFactory, processor);
   }
 }

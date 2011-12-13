@@ -34,6 +34,7 @@ import edu.umn.msi.tropix.jobs.activities.impl.ActivityFactory;
 import edu.umn.msi.tropix.jobs.activities.impl.ActivityFactoryFor;
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.ProteomicsRun;
+import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.sequest.SequestParameters;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
@@ -80,8 +81,9 @@ class SubmitIdentificationAnalysisJobActivityFactoryImpl implements ActivityFact
     public void run() throws ShutdownException {
       final String runFileId = ((ProteomicsRun) factorySupport.getTropixObjectService().load(getUserId(), getDescription().getRunId(),
           TropixObjectTypeEnum.PROTEOMICS_RUN)).getMzxml().getId();
-      final String databaseFileId = ((Database) factorySupport.getTropixObjectService().load(getUserId(), getDescription().getDatabaseId(),
-          TropixObjectTypeEnum.DATABASE)).getDatabaseFile().getId();
+      final TropixFile databaseFile = ((Database) factorySupport.getTropixObjectService().load(getUserId(), getDescription().getDatabaseId(),
+          TropixObjectTypeEnum.DATABASE)).getDatabaseFile();
+      final String databaseFileId = databaseFile.getId();
       final TransferResource mzxmlResource = getDownloadResource(runFileId);
       final TransferResource databaseResource = getDownloadResource(databaseFileId);
       final String parametersId = getDescription().getParametersId();
@@ -93,12 +95,12 @@ class SubmitIdentificationAnalysisJobActivityFactoryImpl implements ActivityFact
       if(identificationType == IdentificationType.SEQUEST) {
         final SequestJobQueueContext sequestContext = createContext(SequestJobQueueContext.class);
         final SequestParameters sequestParameters = parametersService.loadSequestParameters(parametersId);
-        sequestContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), XMLConversionUtilities.convert(sequestParameters));
+        sequestContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), XMLConversionUtilities.convert(sequestParameters), databaseFile.getName());
         context = sequestContext;
       } else if(identificationType == IdentificationType.XTANDEM) {
         final XTandemJobQueueContext xTandemContext = createContext(XTandemJobQueueContext.class);
         final XTandemParameters parameters = parametersService.loadXTandemParameters(parametersId);
-        xTandemContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), XMLConversionUtilities.convert(parameters));
+        xTandemContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), XMLConversionUtilities.convert(parameters), databaseFile.getName());
         context = xTandemContext;
       } else {
         final StorageData storageData = factorySupport.getStorageDataFactory().getPersistedStorageData(parametersId, getCredential());
@@ -106,17 +108,17 @@ class SubmitIdentificationAnalysisJobActivityFactoryImpl implements ActivityFact
         if(identificationType == IdentificationType.OMSSA) {
           final OmssaJobQueueContext omssaContext = createContext(OmssaJobQueueContext.class);
           final MSSearchSettings settings = deserializer.loadParameters(identificationType, downloadContext, MSSearchSettings.class);
-          omssaContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), settings);
+          omssaContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), settings, databaseFile.getName());
           context = omssaContext;
         } else if(identificationType == IdentificationType.MYRIMATCH) {
           final MyriMatchJobQueueContext myriMatchContext = createContext(MyriMatchJobQueueContext.class);
           final MyriMatchParameters myriMatchParameters = deserializer.loadParameters(identificationType, downloadContext, MyriMatchParameters.class);
-          myriMatchContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), myriMatchParameters);
+          myriMatchContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), myriMatchParameters, databaseFile.getName());
           context = myriMatchContext;
         } else if(identificationType == IdentificationType.TAGRECON) {
           final TagReconJobQueueContext tagReconContext = createContext(TagReconJobQueueContext.class);
           final TagParameters tagParameters = deserializer.loadParameters(IdentificationType.TAGRECON, downloadContext, TagParameters.class);
-          tagReconContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), tagParameters);
+          tagReconContext.submitJob(mzxmlResource, databaseResource, getDelegatedCredential(), tagParameters, databaseFile.getName());
           context = tagReconContext;
         } else {
           throw new IllegalStateException("Unknown service type in SubmitIdentificationAnalysisJobActivityFactoryImpl -- "

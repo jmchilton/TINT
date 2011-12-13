@@ -26,4 +26,7 @@ public interface IdentificationJobProcessor<T> extends FileJobProcessor<Executab
   void setInputParameters(T parameters);
 
   void setDatabase(InputContext databasePopulator);
+  
+  void setDatabaseName(final String databaseName);
+  
 }

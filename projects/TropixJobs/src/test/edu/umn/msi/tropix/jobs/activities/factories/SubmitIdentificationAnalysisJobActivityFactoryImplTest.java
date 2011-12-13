@@ -47,6 +47,7 @@ import edu.umn.msi.tropix.transfer.types.TransferResource;
 import gov.nih.nlm.ncbi.omssa.MSSearchSettings;
 
 public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends BaseSubmitActivityFactoryImplTest {
+  private static final String DATABASE_NAME = "HUMAN.fasta";
   private SubmitIdentificationAnalysisJobActivityFactoryImpl factory;
   private ParametersService parametersService;
   private SubmitIdentificationAnalysisDescription description;
@@ -68,6 +69,7 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
 
     final Database database = new Database();
     final TropixFile databaseFile = TestUtils.getNewTropixFile();
+    databaseFile.setName(DATABASE_NAME);
     databaseFileId = databaseFile.getId();
     database.setDatabaseFile(databaseFile);
 
@@ -90,6 +92,10 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
     activity.run();
     postRun(description);
   }
+  
+  private String expectDatabaseName() {
+    return EasyMock.eq(DATABASE_NAME);
+  }
 
   @Test(groups = "unit")
   public void testSequest() {
@@ -100,7 +106,7 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
     EasyMock.expect(parametersService.loadSequestParameters(parametersId)).andReturn(parameters);
     final SequestJobQueueContext sequestContext = expectCreateJob(serviceUrl, SequestJobQueueContext.class);
     final Capture<edu.umn.msi.tropix.models.sequest.cagrid.SequestParameters> parametersCapture = EasyMockUtils.newCapture();
-    sequestContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.capture(parametersCapture));
+    sequestContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.capture(parametersCapture), expectDatabaseName());
     run(sequestContext);
     assert parametersCapture.getValue().getInternalCleavageSites().intValue() == 9;
   }
@@ -114,7 +120,7 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
     EasyMock.expect(parametersService.loadXTandemParameters(parametersId)).andReturn(parameters);
     final XTandemJobQueueContext xTandemContext = expectCreateJob(serviceUrl, XTandemJobQueueContext.class);
     final Capture<edu.umn.msi.tropix.models.xtandem.cagrid.XTandemParameters> parametersCapture = EasyMockUtils.newCapture();
-    xTandemContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.capture(parametersCapture));
+    xTandemContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.capture(parametersCapture), expectDatabaseName());
     run(xTandemContext);
     assert parametersCapture.getValue().isRefine();
   }
@@ -128,7 +134,7 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
     expectLoadParametersFileWithObject(parameters);
 
     final MyriMatchJobQueueContext myriMatchContext = expectCreateJob(serviceUrl, MyriMatchJobQueueContext.class);
-    myriMatchContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.same(parameters));
+    myriMatchContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.same(parameters), expectDatabaseName());
     run(myriMatchContext);
   }
   
@@ -139,7 +145,7 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
     final TagParameters parameters = new TagParameters();
     expectLoadParametersFileWithObject(parameters);
     final TagReconJobQueueContext tagReconContext = expectCreateJob(serviceUrl, TagReconJobQueueContext.class);
-    tagReconContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.same(parameters));
+    tagReconContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.same(parameters), expectDatabaseName());
     run(tagReconContext);
   }
 
@@ -157,7 +163,7 @@ public class SubmitIdentificationAnalysisJobActivityFactoryImplTest extends Base
     expectLoadParametersFileWithObject(settings);
 
     final OmssaJobQueueContext omssaContext = expectCreateJob(serviceUrl, OmssaJobQueueContext.class);
-    omssaContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.same(settings));
+    omssaContext.submitJob(expectMzXML(), expectDatabase(), expectCredentialResource(), EasyMock.same(settings), expectDatabaseName());
     run(omssaContext);
   }
 

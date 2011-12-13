@@ -38,13 +38,13 @@ public class IdentificationJobQueueContextImpl<T, U> extends GridFileJobQueueCon
   }
 
   @LogExceptions
-  public void submitJob(final TransferResource mzxml, final TransferResource database, final CredentialResource dcReference, final T parameters) {
+  public void submitJob(final TransferResource mzxml, final TransferResource database, final CredentialResource dcReference, final T parameters, final String databaseName) {
     try {
       final Credential proxy = getProxy(dcReference);
       final InputContext databasePopulator = getDownloadContext(database, proxy);
       final InputContext mzxmlPopulator = getDownloadContext(mzxml, proxy);
       final U actualParameters = xmlConversionFunction.apply(parameters);
-      submitJob(identificationJobProcessorBuilder.buildJob(getConfiguration(proxy), mzxmlPopulator, actualParameters, databasePopulator));
+      submitJob(identificationJobProcessorBuilder.buildJob(getConfiguration(proxy), mzxmlPopulator, actualParameters, databasePopulator, databaseName));
     } catch(RuntimeException e) {
       e.printStackTrace();
       throw e;

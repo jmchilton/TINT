@@ -90,11 +90,11 @@ public class IdentificationJobQueueContextTests extends BaseFileJobQueueContextI
   }
 
   private void replaySubmitAndVerify(final Object params, final String type) {
-    getBuilder().buildJob(expectConfiguration(), EasyMock.same(mzxmlContext), expectParameters(), EasyMock.same(dbContext));
+    getBuilder().buildJob(expectConfiguration(), EasyMock.same(mzxmlContext), expectParameters(), EasyMock.same(dbContext), EasyMock.eq("HUMAN.fasta"));
     expectLastCallAndReturnFileJobProcessor();
     expectSubmitJob(type);
     doReplay();
-    getContext().submitJob(mzxmlRef, dbRef, getCredentialReference(), params);
+    getContext().submitJob(mzxmlRef, dbRef, getCredentialReference(), params, "HUMAN.fasta");
     doVerify();
   }
 

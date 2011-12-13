@@ -22,5 +22,5 @@ import edu.umn.msi.tropix.common.jobqueue.configuration.JobProcessorConfiguratio
 import edu.umn.msi.tropix.common.jobqueue.description.ExecutableJobDescription;
 
 public interface IdentificationJobProcessorBuilder<T> {
-  FileJobProcessor<ExecutableJobDescription> buildJob(JobProcessorConfiguration config, InputContext mzxmlPopulator, T parameters, InputContext databasePopulator);
+  FileJobProcessor<ExecutableJobDescription> buildJob(JobProcessorConfiguration config, InputContext mzxmlPopulator, T parameters, InputContext databasePopulator, final String databaseName);
 }
