@@ -29,6 +29,8 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   <bean id="securityPersistenceAspect" class="edu.umn.msi.tropix.persistence.aop.SecurityAspect">
     <constructor-arg ref="tropixObjectDao" />
     <constructor-arg ref="persistenceSecurityProvider" />
+    <constructor-arg ref="userDao" />
+    <constructor-arg ref="daoFactory" />
   </bean>
 
   <bean id="autoUserPersistenceAspect" class="edu.umn.msi.tropix.persistence.aop.AutoUserAspect">

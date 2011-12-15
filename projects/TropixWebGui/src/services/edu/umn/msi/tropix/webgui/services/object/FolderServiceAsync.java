@@ -49,4 +49,8 @@ public interface FolderServiceAsync {
   void addUserToGroupFolder(String objectId, String userId, AsyncCallback<Void> callback);
 
   void addGroupToGroupFolder(String objectId, String groupId, AsyncCallback<Void> callback);
+
+  void getGroupSharedFolders(final String groupId, AsyncCallback<List<VirtualFolder>> callback);
+
+  void createGroupVirtualFolder(String groupId, VirtualFolder folder, AsyncCallback<Void> callback);
 }

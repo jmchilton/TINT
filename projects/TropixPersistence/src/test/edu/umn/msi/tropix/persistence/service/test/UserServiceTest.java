@@ -27,6 +27,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.service.PersistenceConstants;
 import edu.umn.msi.tropix.persistence.service.UserService;
@@ -86,6 +87,30 @@ public class UserServiceTest extends ServiceTest {
   public void listUsers() {
     final User user = createTempUser();
     assert Arrays.asList(userService.getUsers()).contains(user);
+  }
+
+  @Test
+  public void testGetPrimaryGroup() {
+    final User user = createTempUser();
+    final Group group = createTempGroup(user);
+
+    assert userService.getPrimaryGroup(user.getCagridId()) == null;
+
+    user.setPrimaryGroup(group);
+    getUserDao().saveOrUpdateUser(user);
+
+    assert userService.getPrimaryGroup(user.getCagridId()).getId().equals(group.getId());
+
+  }
+
+  @Test
+  public void testGetGroups() {
+    final User user = createTempUser();
+
+    int numGroups = userService.getGroups(user.getCagridId()).length;
+
+    createTempGroup(user);
+    assert userService.getGroups(user.getCagridId()).length == numGroups + 1;
   }
 
 }

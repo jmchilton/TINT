@@ -39,6 +39,8 @@ public interface GroupService extends RemoteService {
 
   Group createGroup(String groupName);
 
+  void setPrimaryGroup(final String userId, final String groupId);
+
   void addUserToGroup(String userId, String groupId);
 
   void removeUserFromGroup(String userId, String groupId);

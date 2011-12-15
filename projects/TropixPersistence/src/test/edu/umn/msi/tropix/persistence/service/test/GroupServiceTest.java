@@ -47,6 +47,16 @@ public class GroupServiceTest extends ServiceTest {
   }
 
   @Test
+  public void setPrimaryGroup() {
+    final User admin = createTempUser();
+    final Group group = createTempGroup();
+    final User user = createTempUser(group);
+    assert user.getPrimaryGroup() == null;
+    groupService.setPrimaryGroup(admin.getCagridId(), user.getCagridId(), group.getId());
+    assert user.getPrimaryGroup().equals(group);
+  }
+
+  @Test
   public void createAndList() {
     final User user1 = createTempUser();
     final String userId = user1.getCagridId();

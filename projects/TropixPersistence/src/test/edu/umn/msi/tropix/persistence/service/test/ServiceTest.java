@@ -121,9 +121,13 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return folder;
   }
 
-  protected User createTempUser() {
+  protected User createTempUser(final Group group) {
     final User user = new User();
-    user.setGroups(new HashSet<Group>());
+    if(group == null) {
+      user.setGroups(new HashSet<Group>());
+    } else {
+      user.setGroups(Sets.newHashSet(group));
+    }
     user.setSharedFolders(new HashSet<VirtualFolder>());
     user.setCagridId(newId());
     final Folder folder = newFolder();
@@ -135,6 +139,10 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return user;
   }
 
+  protected User createTempUser() {
+    return createTempUser(null);
+  }
+
   protected Group createTempGroup() {
     final Group group = new Group();
     group.setName(newId());
@@ -143,13 +151,21 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return group;
   }
 
-  protected Group createTempGroup(final User user) {
+  protected Group createTempGroup(final User user, final boolean primary) {
     final Group group = createTempGroup();
     group.getUsers().add(user);
     user.getGroups().add(group);
     daoFactory.getDao(Group.class).saveObject(group);
+    if(primary) {
+      user.setPrimaryGroup(group);
+    }
     userDao.saveOrUpdateUser(user);
     return group;
+
+  }
+
+  protected Group createTempGroup(final User user) {
+    return createTempGroup(user, false);
   }
 
   protected TropixObject saveNewTropixObject(final TropixObject tropixObject) {

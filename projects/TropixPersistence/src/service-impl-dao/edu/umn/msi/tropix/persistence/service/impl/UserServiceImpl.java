@@ -29,17 +29,19 @@ import javax.inject.Named;
 import com.google.common.collect.Iterables;
 
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 import edu.umn.msi.tropix.persistence.dao.UserDao;
 import edu.umn.msi.tropix.persistence.service.PersistenceConstants;
 import edu.umn.msi.tropix.persistence.service.UserService;
 
-@ManagedBean @Named("userService")
+@ManagedBean
+@Named("userService")
 class UserServiceImpl implements UserService {
   private final UserDao userDao;
   private final TropixObjectDao objectDao;
-  
+
   @Inject
   UserServiceImpl(final UserDao userDao, final TropixObjectDao objectDao) {
     this.userDao = userDao;
@@ -77,6 +79,16 @@ class UserServiceImpl implements UserService {
     dbUser.setPhone(user.getPhone());
     dbUser.setFirstName(user.getFirstName());
     dbUser.setLastName(user.getLastName());
+  }
+
+  public Group getPrimaryGroup(String gridIdentity) {
+    final User user = userDao.loadUser(gridIdentity);
+    return user.getPrimaryGroup();
+  }
+
+  public Group[] getGroups(String gridIdentity) {
+    final User user = userDao.loadUser(gridIdentity);
+    return Iterables.toArray(user.getGroups(), Group.class);
   }
 
 }

@@ -52,12 +52,14 @@ public class DialogActionController {
   }
 
   @Inject
-  public void setBulkMgfProteinPilotDownloadWindowComponentSupplier(@Named("bulkMgfProteinPilotDownload") final Supplier<? extends Command> windowComponentSupplier) {
+  public void setBulkMgfProteinPilotDownloadWindowComponentSupplier(
+      @Named("bulkMgfProteinPilotDownload") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("bulkMgfProteinPilotDownload", windowComponentSupplier);
   }
 
   @Inject
-  public void setBulkMgfMascotDownloadWindowComponentSupplier(@Named("bulkMgfMascotDownload") final Supplier<? extends Command> windowComponentSupplier) {
+  public void setBulkMgfMascotDownloadWindowComponentSupplier(
+      @Named("bulkMgfMascotDownload") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("bulkMgfMascotDownload", windowComponentSupplier);
   }
 
@@ -65,7 +67,7 @@ public class DialogActionController {
   public void setManageGroupFoldersWindowComponentSupplier(@Named("manageGroupFolders") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("manageGroupFolders", windowComponentSupplier);
   }
-  
+
   @Inject
   public void setGridFtpExportWindowComponentSupplier(@Named("gridFtpExport") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("gridFtpExport", windowComponentSupplier);
@@ -114,6 +116,11 @@ public class DialogActionController {
   @Inject
   public void setGroupAdminComponentSupplier(@Named("groupAdmin") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("groupAdmin", windowComponentSupplier);
+  }
+
+  @Inject
+  public void setUserAdminComponentSupplier(@Named("userAdmin") final Supplier<? extends Command> windowComponentSupplier) {
+    registerListener("userAdmin", windowComponentSupplier);
   }
 
   @Inject

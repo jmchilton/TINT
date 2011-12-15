@@ -29,6 +29,7 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.aop.Admin;
+import edu.umn.msi.tropix.persistence.aop.MemberOf;
 import edu.umn.msi.tropix.persistence.aop.Modifies;
 import edu.umn.msi.tropix.persistence.aop.PersistenceMethod;
 import edu.umn.msi.tropix.persistence.aop.Reads;
@@ -36,22 +37,37 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 
 public interface FolderService {
 
-  @PersistenceMethod Folder[] getGroupFolders(@UserId String gridId);
+  @PersistenceMethod
+  Folder[] getGroupFolders(@UserId String gridId);
 
-  @PersistenceMethod Folder[] getAllGroupFolders(@Admin @UserId String gridId);
+  @PersistenceMethod
+  Folder[] getAllGroupFolders(@Admin @UserId String gridId);
 
-  @PersistenceMethod TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId);
+  @PersistenceMethod
+  TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId);
 
-  @PersistenceMethod TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId, TropixObjectType[] types);
+  @PersistenceMethod
+  TropixObject[] getFolderContents(@UserId String userGridId, @Reads String folderId, TropixObjectType[] types);
 
-  @PersistenceMethod Folder createFolder(@UserId String userGridId, @Modifies String parentFolderId, Folder folder);
+  @PersistenceMethod
+  Folder createFolder(@UserId String userGridId, @Modifies String parentFolderId, Folder folder);
 
-  @PersistenceMethod VirtualFolder createVirtualFolder(@UserId String userGridId, @Modifies @Nullable String parentFolderId, VirtualFolder folder);
-  
-  @PersistenceMethod VirtualFolder[] getSavedVirtualFolders(@UserId String gridId);
+  @PersistenceMethod
+  VirtualFolder createVirtualFolder(@UserId String userGridId, @Modifies @Nullable String parentFolderId, VirtualFolder folder);
 
-  @PersistenceMethod VirtualFolder getOrCreateVirtualPath(@UserId String userGridId, @Modifies String rootVirtualFolderId, String[] subfolderNames);
-  
-  @PersistenceMethod VirtualFolder getOrCreateRootVirtualFolderWithName(@UserId String userGridId, final String name);
-   
+  @PersistenceMethod
+  VirtualFolder[] getSavedVirtualFolders(@UserId String gridId);
+
+  @PersistenceMethod
+  VirtualFolder getOrCreateVirtualPath(@UserId String userGridId, @Modifies String rootVirtualFolderId, String[] subfolderNames);
+
+  @PersistenceMethod
+  VirtualFolder getOrCreateRootVirtualFolderWithName(@UserId String userGridId, final String name);
+
+  @PersistenceMethod
+  VirtualFolder[] getGroupSharedFolders(@UserId String userId, @MemberOf String groupId);
+
+  @PersistenceMethod
+  VirtualFolder createGroupVirtualFolder(@UserId String gridId, @MemberOf String groupId, VirtualFolder folder);
+
 }

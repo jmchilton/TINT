@@ -23,14 +23,18 @@
 package edu.umn.msi.tropix.persistence.service;
 
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
-
 import edu.umn.msi.tropix.persistence.aop.AutoUser;
 
 public interface UserService {
   void ensureUserExists(String gridIdentity);
 
   User createOrGetUser(String gridIdentity);
+
+  Group getPrimaryGroup(String gridIdentity);
+
+  Group[] getGroups(String gridIdentity);
 
   boolean isAdmin(@AutoUser String userId);
 

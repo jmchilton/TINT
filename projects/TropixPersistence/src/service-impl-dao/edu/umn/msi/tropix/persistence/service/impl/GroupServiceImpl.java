@@ -32,11 +32,12 @@ import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.dao.Dao;
 import edu.umn.msi.tropix.persistence.service.GroupService;
 
-@ManagedBean @Named("groupService")
+@ManagedBean
+@Named("groupService")
 class GroupServiceImpl extends ServiceBase implements GroupService {
 
   public Group createGroup(final String adminId, final String groupName) {
-    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Dao<Group> groupDao = getGroupDao();
     final Group group = new Group();
     group.setName(groupName);
     group.setUsers(new HashSet<User>());
@@ -45,7 +46,7 @@ class GroupServiceImpl extends ServiceBase implements GroupService {
   }
 
   public Group[] getAllGroups(final String adminId) {
-    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Dao<Group> groupDao = getGroupDao();
     return groupDao.findAll().toArray(new Group[0]);
   }
 
@@ -55,13 +56,13 @@ class GroupServiceImpl extends ServiceBase implements GroupService {
   }
 
   public User[] getUsers(final String adminId, final String groupId) {
-    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Dao<Group> groupDao = getGroupDao();
     final Group group = groupDao.load(groupId);
     return group.getUsers().toArray(new User[0]);
   }
 
   public void removeUserFromGroup(final String adminId, final String userId, final String groupId) {
-    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Dao<Group> groupDao = getGroupDao();
     final Group group = groupDao.load(groupId);
     final User user = getUserDao().loadUser(userId);
     group.getUsers().remove(user);
@@ -72,7 +73,7 @@ class GroupServiceImpl extends ServiceBase implements GroupService {
 
   public void addUserToGroup(final String adminId, final String userId, final String groupId) {
     final User user = getUserDao().loadUser(userId);
-    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Dao<Group> groupDao = getGroupDao();
     final Group group = groupDao.load(groupId);
     group.getUsers().add(getUserDao().loadUser(userId));
     user.getGroups().add(group);
@@ -80,4 +81,16 @@ class GroupServiceImpl extends ServiceBase implements GroupService {
     getUserDao().saveOrUpdateUser(user);
   }
 
+  private Dao<Group> getGroupDao() {
+    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    return groupDao;
+  }
+
+  public void setPrimaryGroup(String gridId, String userId, String groupId) {
+    final Dao<Group> groupDao = getGroupDao();
+    final User user = getUserDao().loadUser(userId);
+    final Group group = groupDao.load(groupId);
+    user.setPrimaryGroup(group);
+    getUserDao().saveOrUpdateUser(user);
+  }
 }

@@ -31,15 +31,24 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 
 public interface GroupService {
 
-  @PersistenceMethod Group createGroup(@UserId @Admin String adminId, String groupName);
+  @PersistenceMethod
+  Group createGroup(@UserId @Admin String adminId, String groupName);
 
-  @PersistenceMethod void addUserToGroup(@UserId @Admin String adminId, @AutoUser String userId, String groupId);
+  @PersistenceMethod
+  void addUserToGroup(@UserId @Admin String adminId, @AutoUser String userId, String groupId);
 
-  @PersistenceMethod void removeUserFromGroup(@UserId @Admin String adminId, String userId, String groupId);
+  @PersistenceMethod
+  void removeUserFromGroup(@UserId @Admin String adminId, String userId, String groupId);
 
-  @PersistenceMethod Group[] getAllGroups(@UserId @Admin String adminId);
+  @PersistenceMethod
+  Group[] getAllGroups(@UserId @Admin String adminId);
 
-  @PersistenceMethod Group[] getGroups(@UserId String userId);
+  @PersistenceMethod
+  Group[] getGroups(@UserId String userId);
 
-  @PersistenceMethod User[] getUsers(@UserId @Admin String adminId, String groupId);
+  @PersistenceMethod
+  User[] getUsers(@UserId @Admin String adminId, String groupId);
+
+  @PersistenceMethod
+  void setPrimaryGroup(@UserId @Admin String gridId, String userId, String groupId);
 }

@@ -25,15 +25,15 @@ package edu.umn.msi.tropix.persistence.dao.hibernate;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.ManagedBean;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.hibernate.SessionFactory;
 
 import edu.umn.msi.tropix.persistence.dao.Dao;
 import edu.umn.msi.tropix.persistence.dao.DaoFactory;
 
-@ManagedBean
+@Named("daoFactory")
 class DaoFactoryImpl implements DaoFactory {
   private final SessionFactory sessionFactory;
   private final Map<Class<?>, GenericDaoImpl<?>> daoCache = new HashMap<Class<?>, GenericDaoImpl<?>>();
@@ -42,7 +42,7 @@ class DaoFactoryImpl implements DaoFactory {
   DaoFactoryImpl(final SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
-  
+
   @SuppressWarnings("unchecked")
   public synchronized <T> Dao<T> getDao(final Class<T> clazz) {
     GenericDaoImpl<T> dao;

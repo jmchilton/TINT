@@ -22,12 +22,17 @@
 
 package edu.umn.msi.tropix.webgui.server.session;
 
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.Lists;
+
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.service.UserService;
 import edu.umn.msi.tropix.webgui.server.models.BeanSanitizer;
@@ -64,10 +69,21 @@ class UserSessionInfoClosureImpl implements SessionInfoClosure {
     final User gwtUser = beanSanitizer.sanitize(user);
     gwtUser.setHomeFolder(beanSanitizer.sanitize(userService.getHomeFolder(user.getCagridId())));
 
+    final Group primaryGroup = userService.getPrimaryGroup(gridIdentity);
+    final Group gwtPrimaryGroup = beanSanitizer.sanitize(primaryGroup);
+    final Group[] groups = userService.getGroups(gridIdentity);
+    final List<Group> gwtGroups = Lists.newArrayListWithExpectedSize(groups.length);
+    for(Group group : groups) {
+      gwtGroups.add(beanSanitizer.sanitize(group));
+    }
+    sessionInfo.setPrimaryGroup(gwtPrimaryGroup);
+    sessionInfo.setGroups(gwtGroups);
+
     if(gridIdentity.equals(SecurityConstants.GUEST_IDENTITY)) {
       sessionInfo.getModules().add(Module.GUEST);
     } else {
       sessionInfo.getModules().add(Module.USER);
+
     }
     if(userSession.getProxy().getGlobusCredential() != null) {
       sessionInfo.getModules().add(Module.GRID);

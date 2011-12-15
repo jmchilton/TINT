@@ -30,10 +30,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.gwt.dev.util.Preconditions;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -203,6 +205,47 @@ public class LocationFactoryImpl implements LocationFactory {
     }
   }
 
+  class MyGroupSharedFoldersItemImpl extends TreeItemImpl implements RequiresModule {
+
+    private final TreeItem treeItem = this;
+    private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;
+
+    protected MyGroupSharedFoldersItemImpl(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+      super(null);
+      if(tropixObjectTreeItemExpander == null) {
+        throw new NullPointerException("null tropix object tree item expander");
+      }
+      this.tropixObjectTreeItemExpander = tropixObjectTreeItemExpander;
+      this.setId(Locations.MY_GROUP_SHARED_FOLDERS_ID);
+      this.setIcon(Resources.ROOT_SHARED_FOLDER_16);
+      this.setType("");
+      this.setName("My Group Shared Folders");
+      // HACK so it doesn't appear before my home
+      this.setSort("Z2");
+      this.setFolder(true);
+    }
+
+    public void getChildren(final AsyncCallback<List<TreeItem>> childrenCallback) {
+      final Group primaryGroup = session.getPrimaryGroup();
+      Preconditions.checkNotNull(primaryGroup);
+      FolderService.Util.getInstance().getGroupSharedFolders(primaryGroup.getId(),
+          new WrappedAsyncCallback<List<TreeItem>, List<VirtualFolder>>(childrenCallback) {
+            public void onSuccess(final List<VirtualFolder> folders) {
+              final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folders.size());
+              for(final VirtualFolder folder : folders) {
+                treeItems.add(new TropixObjectTreeItemImpl(treeItem, folder, tropixObjectTreeItemExpander));
+              }
+              childrenCallback.onSuccess(treeItems);
+            }
+          });
+    }
+
+    public Module requiresModule() {
+      return Module.USER;
+    }
+
+  }
+
   class MyGroupFoldersItemImpl extends TreeItemImpl implements RequiresModule {
     private final TreeItem treeItem = this;
     private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;
@@ -218,7 +261,7 @@ public class LocationFactoryImpl implements LocationFactory {
       this.setType("");
       this.setName("My Group Folders");
       // HACK so it doesn't appear before my home
-      this.setSort("N");
+      this.setSort("Z1");
       this.setFolder(true);
     }
 

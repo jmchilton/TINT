@@ -41,4 +41,6 @@ public interface GroupServiceAsync {
   void getGroups(String userId, AsyncCallback<Set<Group>> callback);
 
   void getUsers(String groupId, AsyncCallback<Set<User>> callback);
+
+  void setPrimaryGroup(String userId, String groupId, AsyncCallback<Void> callback);
 }

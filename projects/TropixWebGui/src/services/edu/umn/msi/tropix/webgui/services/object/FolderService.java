@@ -52,7 +52,11 @@ public interface FolderService extends RemoteService {
 
   void createVirtualFolder(String parentFolderId, VirtualFolder folder);
 
+  void createGroupVirtualFolder(final String groupId, final VirtualFolder folder);
+
   VirtualFolder[] getSavedVirtualFolders();
+
+  List<VirtualFolder> getGroupSharedFolders(String groupId);
 
   List<Folder> getGroupFolders();
 

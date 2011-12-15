@@ -160,6 +160,8 @@ public class ComponentsModule extends AbstractGinModule {
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("groupAdmin")).to(GroupAdminWindowComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("userAdmin")).to(UserAdminWindowComponentSupplierImpl.class).in(Singleton.class);
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("createLocalUser")).to(CreateLocalUserWindowComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("search")).to(SearchWindowComponentSupplierImpl.class).in(Singleton.class);

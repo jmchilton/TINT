@@ -40,7 +40,11 @@ import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
+import edu.umn.msi.tropix.models.Group;
+import edu.umn.msi.tropix.models.User;
+import edu.umn.msi.tropix.persistence.dao.DaoFactory;
 import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
+import edu.umn.msi.tropix.persistence.dao.UserDao;
 import edu.umn.msi.tropix.persistence.service.security.SecurityProvider;
 
 @Aspect
@@ -51,12 +55,16 @@ class SecurityAspect {
   private static int count = 0;
   private static final ReflectionHelper REFLECTION_HELPER = ReflectionHelpers.getInstance();
   private TropixObjectDao tropixObjectDao;
+  private UserDao userDao;
   private SecurityProvider securityProvider;
+  private DaoFactory daoFactory;
 
-  SecurityAspect(final TropixObjectDao tropixObjectDao, final SecurityProvider securityProvider) {
+  SecurityAspect(final TropixObjectDao tropixObjectDao, final SecurityProvider securityProvider, final UserDao userDao, final DaoFactory daoFactory) {
     LOG.debug("Constructing SecurityAspect number " + ++count);
     this.tropixObjectDao = tropixObjectDao;
     this.securityProvider = securityProvider;
+    this.userDao = userDao;
+    this.daoFactory = daoFactory;
   }
 
   public boolean containsAnnotation(final Class<? extends Annotation> type, final Annotation[] annotations) {
@@ -96,7 +104,22 @@ class SecurityAspect {
     } else {
       objectIds = null;
     }
-    if(containsAnnotation(Owns.class, annotations)) {
+    if(containsAnnotation(MemberOf.class, annotations)) {
+      // System.out.println("Found memberof annotation");
+      for(final String objectId : objectIds) {
+        final Group group = daoFactory.getDao(Group.class).load(objectId);
+        boolean foundUser = false;
+        for(final User user : group.getUsers()) {
+          if(user.getCagridId().equals(userId)) {
+            foundUser = true;
+            break;
+          }
+        }
+        if(!foundUser) {
+          throw new RuntimeException(String.format("User %s does not belong to group with id %s", userId, objectId));
+        }
+      }
+    } else if(containsAnnotation(Owns.class, annotations)) {
       for(final String objectId : objectIds) {
         if(!tropixObjectDao.isAnOwner(userId, objectId)) {
           throw new RuntimeException("User " + userId + " does not own object with id " + objectId);
@@ -144,7 +167,7 @@ class SecurityAspect {
     }
     Preconditions.checkNotNull(userId, "No parameter ananotations of type UserId found, but one is required.");
     @SuppressWarnings("unchecked")
-    final Collection<Class<? extends Annotation>> securityAnnotations = Arrays.asList(Owns.class, Reads.class, Modifies.class);
+    final Collection<Class<? extends Annotation>> securityAnnotations = Arrays.asList(Owns.class, Reads.class, Modifies.class, MemberOf.class);
     for(int i = 0; i < annotations.length; i++) {
       for(final Annotation annotation : annotations[i]) {
         if(securityAnnotations.contains(annotation.annotationType())) {

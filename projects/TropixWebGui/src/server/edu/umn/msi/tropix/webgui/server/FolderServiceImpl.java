@@ -68,6 +68,11 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
     this.folderService.createVirtualFolder(this.userSession.getGridId(), parentFolderId, folder);
   }
 
+  @ServiceMethod
+  public void createGroupVirtualFolder(final String groupId, final VirtualFolder folder) {
+    this.folderService.createGroupVirtualFolder(this.userSession.getGridId(), groupId, folder);
+  }
+
   @ServiceMethod(readOnly = true)
   public VirtualFolder[] getSavedVirtualFolders() {
     final VirtualFolder[] savedVirtualFolders = this.folderService.getSavedVirtualFolders(this.userSession.getGridId());
@@ -75,10 +80,17 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
     return savedVirtualFolders;
   }
 
-  private <T> void sanitizeArray(final T[] objects) {
+  @ServiceMethod(readOnly = true)
+  public List<VirtualFolder> getGroupSharedFolders(final String groupId) {
+    final VirtualFolder[] savedVirtualFolders = this.folderService.getGroupSharedFolders(this.userSession.getGridId(), groupId);
+    return Lists.<VirtualFolder>newArrayList(this.sanitizeArray(savedVirtualFolders));
+  }
+
+  private <T> T[] sanitizeArray(final T[] objects) {
     for(int i = 0; i < objects.length; i++) {
       objects[i] = this.beanSanitizer.sanitize(objects[i]);
     }
+    return objects;
   }
 
   /*
@@ -127,4 +139,5 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
     this.sanitizeArray(folders);
     return Lists.newArrayList(folders);
   }
+
 }

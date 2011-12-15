@@ -30,6 +30,7 @@ import java.util.Set;
 
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.GalaxyTool;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 
 public class SessionInfo implements Serializable {
@@ -41,6 +42,9 @@ public class SessionInfo implements Serializable {
   private Set<Module> module = new HashSet<Module>();
   private List<GalaxyTool> galaxyTools;
   private List<FileType> fileTypes;
+  private Group primaryGroup;
+  private List<Group> groups;
+
   private HashMap<String, String> configurationOptions = new HashMap<String, String>();
 
   public HashMap<String, String> getConfigurationOptions() {
@@ -105,6 +109,22 @@ public class SessionInfo implements Serializable {
 
   public void setGalaxyTools(final List<GalaxyTool> galaxyTools) {
     this.galaxyTools = galaxyTools;
+  }
+
+  public Group getPrimaryGroup() {
+    return primaryGroup;
+  }
+
+  public void setPrimaryGroup(Group primaryGroup) {
+    this.primaryGroup = primaryGroup;
+  }
+
+  public List<Group> getGroups() {
+    return groups;
+  }
+
+  public void setGroups(List<Group> groups) {
+    this.groups = groups;
   }
 
 }

@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.service.UserService;
 import edu.umn.msi.tropix.webgui.services.session.SessionInfo;
@@ -50,7 +51,16 @@ public class UserSessionInfoClosureImplTest extends BaseSessionInfoClosureImplTe
     user.setId(UUID.randomUUID().toString());
     user.setCagridId(getUserId());
 
+    final Group group1 = new Group();
+    group1.setId(UUID.randomUUID().toString());
+    final Group group2 = new Group();
+    group2.setId(UUID.randomUUID().toString());
+    final Group group3 = new Group();
+    group3.setId(UUID.randomUUID().toString());
+
     EasyMock.expect(userService.createOrGetUser(getUserId())).andStubReturn(user);
+    EasyMock.expect(userService.getPrimaryGroup(getUserId())).andStubReturn(group1);
+    EasyMock.expect(userService.getGroups(getUserId())).andStubReturn(new Group[] {group2, group3});
     EasyMock.expect(userService.isAdmin(getUserId())).andStubReturn(isAdmin);
 
     final Folder homeFolder = createTropixObject(Folder.class);
@@ -67,6 +77,9 @@ public class UserSessionInfoClosureImplTest extends BaseSessionInfoClosureImplTe
 
     assert getSanitizer().wasSanitized(user);
     assert getSanitizer().wasSanitized(homeFolder);
+    assert getSanitizer().wasSanitized(group1);
+    assert getSanitizer().wasSanitized(group2);
+    assert getSanitizer().wasSanitized(group3);
 
   }
 

@@ -29,6 +29,7 @@ import com.google.inject.Inject;
 
 import edu.umn.msi.tropix.models.FileType;
 import edu.umn.msi.tropix.models.GalaxyTool;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.webgui.client.modules.ModuleManager;
 import edu.umn.msi.tropix.webgui.services.session.Module;
@@ -77,6 +78,14 @@ public final class Session {
 
   public List<GalaxyTool> getGalaxyTools() {
     return galaxyTools;
+  }
+
+  public Group getPrimaryGroup() {
+    return this.sessionInfo.getPrimaryGroup();
+  }
+
+  public List<Group> getGroups() {
+    return this.sessionInfo.getGroups();
   }
 
   public void init(final SessionInfo sessionInfo) {

@@ -30,12 +30,15 @@ import javax.annotation.ManagedBean;
 import javax.inject.Named;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
+import edu.umn.msi.tropix.persistence.dao.Dao;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.impl.utils.PersistenceModelUtils;
 
@@ -63,6 +66,28 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
     return filter(user.getSharedFolders(), VirtualFolder.class, gridId);
   }
 
+  public VirtualFolder[] getGroupSharedFolders(String userId, String groupId) {
+    final Group group = getDaoFactory().getDao(Group.class).load(groupId);
+    return filter(group.getSharedFolders(), VirtualFolder.class, userId);
+  }
+
+  public VirtualFolder createGroupVirtualFolder(final String gridId, final String groupId, final VirtualFolder inputFolder) {
+    if(getTropixObjectDao().ownsSharedFolderWithName(gridId, inputFolder.getName())) {
+      throw new IllegalArgumentException("User alread owns a shared folder with that name.");
+    }
+
+    final VirtualFolder folder = saveRootVirtualFolder(gridId, inputFolder);
+    getTropixObjectDao().addVirtualPermissionGroup(folder.getId(), "write", groupId);
+    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Group group = groupDao.load(groupId);
+    if(group.getSharedFolders() == null) {
+      group.setSharedFolders(Sets.<VirtualFolder>newHashSet());
+    }
+    group.getSharedFolders().add(folder);
+    groupDao.saveObject(group);
+    return folder;
+  }
+
   public VirtualFolder createVirtualFolder(final String userGridId, final String parentFolderId, final VirtualFolder inputFolder) {
     if(parentFolderId != null) {
       return createNewChildVirtualFolder(parentFolderId, inputFolder);
@@ -70,15 +95,20 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
       if(getTropixObjectDao().ownsSharedFolderWithName(userGridId, inputFolder.getName())) {
         throw new IllegalArgumentException("User alread owns a shared folder with that name.");
       }
-      final VirtualFolder folder = newVirtualFolder(inputFolder);
-      folder.setRoot(true);
-      saveNewObject(folder, userGridId);
-      getTropixObjectDao().createVirtualPermission(folder.getId(), "read");
-      getTropixObjectDao().createVirtualPermission(folder.getId(), "write");
+      final VirtualFolder folder = saveRootVirtualFolder(userGridId, inputFolder);
       getTropixObjectDao().addVirtualPermissionUser(folder.getId(), "write", userGridId);
       getUserDao().addVirtualFolder(userGridId, folder.getId());
       return folder;
     }
+  }
+
+  private VirtualFolder saveRootVirtualFolder(final String userGridId, final VirtualFolder inputFolder) {
+    final VirtualFolder folder = newVirtualFolder(inputFolder);
+    folder.setRoot(true);
+    saveNewObject(folder, userGridId);
+    getTropixObjectDao().createVirtualPermission(folder.getId(), "read");
+    getTropixObjectDao().createVirtualPermission(folder.getId(), "write");
+    return folder;
   }
 
   public VirtualFolder getOrCreateVirtualPath(final String userGridId, final String rootVirtualFolderId, final String[] subfolderNames) {
@@ -128,4 +158,5 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
   public Folder[] getAllGroupFolders(final String gridId) {
     return Iterables.toArray(getTropixObjectDao().getAllGroupFolders(), Folder.class);
   }
+
 }

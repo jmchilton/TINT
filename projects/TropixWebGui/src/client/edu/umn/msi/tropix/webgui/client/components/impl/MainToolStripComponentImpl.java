@@ -93,7 +93,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
   public void setSession(final Session session) {
     this.session = session;
   }
-  
+
   @Inject
   public void setLoginMediator(final LoginMediator loginMediator) {
     this.loginMediator = loginMediator;
@@ -133,12 +133,11 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     this.navigationSelectionMediator = mediator;
     mediator.addNavigationSelectionChangedListener(this);
   }
-  
+
   @Inject
   public void setGalaxyInstaller(@Named("galaxyInstaller") final ModuleInstaller galaxyModuleInstaller) {
     this.galaxyInstaller = (GalaxyModuleInstallerImpl) galaxyModuleInstaller;
   }
-  
 
   private static class TitledMenu extends Menu {
     private final String menuTitle;
@@ -290,6 +289,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
   private TitledMenu getAdminMenu() {
     final MenuBuilder menuBuilder = new MenuBuilder();
     if(moduleManager.containsModules(Module.ADMIN)) {
+      menuBuilder.addMenuItem(getDialogMenuItem("Manage Users", "userAdmin", Resources.PARAMETERS_16));
       menuBuilder.addMenuItem(getDialogMenuItem("Manage Groups", "groupAdmin", Resources.PARAMETERS_16));
       menuBuilder.addMenuItem(getDialogMenuItem("Manage Group Folders", "manageGroupFolders", Resources.PARAMETERS_16));
       menuBuilder.addMenuItem(getDialogMenuItem("Create Local User", "createLocalUser", Resources.ADD));

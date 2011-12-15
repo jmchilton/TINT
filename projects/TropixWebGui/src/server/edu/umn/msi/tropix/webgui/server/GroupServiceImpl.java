@@ -75,6 +75,11 @@ public class GroupServiceImpl implements edu.umn.msi.tropix.webgui.services.sess
   }
 
   @ServiceMethod(adminOnly = true)
+  public void setPrimaryGroup(final String userId, final String groupId) {
+    groupService.setPrimaryGroup(this.userSession.getGridId(), userId, groupId);
+  }
+
+  @ServiceMethod(adminOnly = true)
   public Set<User> getUsers(final String groupId) {
     return this.sanitizeArray(this.groupService.getUsers(this.userSession.getGridId(), groupId));
   }
