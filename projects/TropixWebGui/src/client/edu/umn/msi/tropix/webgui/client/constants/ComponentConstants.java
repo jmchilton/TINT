@@ -33,9 +33,12 @@ public interface ComponentConstants extends Constants {
 
   String findSharedAdd();
 
+  String findSharedAddGroup();
+
   String findSharedEmpty();
 
   String findSharedLoading();
+  
 
   String bulkDownload();
 

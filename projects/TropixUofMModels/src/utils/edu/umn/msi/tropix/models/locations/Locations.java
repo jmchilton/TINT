@@ -22,8 +22,12 @@ public class Locations {
   public static final String MY_INCOMING_REQUESTS_ID = "-5";
   public static final String MY_OUTGOING_REQUESTS_ID = "-6";
   public static final String MY_GROUP_FOLDERS_ID = "-7";
-  public static final String MY_GROUP_SHARED_FOLDERS_ID = "-7";
+  public static final String MY_GROUP_SHARED_FOLDERS_ID = "-8";
 
+  public static boolean isMyGroupSharedFoldersItem(final Location treeItem) {
+    return MY_GROUP_SHARED_FOLDERS_ID.equals(treeItem.getId());
+  }
+  
   public static boolean isMyGroupFoldersItem(final Location treeItem) {
     return MY_GROUP_FOLDERS_ID.equals(treeItem.getId());
   }

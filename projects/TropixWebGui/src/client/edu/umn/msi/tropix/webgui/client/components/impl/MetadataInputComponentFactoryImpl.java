@@ -82,9 +82,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       if(destinationType == MetadataOptions.DestinationType.ALL) {
         treeOptions.setInitialItems(locationFactory.getTropixObjectDestinationRootItems(null));
       } else {
-        treeOptions.setInitialItems(Arrays.asList(locationFactory.getHomeRootItem(null),
-            locationFactory.getMySharedFoldersItem(null),
-            locationFactory.getMyGroupFoldersItem(null)));
+        treeOptions.setInitialItems(locationFactory.getFolderDestinationRootItems(null));
       }
       treeOptions.setShowPredicate(TreeItemPredicates.getDestinationsPredicate(true));
       if(destinationType != MetadataOptions.DestinationType.FOLDER) {

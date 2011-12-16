@@ -86,7 +86,7 @@ class GroupServiceImpl extends ServiceBase implements GroupService {
     return groupDao;
   }
 
-  public void setPrimaryGroup(String gridId, String userId, String groupId) {
+  public void setPrimaryGroup(final String gridId, final String userId, final String groupId) {
     final Dao<Group> groupDao = getGroupDao();
     final User user = getUserDao().loadUser(userId);
     final Group group = groupDao.load(groupId);

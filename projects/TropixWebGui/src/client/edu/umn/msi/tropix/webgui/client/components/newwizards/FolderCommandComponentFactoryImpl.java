@@ -41,6 +41,7 @@ import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
+import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory.MetadataOptions;
@@ -62,10 +63,12 @@ import edu.umn.msi.tropix.webgui.services.object.FolderService;
 
 public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFactoryImpl {
   private final MetadataInputComponentFactory metadataInputComponentFactory;
-
+  private final Session session;
+  
   @Inject
-  public FolderCommandComponentFactoryImpl(final MetadataInputComponentFactory metadataInputComponentFactory) {
+  public FolderCommandComponentFactoryImpl(final MetadataInputComponentFactory metadataInputComponentFactory, final Session session) {
     this.metadataInputComponentFactory = metadataInputComponentFactory;
+    this.session = session;
   }
 
   private AsyncCallback<Void> getCallback(final String parentFolderId) {
@@ -121,7 +124,7 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
                 }
               } else {
                 description = NewWizardConstants.INSTANCE.sharedFolderDescription();
-              }
+              } 
               folderType.setContents(description);
             }
           };
@@ -133,6 +136,13 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
           this.getCanvas().setWidth100();
           this.getCanvas().setHeight100();
         }
+      }
+      
+      private VirtualFolder getVirtualFolder(final MetadataInputComponent metadataSupplier) {
+        final VirtualFolder folder = new VirtualFolder();
+        folder.setName(metadataSupplier.getName());
+        folder.setDescription(metadataSupplier.getDescription());
+        return folder;
       }
 
       public void execute() {
@@ -153,11 +163,12 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
               ActivityDescriptions.initCommonMetadata(description, metadataSupplier);
               description.setCommitted(true);
               JobSubmitService.Util.getInstance().submit(Sets.<ActivityDescription>newHashSet(description), getCallback(id));
+            } else if(Locations.isMyGroupSharedFoldersItem(parentObject)){
+              final VirtualFolder folder = getVirtualFolder(metadataSupplier);
+              FolderService.Util.getInstance().createGroupVirtualFolder(session.getPrimaryGroup().getId(), folder, getCallback(id));
             } else {
-              final VirtualFolder folder = new VirtualFolder();
-              folder.setName(metadataSupplier.getName());
-              folder.setDescription(metadataSupplier.getDescription());
-              FolderService.Util.getInstance().createVirtualFolder(id.equals("-1") ? null : id, folder, getCallback(id));
+              final VirtualFolder folder = getVirtualFolder(metadataSupplier);
+              FolderService.Util.getInstance().createVirtualFolder(Locations.isMySharedFoldersItem(parentObject) ? null : id, folder, getCallback(id));
             }
             wizard.destroy();
           }

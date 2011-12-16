@@ -156,6 +156,11 @@ public class ObjectServiceImpl implements ObjectService {
   }
 
   @ServiceMethod
+  public void addGroupSharedFolder(final String groupId, final String folderId) {
+    this.tropixObjectService.addGroupSharedFolder(this.userSession.getGridId(), groupId, folderId);
+  }
+  
+  @ServiceMethod
   public void removeSharedFolder(final String rootSharedFolderId, final boolean removeOwnedItems) {
     tropixObjectService.removeSharedFolder(userSession.getGridId(), rootSharedFolderId, removeOwnedItems);
   }
@@ -198,6 +203,9 @@ public class ObjectServiceImpl implements ObjectService {
     return count;
   }
 
+  
+
+  
   @ServiceMethod
   public void addToSharedFolder(final Collection<String> objectIds, final String folderId, final boolean recursive) {
     RuntimeException lastException = null;
@@ -270,6 +278,11 @@ public class ObjectServiceImpl implements ObjectService {
     tropixObjectService.hideSharedFolder(userSession.getGridId(), rootSharedFolderId);
   }
 
+  @ServiceMethod
+  public void hideGroupSharedFolder(final String groupId, final String rootSharedFolderId) {
+    tropixObjectService.hideGroupSharedFolder(userSession.getGridId(), groupId, rootSharedFolderId);
+  }
+
   @Inject
   public void setPermissionFunction(@Named("permissionFunction") final Function<PermissionReport, Permission> permissionFunction) {
     this.permissionFunction = permissionFunction;
@@ -289,5 +302,6 @@ public class ObjectServiceImpl implements ObjectService {
   public void setUserSession(final UserSession userSession) {
     this.userSession = userSession;
   }
+
 
 }

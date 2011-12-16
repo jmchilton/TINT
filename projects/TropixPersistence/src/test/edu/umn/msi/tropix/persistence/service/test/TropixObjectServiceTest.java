@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.persistence.service.test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -277,16 +278,52 @@ public class TropixObjectServiceTest extends ServiceTest {
     assert tropixObjectService.getOwnerId(object.getId()).equals(user1.getCagridId());
 
   }
+  
+  @Test
+  public void addToGroupSharedFolder() {
+    final User user = createTempUser();
+    final Group group = createTempGroup(user);
+    final VirtualFolder root = createTempRootVirtualFolder();
+    final Collection<VirtualFolder> sharedFolders = group.getSharedFolders();
+    assert sharedFolders == null || sharedFolders.isEmpty();
+    getTropixObjectDao().addVirtualPermissionUser(root.getId(), "read", user.getCagridId());
+    tropixObjectService.addGroupSharedFolder(user.getCagridId(), group.getId(), root.getId());
+    assert group.getSharedFolders().contains(root);
+  }
+
 
   @Test
   public void addSharedFolder() {
     final User user = createTempUser();
-    final VirtualFolder root = super.createTempRootVirtualFolder();
+    final VirtualFolder root = createTempRootVirtualFolder();
 
     getTropixObjectDao().addVirtualPermissionUser(root.getId(), "read", user.getCagridId());
     tropixObjectService.addSharedFolder(user.getCagridId(), root.getId());
 
     assert getUserDao().loadUser(user.getCagridId()).getSharedFolders().contains(root);
+  }
+  
+  @Test
+  public void hideGroupSharedFolder() {
+    final User user = createTempUser();
+    final Group group = createTempGroup(user);
+    final VirtualFolder root = createTempRootVirtualFolder();
+    getTropixObjectDao().addVirtualPermissionUser(root.getId(), "read", user.getCagridId());
+    group.getSharedFolders().add(root);
+    
+    tropixObjectService.hideGroupSharedFolder(user.getCagridId(), group.getId(), root.getId());
+    assert !group.getSharedFolders().contains(root);    
+  }
+  
+  @Test
+  public void hideSharedFolder() {
+    final User user = createTempUser();
+    final VirtualFolder root = createTempRootVirtualFolder();
+    getTropixObjectDao().addVirtualPermissionUser(root.getId(), "read", user.getCagridId());
+    user.getSharedFolders().add(root);
+    
+    tropixObjectService.hideSharedFolder(user.getCagridId(), root.getId());
+    assert !getUserDao().loadUser(user.getCagridId()).getSharedFolders().contains(root);
   }
 
   @Test
@@ -960,17 +997,13 @@ public class TropixObjectServiceTest extends ServiceTest {
 
     assert !getUserDao().getUsersWithVirtualFolder(root.getId()).contains(user2);
   }
+  
 
   @Test
-  public void addToShraedFolder() {
+  public void addToSharedFolder() {
     final User user1 = createTempUser(), user2 = createTempUser(), user3 = createTempUser();
-
-    final VirtualFolder root = new VirtualFolder();
-    root.setContents(new HashSet<TropixObject>());
-    saveNewTropixObject(root);
+    final VirtualFolder root = createTempRootVirtualFolder();
     getTropixObjectDao().setOwner(root.getId(), user1);
-    getTropixObjectDao().createVirtualPermission(root.getId(), "read");
-    getTropixObjectDao().createVirtualPermission(root.getId(), "write");
 
     tropixObjectService.addVirtualPermissionForUser(user1.getCagridId(), root.getId(), user2.getCagridId(), PermissionType.Write);
     tropixObjectService.addVirtualPermissionForUser(user1.getCagridId(), root.getId(), user3.getCagridId(), PermissionType.Read);

@@ -81,12 +81,12 @@ class UserServiceImpl implements UserService {
     dbUser.setLastName(user.getLastName());
   }
 
-  public Group getPrimaryGroup(String gridIdentity) {
+  public Group getPrimaryGroup(final String gridIdentity) {
     final User user = userDao.loadUser(gridIdentity);
     return user.getPrimaryGroup();
   }
 
-  public Group[] getGroups(String gridIdentity) {
+  public Group[] getGroups(final String gridIdentity) {
     final User user = userDao.loadUser(gridIdentity);
     return Iterables.toArray(user.getGroups(), Group.class);
   }

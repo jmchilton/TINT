@@ -29,6 +29,7 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.aop.AutoUser;
+import edu.umn.msi.tropix.persistence.aop.MemberOf;
 import edu.umn.msi.tropix.persistence.aop.Modifies;
 import edu.umn.msi.tropix.persistence.aop.Owns;
 import edu.umn.msi.tropix.persistence.aop.PersistenceMethod;
@@ -73,6 +74,9 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
 
   @PersistenceMethod
   void addSharedFolder(@UserId String userId, @Reads String virtualFolderId);
+
+  @PersistenceMethod
+  void addGroupSharedFolder(@UserId String gridId, @MemberOf String groupId, @Reads String folderId);
 
   @PersistenceMethod
   void addPermissionForGroup(@UserId String userId, @Owns String objectId, String groupId, PermissionType permissionType);
@@ -136,4 +140,8 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
 
   @PersistenceMethod
   void hideSharedFolder(@UserId final String cagridId, @Reads final String rootSharedFolderId);
+
+  @PersistenceMethod
+  void hideGroupSharedFolder(@UserId final String cagridId, @MemberOf String groupId,  @Reads final String rootSharedFolderId);
+
 }

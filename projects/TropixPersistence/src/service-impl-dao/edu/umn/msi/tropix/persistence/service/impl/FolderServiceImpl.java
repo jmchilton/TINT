@@ -66,7 +66,7 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
     return filter(user.getSharedFolders(), VirtualFolder.class, gridId);
   }
 
-  public VirtualFolder[] getGroupSharedFolders(String userId, String groupId) {
+  public VirtualFolder[] getGroupSharedFolders(final String userId, final String groupId) {
     final Group group = getDaoFactory().getDao(Group.class).load(groupId);
     return filter(group.getSharedFolders(), VirtualFolder.class, userId);
   }

@@ -51,5 +51,5 @@ public interface UserDao {
   Collection<User> getUsersWithVirtualFolder(String virtualFolderId);
 
   Collection<User> getUsers();
-
+  
 }

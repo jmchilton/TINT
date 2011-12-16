@@ -81,6 +81,7 @@ import edu.umn.msi.tropix.models.utils.TropixObjectVisitorImpl;
 import edu.umn.msi.tropix.models.utils.TropixObjectVistorUtils;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
+import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
@@ -132,7 +133,13 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
       changeDescriptionCommandComponentFactory;
   private final HashMap<String, Boolean> expandedMap = new HashMap<String, Boolean>();
   private ModuleManager moduleManager;
-
+  private Session session;
+  
+  @Inject
+  public void setSession(final Session session) {
+    this.session = session;
+  }
+  
   @Inject
   public void setModuleManager(final ModuleManager moduleManager) {
     this.moduleManager = moduleManager;
@@ -387,6 +394,19 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
       };
     }
 
+    private Command getHideGroupSharedFolderCommand(final VirtualFolder virtualFolder) {
+      return new Command() {
+        public void execute() {
+          ObjectService.Util.getInstance().hideGroupSharedFolder(virtualFolder.getId(), session.getPrimaryGroup().getId(), new AsyncCallbackImpl<Void>() {
+            @Override
+            public void onSuccess(final Void ignored) {
+              LocationUpdateMediator.getInstance().onEvent(new UpdateEvent(Locations.MY_GROUP_SHARED_FOLDERS_ID, null));
+            }
+          });
+        }
+      };
+    }
+
     private Command getAddItemsToSharedFolderCommand(final VirtualFolder virtualFolder) {
       return new Command() {
         public void execute() {
@@ -412,9 +432,13 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
 
     @Override
     public void visitVirtualFolder(final VirtualFolder virtualFolder) {
-      if(tropixObjectTreeItem.getParent().getId().equals(Locations.MY_SHARED_FOLDERS_ID)) {
+      if(Locations.isMySharedFoldersItem(tropixObjectTreeItem.getParent())) {
         this.addOperation("Hide this shared folder", getHideSharedFolderCommand(virtualFolder));
       }
+      if(Locations.isMyGroupSharedFoldersItem(tropixObjectTreeItem.getParent())) {
+        this.addOperation("Hide this shared folder", getHideGroupSharedFolderCommand(virtualFolder));
+      }
+      
       if(tropixObjectContext.isModifiable()) {
         this.addOperation("Add items to this shared folder", getAddItemsToSharedFolderCommand(virtualFolder));
       }

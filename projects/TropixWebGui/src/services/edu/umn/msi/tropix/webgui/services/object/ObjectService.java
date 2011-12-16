@@ -100,4 +100,8 @@ public interface ObjectService extends RemoteService {
   void removeSharedFolder(final String rootSharedFolderId, final boolean removeOwnedItems);
 
   void hideSharedFolder(String id);
+
+  void hideGroupSharedFolder(String groupId, String id);
+
+  void addGroupSharedFolder(String groupId, String folderId);
 }

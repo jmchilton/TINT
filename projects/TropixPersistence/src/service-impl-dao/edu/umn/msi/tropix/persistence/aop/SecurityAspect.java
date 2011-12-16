@@ -40,9 +40,9 @@ import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
-import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.persistence.dao.DaoFactory;
+import edu.umn.msi.tropix.persistence.dao.GroupDao;
 import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 import edu.umn.msi.tropix.persistence.dao.UserDao;
 import edu.umn.msi.tropix.persistence.service.security.SecurityProvider;
@@ -56,14 +56,16 @@ class SecurityAspect {
   private static final ReflectionHelper REFLECTION_HELPER = ReflectionHelpers.getInstance();
   private TropixObjectDao tropixObjectDao;
   private UserDao userDao;
+  private GroupDao groupDao;
   private SecurityProvider securityProvider;
   private DaoFactory daoFactory;
 
-  SecurityAspect(final TropixObjectDao tropixObjectDao, final SecurityProvider securityProvider, final UserDao userDao, final DaoFactory daoFactory) {
+  SecurityAspect(final TropixObjectDao tropixObjectDao, final SecurityProvider securityProvider, final UserDao userDao, final DaoFactory daoFactory, final GroupDao groupDao) {
     LOG.debug("Constructing SecurityAspect number " + ++count);
     this.tropixObjectDao = tropixObjectDao;
     this.securityProvider = securityProvider;
     this.userDao = userDao;
+    this.groupDao = groupDao;
     this.daoFactory = daoFactory;
   }
 
@@ -107,9 +109,8 @@ class SecurityAspect {
     if(containsAnnotation(MemberOf.class, annotations)) {
       // System.out.println("Found memberof annotation");
       for(final String objectId : objectIds) {
-        final Group group = daoFactory.getDao(Group.class).load(objectId);
         boolean foundUser = false;
-        for(final User user : group.getUsers()) {
+        for(final User user : groupDao.getUsers(objectId)) {
           if(user.getCagridId().equals(userId)) {
             foundUser = true;
             break;

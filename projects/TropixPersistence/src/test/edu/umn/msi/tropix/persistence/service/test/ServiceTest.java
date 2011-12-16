@@ -155,6 +155,7 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     final Group group = createTempGroup();
     group.getUsers().add(user);
     user.getGroups().add(group);
+    group.setSharedFolders(Sets.<VirtualFolder>newHashSet());
     daoFactory.getDao(Group.class).saveObject(group);
     if(primary) {
       user.setPrimaryGroup(group);

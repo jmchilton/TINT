@@ -31,6 +31,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <constructor-arg ref="persistenceSecurityProvider" />
     <constructor-arg ref="userDao" />
     <constructor-arg ref="daoFactory" />
+    <constructor-arg ref="groupDao" />
   </bean>
 
   <bean id="autoUserPersistenceAspect" class="edu.umn.msi.tropix.persistence.aop.AutoUserAspect">

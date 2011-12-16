@@ -35,6 +35,8 @@ public interface LocationFactory {
 
   TreeItem getTropixHomeItem();
 
+  TreeItem getMyGroupSharedFoldersItem(@Nullable TropixObjectTreeItemExpander expander);
+  
   TreeItem getMyGroupFoldersItem(@Nullable TropixObjectTreeItemExpander expander);
 
   TreeItem getHomeRootItem(@Nullable TropixObjectTreeItemExpander expander);
@@ -46,5 +48,7 @@ public interface LocationFactory {
   Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable TropixObjectTreeItemExpander expander);
   
   Iterable<TreeItem> getConcreteTropixObjectRootItems(@Nullable TropixObjectTreeItemExpander expander);
+
+  Iterable<TreeItem> getFolderDestinationRootItems(@Nullable TropixObjectTreeItemExpander expander);
 
 }

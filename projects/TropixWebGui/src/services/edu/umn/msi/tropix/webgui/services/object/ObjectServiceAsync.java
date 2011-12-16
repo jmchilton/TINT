@@ -89,4 +89,8 @@ public interface ObjectServiceAsync {
 
   void hideSharedFolder(String id, AsyncCallback<Void> callback);
 
+  void addGroupSharedFolder(String groupId, String folderId, AsyncCallback<Void> callback);
+
+  void hideGroupSharedFolder(String groupId, String id, AsyncCallback<Void> callback);
+
 }

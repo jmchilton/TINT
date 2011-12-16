@@ -39,6 +39,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.models.DirectPermission;
@@ -121,7 +122,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
       throw new RuntimeException("Virtual Folders belong to different hierarchies");
     }
 
-    final VirtualFolder newParent = getTropixObjectDao().loadTropixObject(newParentFolderId, VirtualFolder.class);
+    final VirtualFolder newParent = loadSharedFolder(newParentFolderId);
     final TropixObject object = getTropixObjectDao().loadTropixObject(objectId);
 
     if(object instanceof VirtualFolder) {
@@ -316,17 +317,32 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
 
   public void addSharedFolder(final String userId, final String virtualFolderId) {
     final User user = getUserDao().loadUser(userId);
-    final VirtualFolder folder = getTropixObjectDao().loadTropixObject(virtualFolderId, VirtualFolder.class);
+    addSharedFolder(virtualFolderId, user.getSharedFolders());
+    getUserDao().saveOrUpdateUser(user);
+  }
+  
+  private void addSharedFolder(final String folderId, final Collection<VirtualFolder> sharedFolders) {
+    final VirtualFolder folder = loadSharedFolder(folderId);
     if(!isRoot(folder)) {
       throw new RuntimeException("Attempt to add non root shared folder to user");
     }
-    user.getSharedFolders().add(folder);
-    getUserDao().saveOrUpdateUser(user);
+    sharedFolders.add(folder);
   }
+  
+  public void addGroupSharedFolder(final String gridId, final String groupId, final String folderId) {
+    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Group group = groupDao.load(groupId);
+    if(group.getSharedFolders() == null) {
+      group.setSharedFolders(Sets.<VirtualFolder>newHashSet());
+    }
+    addSharedFolder(folderId, group.getSharedFolders());
+    groupDao.saveObject(group);
+  }
+
 
   public void removeSharedFolder(final String cagridId, final String rootSharedFolderId, final boolean removeOwnedObjects) {
     final User user = getUserDao().loadUser(cagridId);
-    final VirtualFolder folder = getTropixObjectDao().loadTropixObject(rootSharedFolderId, VirtualFolder.class);
+    final VirtualFolder folder = loadSharedFolder(rootSharedFolderId);
     if(!isRoot(folder)) {
       throw new RuntimeException("Attempting to remove non root shared folder from user");
     }
@@ -347,11 +363,25 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
 
     hideSharedFolder(user, folder);
   }
+  
+  public void hideGroupSharedFolder(final String cagridId, final String groupId, final String rootSharedFolderId) {
+    final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
+    final Group group = groupDao.load(groupId);
+    final VirtualFolder folder = loadSharedFolder(rootSharedFolderId);
+    group.getSharedFolders().remove(folder);
+    groupDao.saveObject(group);
+  }
+
 
   public void hideSharedFolder(final String cagridId, final String rootSharedFolderId) {
     final User user = getUserDao().loadUser(cagridId);
-    final VirtualFolder folder = getTropixObjectDao().loadTropixObject(rootSharedFolderId, VirtualFolder.class);
+    final VirtualFolder folder = loadSharedFolder(rootSharedFolderId);
     hideSharedFolder(user, folder);
+  }
+
+  private VirtualFolder loadSharedFolder(final String rootSharedFolderId) {
+    final VirtualFolder folder = getTropixObjectDao().loadTropixObject(rootSharedFolderId, VirtualFolder.class);
+    return folder;
   }
 
   private void hideSharedFolder(final User user, final VirtualFolder folder) {
@@ -529,7 +559,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     if(type.equals(PermissionType.Read)) {
       getTropixObjectDao().removeVirtualPermissionUser(objectId, "write", userId);
     }
-    recalculateVirtualPermissions(getTropixObjectDao().loadTropixObject(objectId, VirtualFolder.class));
+    recalculateVirtualPermissions(loadSharedFolder(objectId));
   }
 
   public void removeVirtualPermissionForGroup(final String userId, final String objectId, final String groupId, final PermissionType type) {
@@ -681,7 +711,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
   }
 
   public void deleteVirtualFolder(final String cagridId, final String id) {
-    final VirtualFolder object = getTropixObjectDao().loadTropixObject(id, VirtualFolder.class);
+    final VirtualFolder object = loadSharedFolder(id);
     if(isRoot(object)) {
       throw new RuntimeException("Cannot delete a root virtual folder");
     }
@@ -780,4 +810,5 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     }
     return object;
   }
+
 }
