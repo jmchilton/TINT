@@ -397,7 +397,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
     private Command getHideGroupSharedFolderCommand(final VirtualFolder virtualFolder) {
       return new Command() {
         public void execute() {
-          ObjectService.Util.getInstance().hideGroupSharedFolder(virtualFolder.getId(), session.getPrimaryGroup().getId(), new AsyncCallbackImpl<Void>() {
+          ObjectService.Util.getInstance().hideGroupSharedFolder(session.getPrimaryGroup().getId(), virtualFolder.getId(), new AsyncCallbackImpl<Void>() {
             @Override
             public void onSuccess(final Void ignored) {
               LocationUpdateMediator.getInstance().onEvent(new UpdateEvent(Locations.MY_GROUP_SHARED_FOLDERS_ID, null));

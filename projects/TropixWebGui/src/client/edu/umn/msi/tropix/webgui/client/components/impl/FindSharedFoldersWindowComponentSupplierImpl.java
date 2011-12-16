@@ -75,6 +75,7 @@ public class FindSharedFoldersWindowComponentSupplierImpl implements Supplier<Wi
           addSharedFolder(object.getId());
         }        
       });
+      addButton.setAutoFit(true);
       
       final Button addGroupButton = SmartUtils.getButton(ConstantsInstances.COMPONENT_INSTANCE.findSharedAddGroup(), Resources.FOLDER_NEW, new Command() {
         public void execute() {
@@ -83,16 +84,19 @@ public class FindSharedFoldersWindowComponentSupplierImpl implements Supplier<Wi
           addGroupSharedFolder(object.getId());
         }        
       });
+      addGroupButton.setAutoFit(true);
 
       
       SmartUtils.enabledWhenHasSelection(addButton, grid, false);
+      SmartUtils.enabledWhenHasSelection(addGroupButton, grid, false);
       final Button cancelButton = SmartUtils.getCancelButton(this);
+      cancelButton.setAutoFit(true);
       populateData(grid);
       final Canvas[] buttons;
       if(session.getPrimaryGroup() != null) {
         buttons = new Canvas[] {addButton, addGroupButton, cancelButton };
       } else {
-        buttons = new Canvas[] {addButton };
+        buttons = new Canvas[] {addButton, cancelButton };
       }
       final CanvasWithOpsLayout<ListGrid> layout = new CanvasWithOpsLayout<ListGrid>("Choose a shared folder to add to your shared folders.", grid, buttons);     
       setWidget(PopOutWindowBuilder.titled(ConstantsInstances.COMPONENT_INSTANCE.findSharedTitle()).sized(600, 400).withIcon(Resources.SHARED_FOLDER_16).withContents(layout).get());
