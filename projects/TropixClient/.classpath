@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="src/api"/>
 	<classpathentry kind="src" path="src/impl"/>
 	<classpathentry kind="src" path="src/test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/addressing-1.0.jar"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/axis-url.jar"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/axis.jar"/>
@@ -73,6 +72,7 @@
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xml-apis.jar"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/xmlsec.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=all&amp;ivySettingsPath=%24%7Bworkspace_loc%3Atint%2Fantfiles%2Fivysettings-eclipse.xml%7D&amp;loadSettingsOnDemand=false&amp;propertyFiles=%24%7Bworkspace_loc%3Atint%2Fantfiles%2Fivysettings.properties%7D&amp;acceptedTypes=jar%2Cbundle%2Cejb%2Cmaven-plugin&amp;sourceTypes=source&amp;javadocTypes=javadoc&amp;sourceSuffixes=-source%2C-sources%2C-src&amp;javadocSuffixes=-javadoc%2C-javadocs%2C-doc%2C-docs&amp;alphaOrder=false&amp;resolveInWorkspace=true&amp;resolveBeforeLaunch=false"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

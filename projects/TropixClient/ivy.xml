@@ -33,6 +33,7 @@
     <dependency rev="1.2" org="caGrid" name="discovery" conf="impl->default" />    
     <dependency rev="1.2" org="caGrid" name="metadata" conf="impl->jars" />
     <dependency rev="1.2" org="caGrid" name="metadatautils" conf="impl->default" />
+
     <dependency rev="0.1" org="net.jmchilton" name="spring-collections" />
   </dependencies>  
 </ivy-module> 
