@@ -71,35 +71,35 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
     }
   }
 
-  public void setLdapUrl(String ldapUrl) {
+  public void setLdapUrl(final String ldapUrl) {
     this.ldapUrl = ldapUrl;
   }
 
-  public void setLdapBase(String ldapBase) {
+  public void setLdapBase(final String ldapBase) {
     this.ldapBase = ldapBase;
   }
 
-  public void setUserIdLabel(String userIdLabel) {
+  public void setUserIdLabel(final String userIdLabel) {
     this.userIdLabel = userIdLabel;
   }
 
-  public void setUserFirstNameLabel(String userFirstNameLabel) {
+  public void setUserFirstNameLabel(final String userFirstNameLabel) {
     this.userFirstNameLabel = userFirstNameLabel;
   }
 
-  public void setUserLastNameLabel(String userLastNameLabel) {
+  public void setUserLastNameLabel(final String userLastNameLabel) {
     this.userLastNameLabel = userLastNameLabel;
   }
 
-  public void setUserEmailLabel(String userEmailLabel) {
+  public void setUserEmailLabel(final String userEmailLabel) {
     this.userEmailLabel = userEmailLabel;
   }
 
-  public void setGridIdPrefix(String gridIdPrefix) {
+  public void setGridIdPrefix(final String gridIdPrefix) {
     this.gridIdPrefix = gridIdPrefix;
   }
 
-  public void setFilter(String filter) {
+  public void setFilter(final String filter) {
     if(filter != null && filter.length() > 0) {
       this.filter = filter;
     }

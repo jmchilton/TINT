@@ -19,7 +19,11 @@
   
   <dependencies>
     <!-- TODO: Investigate eliminating this dependency -->
-    <dependency rev="1.2" org="caGrid" name="core" />
+    <dependency rev="${cagrid.version}" org="caGrid" name="core">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+
     <dependency org="msi.umn.edu" name="tropix-files" rev="${ivy.project.version}" conf="impl->impl" />
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl->service-impl-dao" />
     <dependency org="msi.umn.edu" name="tip-services" rev="${ivy.project.version}" conf="impl->default" />

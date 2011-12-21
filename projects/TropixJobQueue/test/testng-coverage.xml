@@ -10,7 +10,6 @@
     </groups>
     <packages>
       <package name="edu.umn.msi.tropix.common.jobqueue.*" />
-      <package name="edu.umn.msi.tropix.grid.*" />
    </packages>
  </test>
 </suite>

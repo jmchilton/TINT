@@ -117,4 +117,9 @@ public class GridFsAccessProviderImpl implements AccessProvider {
     return new FileMetadata(dateModified, length);
   }
 
+  public boolean setDateModified(String id, long dateModified) {
+    final GridFSDBFile dbFile = getDbFile(id);
+    return false;
+  }
+
 }

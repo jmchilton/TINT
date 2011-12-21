@@ -56,5 +56,7 @@ public interface AccessProvider {
   long getDateModified(String id);
   
   StorageManager.FileMetadata getFileMetadata(String id);
+
+  boolean setDateModified(String id, long dateModified);
   
 }

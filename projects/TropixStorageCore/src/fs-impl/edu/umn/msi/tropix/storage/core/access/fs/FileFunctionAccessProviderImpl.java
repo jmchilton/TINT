@@ -113,5 +113,10 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
     return outputStream;
   }
 
+  public boolean setDateModified(String id, long dateModified) {
+    final File file = getRawFile(id);
+    return file.setLastModified(dateModified);    
+  }
+
 
 }

@@ -59,6 +59,8 @@ public interface StorageManager {
   @Deprecated
   long getDateModified(final String id, final String gridId);
 
+  boolean setDateModified(final String id, final String gridId, final long dataModified);
+
   @Deprecated
   long getLength(final String id, final String gridId);
 

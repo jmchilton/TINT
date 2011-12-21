@@ -30,9 +30,29 @@
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" conf="service->impls" />
     <dependency org="msi.umn.edu" name="interfaces" rev="1.1" conf="service->spring-client" />
 
-    <dependency rev="1.2" org="caGrid" name="core" conf="client->default;test->test"/>
-    <dependency rev="1.2" org="caGrid" name="testing" conf="test->system"/>
-    <dependency rev="1.2" org="caGrid" name="transfer" conf="client->client;service->service" />
+    <dependency rev="${cagrid.version}" org="caGrid" name="core" conf="client->default;test->test">
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency rev="${cagrid.version}" org="caGrid" name="testing" conf="test->system">
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency rev="${cagrid.version}" org="caGrid" name="transfer" conf="client->client;service->service">
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency org="jdom" name="jdom" rev="1.0" conf="client->master">
+      <!--
+      <artifact name="jdom" type="jar"/>
+      <exclude org="xalan" />
+      <exclude org="saxpath" />
+      <exclude org="jaxen" />
+      <exclude org="xerces" />
+      <exclude org="xml-apis" />
+      -->
+    </dependency>
+
   </dependencies>
 
 </ivy-module>

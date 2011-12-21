@@ -27,11 +27,18 @@ class tint_metadata_server {
   include mysql
 }
 
+class tint_activemq_server {
+  tomcat::deployment { 'tint-activemq' :
+    path => '/tint/projects/TropixMessaging/build/wars/tint-activemq.war'
+  }
+}
+
 class tint_ssh_server {
   include tint_storage
   include tint_metadata
   include rsyslog
   include sshguard  
+  include tint_messaging  
 
   tomcat::deployment { 'tint-ssh' :
     path => '/tint/projects/TropixSshServer/build/wars/tint-ssh.war'
@@ -57,5 +64,4 @@ node "sshserver" {
 node "webapp" {
   include tint_metadata_server
   include tint_webapp
-
 }

@@ -67,6 +67,16 @@
     <runcheckstyle />
   </target>
 
+  <target name="prepare-war" depends="jar">
+    <prepare-war webinfconf="war" includewscore="true" />
+  </target>
+
+  <target name="package-war" depends="prepare-war">
+    <package-war name="tint-activemq" />
+  </target>
+
+  <target name="war" depends="package-war" />
+
   <target name="all" depends="jar" />
   
   <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />

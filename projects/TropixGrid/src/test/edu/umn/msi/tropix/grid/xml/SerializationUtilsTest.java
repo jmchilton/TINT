@@ -39,7 +39,7 @@ public class SerializationUtilsTest {
   private static final SerializationUtils UTILS = SerializationUtilsFactory.getInstance();
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
 
-  @Test(groups = "unit", expectedExceptions = XMLException.class)
+  @Test(groups = "unit", expectedExceptions = XMLException.class, timeOut = 100)
   public void urlProblem() throws MalformedURLException {
     UTILS.deserialize(new URL("file://not.a.file"), ResearchCenter.class);    
   }

@@ -76,6 +76,14 @@ public class StorageManagerImpl implements StorageManager {
   public long getLength(String id, String gridId) {
     return getFileMetadata(id, gridId).getLength();
   }
+  
+  public boolean setDateModified(final String id, final String gridId, final long dateModified) {
+    if(!authorizationProvider.canDownload(id, gridId)) {
+      throw new RuntimeException("User " + gridId + " cannot access file " + id);
+    }
+    return accessProvider.setDateModified(gridId, dateModified);
+  }
+
 
   public FileMetadata getFileMetadata(String id, String gridId) {
     if(!authorizationProvider.canDownload(id, gridId)) {
@@ -167,5 +175,6 @@ public class StorageManagerImpl implements StorageManager {
   public void setFileService(final FileService fileService) {
     this.fileService = fileService;
   }
+
 
 }

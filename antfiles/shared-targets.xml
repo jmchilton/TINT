@@ -8,6 +8,8 @@
 
   <dirname property="shared.antfiles.dir" file="${shared-targets.file}" />
   <property file="${shared.antfiles.dir}/shared.properties" />
+  <!-- Pull in dependency versions. -->
+  <property file="${shared.antfiles.dir}/ivysettings.properties" />
 
   <!-- Shared Tasks -->
 
@@ -128,7 +130,7 @@
       <if>
 	<isset property="test.pattern" />
 	<then>
-	  <testng annotations="JDK" classpathref="@{classpath}" outputDir="@{output}">
+	  <testng classpathref="@{classpath}" outputDir="@{output}" >
 	    <classfileset dir="${build.classes.dir}/test/" includes="**/${test.pattern}.class" />
 	    <jvmarg value="-Demma.coverage.out.file=@{emma}" />
 	    <jvmarg value="-Demma.coverage.out.merge=true" />
@@ -137,7 +139,7 @@
 	<else>
 	  <for list="@{file}" param="thisfile" parallel="false">
 	    <sequential>
-	      <testng annotations="JDK" classpathref="@{classpath}" outputDir="@{output}">
+	      <testng classpathref="@{classpath}" outputDir="@{output}">
 		<xmlfileset file="@{thisfile}" />
 		<jvmarg value="-Demma.coverage.out.file=@{emma}" />
 		<jvmarg value="-Demma.coverage.out.merge=true" />
@@ -262,6 +264,37 @@
           </if>
         </sequential>
       </for>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="package-war">
+    <attribute name="name" />
+    <sequential>
+      <war destfile="${wars.dir}/@{name}.war" basedir="${build.war.dir}">
+	<lib dir="${build.lib.dir}" />
+      </war>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="prepare-war">
+    <attribute name="webinfconf" default="war" />
+    <attribute name="includewscore" default="false" />
+    <sequential>
+      <copy todir="${build.lib.dir}" flatten="true" >
+	<fileset refid="ivy.fileset" />
+	<fileset dir="${jars.dir}" includes="**/*.jar" />
+      </copy>
+      <if>
+	<equals arg1="@{includewscore}" arg2="true" />
+	<then>
+	  <copy todir="${build.lib.dir}" flatten="true" >
+	    <fileset dir="${ext.globus.dir}/lib" includes="**/*.jar" />
+	  </copy>
+	</then>
+      </if>
+      <copy todir="${build.webinf.dir}" flatten="false">
+	<fileset dir="${resources.dir}/@{webinfconf}/WEB-INF" />
+      </copy>
     </sequential>
   </macrodef>
   
@@ -580,8 +613,10 @@
   <!-- Ivy targets. -->
   <target name="cache-dependencies">
     <ivy:resolve />
-    <ivy:cachefileset setid="ivy.fileset" />
-	  <ivy:cachepath pathid="raw.ivy.path" />
+    <ivy:cachefileset setid="ivy.fileset" useOrigin="false" conf="all" />
+    <pathconvert pathsep="${line.separator}" property="ivy.fileset.property" refid="ivy.fileset"/>
+    <echo>${ivy.fileset.property}</echo>
+    <ivy:cachepath pathid="raw.ivy.path" />
     <if>	
       <isset property="confs" />
       <then>

@@ -43,7 +43,7 @@ import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 
 public class H2DefaultsPropertyPlaceholderConfigurer extends MapPropertyPlaceholderConfigurer implements ApplicationContextAware {
-  public static final String H2_DIALECT_CLASS_NAME = "edu.umn.msi.tropix.common.spring.H2Dialect";
+  public static final String H2_DIALECT_CLASS_NAME = org.hibernate.dialect.H2Dialect.class.getName();
   private static final Log LOG = LogFactory.getLog(H2DefaultsPropertyPlaceholderConfigurer.class);
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private ApplicationContext context;

@@ -2,30 +2,23 @@
 <ivysettings>
   <settings defaultResolver="default" circularDependencyStrategy="error"/>
   
-  <caches defaultCacheDir="${tropix.ivy.cache.dir}" useOrigin="true"/>
+  <caches defaultCacheDir="${tropix.ivy.cache.dir}" useOrigin="false"/>
 
   <resolvers>
     <chain name="default">
-      <filesystem name="local-fs" local="true" checkmodified="true">
+      <filesystem name="local-fs" local="true" checkmodified="true"  force="true" changingPattern=".*">
         <ivy pattern="${integration.repository.dir}/[organisation]/[module]/ivy-[revision].xml"/>
         <artifact pattern="${integration.repository.dir}/[organisation]/[module]/[revision]/[artifact].[ext]"/>
         <artifact pattern="${integration.repository.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
       </filesystem>
 
+      <ibiblio name="maven2" m2compatible="true" />
+      <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true" />
+
       <url name="tropix-repository">
         <ivy pattern="http://tropix.msi.umn.edu/ivy/[organisation]/[module]/ivy-[revision].xml"/>
         <artifact pattern="http://tropix.msi.umn.edu/ivy/[organisation]/[module]/[revision]/[artifact].[ext]"/>
         <artifact pattern="http://tropix.msi.umn.edu/ivy/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
-      </url>
-      
-      <url name="spring-release">
-        <ivy pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
-        <artifact pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
-      </url>
-
-      <url name="spring-external">
-        <ivy pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
-        <artifact pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
       </url>
       
       <url name="cagrid-repository">
@@ -34,9 +27,6 @@
         <artifact pattern="http://software.cagrid.org/repository-1.2/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
       </url>
 
-      <ibiblio name="maven2" m2compatible="true" />
-
-      <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true" />
       <ibiblio name="mayo" root="http://informatics.mayo.edu/maven/content/groups/public" m2compatible="true" />
     </chain>
   </resolvers>

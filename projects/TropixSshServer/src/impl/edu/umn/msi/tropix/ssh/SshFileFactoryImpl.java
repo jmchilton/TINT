@@ -183,7 +183,11 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean setLastModified(final long time) {
-      return false;
+      boolean modified = false;
+      if(isTropixFile()) {
+        modified = storageManager.setDateModified(identity, getFileId(), time);
+      } 
+      return modified;
     }
 
     private boolean isTropixFile() {

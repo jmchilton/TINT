@@ -19,22 +19,17 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
-    <dependency org="javax.jms" name="com.springsource.javax.jms" rev="1.1.0" conf="impl->runtime"/>
-    <dependency org="org.springframework" name="org.springframework.jms" rev="${spring.version}" conf="impl->runtime" />
-    <dependency org="org.apache.activemq" name="activemq-core" rev="5.5.0" conf="impl->default">
-      <exclude org="org.springframework" />
-    </dependency>
+    <dependency org="javax.jms" name="jms" rev="1.1" conf="impl->runtime"/>
 
-    <dependency org="org.apache.xbean" name="xbean-spring" rev="3.8" conf="impl->master" />
-    <dependency org="org.apache.activemq" name="activemq-camel" rev="5.5.0" conf="impl->master" />
-     <dependency org="org.apache.camel" name="camel-jms" rev="2.8.0" conf="impl->runtime,master">
-      <exclude org="org.springframework" />
-    </dependency>
+    <dependency org="org.springframework" name="spring-jms" rev="${spring.version}" conf="impl->runtime" />
     
-    <dependency org="org.apache.camel" name="camel-spring" rev="2.8.0" conf="impl->runtime,master">
-      <exclude org="org.springframework" />
-    </dependency>
+    <dependency org="org.apache.xbean" name="xbean-spring" rev="3.8" conf="impl->master" />
 
+    <dependency org="org.apache.activemq" name="activemq-core" rev="${activemq.version}" conf="impl->default" />
+    <dependency org="org.apache.activemq" name="activemq-camel" rev="${activemq.version}" conf="impl->master" />
+
+    <dependency org="org.apache.camel" name="camel-jms" rev="${camel.version}" conf="impl->runtime,master" />
+    <dependency org="org.apache.camel" name="camel-spring" rev="${camel.version}" conf="impl->runtime,master" />
   </dependencies>
 
 </ivy-module>

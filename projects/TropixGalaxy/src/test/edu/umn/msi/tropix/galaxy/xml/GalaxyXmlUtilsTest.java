@@ -54,6 +54,7 @@ public class GalaxyXmlUtilsTest {
 
   @Test(groups = "unit")
   public void convertsInputXml() {
+    Class test = org.xml.sax.AttributeList.class;
     final RootInput inputs = new RootInput();
     final Input input1 = new Input();
     input1.setName("Name1");

@@ -11,7 +11,7 @@ public class MapTropixDirectoryServicePersonSupplierImpl extends BaseTropixDirec
     this.serviceMap = serviceMap;
   }
 
-  protected TropixDirectoryService getService(String address) {
+  protected TropixDirectoryService getService(final String address) {
     return serviceMap.get(address);
   }
 

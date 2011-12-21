@@ -18,11 +18,29 @@
   </publications>
   
   <dependencies>
-    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-cloud" rev="${ivy.project.version}" conf="default->impl" />
     <dependency org="msi.umn.edu" name="tropix-http-transfer" rev="${ivy.project.version}" conf="default->client" />
 
-    <dependency org="caGrid" name="transfer" rev="1.2" conf="default->client" />
-    <dependency org="caGrid" name="metadatautils" rev="1.2" conf="default->default" />
-    <dependency org="caGrid" name="cds" rev="1.2" conf="default->client" />
+    <dependency org="caGrid" name="transfer" rev="${cagrid.version}" conf="default->client">
+      <exclude org="jdom" />
+    </dependency>
+    <dependency org="caGrid" name="metadatautils" rev="${cagrid.version}" conf="default->default">
+      <exclude org="jdom" />
+    </dependency>
+    <dependency org="caGrid" name="cds" rev="${cagrid.version}" conf="default->client">
+      <exclude org="jdom" />
+    </dependency>
+    <!-- checked md5sum, maven repo has same as one we were getting from cagrid. -->
+    <dependency org="jdom" name="jdom" rev="1.0" conf="default->master" >
+      <!--
+      <artifact name="jdom" type="jar"/>
+      <exclude org="xalan" />
+      <exclude org="saxpath" />
+      <exclude org="jaxen" />
+      <exclude org="xerces" />
+      <exclude org="xml-apis" />
+      -->
+    </dependency>
+
   </dependencies>  
 </ivy-module>

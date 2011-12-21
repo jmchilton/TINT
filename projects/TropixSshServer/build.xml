@@ -9,10 +9,6 @@
   <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
   <import file="${shared-targets.file}" />
 
-  <property name="build.war.dir" value="${build.dir}/war" />
-  <property name="build.webinf.dir" value="${build.war.dir}/WEB-INF" />
-  <property name="build.lib.dir" value="${build.webinf.dir}/lib" />
-
   <target description="Sets up various classpaths used by the build system" name="define-classpaths" depends="cache-dependencies,check-globus">
     <path id="source.classpath">
     </path>
@@ -69,7 +65,6 @@
     <runcheckstyle />
   </target>
 
-
   <target name="run" depends="jar">
     <java classname="edu.umn.msi.tropix.ssh.EntryPoint"
 	  classpathref="test.classpath">
@@ -91,15 +86,7 @@
   </target>
 
   <target name="prepare-war" depends="jar">
-    <copy todir="${build.lib.dir}" flatten="true" >
-      <fileset refid="ivy.fileset" />
-      <fileset dir="${jars.dir}" includes="**/*.jar" />
-      <fileset dir="${ext.globus.dir}/lib" includes="**/*.jar" />
-    </copy>
-
-    <copy todir="${build.webinf.dir}" flatten="false">
-      <fileset dir="${resources.dir}/impl/WEB-INF" />
-    </copy>
+    <prepare-war webinfconf="impl" includewscore="true" />
   </target>
 
   <target name="start-server" depends="prepare-war">
@@ -108,9 +95,7 @@
   </target>
   
   <target name="package-war" depends="prepare-war">
-    <war destfile="${wars.dir}/tint-ssh.war" basedir="${build.war.dir}">
-      <lib dir="${build.lib.dir}" />
-    </war>
+    <package-war name="tint-ssh" />
   </target>
 
   <target name="war" depends="package-war" />

@@ -22,13 +22,24 @@
     <dependency org="msi.umn.edu" name="tropix-grid" rev="${project.version}" />
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${project.version}" />
 
-    <dependency org="org.springframework.security" name="spring-security-web" rev="3.0.3.RELEASE" conf="api->master" />
-    <dependency org="org.springframework.security" name="spring-security-core" rev="3.0.3.RELEASE" conf="api->master" />
-    <dependency org="org.springframework.security" name="spring-security-config" rev="3.0.3.RELEASE" conf="api->master" />
+    <dependency org="org.springframework.security" name="spring-security-web" rev="${spring.security.version}" conf="api->master" />
+    <dependency org="org.springframework.security" name="spring-security-core" rev="${spring.security.version}" conf="api->master" />
+    <dependency org="org.springframework.security" name="spring-security-config" rev="${spring.security.version}" conf="api->master" />
 
-    <dependency rev="1.2" org="caGrid" name="dorian" conf="impl->client" />
-    <dependency rev="1.2" org="caGrid" name="opensaml" conf="impl->default" />
-    <dependency rev="1.2" org="caGrid" name="core" conf="impl->default" />
+    <dependency rev="${cagrid.version}" org="caGrid" name="dorian" conf="impl->client">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+    <dependency rev="${cagrid.version}" org="caGrid" name="opensaml" conf="impl->default">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+
+    <dependency rev="${cagrid.version}" org="caGrid" name="core" conf="impl->default" >
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+
   </dependencies>
 
 </ivy-module>

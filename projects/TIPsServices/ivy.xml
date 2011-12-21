@@ -65,11 +65,31 @@
   <dependencies>   
     <dependency org="msi.umn.edu" name="tropix-galaxy" rev="${ivy.project.version}" conf="default->service;test->test" />
     <dependency org="msi.umn.edu" name="tropix-proteomics" rev="${ivy.project.version}" conf="default->default;test->test" />
-    <dependency org="caGrid" name="metadatautils" rev="1.2" conf="default->default" />
-    <dependency org="caGrid" name="cds" rev="1.2" conf="default->client" />    
-    <dependency rev="1.2" org="caGrid" name="core" conf="default->default;test->test"/>
-    <dependency rev="1.2" org="caGrid" name="testing" conf="default->system"/>
-    <dependency rev="1.2" org="caGrid" name="transfer" conf="default->service" />      
+    <dependency org="caGrid" name="metadatautils" rev="1.2" conf="default->default">
+      <exclude org="antlr" />
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency org="caGrid" name="cds" rev="1.2" conf="default->client">
+      <exclude org="antlr" />
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency rev="1.2" org="caGrid" name="core" conf="default->default;test->test">
+      <exclude org="antlr" />
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency rev="1.2" org="caGrid" name="testing" conf="default->system">
+      <exclude org="antlr" />
+      <exclude org="jdom" />
+    </dependency>
+
+    <dependency rev="1.2" org="caGrid" name="transfer" conf="default->service">
+      <exclude org="antlr" />
+      <exclude org="jdom" />
+    </dependency>
+
   </dependencies>
 
 </ivy-module> 

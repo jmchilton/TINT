@@ -35,13 +35,20 @@
   <resolvers>
     <chain name="default">
       <fs-resolver repo.dir="${integration.repository.dir}" name="local-fs" />
+      <ibiblio name="maven2" m2compatible="true" />
+      <ibiblio name="jboss" root="https://repository.jboss.org/nexus/content/groups/public" m2compatible="true" />
+      <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true"/>
       <www-resolver repo.url="http://tropix.msi.umn.edu/ivy" name="tropix-repository" />
+      <!--
       <spring-resolver name="release" />
       <spring-resolver name="external" />
+      -->
       <www-resolver repo.url="http://software.cagrid.org/repository-1.2" name="cagrid-repository" />
+      <!--
       <ibiblio name="jboss" root="https://repository.jboss.org/nexus/content/groups/public" m2compatible="true" />
       <ibiblio name="maven2" m2compatible="true" />
       <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true"/>
+      -->
       <ibiblio name="mayo" root="http://informatics.mayo.edu/maven/content/groups/public" m2compatible="true" />      
     </chain>
   </resolvers>

@@ -14,7 +14,6 @@ import org.apache.sshd.server.Command;
 import org.apache.sshd.server.FileSystemFactory;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.command.ScpCommandFactory;
-import org.apache.sshd.server.sftp.SftpSubsystem;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.google.common.collect.Lists;
@@ -25,6 +24,7 @@ public class SshServerWrapper {
   private static final Log LOG = LogFactory.getLog(SshServerWrapper.class);
   private final PasswordAuthenticator passwordAuthenticator; 
   private final FileSystemFactory fileSystemFactory;
+  private final boolean useCustomSftpSubsystem = true;
 
   private final SshServer wrappedServer;
   
@@ -35,6 +35,7 @@ public class SshServerWrapper {
       LOG.debug(String.format("Creating SCP command object for string [%s]", command));
       return super.createCommand(command);
     }
+    
   }
 
   @Inject
@@ -46,7 +47,14 @@ public class SshServerWrapper {
     this.fileSystemFactory = fileSystemFactory;
     
     wrappedServer = SshServer.setUpDefaultServer();
-    wrappedServer.setSubsystemFactories(Lists.<NamedFactory<Command>>newArrayList(new SftpSubsystem.Factory()));
+    final NamedFactory<Command> sftpCommand;
+    if(useCustomSftpSubsystem) {
+      sftpCommand = new SftpSubsystem.Factory();
+    } else {
+      sftpCommand = new org.apache.sshd.server.sftp.SftpSubsystem.Factory();
+    }
+
+    wrappedServer.setSubsystemFactories(Lists.<NamedFactory<Command>>newArrayList(sftpCommand));
     //final KeyPairProvider keyPair = new SimpleGeneratorHostKeyProvider();
     wrappedServer.setKeyPairProvider(keyPairProvider);
     wrappedServer.setCommandFactory(new ScpCommandFactoryWrapper());

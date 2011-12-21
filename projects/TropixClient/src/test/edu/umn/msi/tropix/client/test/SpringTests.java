@@ -72,8 +72,8 @@ public class SpringTests extends AbstractTestNGSpringContextTests {
       System.out.println(person.getCagridIdentity());
     }
     System.out.println("/Persons" + count);
-    if(true)
-      throw new RuntimeException();
+    //if(true)
+    //  throw new RuntimeException();
 
     Supplier<Iterable<QueueGridService>> bowtieServiceSupplier = (Supplier<Iterable<QueueGridService>>) applicationContext
         .getBean("rawExtractGridServiceSupplier");

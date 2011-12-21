@@ -16,67 +16,61 @@
   </publications>
   
   <dependencies>
+    <dependency org="antlr" name="antlr" rev="2.7.6"><!-- At some point update org.antlr and 3.XX -->
+      <artifact name="antlr" />
+    </dependency>
+    <dependency org="log4j" name="log4j" rev="${log4j.version}" />
     <dependency org="globus" name="core-backports" rev="4.0.3" conf="default->default" />
-    <dependency org="com.googlecode.flyway" name="flyway-core" rev="1.4.2" conf="default->master" />
-    <dependency org="com.googlecode.flyway" name="flyway-commandline" rev="1.4.2" conf="default->master" />
-    <dependency org="com.h2database" name="h2" rev="1.3.161" conf="default->default" />
+    <dependency org="com.googlecode.flyway" name="flyway-core" rev="${flyway.version}" conf="default->master" />
+    <dependency org="com.googlecode.flyway" name="flyway-commandline" rev="${flyway.version}" conf="default->master" />
+    <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="default->default" />
+    <dependency org="mysql" name="mysql-connector-java" rev="3.1.13" conf="default->master" />
     <dependency org="net.jmchilton" name="runtime-interruptions" rev="0.1" />
     <dependency org="net.jmchilton" name="spring-collections" rev="0.1" />
-    <dependency org="com.sun.xml" name="jaxb-impl" rev="2.0" />
-    <dependency org="com.sun.xml" name="jaxb-xjc" rev="2.0" />
-    <dependency org="net.sf.emma" name="emma" rev="3.0.0" />
-    <dependency org="apache" name="commons-lang" rev="2.2" />
-    <dependency org="apache" name="commons-cli" rev="2.20070823" />
-    <dependency org="apache" name="commons-math" rev="1.2" />
-    <dependency org="apache" name="commons-io" rev="1.4" />
-    <dependency org="apache" name="commons-codec" rev="1.3" />
-    <dependency org="apache" name="commons-beanutils" rev="1.7.0" />
-    <dependency org="net.sf.findbugs" name="findbugs" rev="1.3.7" />
+    <dependency org="com.sun.xml.bind" name="jaxb-impl" rev="${jaxb.version}" />
+    <dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="${jaxb.version}" />
+    <dependency org="net.sf.emma" name="emma" rev="${emma.version}" />
+    <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}" conf="default->master" />
+    <dependency org="commons-lang" name="commons-lang" rev="2.2" />
+    <dependency org="commons-math" name="commons-math" rev="1.2" />
+    <dependency org="commons-io" name="commons-io" rev="1.4" />
+    <dependency org="commons-codec" name="commons-codec" rev="1.3" />
+    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.7.0" />
+    <dependency org="net.sf.findbugs" name="findbugs" rev="${findbugs.version}" />
 
-    <!-- <dependency org="google" name="collect" rev="1.0-rc1" /> -->
-    <dependency org="com.google.guava" name="guava" rev="r09"/>
+    <dependency org="com.google.guava" name="guava" rev="${guava.version}"/>
+    <dependency org="org.testng" name="testng" rev="${testng.version}" />
 
-    <!-- <dependency org="org.easymock" name="easymockclassextension" rev="2.4" /> -->
-    <dependency org="org.testng" name="testng" rev="5.7" />
+    <dependency org="org.hibernate" name="hibernate-validator" rev="4.2.0.Final" conf="default->master,runtime">
+    </dependency>
 
-    <dependency org="javax.el" name="com.springsource.javax.el" rev="1.0.0" conf="default->compile"/>
-    <dependency org="javax.inject" name="com.springsource.javax.inject" rev="1.0.0" conf="default->compile"/>
-    <dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="2.5.0" />
-    <dependency org="javax.transaction" name="com.springsource.javax.transaction" rev="1.1.0" conf="default->compile"/>
-    <dependency org="javax.ejb" name="com.springsource.javax.ejb" rev="3.0.0" conf="default->compile"/>    
-    <dependency org="javax.annotation" name="com.springsource.javax.annotation" rev="1.0.0" conf="default->compile"/>
+    <dependency org="org.hibernate" name="hibernate-core" rev="${hibernate.version}" conf="default->runtime,master">
+      <exclude org="antlr" />
+    </dependency>
 
+    <dependency org="org.hibernate" name="hibernate-entitymanager" rev="${hibernate.version}" conf="default->default">
+      <exclude org="cglib" />
+    </dependency>
 
-    <dependency org="org.easymock" name="easymock" rev="3.0" conf="default->master"/>
+    <dependency org="cglib" name="cglib-nodep" rev="2.2.2" />
+
+    <dependency org="org.hibernate" name="hibernate-ehcache" conf="default->master" rev="${hibernate.version}" />
+    <dependency org="net.sf.ehcache" name="ehcache-core" rev="${ehcache.version}" conf="default->master,runtime" />
+
+    <dependency org="org.aspectj" name="aspectjrt" rev="${aspectj.version}"  />
+    <dependency org="org.aspectj" name="aspectjweaver" rev="${aspectj.version}" />
+
+    <dependency org="org.springframework" name="spring-orm" rev="${spring.version}" conf="default->default"  />
+    <dependency org="org.springframework" name="spring-aspects" rev="${spring.version}"  conf="default->compile;default->runtime" />
+    <dependency org="org.springframework" name="spring-test" rev="${spring.version}" conf="test->runtime" />
+
+    <dependency org="javax.inject" name="javax.inject" rev="1" />
+    <dependency org="org.easymock" name="easymock" rev="${easymock.version}" conf="default->master"/>
     <dependency org="org.objenesis" name="objenesis" rev="1.2" conf="default->master" />
 
-    <dependency org="net.sourceforge.ehcache" name="com.springsource.net.sf.ehcache" rev="1.6.2" conf="default->runtime" />
-
-    <dependency org="org.springframework" name="org.springframework.transaction" rev="${spring.version}" conf="default->runtime" />
-    <dependency org="org.springframework" name="org.springframework.jdbc" rev="${spring.version}" conf="default->runtime" />
-    <dependency org="org.springframework" name="org.springframework.orm" rev="${spring.version}" conf="default->hibernate-jpa;default->aop" />
-    <dependency org="org.springframework" name="org.springframework.aop" rev="${spring.version}" conf="default->aspectj" />
-    <dependency org="org.springframework" name="org.springframework.context.support" rev="${spring.version}" conf="default->runtime" />
-    <dependency org="org.springframework" name="org.springframework.test" rev="${spring.version}" conf="default->runtime" />
-    <dependency org="org.springframework" name="org.springframework.web.servlet" rev="${spring.version}" conf="default->runtime" />
-    <dependency org="org.slf4j" name="com.springsource.slf4j.jcl" rev="1.5.3" />
-    
-<!--
-    <dependency org="org.springframework" name="org.springframework.orm" rev="3.0.0.BUILD-20091219222535" />
-    <dependency org="org.springframework" name="org.springframework.jdbc" rev="3.0.0.BUILD-20091219222535" />
-    -->
-    <!--
-    <dependency org="org.springframework" name="spring-tx" rev="2.5.6" />
-    <dependency org="org.springframework" name="spring-orm" rev="2.5.6" />
-    <dependency org="org.springframework" name="spring-test" rev="2.5.6" />
-    <dependency org="org.springframework" name="spring-jdbc" rev="2.5.6" />
-    <dependency org="javax.ejb" name="ejb" rev="3.0" />
-    <dependency org="javax.annotations" name="jsr250" rev="1.0" conf="default->api" />
-    -->
-    <!-- <dependency org="javax.annotations" name="jsr305" rev="1.0" /> -->
+    <dependency org="org.slf4j" name="slf4j-jcl" rev="${slf4j.version}" />
     <dependency org="gov.nist.math" name="jama" rev="1.0.2" />
-    <dependency org="javax.mail" name="mail" rev="1.4"/>    
-    <dependency org="com.sun.jaf" name="jaf" rev="1.1" />
+    <dependency org="javax.mail" name="mail" rev="1.4"/>
   </dependencies>  
 </ivy-module> 
  

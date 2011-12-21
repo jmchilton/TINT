@@ -12,10 +12,6 @@
   <property name="shared-targets.file" location="${basedir}/../../antfiles/shared-targets.xml" />
   <import file="${shared-targets.file}" />
 
-  <property name="build.war.dir" value="${build.dir}/war" />
-  <property name="build.lib.dir" value="${build.war.dir}/WEB-INF/lib" />
-  <property name="build.www.dir" value="${build.war.dir}/WEB-INF" />
-
   <property name="gwt.entrypoint.class" value="edu.umn.msi.tropix.webgui.TropixGui" />
   <property name="war.location" value="${wars.dir}/${deploy.path}.war" />
 
@@ -49,9 +45,9 @@
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/jaxb-api*.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/jsr305*.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*javax.persistence*.jar" />
-      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*javax.ejb*.jar" />
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*hibernate*.jar" /> <!-- For the annotations. -->
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*org.hibernate.annotations*.jar" />
-      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*org.aopalliance*.jar" />
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*aopalliance*.jar" />
     </path>
     <path id="gwt.dev.libs">
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/gwt-user*.jar" />

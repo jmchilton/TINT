@@ -18,9 +18,6 @@
   </publications>
   
   <dependencies>
-
-    <dependency org="apache" name="commons-lang" rev="2.2" />
-    <dependency org="apache" name="log4j" rev="1.2.14" conf="impl->default" />
     <dependency org="msi.umn.edu" name="tropix-labs" rev="${ivy.project.version}" conf="api->main" />
     <dependency org="msi.umn.edu" name="tropix-proteomics" rev="${ivy.project.version}" conf="api->default;test->test" />
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl->service-impl-dao" />
@@ -28,12 +25,29 @@
     <dependency org="msi.umn.edu" name="tropix-auth" rev="${ivy.project.version}" conf="impl->impl" />
     <dependency org="info.minnesotapartnership" name="tropix" rev="1.0" conf="impl->directory-client;impl->search-client;api->catalog-cagrid-client;api->request-client">
       <exclude org="org.easymock" />
+      <exclude org="jdom" />
+      <exclude org="antlr" />
     </dependency>
-    <dependency rev="1.2" org="caGrid" name="core" conf="impl->default" />
-    <dependency rev="1.2" org="caGrid" name="discovery" conf="impl->default" />    
-    <dependency rev="1.2" org="caGrid" name="metadata" conf="impl->jars" />
-    <dependency rev="1.2" org="caGrid" name="metadatautils" conf="impl->default" />
 
-    <dependency rev="0.1" org="net.jmchilton" name="spring-collections" />
+    <dependency rev="${cagrid.version}" org="caGrid" name="core" conf="impl->default">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+
+    <dependency rev="${cagrid.version}" org="caGrid" name="discovery" conf="impl->default">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+    
+    <dependency rev="${cagrid.version}" org="caGrid" name="metadata" conf="impl->jars">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+
+    <dependency rev="${cagrid.version}" org="caGrid" name="metadatautils" conf="impl->default">
+      <exclude org="jdom" />
+      <exclude org="antlr" />
+    </dependency>
+
   </dependencies>  
 </ivy-module> 

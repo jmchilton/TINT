@@ -21,6 +21,15 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+
+    <dependency org="org.jclouds.provider" name="aws-ec2" rev="${jclouds.version}">
+    </dependency>
+    <dependency org="org.jclouds.driver" name="jclouds-log4j" rev="${jclouds.version}">
+    </dependency>
+    <dependency org="org.jclouds.driver" name="jclouds-jsch" rev="${jclouds.version}">
+    </dependency>
+    <!-- guice (imported from jclouds tries really hard to import cglib, we have cglib-nodep from commons -->
+    <exclude module="cglib" />
   </dependencies>  
 
 </ivy-module>

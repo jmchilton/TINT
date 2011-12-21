@@ -67,7 +67,8 @@ public class GalaxyXmlUtils {
     try {
       return Utils.deserializeObject(reader, c);
     } catch(final Exception e) {
-      System.out.println(hackedXml);
+      //e.getCause().printStackTrace();
+      //System.out.println(hackedXml);
       throw new IllegalArgumentException("Failed to convert xml based object.", e);
     }
   }

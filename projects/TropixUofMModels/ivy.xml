@@ -14,7 +14,6 @@
   </configurations>
 
   <publications>
-
     <artifact name="tropix-models-beans" type="jar" conf="core" ext="jar" />
     <artifact name="tropix-models-orm" type="jar" conf="core" ext="jar" />
     <artifact name="tropix-models-xml" type="jar" conf="core" ext="jar" />
@@ -30,11 +29,15 @@
   </publications>
 
   <dependencies>
-    <dependency org="org.apache.commons" name="com.springsource.org.apache.commons.logging" rev="1.1.1"/>
-    <dependency org="com.google.guava" name="guava" rev="r09"/>
-    <dependency org="cacore" name="client" rev="4.0" />
-    <dependency org="log4j" name="log4j" rev="1.2.16" />
-    <dependency org="org.testng" name="testng" rev="5.7" />
-    <dependency org="net.sf.emma" name="emma" rev="3.0.0" />
+    <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}" conf="default->master" />
+    <dependency org="cacore" name="client" rev="4.0" conf="core->client-core">
+    </dependency>
+    <dependency org="castor" name="castor" rev="0.9.9">
+      <artifact name="castor" />
+    </dependency>
+    <dependency org="log4j" name="log4j" rev="${log4j.version}" />
+    <dependency org="com.google.guava" name="guava" rev="${guava.version}"/>
+    <dependency org="org.testng" name="testng" rev="${testng.version}" />
+    <dependency org="net.sf.emma" name="emma" rev="${emma.version}" />
   </dependencies>  
 </ivy-module>

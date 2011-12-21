@@ -21,10 +21,13 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    
+    <dependency org="org.springframework" name="spring-web" rev="${spring.version}" conf="server->default" />
+    <dependency org="org.springframework" name="spring-webmvc" rev="${spring.version}" conf="server->default" />
 
-    <dependency rev="4.0" org="apache" name="http-client" conf="client->default" />
-    <dependency rev="3.0" org="apache" name="jarkarta-commons-httpclient" conf="client->default" />
-    <dependency org="org.codehaus" name="jetty" rev="6.1.19" conf="embedded->embedded" />
+    <!-- TODO: Rev to 4.1.2 -->
+    <dependency rev="4.0.3" org="org.apache.httpcomponents" name="httpclient" conf="client->default" />
+    <dependency org="org.mortbay.jetty" name="jetty" rev="${jetty.version}" conf="embedded->default" />
   </dependencies>  
 
 </ivy-module> 

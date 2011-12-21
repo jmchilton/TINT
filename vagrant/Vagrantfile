@@ -34,6 +34,7 @@ Vagrant::Config.run do |config|
   config.vm.define :sshserver do |sshserver| 
     sshserver.vm.host_name = "sshserver"
     sshserver.vm.network "33.33.33.11" 
+    sshserver.vm.forward_port "tint_ssh", 8021, 18021
   end
 
 end
