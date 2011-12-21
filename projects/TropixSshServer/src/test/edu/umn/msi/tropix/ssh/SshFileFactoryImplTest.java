@@ -155,7 +155,9 @@ public class SshFileFactoryImplTest {
   }
 
   @Test(groups = "unit")
-  public void testCannotUpdateLastModified() {
+  public void testCannotUpdateLastModifiedOfNonFile() {
+    backingObject = new Folder();
+    expectGetPath();
     replayAndSetFile();
     assert !sshFile.setLastModified(100000L);
   }

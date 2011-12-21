@@ -31,7 +31,7 @@ public class GridIntegrationTest extends AbstractTestNGSpringContextTests {
   @Inject
   private GlobusCredentialProvider credentialProvider;
   
-  @Test(groups = "unit")
+  @Test(groups = "interaction")
   public void testMoo() throws IOException {
     //System.out.print("Password:");
     //System.out.flush();

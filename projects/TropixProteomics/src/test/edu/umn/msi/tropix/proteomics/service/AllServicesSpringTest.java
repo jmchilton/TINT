@@ -53,7 +53,7 @@ public class AllServicesSpringTest extends FreshConfigTest {
   @Inject
   private TagReconJobQueueContext tagReconJobQueueContext;
   
-  @Inject
+  //@Inject
   private InspectJobQueueContext inspectJobQueueContext;
   
   @Test(groups = "spring")

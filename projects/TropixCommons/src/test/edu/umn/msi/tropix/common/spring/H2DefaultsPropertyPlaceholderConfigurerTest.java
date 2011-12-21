@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.common.spring;
 
 import java.io.File;
 
+import org.hibernate.dialect.H2Dialect;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Suppliers;
