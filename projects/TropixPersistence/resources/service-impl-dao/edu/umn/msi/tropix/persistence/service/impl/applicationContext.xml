@@ -47,7 +47,9 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   
   <aop:config>
     <aop:pointcut id="serviceOperation" expression="execution(* edu.umn.msi.tropix.persistence.service.*Service.*(..))" />
+    <aop:pointcut id="galaxyToolStoreOperation" expression="execution(* edu.umn.msi.tropix.persistence.galaxy.PersistentGalaxyToolStore.*(..))" />
     <aop:advisor advice-ref="serviceTransactionAdvice" pointcut-ref="serviceOperation" />
+    <aop:advisor advice-ref="serviceTransactionAdvice" pointcut-ref="galaxyToolStoreOperation" />
   </aop:config>
 
   <bean id="serviceLayerMessageSource" class="edu.umn.msi.tropix.common.message.impl.MessageSourceSpringImpl">
