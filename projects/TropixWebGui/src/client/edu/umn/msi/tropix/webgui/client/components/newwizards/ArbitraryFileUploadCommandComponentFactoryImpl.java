@@ -40,7 +40,6 @@ import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent;
 import edu.umn.msi.tropix.webgui.client.components.FileTypeFormItemComponent.FileTypeFormItemOptions;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
-import edu.umn.msi.tropix.webgui.client.components.UploadComponent.CanUpload;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
@@ -48,11 +47,11 @@ import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.utils.Sets;
 import edu.umn.msi.tropix.webgui.client.widgets.ItemWrapper;
+import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardCompletionHandler;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardFactoryImpl;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardOptions;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPage;
-import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPageImpl;
 import edu.umn.msi.tropix.webgui.services.jobs.JobSubmitService;
 
 public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardCommandComponentFactoryImpl {
@@ -93,33 +92,20 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
       }
     });
 
-    class UploadWizardPageImpl extends WizardPageImpl<VLayout> {
-
-      @Override
-      public boolean allowNext() {
-        return true;
-      }
-
-      @Override
-      public boolean isValid() {
-        final CanUpload canUpload = uploadComponent.canUpload();
-        setError(canUpload.getReason());
-        return canUpload.getCanUpload();
-      }
+    class UploadWizardPageImpl extends FileSourceWizardPageImpl {
 
       UploadWizardPageImpl() {
+        super(uploadComponent);
         setTitle("File");
         setDescription("Specify a file to upload");
         
         final FileTypeFormItemOptions fileTypeOptions = new FileTypeFormItemOptions();
         fileTypeOptions.setAllowAutoDetect(true);
-        //final Form fileTypeForm = new Form();
         fileTypeComponent = fileTypeFormItemComponentFactory.get(fileTypeOptions);
         final ItemWrapper wrapper = new ItemWrapper(fileTypeComponent.get());
         fileTypeComponent.setSelection("");
-        final VLayout layout = new VLayout();
+        final VLayout layout = SmartUtils.getFullVLayout();
         layout.setHeight100();
-        layout.setWidth100();
         this.setCanvas(layout);
         setValid(true);
         layout.addMember(wrapper);

@@ -42,7 +42,6 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.UploadFileDescription;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
-import edu.umn.msi.tropix.webgui.client.components.UploadComponent.CanUpload;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
@@ -51,7 +50,6 @@ import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardCompletionHandler;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardFactoryImpl;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardOptions;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPage;
-import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPageImpl;
 import edu.umn.msi.tropix.webgui.services.jobs.JobSubmitService;
 
 public class SequenceDatabaseCommandComponentFactoryImpl extends WizardCommandComponentFactoryImpl {
@@ -82,21 +80,10 @@ public class SequenceDatabaseCommandComponentFactoryImpl extends WizardCommandCo
     });
     private final UploadComponent uploadComponent = uploadComponentFactory.get(uploadOpts);
 
-    class UploadWizardPageImpl extends WizardPageImpl<VLayout> {
-
-      @Override
-      public boolean allowNext() {
-        return true;
-      }
-      
-      @Override
-      public boolean isValid() {
-        final CanUpload canUpload = uploadComponent.canUpload();
-        setError(canUpload.getReason());
-        return canUpload.getCanUpload();
-      }
+    class UploadWizardPageImpl extends FileSourceWizardPageImpl {
             
       UploadWizardPageImpl() {
+        super(uploadComponent);
         formatForm = new DynamicForm();
         formatForm.setWidth100();
         final SelectItem selectItem = new SelectItem();

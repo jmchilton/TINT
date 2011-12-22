@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.webgui.client.components.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.swfupload.client.SWFUpload;
@@ -73,6 +74,7 @@ import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory;
 import edu.umn.msi.tropix.webgui.client.utils.FlashUtils;
 import edu.umn.msi.tropix.webgui.client.utils.JObject;
+import edu.umn.msi.tropix.webgui.client.utils.Lists;
 import edu.umn.msi.tropix.webgui.client.widgets.CanvasWithOpsLayout;
 import edu.umn.msi.tropix.webgui.client.widgets.ClientListGrid;
 import edu.umn.msi.tropix.webgui.client.widgets.Form;
@@ -107,7 +109,8 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
     private long totalSize;
     private int filesUploaded = 0, numFiles;
     private long bytesUploaded;
-    private final LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+    //private final LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+    private final List<FileSource> fileSources = Lists.newArrayList();
     private final String clientId;
 
     private void updateUrl() {
@@ -177,17 +180,13 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
           try {
             filesUploaded++;
             bytesUploaded += uploadEvent.getFile().getSize();
-            final JObject jObject = JObject.Factory.create(uploadEvent.getServerData());
-            for(final JObject fileObject : jObject.getJArray("result").asJObjectIterable()) {
-              final String fileName = fileObject.getString("fileName");
-              final String id = fileObject.getString("id");
-              map.put(fileName, id);
-            }
+            final String serverResponse = uploadEvent.getServerData();
+            fileSources.addAll(toFileSources(serverResponse));
             updateUrl();
             if(upload.getStats().getFilesQueued() > 0) {
               upload.startUpload();
             } else {
-              options.getCompletionCallback().onSuccess(map);
+              options.getCompletionCallback().onSuccess(fileSources);
             }
           } catch(final Exception e) {
             options.getCompletionCallback().onFailure(e);
@@ -270,7 +269,6 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
     private final VerticalPanel panel = new VerticalPanel();
     private final ScrollPanel scrollPanel = new ScrollPanel(panel);
     private final ArrayList<FileUpload> uploadForms = new ArrayList<FileUpload>();
-    private final LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
     private final UploadComponentOptions options;
     private final boolean zip;
     private final String types;
@@ -350,13 +348,8 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
           System.out.println("Submit complete " + completeEvent.getResults());
           final String result = completeEvent.getResults();
           try {
-            final JObject jObject = JObject.Factory.create(result);
-            for(final JObject fileObject : jObject.getJArray("result").asJObjectIterable()) {
-              final String fileName = fileObject.getString("fileName");
-              final String id = fileObject.getString("id");
-              map.put(fileName, id);
-            }
-            options.getCompletionCallback().onSuccess(map);
+            final List<FileSource> fileSources = toFileSources(result);  
+            options.getCompletionCallback().onSuccess(fileSources);
           } catch(final Exception e) {
             options.getCompletionCallback().onFailure(e);
           }
@@ -553,6 +546,18 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
       return currentComponent.isZip();
     }
 
+  }
+  
+  private static List<FileSource> toFileSources(final String serverResponse) {
+    final List<FileSource> fileSources = Lists.newArrayList();
+    final JObject jObject = JObject.Factory.create(serverResponse);
+    for(final JObject fileObject : jObject.getJArray("result").asJObjectIterable()) {
+      final String fileName = fileObject.getString("fileName");
+      final String id = fileObject.getString("id");
+      final FileSource fileSource = new FileSource(id, fileName, true);
+      fileSources.add(fileSource);
+    }
+    return fileSources;
   }
 
   public DynamicUploadComponent get(final UploadComponentOptions options) {

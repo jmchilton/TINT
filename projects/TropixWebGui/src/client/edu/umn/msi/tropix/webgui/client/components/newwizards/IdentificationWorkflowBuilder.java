@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -12,7 +11,6 @@ import edu.umn.msi.tropix.client.services.IdentificationGridService;
 import edu.umn.msi.tropix.client.services.QueueGridService;
 import edu.umn.msi.tropix.client.services.ScaffoldGridService;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDependency;
-import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescriptions;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CommitObjectDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CommonMetadataProvider;
@@ -35,10 +33,9 @@ import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleTypeWizardPageImpl.ScaffoldSampleType;
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.utils.Lists;
-import edu.umn.msi.tropix.webgui.client.utils.Sets;
 
 // TODO: Don't iterate over uploadRuns twice, it won't yield different order but seems in bad form nonetheless.
-public class IdentificationWorkflowBuilder {
+public class IdentificationWorkflowBuilder extends WorkflowBuilder {
   private final ComponentConstants componentConstants;
 
   private boolean createSubfolders;
@@ -75,14 +72,14 @@ public class IdentificationWorkflowBuilder {
     return names;
   }
 
-  public Set<ActivityDescription> build() {
-    final Set<ActivityDescription> descriptions = Sets.newHashSet();
+  @Override
+  protected void populateDescriptions() {
     final List<String> names = getRunNames();
 
     final CreateFolderDescription createFolder = new CreateFolderDescription();
     ActivityDescriptions.initCommonMetadata(createFolder, commonMetadataProvider);
     createFolder.setCommitted(true);
-    descriptions.add(createFolder);
+    add(createFolder);
 
     // Specify folder for each type of object, these will just default to main folder specified above
     // unless createSubfolders is true.
@@ -94,20 +91,20 @@ public class IdentificationWorkflowBuilder {
         runFolder = new CreateFolderDescription();
         runFolder.setName(componentConstants.idWorkflowRunFolder());
         runFolder.addDependency(ActivityDependency.Builder.on(createFolder).produces("objectId").consumes("destinationId").build());
-        descriptions.add(runFolder);
+        add(runFolder);
       }
 
       idFolder = new CreateFolderDescription();
       idFolder.setName(componentConstants.idWorkflowIdFolder());
       idFolder.addDependency(ActivityDependency.Builder.on(createFolder).produces("objectId").consumes("destinationId").build());
-      descriptions.add(idFolder);
+      add(idFolder);
 
       // No need to create folder for scaffold analyses unless there is going to be more than 1, i.e. scaffoldType is MANY_ANALYSIS
       if(useScaffold && (scaffoldType == ScaffoldSampleType.MANY_ANALYSIS)) {
         scaffoldFolder = new CreateFolderDescription();
         scaffoldFolder.setName(componentConstants.idWorkflowScaffoldFolder());
         scaffoldFolder.addDependency(ActivityDependency.Builder.on(createFolder).produces("objectId").consumes("destinationId").build());
-        descriptions.add(scaffoldFolder);
+        add(scaffoldFolder);
       }
     }
     final StringBuilder logMessage = new StringBuilder();
@@ -126,7 +123,7 @@ public class IdentificationWorkflowBuilder {
     parametersDescription.setCommitted(true);
     parametersDescription.setParameterType(idService.getParameterType());
     parametersDescription.setParameters(StringParameterSet.fromMap(parameterMap));
-    descriptions.add(parametersDescription);
+    add(parametersDescription);
 
     final List<SubmitIdentificationAnalysisDescription> submitIdentficationAnalysisDescriptions = Lists.newArrayListWithCapacity(names.size());
     final List<CreateIdentificationAnalysisDescription> createIdentficationAnalysisDescriptions = Lists.newArrayListWithCapacity(names.size());
@@ -162,11 +159,11 @@ public class IdentificationWorkflowBuilder {
 
       final CommitObjectDescription commitIdDescription = ActivityDescriptions.createCommitDescription(createIdentificationAnalysisDescription);
 
-      descriptions.add(submitDescription);
-      descriptions.add(pollJobDescription);
-      descriptions.add(createAnalysisFileDescription);
-      descriptions.add(createIdentificationAnalysisDescription);
-      descriptions.add(commitIdDescription);
+      add(submitDescription);
+      add(pollJobDescription);
+      add(createAnalysisFileDescription);
+      add(createIdentificationAnalysisDescription);
+      add(commitIdDescription);
     }
 
     final Iterator<CreateIdentificationAnalysisDescription> createIdIter = createIdentficationAnalysisDescriptions.iterator();
@@ -201,13 +198,13 @@ public class IdentificationWorkflowBuilder {
 
         final CommitObjectDescription commitRunDescription = ActivityDescriptions.createCommitDescription(createProteomicsRunDescription);
 
-        descriptions.add(uploadDescription);
-        descriptions.add(createRawFileDescription);
-        descriptions.add(submitDescription);
-        descriptions.add(pollJobDescription);
-        descriptions.add(createMzxmlDescription);
-        descriptions.add(createProteomicsRunDescription);
-        descriptions.add(commitRunDescription);
+        add(uploadDescription);
+        add(createRawFileDescription);
+        add(submitDescription);
+        add(pollJobDescription);
+        add(createMzxmlDescription);
+        add(createProteomicsRunDescription);
+        add(commitRunDescription);
 
         createId.addDependency(ActivityDependency.Builder.on(createProteomicsRunDescription).produces("objectId").consumes("runId").build());
         submitId.addDependency(ActivityDependency.Builder.on(createProteomicsRunDescription).produces("objectId").consumes("runId").build());
@@ -281,17 +278,16 @@ public class IdentificationWorkflowBuilder {
 
         final CommitObjectDescription commitScaffoldDescription = ActivityDescriptions.createCommitDescription(createAnalysis);
 
-        descriptions.add(mergeSamples);
-        descriptions.add(createDriver);
-        descriptions.add(createDriverFile);
-        descriptions.add(submitDescription);
-        descriptions.add(pollJobDescription);
-        descriptions.add(createAnalysisFileDescription);
-        descriptions.add(createAnalysis);
-        descriptions.add(commitScaffoldDescription);
+        add(mergeSamples);
+        add(createDriver);
+        add(createDriverFile);
+        add(submitDescription);
+        add(pollJobDescription);
+        add(createAnalysisFileDescription);
+        add(createAnalysis);
+        add(commitScaffoldDescription);
       }
     }
-    return descriptions;
   }
 
   public void setCreateSubfolders(final boolean createSubfolders) {

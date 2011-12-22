@@ -25,6 +25,7 @@ package edu.umn.msi.tropix.webgui.client.components.newwizards;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,6 +52,7 @@ import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
+import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.FileSource;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleTypeWizardPageImpl.ScaffoldSampleType;
@@ -62,6 +64,8 @@ import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.forms.ValidationListener;
 import edu.umn.msi.tropix.webgui.client.identification.ParametersPanelFactory;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
+import edu.umn.msi.tropix.webgui.client.utils.Lists;
+import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.widgets.Form;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils.ConditionalWidgetSupplier;
@@ -149,13 +153,18 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
       this.createSubfolders = createSubfolders;
     }
 
-    private final UploadComponentOptions uploadOpts = new UploadComponentOptions(true, new AsyncCallbackImpl<LinkedHashMap<String, String>>() {
+    private final UploadComponentOptions uploadOpts = new UploadComponentOptions(true, new AsyncCallbackImpl<List<FileSource>>() {
       @Override
-      public void onSuccess(final LinkedHashMap<String, String> params) {
-        uploadedRuns = params;
+      public void onSuccess(final List<FileSource> params) {
+        final LinkedHashMap<String, String> uploadedRunsMap = Maps.newLinkedHashMap();
+        for(final FileSource fileSource : params) {
+         uploadedRunsMap.put(fileSource.getName(), fileSource.getId()); 
+        }
+        uploadedRuns = uploadedRunsMap;
         finish();
       }
     });
+    
     private final UploadComponent uploadComponent = uploadComponentFactory.get(uploadOpts);
     private final UploadWizardPageImpl uploadPage = new UploadWizardPageImpl(uploadComponent, CONSTANTS.runWizardThermoUploadTitle(),
         CONSTANTS.runWizardThermoUploadDescription()) {

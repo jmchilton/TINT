@@ -23,28 +23,84 @@
 package edu.umn.msi.tropix.webgui.client.components;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.umn.msi.tropix.webgui.client.utils.Maps;
+
 public interface UploadComponentFactory<T extends UploadComponent> extends ComponentFactory<UploadComponentFactory.UploadComponentOptions, T> {
 
+  public class FileSource {
+    private String id;
+    
+    private String name;
+    
+    private boolean upload;
+    
+    public FileSource(final String id, final String name, final boolean upload) {
+      this.id = id;
+      this.name = name;
+      this.upload = upload;
+    }
+    
+    
+    public String getId() {
+      return id;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public boolean isUpload() {
+      return upload;
+    }
+    
+  }
+  
   public class UploadComponentOptions {
-    public UploadComponentOptions(final boolean allowMultiple, @Nonnull final AsyncCallback<LinkedHashMap<String, String>> completionCallback) {
+    
+    public UploadComponentOptions(final boolean allowMultiple, @Nonnull final AsyncCallback<List<FileSource>> completionCallback) {
       this.allowMultiple = allowMultiple;
       this.completionCallback = completionCallback;
     }
+    
+    
+    /* Same type earsure, eventually replace lower method with this one.
+    public UploadComponentOptions(@Nonnull final AsyncCallback<List<FileSource>> completionCallback) {
+      this(false, completionCallback);
+    }
+    */
 
     public UploadComponentOptions(@Nonnull final AsyncCallback<LinkedHashMap<String, String>> completionCallback) {
-      this(false, completionCallback);
+      this(false, convertCallback(completionCallback));
+    }
+    
+    private static AsyncCallback<List<FileSource>> convertCallback(final AsyncCallback<LinkedHashMap<String, String>> completionCallback) {
+      return new AsyncCallback<List<FileSource>>() {
+
+        public void onFailure(final Throwable caught) {
+          completionCallback.onFailure(caught);
+        }
+
+        public void onSuccess(final List<FileSource> result) {
+          final LinkedHashMap<String, String> results = Maps.newLinkedHashMap();
+          for(final FileSource fileSource : result) {
+            results.put(fileSource.getName(), fileSource.getId());
+          }
+          completionCallback.onSuccess(results);
+        }        
+      };
     }
 
     /**
      * Callback to reterive ids on completion.
      */
-    private final AsyncCallback<LinkedHashMap<String, String>> completionCallback;
+    private final AsyncCallback<List<FileSource>> completionCallback;
     private String types;
     private String typesDescription;
     private boolean allowMultiple;
@@ -67,7 +123,7 @@ public interface UploadComponentFactory<T extends UploadComponent> extends Compo
     }
 
     @Nonnull
-    public AsyncCallback<LinkedHashMap<String, String>> getCompletionCallback() {
+    public AsyncCallback<List<FileSource>> getCompletionCallback() {
       return completionCallback;
     }
 

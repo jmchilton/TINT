@@ -195,8 +195,6 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
     });
 
     private final DynamicUploadComponent uploadComponent = uploadComponentFactory.get(uploadOpts);
-    // private ConditionalSampleWizardPageImpl sampleWizardPage = new ConditionalSampleWizardPageImpl(getLocationFactory(),
-    // getTreeComponentFactory());
     private UploadWizardPageImpl uploadWizardPage = new UploadWizardPageImpl(uploadComponent, CONSTANTS.runWizardSourceTitle(),
         CONSTANTS.runWizardSourceDescription());
     private final ProteomicsRunSourceTypeWizardPageImpl sourcePage = new ProteomicsRunSourceTypeWizardPageImpl(false);
