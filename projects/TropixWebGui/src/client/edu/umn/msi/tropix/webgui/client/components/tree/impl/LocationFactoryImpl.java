@@ -84,11 +84,10 @@ public class LocationFactoryImpl implements LocationFactory {
   public TreeItem getMyGroupFoldersItem(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     return new MyGroupFoldersItemImpl(getExpander(tropixObjectTreeItemExpander));
   }
-  
+
   public TreeItem getMyGroupSharedFoldersItem(final TropixObjectTreeItemExpander expander) {
     return new MyGroupSharedFoldersItemImpl(getExpander(expander));
   }
-
 
   public TreeItem getTropixHomeItem() {
     return new TreeItemImpl(null) {
@@ -408,7 +407,7 @@ public class LocationFactoryImpl implements LocationFactory {
   public TreeItem getGroupFoldersRootItem(@Nullable final TropixObjectTreeItemExpander expander) {
     return getMyGroupFoldersItem(getExpander(expander));
   }
-  
+
   private List<TreeItem> filter(final TreeItem... items) {
     final List<TreeItem> itemList = Lists.newArrayList();
     for(final TreeItem item : items) {
@@ -421,13 +420,13 @@ public class LocationFactoryImpl implements LocationFactory {
 
   public Iterable<TreeItem> getAllRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
     return filter(getHomeRootItem(expander),
-              getSharedRootItem(expander),
-              getMyRecentActivityItem(),
-              getMyRecentSearchesItem(),
-              getIncomingRequestsItem(),
-              getOutgoingRequestsItem(),
-              session.getPrimaryGroup() != null ? getMyGroupSharedFoldersItem(expander) : null,
-              getGroupFoldersRootItem(expander));
+        getSharedRootItem(expander),
+        getMyRecentActivityItem(),
+        getMyRecentSearchesItem(),
+        getIncomingRequestsItem(),
+        getOutgoingRequestsItem(),
+        session.getPrimaryGroup() != null ? getMyGroupSharedFoldersItem(expander) : null,
+        getGroupFoldersRootItem(expander));
   }
 
   public Iterable<TreeItem> getConcreteTropixObjectRootItems(final TropixObjectTreeItemExpander expander) {
@@ -437,11 +436,11 @@ public class LocationFactoryImpl implements LocationFactory {
 
   public Iterable<TreeItem> getTropixObjectSourceRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
     return filter(getHomeRootItem(expander),
-                getSharedRootItem(expander),
-                session.getPrimaryGroup() != null ? getMyGroupSharedFoldersItem(expander) : null,
-                getGroupFoldersRootItem(expander),
-                getMyRecentActivityItem(),
-                getMyRecentSearchesItem());
+        getSharedRootItem(expander),
+        session.getPrimaryGroup() != null ? getMyGroupSharedFoldersItem(expander) : null,
+        getGroupFoldersRootItem(expander),
+        getMyRecentActivityItem(),
+        getMyRecentSearchesItem());
   }
 
   public Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable final TropixObjectTreeItemExpander expander) {
@@ -453,7 +452,6 @@ public class LocationFactoryImpl implements LocationFactory {
     return expander == null ? TropixObjectTreeItemExpanders.get() : expander;
   }
 
-  @Override
   public Iterable<TreeItem> getFolderDestinationRootItems(final TropixObjectTreeItemExpander expander) {
     return filter(getHomeRootItem(null),
         getMySharedFoldersItem(null),
