@@ -262,6 +262,19 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
       final ListGridRecord[] records = filesGrid.getRecords();
       return records == null ? 0 : records.length;
     }
+
+    public boolean hasNames() {
+      return true;
+    }
+    
+    public List<String> getNames() {
+      final List<String> names = Lists.newArrayList();
+      for(ListGridRecord record : filesGrid.getRecords()) {
+        names.add(record.getAttributeAsString("name"));
+      }
+      return names;
+    }
+    
   }
 
   private class HtmlUploadComponentImpl extends WidgetSupplierImpl<Canvas> implements UploadComponent {
@@ -427,6 +440,21 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
       return zip;
     }
 
+    public boolean hasNames() {
+      return !zip;
+    }
+    
+    public List<String> getNames() {
+      if(!hasNames()) {
+        return null;
+      }
+      final List<String> names = Lists.newArrayList();
+      for(final FileUpload upload : uploadForms) {
+        names.add(upload.getFilename());
+      }
+      return names;
+    }
+
   }
 
   private static int uploadComponentCount = 0;
@@ -544,6 +572,14 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
 
     public boolean isZip() {
       return currentComponent.isZip();
+    }
+
+    public boolean hasNames() {
+      return currentComponent.hasNames();
+    }
+    
+    public List<String> getNames() {
+      return currentComponent.getNames();
     }
 
   }

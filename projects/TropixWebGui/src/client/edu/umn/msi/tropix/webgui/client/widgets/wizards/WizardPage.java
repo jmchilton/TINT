@@ -54,5 +54,7 @@ public interface WizardPage {
   boolean isEnabled();
   
   void onDisplay();
+
+  void onBackground();
   
 }

@@ -64,6 +64,7 @@ public class WizardFactoryImpl implements WizardFactory {
     private Label displayedTitleLabel = null, displayedDescriptionLabel = null;
     private final HLayout pageLayout, descriptionLayout, titleLayout;
     private final WizardOptions options;
+    private WizardPage selectedPage;
 
     protected void onDestroy() {
       for(final WizardPage wizardPage : this.wizardPages) {
@@ -231,8 +232,9 @@ public class WizardFactoryImpl implements WizardFactory {
           titleLayout.removeMember(displayedTitleLabel);
         }
         descriptionLayout.removeMember(displayedDescriptionLabel);
+        selectedPage.onBackground();
       }
-      final WizardPage selectedPage = wizardPages.get(index);
+      selectedPage = wizardPages.get(index);
       if(atFirstEnabledIndex()) {
         previousButton.disable();
       } else {

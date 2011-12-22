@@ -46,6 +46,7 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.utils.Sets;
+import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.ItemWrapper;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardCompletionHandler;
@@ -111,6 +112,17 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
         layout.addMember(wrapper);
         layout.addMember(uploadComponent.get());
       }
+      
+      // Called when page leaves foreground of wizard.
+      public void onBackground() {
+        if(uploadComponent.hasNames()) {
+          final String fileName = uploadComponent.getNames().get(0);
+          if(!StringUtils.hasText(metadataPage.getMetadataCanvasSupplier().getName())) {
+            metadataPage.getMetadataCanvasSupplier().setName(fileName);
+          }
+        }
+      }
+      
     }
 
     private UploadComponent uploadComponent = uploadComponentFactory.get(uploadOptions);
@@ -118,8 +130,8 @@ public class ArbitraryFileUploadCommandComponentFactoryImpl extends WizardComman
 
     public void execute() {
       final ArrayList<WizardPage> pages = new ArrayList<WizardPage>(2);
-      pages.add(metadataPage);
       pages.add(uploadPage);
+      pages.add(metadataPage);
       final WizardOptions options = new WizardOptions();
       options.setTitle(CONSTANTS.genericFileWizardTitle());
       setWidget(WizardFactoryImpl.getInstance().getWizard(pages, options, new WizardCompletionHandler() {

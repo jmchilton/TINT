@@ -32,6 +32,8 @@ public interface MetadataInputComponent extends CanvasComponent<Canvas>, CommonM
 
   void addSelectionListener(final Listener<TreeItem> listener);
 
+  void setName(final String name);
+  
   String getName();
 
   String getDescription();

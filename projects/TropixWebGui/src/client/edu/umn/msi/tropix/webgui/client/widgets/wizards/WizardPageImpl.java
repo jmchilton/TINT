@@ -117,7 +117,12 @@ public class WizardPageImpl<C extends Canvas> implements WizardPage {
     return error;
   }
 
+  // Called when page is brought to foreground of wizard.
   public void onDisplay() {
+  }
+
+  // Called when page leaves foreground of wizard.
+  public void onBackground() {    
   }
   
 }

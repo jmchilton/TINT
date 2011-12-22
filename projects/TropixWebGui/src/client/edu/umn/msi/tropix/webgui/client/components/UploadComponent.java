@@ -22,6 +22,8 @@
 
 package edu.umn.msi.tropix.webgui.client.components;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.smartgwt.client.widgets.Canvas;
@@ -62,5 +64,9 @@ public interface UploadComponent extends CanvasComponent<Canvas> {
   int getNumSelectedFiles();
   
   boolean isZip();
+
+  boolean hasNames();
+
+  List<String> getNames();
 
 }
