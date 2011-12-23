@@ -23,20 +23,29 @@
 package edu.umn.msi.tropix.webgui.client.widgets.wizards;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
-public final class WizardPageGroup<T extends WizardPageImpl<?>> {
-  private Iterable<T> wizardPages;
-  
+public class WizardPageGroup<T extends WizardPageImpl<?>> {
+  private List<T> wizardPages;
+
+  public List<T> asList() {
+    return wizardPages;
+  }
+
   public static <S extends WizardPageImpl<?>> WizardPageGroup<S> getWizardPageGroupFor(final S... wizardPages) {
     return new WizardPageGroup<S>(Arrays.<S>asList(wizardPages));
   }
-  
-  private WizardPageGroup(final Iterable<T> wizardPages) {
+
+  protected T getWizardPage(final int index) {
+    return wizardPages.get(index);
+  }
+
+  protected WizardPageGroup(final List<T> wizardPages) {
     this.wizardPages = wizardPages;
   }
-  
+
   public void disableAll() {
     for(T wizardPage : wizardPages) {
       wizardPage.setEnabled(false);
@@ -59,5 +68,5 @@ public final class WizardPageGroup<T extends WizardPageImpl<?>> {
     }
     return enabledWizardPage;
   }
-  
+
 }

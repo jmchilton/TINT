@@ -41,9 +41,10 @@ import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 
 public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeFormItemComponent>,
-                                                              ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent> {
+    ComponentFactory<FileTypeFormItemComponent.FileTypeFormItemOptions, FileTypeFormItemComponent> {
+  public static final String AUTO_DETECT_SELECTION = "*auto*";
   private Session session;
-  
+
   @Inject
   public FileTypeFormItemComponentSupplierImpl(final Session session) {
     this.session = session;
@@ -56,18 +57,18 @@ public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeF
   public FileTypeFormItemComponent get() {
     return new FileTypeFormItemComponentImpl(session);
   }
-  
+
   private static class FileTypeFormItemComponentImpl implements FileTypeFormItemComponent {
     private final HashMap<String, FileType> fileTypes = new HashMap<String, FileType>();
     private final SelectItem selectItem;
-    
+
     FileTypeFormItemComponentImpl(final Session session) {
       this(session, new FileTypeFormItemOptions());
     }
-    
+
     FileTypeFormItemComponentImpl(final Session session, final FileTypeFormItemOptions options) {
       for(final FileType fileType : session.getFileTypes()) {
-        fileTypes.put(fileType.getId(), fileType);      
+        fileTypes.put(fileType.getId(), fileType);
       }
       selectItem = new SelectItem("fileType", "File Type");
       final LinkedHashMap<String, String> valueMap = Maps.newLinkedHashMap();
@@ -87,18 +88,22 @@ public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeF
         valueMap.put(fileTypeEntry.getKey(), fileTypeDescription);
       }
       if(options.isAllowAutoDetect()) {
-        valueMap.put("*auto*", "Auto-Detect");
+        valueMap.put(AUTO_DETECT_SELECTION, "Auto-Detect");
       }
       selectItem.setValueMap(valueMap);
     }
-    
+
     public boolean isAutoDetect() {
-      return "*auto*".equals(StringUtils.toString(selectItem.getValue()));
+      return AUTO_DETECT_SELECTION.equals(StringUtils.toString(selectItem.getValue()));
     }
-    
+
     public FileType getSelection() {
       final Object value = StringUtils.toString(selectItem.getValue());
       return value == null ? null : fileTypes.get(value.toString());
+    }
+
+    public void setAutoDetect() {
+      selectItem.setValue(AUTO_DETECT_SELECTION);
     }
 
     public void setSelection(final String extension) {
@@ -113,6 +118,6 @@ public class FileTypeFormItemComponentSupplierImpl implements Supplier<FileTypeF
     public FormItem get() {
       return selectItem;
     }
-    
+
   }
 }

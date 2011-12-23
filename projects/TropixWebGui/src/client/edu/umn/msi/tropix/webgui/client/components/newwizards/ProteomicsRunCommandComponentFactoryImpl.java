@@ -53,7 +53,6 @@ import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.DynamicUploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.UploadComponentOptions;
-import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ProteomicsRunSourceTypeWizardPageImpl.ProteomicsRunSource;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
@@ -64,7 +63,6 @@ import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardCompletionHandler;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardFactoryImpl;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardOptions;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPage;
-import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPageGroup;
 import edu.umn.msi.tropix.webgui.services.jobs.JobSubmitService;
 
 public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandComponentFactoryImpl {
@@ -88,9 +86,9 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
   }
 
   private class ProteomicsRunWizardCommand extends WizardCommand {
-    private MetadataWizardPageImpl singleMetadataWizardPage;
-    private MetadataWizardPageImpl batchMetadataWizardPage;
-    private WizardPageGroup<MetadataWizardPageImpl> metadataWizardPages;
+    // private MetadataWizardPageImpl singleMetadataWizardPage;
+    // private MetadataWizardPageImpl batchMetadataWizardPage;
+    private MetadataWizardPageGroup metadataWizardPages;
 
     private final ServiceWizardPageImpl<QueueGridService> thermoServicesSelectionPage;
     private final ServiceWizardPageImpl<QueueGridService> proteomicsConvertServicesSelectionPage;
@@ -200,9 +198,11 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
     private final ProteomicsRunSourceTypeWizardPageImpl sourcePage = new ProteomicsRunSourceTypeWizardPageImpl(false);
 
     private void intializeMetadataPages() {
-      singleMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardType());
-      batchMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardBatchType());
-      metadataWizardPages = WizardPageGroup.getWizardPageGroupFor(singleMetadataWizardPage, batchMetadataWizardPage);
+      // singleMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardType());
+      // batchMetadataWizardPage = getMetadataWizardPageFactory().get(getLocations(), CONSTANTS.runWizardBatchType());
+      // metadataWizardPages = WizardPageGroup.getWizardPageGroupFor(singleMetadataWizardPage, batchMetadataWizardPage);
+      metadataWizardPages = new MetadataWizardPageGroup(getMetadataWizardPageFactory(), getLocations(), CONSTANTS.runWizardType(),
+          CONSTANTS.runWizardBatchType());
     }
 
     private final Listener<Object> sourceTypeListener = new Listener<Object>() {
@@ -214,12 +214,12 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
     private void updateSourceType() {
       final ProteomicsRunSource type = sourcePage.getProteomicsRunSourceProperty().get();
       final boolean batch = sourcePage.getBatchProperty().get();
-
-      if(batch) {
-        metadataWizardPages.enableOnly(batchMetadataWizardPage);
-      } else {
-        metadataWizardPages.enableOnly(singleMetadataWizardPage);
-      }
+      metadataWizardPages.setBatch(batch);
+      // if(batch) {
+      // metadataWizardPages.enableOnly(batchMetadataWizardPage);
+      // } else {
+      // metadataWizardPages.enableOnly(singleMetadataWizardPage);
+      // /}
 
       if(type == ProteomicsRunSource.THERMO) {
         uploadOpts.setTypes("*.raw;*.RAW");
@@ -248,8 +248,7 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
       final ArrayList<WizardPage> pages = Lists.newArrayListWithCapacity(8);
       intializeMetadataPages();
       pages.add(sourcePage);
-      pages.add(singleMetadataWizardPage);
-      pages.add(batchMetadataWizardPage);
+      pages.addAll(metadataWizardPages.asList());
 
       final ServiceSelectionComponent<QueueGridService> thermoSelectionComponent = serviceSelectionComponentSupplier.get();
       thermoSelectionComponent.setServicesType("rawExtract");

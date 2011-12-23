@@ -33,10 +33,10 @@ public class GridUserToStringTest {
     assert gridUser.toString().equals("user1");
     gridUser.setGridId("/u=mn/ou=chilton");
     assert gridUser.toString().equals("chilton");
-    gridUser.setLastName("chilton");
-    assert gridUser.toString().equals("chilton");
-    gridUser.setFirstName("john");
-    assert gridUser.toString().equals("chilton, john");
+    gridUser.setLastName("Chilton");
+    assert gridUser.toString().equals("Chilton (chilton)");
+    gridUser.setFirstName("John");
+    assert gridUser.toString().equals("Chilton, John (chilton)");
   }
-  
+
 }

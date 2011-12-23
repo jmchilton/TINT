@@ -77,11 +77,21 @@ public class GridUser implements Serializable {
       } else {
         str = lastName;
       }
-    } else if(gridId.contains("=")) {
-      str = gridId.substring(gridId.lastIndexOf('=')+1);
+      str = str + " (" + getUsername() + ")";
     } else {
-      str = gridId;
+      str = getUsername();
     }
     return str;
   }
+
+  private String getUsername() {
+    final String username;
+    if(gridId.contains("=")) {
+      username = gridId.substring(gridId.lastIndexOf('=') + 1);
+    } else {
+      username = gridId;
+    }
+    return username;
+  }
+
 }

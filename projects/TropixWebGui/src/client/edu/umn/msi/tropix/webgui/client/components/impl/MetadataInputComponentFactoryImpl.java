@@ -166,9 +166,10 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       this.tree.addSelectionListener(listener);
       listener.onEvent(this.tree.getSelection());
     }
-    
+
     public void setName(final String name) {
       this.nameItem.setValue(name);
+      checkValid();
     }
 
     public String getName() {

@@ -121,7 +121,7 @@ public class WizardFactoryImpl implements WizardFactory {
         canvas.hide();
         this.pageLayout.addChild(canvas);
       }
-      if(pages.size() <= MAX_TITLED_PAGES) {
+      if(!displayIndividualTitles()) {
         for(Label titleLabel : titleLabels) {
           titleLayout.addMember(titleLabel);
         }
@@ -181,6 +181,7 @@ public class WizardFactoryImpl implements WizardFactory {
         SC.say("Please address invalid or missing fields before advancing.");
         return;
       }
+      handleOnBackground();
       do {
         index++;
       } while(index < wizardPages.size() && !getWizardPage(index).isEnabled());
@@ -228,11 +229,10 @@ public class WizardFactoryImpl implements WizardFactory {
       if(displayedCanvas != null) {
         displayedCanvas.hide();
         displayedTitleLabel.setOpacity(40);
-        if(wizardPages.size() > MAX_TITLED_PAGES) {
+        if(displayIndividualTitles()) {
           titleLayout.removeMember(displayedTitleLabel);
         }
         descriptionLayout.removeMember(displayedDescriptionLabel);
-        selectedPage.onBackground();
       }
       selectedPage = wizardPages.get(index);
       if(atFirstEnabledIndex()) {
@@ -247,13 +247,22 @@ public class WizardFactoryImpl implements WizardFactory {
       displayedDescriptionLabel = descriptionLabels.get(index);
       displayedCanvas.show();
       displayedTitleLabel.setOpacity(100);
-      if(wizardPages.size() > MAX_TITLED_PAGES) {
+      if(displayIndividualTitles()) {
         titleLayout.addMember(displayedTitleLabel);
       }
       descriptionLayout.addMember(displayedDescriptionLabel);
     }
 
+    private void handleOnBackground() {
+      selectedPage.onBackground();
+    }
+
+    private boolean displayIndividualTitles() {
+      return options.isDisplayIndividualTitles() || wizardPages.size() > MAX_TITLED_PAGES;
+    }
+
     public void handlePrevious() {
+      handleOnBackground();
       do {
         index--;
       } while(index > 0 && !getWizardPage(index).isEnabled());

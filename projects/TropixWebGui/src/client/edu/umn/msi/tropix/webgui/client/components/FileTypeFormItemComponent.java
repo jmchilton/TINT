@@ -28,7 +28,7 @@ import com.smartgwt.client.widgets.form.fields.FormItem;
 import edu.umn.msi.tropix.models.FileType;
 
 public interface FileTypeFormItemComponent extends Supplier<FormItem> {
-  
+
   public class FileTypeFormItemOptions {
     private boolean allowAutoDetect;
 
@@ -39,12 +39,14 @@ public interface FileTypeFormItemComponent extends Supplier<FormItem> {
     public void setAllowAutoDetect(final boolean allowAutoDetect) {
       this.allowAutoDetect = allowAutoDetect;
     }
-    
+
   }
-  
+
+  void setAutoDetect();
+
   boolean isAutoDetect();
-  
+
   FileType getSelection();
-  
+
   void setSelection(final String extension);
 }

@@ -42,7 +42,7 @@ public abstract class WizardCommandComponentFactoryImpl implements LocationComma
   public boolean acceptsLocations(final Collection<TreeItem> treeItem) {
     return true;
   }
-  
+
   @Inject
   public void setTreeComponentFactory(final TreeComponentFactory treeComponentFactory) {
     this.treeComponentFactory = treeComponentFactory;
@@ -82,7 +82,7 @@ public abstract class WizardCommandComponentFactoryImpl implements LocationComma
     protected Collection<TreeItem> getLocations() {
       return locations;
     }
-    
+
   }
 
 }
