@@ -43,7 +43,7 @@ import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
-import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
@@ -61,7 +61,7 @@ import edu.umn.msi.tropix.webgui.client.widgets.CanvasWithOpsLayout;
 import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
 
-public class MoveCommandComponentFactoryImpl implements LocationCommandComponentFactory<Command> {
+public class MoveCommandComponentFactoryImpl implements DescribableLocationCommandComponentFactory<Command> {
   private TreeComponentFactory treeComponentFactory;
   private LocationFactory locationFactory;
 
@@ -75,6 +75,10 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
     this.treeComponentFactory = treeComponentFactory;
   }
 
+  public String getDescription() {
+    return "Move";
+  }
+  
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
     if(!(treeItems != null 
          && treeItems.size() > 0 
@@ -84,7 +88,7 @@ public class MoveCommandComponentFactoryImpl implements LocationCommandComponent
     }
     final Location rootItem = treeItems.iterator().next().getRoot();
     // Don't let you delete from searches, recent activity, etc...
-    return rootItem instanceof TropixObjectTreeItem || Locations.isMySharedFoldersItem(rootItem) || Locations.isMyGroupFoldersItem(rootItem);
+    return rootItem instanceof TropixObjectTreeItem || Locations.isRootLocationAFolder(rootItem);
   }
 
   public Command get(final Collection<TreeItem> treeItems) {

@@ -32,7 +32,7 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
-import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
@@ -44,9 +44,13 @@ import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
 
-public class ChangeDescriptionCommandComponentFactoryImpl implements LocationCommandComponentFactory<Command> {
+public class ChangeDescriptionCommandComponentFactoryImpl implements DescribableLocationCommandComponentFactory<Command> {
   private final LocationUpdateMediator updateMediator = LocationUpdateMediator.getInstance();
 
+  public String getDescription() {
+    return "Modify Description";
+  }
+  
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
     if(treeItems == null || treeItems.size() != 1) {
       return false;

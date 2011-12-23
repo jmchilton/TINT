@@ -32,7 +32,7 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
-import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
@@ -44,7 +44,7 @@ import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
 
-public class RenameCommandComponentFactoryImpl implements LocationCommandComponentFactory<Command> {
+public class RenameCommandComponentFactoryImpl implements DescribableLocationCommandComponentFactory<Command> {
 
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
     // Condition is there is there is one object and it is a tropix object tree item with a parent (no renaming root).
@@ -63,7 +63,7 @@ public class RenameCommandComponentFactoryImpl implements LocationCommandCompone
   static class WindowComponent extends WindowComponentImpl<Window> {
 
     WindowComponent(final TropixObjectTreeItem treeItem) {
-      final TextItem textItem = new TextItem("name", "Rename");
+      final TextItem textItem = new TextItem("name", "New Name");
       textItem.setValue(treeItem.getObject().getName());
       final Form form = new Form();
       form.setItems(textItem);
@@ -83,4 +83,9 @@ public class RenameCommandComponentFactoryImpl implements LocationCommandCompone
     }
     
   }
+
+  public String getDescription() {
+    return "Rename";
+  }
+  
 }

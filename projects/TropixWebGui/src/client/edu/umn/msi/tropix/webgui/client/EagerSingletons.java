@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import edu.umn.msi.tropix.webgui.client.mediators.DialogActionController;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationActionController;
 import edu.umn.msi.tropix.webgui.client.mediators.NewItemActionController;
 import edu.umn.msi.tropix.webgui.client.models.NewItemFolderActionListenerImpl;
 import edu.umn.msi.tropix.webgui.client.modules.ModuleInstaller;
@@ -33,7 +34,7 @@ import edu.umn.msi.tropix.webgui.client.modules.ModuleInstaller;
 public class EagerSingletons {
 
   @Inject
-  public EagerSingletons(final NewItemActionController c1, final DialogActionController c2, final NewItemFolderActionListenerImpl listener) {
+  public EagerSingletons(final NewItemActionController c1, final DialogActionController c2, final LocationActionController c3, final NewItemFolderActionListenerImpl listener) {
 
   }
     

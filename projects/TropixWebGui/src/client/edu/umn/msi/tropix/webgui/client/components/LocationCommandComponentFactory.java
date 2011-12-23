@@ -31,5 +31,6 @@ import com.google.gwt.user.client.Command;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 
 public interface LocationCommandComponentFactory<T extends Command> extends ComponentFactory<Collection<TreeItem>, T> {
+  
   boolean acceptsLocations(@Nullable Collection<TreeItem> treeItem);
 }

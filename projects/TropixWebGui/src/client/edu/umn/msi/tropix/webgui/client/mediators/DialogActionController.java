@@ -27,8 +27,6 @@ import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import edu.umn.msi.tropix.webgui.client.mediators.ActionMediator.ActionEvent;
-import edu.umn.msi.tropix.webgui.client.utils.Listener;
 
 public class DialogActionController {
   private final ActionMediator actionMediator;
@@ -39,11 +37,7 @@ public class DialogActionController {
   }
 
   private void registerListener(final String actionType, final Supplier<? extends Command> windowComponentSupplier) {
-    actionMediator.registerActionListener(actionType, new Listener<ActionEvent>() {
-      public void onEvent(final ActionEvent event) {
-        windowComponentSupplier.get().execute();
-      }
-    });
+    actionMediator.registerActionListener(actionType, new CommandActionEventListener(windowComponentSupplier));
   }
 
   @Inject

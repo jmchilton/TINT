@@ -32,7 +32,7 @@ import com.smartgwt.client.util.SC;
 import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
-import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
@@ -40,7 +40,7 @@ import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator.UpdateEvent;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
 
-public class DeleteCommandComponentFactoryImpl implements LocationCommandComponentFactory<Command> {
+public class DeleteCommandComponentFactoryImpl implements DescribableLocationCommandComponentFactory<Command> {
 
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
     System.out.println("In acceptsLocations");
@@ -53,7 +53,7 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
     final Location rootItem = firstItem.getRoot();
 
     // If some items are root shared folders and not others don't allow delete...
-    if(Locations.isMySharedFoldersItem(rootItem)) {
+    if(Locations.isMySharedFoldersItem(rootItem) || Locations.isMyGroupSharedFoldersItem(rootItem)) {
       for(final TreeItem treeItem : treeItems) {
         if(Locations.isMySharedFoldersItem(treeItem.getParent()) != Locations.isMySharedFoldersItem(firstItem.getParent())) {
           return false;
@@ -62,7 +62,7 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
     }
 
     // Don't let you delete from searches, etc...
-    return firstItem instanceof TropixObjectTreeItem && (rootItem instanceof TropixObjectTreeItem || Locations.isMySharedFoldersItem(rootItem) || Locations.isMyRecentActivityItem(rootItem));
+    return firstItem instanceof TropixObjectTreeItem && (rootItem instanceof TropixObjectTreeItem || Locations.isRootLocationAFolder(rootItem) || Locations.isMyRecentActivityItem(rootItem));
   }
 
   public Command get(final Collection<TreeItem> treeItems) {
@@ -145,5 +145,9 @@ public class DeleteCommandComponentFactoryImpl implements LocationCommandCompone
         }
       }
     };
+  }
+
+  public String getDescription() {
+    return "Delete";
   }
 }

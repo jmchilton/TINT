@@ -47,6 +47,12 @@ public class Locations {
   public static boolean isMyRecentActivityItem(final Location treeItem) {
     return MY_RECENT_ACTIVITY_ID.equals(treeItem.getId());
   }
+  
+  public static boolean isRootLocationAFolder(final Location rootLocation) {
+    return isMySharedFoldersItem(rootLocation) || 
+           isMyGroupFoldersItem(rootLocation) || 
+           isMyGroupSharedFoldersItem(rootLocation);
+  }
 
   /**
    * Two tree items are "alike" if they meet the following two conditions

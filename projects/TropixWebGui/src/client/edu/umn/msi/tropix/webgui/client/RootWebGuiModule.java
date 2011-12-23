@@ -36,6 +36,9 @@ import edu.umn.msi.tropix.webgui.client.components.tree.impl.LocationsModule;
 import edu.umn.msi.tropix.webgui.client.identification.ParametersPanelFactory;
 import edu.umn.msi.tropix.webgui.client.mediators.ActionMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.DialogActionController;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationActionController;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationActionDescriptionManager;
+import edu.umn.msi.tropix.webgui.client.mediators.LocationActionDescriptionManagerImpl;
 import edu.umn.msi.tropix.webgui.client.mediators.LoginMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.NavigationSelectionMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.NewItemActionController;
@@ -82,12 +85,14 @@ public class RootWebGuiModule extends AbstractGinModule {
     bind(ParametersPanelFactory.class).in(Singleton.class);
     bind(RootNewItemFolder.class).in(Singleton.class);
     bind(ActionMediator.class).in(Singleton.class);
+    bind(LocationActionDescriptionManager.class).to(LocationActionDescriptionManagerImpl.class).in(Singleton.class);
     
     bind(ModuleManager.class).to(ModuleManagerImpl.class).in(Singleton.class);
+    bind(LocationActionController.class).in(Singleton.class);
     bind(DialogActionController.class).in(Singleton.class);
     bind(NewItemActionController.class).in(Singleton.class);
     bind(NewItemFolderActionListenerImpl.class).in(Singleton.class);
     bind(EagerSingletons.class).in(Singleton.class);
-
   }
+  
 }

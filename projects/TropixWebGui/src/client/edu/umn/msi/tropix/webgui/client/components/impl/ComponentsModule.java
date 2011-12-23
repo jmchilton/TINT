@@ -51,6 +51,7 @@ import edu.umn.msi.tropix.webgui.client.catalog.beans.Provider;
 import edu.umn.msi.tropix.webgui.client.catalog.beans.ServiceBean;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.DynamicUploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.EditCatalogProviderFormComponent;
 import edu.umn.msi.tropix.webgui.client.components.EditCatalogServiceFormComponent;
@@ -90,6 +91,15 @@ import edu.umn.msi.tropix.webgui.services.object.SearchResult;
  */
 public class ComponentsModule extends AbstractGinModule {
 
+  protected <T extends Command> void bindDescribableLocationCommandComponentFactory(final String name, final Class<? extends DescribableLocationCommandComponentFactory<T>> clazz) {
+    bind(clazz).in(Singleton.class);
+    bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
+    }).annotatedWith(Names.named(name)).to(clazz);
+    bind(new TypeLiteral<DescribableLocationCommandComponentFactory<? extends Command>>() {
+    }).annotatedWith(Names.named(name)).to(clazz);
+  }
+
+  
   /**
    * Specifies actual bindings.
    */
@@ -200,6 +210,11 @@ public class ComponentsModule extends AbstractGinModule {
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("gridFtpExport")).to(GridFtpExportComponentSupplierImpl.class).in(Singleton.class);
 
+    bindDescribableLocationCommandComponentFactory("changeDescription", ChangeDescriptionCommandComponentFactoryImpl.class);
+    bindDescribableLocationCommandComponentFactory("move", MoveCommandComponentFactoryImpl.class);
+    bindDescribableLocationCommandComponentFactory("rename", RenameCommandComponentFactoryImpl.class);
+    bindDescribableLocationCommandComponentFactory("delete", DeleteCommandComponentFactoryImpl.class);
+    /*
     bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
     }).annotatedWith(Names.named("changeDescription")).to(ChangeDescriptionCommandComponentFactoryImpl.class).in(Singleton.class);
     bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
@@ -208,11 +223,13 @@ public class ComponentsModule extends AbstractGinModule {
     }).annotatedWith(Names.named("rename")).to(RenameCommandComponentFactoryImpl.class).in(Singleton.class);
     bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
     }).annotatedWith(Names.named("delete")).to(DeleteCommandComponentFactoryImpl.class).in(Singleton.class);
+    */
 
+    bind(UploadComponentFactoryImpl.class).in(Singleton.class);
     bind(new TypeLiteral<ComponentFactory<UploadComponentOptions, ? extends UploadComponent>>() {
-    }).to(UploadComponentFactoryImpl.class).in(Singleton.class);
+    }).to(UploadComponentFactoryImpl.class);
     bind(new TypeLiteral<ComponentFactory<UploadComponentOptions, DynamicUploadComponent>>() {
-    }).to(UploadComponentFactoryImpl.class).in(Singleton.class);
+    }).to(UploadComponentFactoryImpl.class);
 
     bind(MetadataInputComponentFactory.class).to(MetadataInputComponentFactoryImpl.class).in(Singleton.class);
     bind(new TypeLiteral<ComponentFactory<Note, ? extends CanvasComponent<? extends Canvas>>>() {
