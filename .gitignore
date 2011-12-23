@@ -138,6 +138,12 @@
 /projects/TropixStorageClient/test-output
 /projects/TropixStorageClient/temp-testng-customsuite.xml
 
+# /projects/TropixStorageCaGridService/
+/projects/TropixStorageCaGridService/build
+/projects/TropixStorageCaGridService/ext
+/projects/TropixStorageCaGridService/bin
+/projects/TropixStorageCaGridService/test-output
+
 # /projects/TropixStorageCore/
 /projects/TropixStorageCore/build
 /projects/TropixStorageCore/ext
