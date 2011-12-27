@@ -25,13 +25,13 @@ package edu.umn.msi.tropix.client.credential.impl;
 import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.client.authentication.LocalUserManager;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.client.credential.InvalidUsernameOrPasswordException;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;
 
-public class LocalGlobusCredentialProviderImpl implements GlobusCredentialProvider {
+public class LocalCredentialProviderImpl implements CredentialProvider {
   private LocalUserManager localUserManager;
   
   public void setLocalUserManager(final LocalUserManager localUserManager) {
@@ -45,12 +45,12 @@ public class LocalGlobusCredentialProviderImpl implements GlobusCredentialProvid
     this.defaultLifetime = defaultLifetime;
   }
 
-  public Credential getGlobusCredential(final String username, final String password, final GlobusCredentialOptions inputOptions) throws InvalidUsernameOrPasswordException {
+  public Credential getGlobusCredential(final String username, final String password, final CredentialCreationOptions inputOptions) throws InvalidUsernameOrPasswordException {
     Preconditions.checkNotNull(username); 
     Preconditions.checkNotNull(password);
-    final GlobusCredentialOptions options = inputOptions == null ? new GlobusCredentialOptions() : inputOptions;
-
-    final Long inputLifetime = options.getLifetime();
+    final CredentialCreationOptions options = inputOptions == null ? new CredentialCreationOptions() : inputOptions;
+    
+    final Long inputLifetime = options.getAuthenticationSource().getLifetime();
     final Long lifetime = inputLifetime == null ? defaultLifetime : inputLifetime;
     
     

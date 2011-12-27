@@ -24,7 +24,7 @@ package edu.umn.msi.tropix.client.authentication;
 
 import java.util.Collection;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
 
 public interface AuthenticationSourceManager {
 
@@ -34,6 +34,6 @@ public interface AuthenticationSourceManager {
    */
   Collection<String> getAuthenticationSourceKeys();
 
-  GlobusCredentialOptions getAuthenticationOptions(final String authenticationSourceKey);
+  CredentialCreationOptions getAuthenticationOptions(final String authenticationSourceKey);
   
 }

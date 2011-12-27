@@ -41,8 +41,8 @@ import edu.umn.msi.tropix.client.authentication.AuthenticationSourceManager;
 import edu.umn.msi.tropix.client.authentication.AuthenticationToken;
 import edu.umn.msi.tropix.client.authentication.CredentialAuthentication;
 import edu.umn.msi.tropix.client.authentication.CredentialAuthenticationProducer;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.common.test.MockObjectCollection;
 import edu.umn.msi.tropix.grid.credentials.Credential;
@@ -50,10 +50,10 @@ import edu.umn.msi.tropix.grid.credentials.Credentials;
 
 
 public class SpringAuthenticationProviderImplTest {
-  private GlobusCredentialProvider globusCredentialProvider;
+  private CredentialProvider globusCredentialProvider;
   private AuthenticationSourceManager authenticationSourceManager;
   private CredentialAuthenticationProducer credentialAuthenticationProducer;
-  private List<GlobusCredentialOptions> optionsList;
+  private List<CredentialCreationOptions> optionsList;
   
   private MockObjectCollection mocks;
   
@@ -70,10 +70,10 @@ public class SpringAuthenticationProviderImplTest {
   @BeforeMethod(groups = "unit")
   public void init() {
     authenticationSourceManager = new MapAuthenticationSourceManagerImpl();
-    globusCredentialProvider = EasyMock.createMock(GlobusCredentialProvider.class);
+    globusCredentialProvider = EasyMock.createMock(CredentialProvider.class);
     credentialAuthenticationProducer = EasyMock.createMock(CredentialAuthenticationProducer.class);
 
-    optionsList = Lists.newArrayList(new GlobusCredentialOptions(), new GlobusCredentialOptions(), new GlobusCredentialOptions());
+    optionsList = Lists.newArrayList(new CredentialCreationOptions(), new CredentialCreationOptions(), new CredentialCreationOptions());
     
     authProvider = new SpringAuthenticationProviderImpl(authenticationSourceManager, globusCredentialProvider, credentialAuthenticationProducer);
     
@@ -147,7 +147,7 @@ public class SpringAuthenticationProviderImplTest {
 
   class MapAuthenticationSourceManagerImpl implements AuthenticationSourceManager {
 
-    public GlobusCredentialOptions getAuthenticationOptions(final String key) {
+    public CredentialCreationOptions getAuthenticationOptions(final String key) {
       return optionsList.get(Integer.parseInt(key));
     }
 

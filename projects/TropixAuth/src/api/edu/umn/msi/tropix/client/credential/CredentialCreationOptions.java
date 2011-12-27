@@ -22,12 +22,28 @@
 
 package edu.umn.msi.tropix.client.credential;
 
-import javax.annotation.Nullable;
+import com.google.common.base.Preconditions;
 
-import edu.umn.msi.tropix.grid.credentials.Credential;
+import edu.umn.msi.tropix.client.authentication.config.AuthenticationSource;
+import edu.umn.msi.tropix.client.authentication.config.CaGrid;
 
-public interface GlobusCredentialProvider {
+public class CredentialCreationOptions {
+  private AuthenticationSource authenticationSource = new CaGrid();
 
-  Credential getGlobusCredential(String username, String password, @Nullable GlobusCredentialOptions options) throws InvalidUsernameOrPasswordException;
+  public AuthenticationSource getAuthenticationSource() {
+    return authenticationSource;
+  }
+  
+  public <T extends AuthenticationSource> T getAuthenicationSource(final Class<T> authenticationSourceClass) {
+    Preconditions.checkState(authenticationSourceClass.isInstance(authenticationSource));
+    @SuppressWarnings("unchecked")
+    final T authenticationSource = (T) this.authenticationSource;
+    return authenticationSource;
+  }
 
+  public void setAuthenticationSource(final AuthenticationSource authenticationSource) {
+    this.authenticationSource = authenticationSource;
+  }
+  
+  
 }

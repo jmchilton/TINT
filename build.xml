@@ -78,10 +78,10 @@
   </macrodef>
 
   <target name="make-project" depends="define-ant-tasks">
-    <input message="project" addproperty="project" />
-    <input message="packagedir" addproperty="packagedir" />
-    <input message="confs" addproperty="confs" />
-    <input message="shortname" addproperty="shortname" />
+    <input message="project (e.g. TropixModule)" addproperty="project" />
+    <input message="directory for package" addproperty="packagedir" />
+    <input message="confs (minus test)" addproperty="confs" />
+    <input message="shortname (tropix-XXX-conf.jar)" addproperty="shortname" />
     <property name="project.dir" value="${projects.dir}/${project}" />
     <property name="dollar" value="$" />
     <copy toDir="${projects.dir}/${project}">

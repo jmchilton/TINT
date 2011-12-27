@@ -31,8 +31,9 @@ import org.globus.gsi.GlobusCredential;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.authentication.config.CaGrid;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.client.credential.InvalidUsernameOrPasswordException;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;
@@ -42,7 +43,7 @@ import gov.nih.nci.cagrid.dorian.client.IFSUserClient;
 import gov.nih.nci.cagrid.dorian.ifs.bean.ProxyLifetime;
 import gov.nih.nci.cagrid.opensaml.SAMLAssertion;
 
-public class GlobusCredentialProviderImpl implements GlobusCredentialProvider {
+public class GlobusCredentialProviderImpl implements CredentialProvider {
   private static final Log LOG = LogFactory.getLog(GlobusCredentialProviderImpl.class);
   private static final int DEFAULT_DELEGATION_PATH_LENGTH = 10;
   private static final ProxyLifetime DEFAULT_PROXY_LIFETIME = new ProxyLifetime(12, 0, 0); // new ProxyLifetime(24 * 31 * 60,0,0);
@@ -56,14 +57,15 @@ public class GlobusCredentialProviderImpl implements GlobusCredentialProvider {
   private IFSUserClient defaultIFSUserClient;
   private String defaultIdpUrl;
 
-  public Credential getGlobusCredential(final String username, final String password, @Nullable final GlobusCredentialOptions inputOptions) throws InvalidUsernameOrPasswordException {
-    final GlobusCredentialOptions options = inputOptions == null ? new GlobusCredentialOptions() : inputOptions;
+  public Credential getGlobusCredential(final String username, final String password, @Nullable final CredentialCreationOptions inputOptions) throws InvalidUsernameOrPasswordException {
+    final CredentialCreationOptions options = inputOptions == null ? new CredentialCreationOptions() : inputOptions;
+    final CaGrid caGridAuthenticationOptions = options.getAuthenicationSource(CaGrid.class);
     final gov.nih.nci.cagrid.authentication.bean.Credential credential = new gov.nih.nci.cagrid.authentication.bean.Credential();
     final BasicAuthenticationCredential bac = new BasicAuthenticationCredential();
     bac.setUserId(username);
     bac.setPassword(password);
     credential.setBasicAuthenticationCredential(bac);
-    final String idpUrl = options.getIdpUrl();
+    final String idpUrl = caGridAuthenticationOptions.getAuthenticationServiceUrl();
     LOG.debug("Creating authentication client ");
     final AuthenticationClient client = authenticationClientFactory.getClient(idpUrl == null ? defaultIdpUrl : idpUrl, credential);
     LOG.debug("Attempting to authenticate user " + username);
@@ -73,12 +75,12 @@ public class GlobusCredentialProviderImpl implements GlobusCredentialProvider {
     } catch(final Exception e) {
       throw new RuntimeException("Exception authenticating user proxy.", e);
     }
-    final String ifsUrl = options.getIfsUrl();
+    final String ifsUrl = caGridAuthenticationOptions.getDorianServiceUrl();
     LOG.debug("Creating or settings IFSUserClient");
     final IFSUserClient ifsUserClient = (ifsUrl == null) ? defaultIFSUserClient : ifsUserClientFactory.getClient(ifsUrl);
-    final Long lifetime = options.getLifetime();
+    final Long lifetime = caGridAuthenticationOptions.getLifetime();
     final ProxyLifetime proxyLifetime = lifetime == null ? defaultProxyLifetime : PROXY_LIFETIME_FUNCTION.apply(lifetime);
-    Integer pathLength = options.getDelegationPathLength();
+    Integer pathLength = caGridAuthenticationOptions.getDelegationPathLength();
     pathLength = pathLength == null ? defaultDelegationPathLength : pathLength;
     LOG.debug("Attempting to create proxy");
     GlobusCredential proxy;

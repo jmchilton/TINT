@@ -34,7 +34,7 @@ public class LocalGlobusCredentialProviderImplTest {
   @Test(groups = "unit")
   public void getGlobusCredential() {
     final LocalUserManager passwordFunction = EasyMock.createMock(LocalUserManager.class);
-    final LocalGlobusCredentialProviderImpl provider = new LocalGlobusCredentialProviderImpl();
+    final LocalCredentialProviderImpl provider = new LocalCredentialProviderImpl();
     provider.setLocalUserManager(passwordFunction);
     
     EasyMock.expect(passwordFunction.isUsersPassword("John", "Chilton")).andReturn(true);

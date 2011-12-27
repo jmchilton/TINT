@@ -1,0 +1,35 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-storage-cxf" />
+  
+  <configurations>
+    <conf name="client" visibility="public" />
+    <conf name="server" extends="client" visibility="public" />
+
+    <conf name="test" description="Tests" extends="client,server" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+    <artifact name="tropix-storage-cxf-client" type="jar" conf="client" ext="jar" />
+    <artifact name="tropix-storage-cxf-server" type="jar" conf="server" ext="jar" />
+    <artifact name="tropix-storage-cxf-test" type="jar" conf="test" ext="jar" />
+    
+  </publications>
+  
+  <dependencies>
+    <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" />
+    <dependency rev="${cxf.version}" org="org.apache.cxf" name="cxf-rt-transports-http-jetty" conf="server->runtime,master">
+      <!-- <exclude org="org.apache.xmlbeans" module="xmlbeans" /> -->
+      <exclude org="org.slf4j" />
+    </dependency>
+
+    <dependency rev="${cxf.version}" org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" conf="server->runtime,master">
+      <exclude org="org.slf4j" />
+    </dependency>
+    
+  </dependencies>  
+
+</ivy-module>

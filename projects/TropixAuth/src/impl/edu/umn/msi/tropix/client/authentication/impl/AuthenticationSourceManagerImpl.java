@@ -31,14 +31,16 @@ import javax.annotation.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.client.authentication.AuthenticationSourceManager;
+import edu.umn.msi.tropix.client.authentication.config.AuthenticationSource;
 import edu.umn.msi.tropix.client.authentication.config.AuthenticationSources;
-import edu.umn.msi.tropix.client.authentication.config.CaGrid;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
+import edu.umn.msi.tropix.client.authentication.config.Local;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
 import edu.umn.msi.tropix.common.xml.XMLUtility;
 
 public class AuthenticationSourceManagerImpl implements AuthenticationSourceManager {
@@ -47,18 +49,20 @@ public class AuthenticationSourceManagerImpl implements AuthenticationSourceMana
   private final Map<String, AuthenticationSource> authenticationSources = Maps.newLinkedHashMap();
 
   public AuthenticationSourceManagerImpl() {
-    authenticationSources.put("Local", new AuthenticationSource());
+    authenticationSources.put("Local", new Local());
   }
 
   public Collection<String> getAuthenticationSourceKeys() {
     return ImmutableList.copyOf(authenticationSources.keySet());
   }
 
+  /*
   private static class AuthenticationSource {
     private String name = "Local";
     private String dorianUrl = "local";
     private String authenticationUrl = "local";
   }
+  */
 
   public void setAuthenticationSourcesFile(@Nullable final File sourcesFile) {
     boolean sourcesFileExists = sourcesFile == null || !sourcesFile.exists();
@@ -71,25 +75,20 @@ public class AuthenticationSourceManagerImpl implements AuthenticationSourceMana
     Preconditions.checkState(sources.getAuthenticationSource().size() > 0, "Authentication sources file " + sourcesFile
         + " defines no authentication sources.");
     authenticationSources.clear();
-    for(final Object sourceObject : sources.getAuthenticationSource()) {
-      final AuthenticationSource source = new AuthenticationSource();
-      if(sourceObject instanceof CaGrid) {
-        final CaGrid caGridAuthenticationSource = (CaGrid) sourceObject;
-        source.name = caGridAuthenticationSource.getTitle();
-        source.dorianUrl = caGridAuthenticationSource.getDorianServiceUrl();
-        source.authenticationUrl = caGridAuthenticationSource.getAuthenticationServiceUrl();
-      }
-      LOG.info(String.format("Adding authentication source with name %s - %s", source.name, source));
-      authenticationSources.put(source.name, source);
+    for(final AuthenticationSource source : sources.getAuthenticationSource()) {
+      final String authenticationSourceTitle = Optional.fromNullable(source.getTitle()).or("Local");
+      LOG.info(String.format("Adding authentication source with name %s - %s", authenticationSourceTitle, source));
+      authenticationSources.put(authenticationSourceTitle, source);
     }
   }
 
-  public GlobusCredentialOptions getAuthenticationOptions(final String authenticationSourceKey) {
+  public CredentialCreationOptions getAuthenticationOptions(final String authenticationSourceKey) {
     final AuthenticationSource source = authenticationSources.get(authenticationSourceKey);
     Preconditions.checkState(source != null, "No authentication source corresponding to authentication source key " + authenticationSourceKey);
-    final GlobusCredentialOptions options = new GlobusCredentialOptions();
-    options.setIdpUrl(source.authenticationUrl);
-    options.setIfsUrl(source.dorianUrl);
+    final CredentialCreationOptions options = new CredentialCreationOptions();
+    options.setAuthenticationSource(source);
+    //options.setIdpUrl(source.authenticationUrl);
+    //options.setIfsUrl(source.dorianUrl);
     return options;
   }
 

@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
+import edu.umn.msi.tropix.client.authentication.config.CaGrid;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 
@@ -59,12 +60,12 @@ public class AuthenticationSourceManagerImplTest {
       final AuthenticationSourceManagerImpl manager = new AuthenticationSourceManagerImpl();
       FILE_UTILS.writeStringToFile(configFile, "<authenticationSources xmlns=\"http://msi.umn.edu/tropix/client/authentication/config\"><local /><caGrid title=\"Test Title\" authenticationServiceUrl=\"auth\" dorianServiceUrl=\"http://dorian.com/\" /></authenticationSources>");
       manager.setAuthenticationSourcesFile(configFile);
-      final GlobusCredentialOptions options = manager.getAuthenticationOptions("Local");
-      assert options.getIdpUrl().equals("local");
-      assert options.getIfsUrl().equals("local");
-      final GlobusCredentialOptions gridOptions = manager.getAuthenticationOptions("Test Title");
-      assert gridOptions.getIdpUrl().equals("auth");
-      assert gridOptions.getIfsUrl().equals("http://dorian.com/");      
+      final CredentialCreationOptions options = manager.getAuthenticationOptions("Local");
+      //assert options.getAuthenicationSource(CaGrid.class).getIdpUrl().equals("local");
+      //assert options.getIfsUrl().equals("local");
+      final CredentialCreationOptions gridOptions = manager.getAuthenticationOptions("Test Title");
+      assert gridOptions.getAuthenicationSource(CaGrid.class).getAuthenticationServiceUrl().equals("auth");
+      assert gridOptions.getAuthenicationSource(CaGrid.class).getDorianServiceUrl().equals("http://dorian.com/");      
     } finally {
       FILE_UTILS.deleteQuietly(configFile);
     }

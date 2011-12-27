@@ -14,7 +14,14 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.springframework.util.StringUtils;
+
+import com.google.common.base.Optional;
+
+import edu.umn.msi.tropix.client.credential.ConfiguredSslSocketFactory;
+
 public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
+  private Optional<String> truststorePath;
   protected String ldapUrl;
   protected String ldapBase;
   protected String filter = null;
@@ -32,11 +39,13 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
   public Person[] getUsers() {
     Hashtable<String, String> env = new Hashtable<String, String>();
     env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+    ConfiguredSslSocketFactory.setCustomSslSocketFactoryIfNeeded(env, truststorePath);
     env.put(Context.PROVIDER_URL, ldapUrl);
     env.put(Context.SECURITY_AUTHENTICATION, "none");
     LinkedList<Person> users = new LinkedList<Person>();
     try {
       DirContext ctx = new InitialDirContext(env);
+
       SearchControls ctls = new SearchControls();
       ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
       String filter = getFilter();
@@ -68,6 +77,19 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
     } catch(Throwable t) {
       t.printStackTrace();
       throw new IllegalStateException("Failed to fetch list of users", t);
+    }
+  }
+  
+  /**
+   * Custom truststore for interacting with directory service.
+   * 
+   * @param truststorePat
+   */
+  public void setTruststorePath(final String truststorePath) {
+    if(StringUtils.hasText(truststorePath)) {
+      this.truststorePath = Optional.of(truststorePath);
+    } else {
+      this.truststorePath = Optional.absent();
     }
   }
 
@@ -104,4 +126,5 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
       this.filter = filter;
     }
   }
+  
 }

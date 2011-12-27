@@ -25,8 +25,8 @@ package edu.umn.msi.tropix.client.credential.impl;
 import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.credentials.Credentials;
 
@@ -34,10 +34,10 @@ public class StaticGlobusCredentialSupplierImplTest {
   
   @Test(groups = "unit")
   public void getCredentials() {
-    GlobusCredentialProvider credentialProvider = EasyMock.createMock(GlobusCredentialProvider.class);
+    CredentialProvider credentialProvider = EasyMock.createMock(CredentialProvider.class);
     Credential credential = Credentials.getMock();
     
-    GlobusCredentialOptions options = new GlobusCredentialOptions();
+    CredentialCreationOptions options = new CredentialCreationOptions();
     EasyMock.expect(credentialProvider.getGlobusCredential(EasyMock.eq("moo"), EasyMock.eq("cow"), EasyMock.same(options))).andReturn(credential);
     
     EasyMock.replay(credentialProvider);

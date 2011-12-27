@@ -23,6 +23,15 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
     <constructor-arg value="auth" />
   </bean>
+  
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="auth.ldap.identity.prefix" value="" />
+      </map>
+    </property>
+  </bean>    
+  
 
   <import resource="classpath:edu/umn/msi/tropix/client/credential/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/persistence/service/impl/applicationContext.xml" />

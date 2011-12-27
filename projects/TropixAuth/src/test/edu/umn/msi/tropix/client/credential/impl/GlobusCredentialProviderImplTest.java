@@ -24,7 +24,8 @@ package edu.umn.msi.tropix.client.credential.impl;
 
 import java.rmi.RemoteException;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
+import edu.umn.msi.tropix.client.authentication.config.CaGrid;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import gov.nih.nci.cagrid.authentication.bean.BasicAuthenticationCredential;
@@ -49,7 +50,7 @@ public class GlobusCredentialProviderImplTest {
   private AuthenticationClient authenticationClient;
   private Capture<gov.nih.nci.cagrid.authentication.bean.Credential> credentialCapture;
   private SAMLAssertion assertion;
-  private GlobusCredentialOptions options;
+  private CredentialCreationOptions options;
   
   @BeforeMethod(groups = "unit")
   public void init() {
@@ -61,11 +62,13 @@ public class GlobusCredentialProviderImplTest {
     ifsUserClient = EasyMock.createMock(IFSUserClient.class);
     authenticationClient = EasyMock.createMock(AuthenticationClient.class);
 
-    options = new GlobusCredentialOptions();
-    options.setDelegationPathLength(10);
-    options.setLifetime(100L);
-    options.setIdpUrl("idp");
-    options.setIfsUrl("ifs");
+    options = new CredentialCreationOptions();
+    final CaGrid caGridOptions = new CaGrid();
+    caGridOptions.setDelegationPathLength(10);
+    caGridOptions.setLifetime(100L);
+    caGridOptions.setAuthenticationServiceUrl("idp");
+    caGridOptions.setDorianServiceUrl("ifs");
+    options.setAuthenticationSource(caGridOptions);
     
     assertion = new SAMLAssertion();
     credentialCapture = EasyMockUtils.newCapture();

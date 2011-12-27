@@ -25,20 +25,21 @@ package edu.umn.msi.tropix.client.credential;
 import javax.annotation.Resource;
 
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import edu.umn.msi.tropix.client.authentication.config.Local;
+import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
 @ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/client/credential/testContext.xml")
-public class LocalCredentialProviderSpringTest extends AbstractTestNGSpringContextTests {
+public class LocalCredentialProviderSpringTest extends FreshConfigTest {
   @Resource
-  private GlobusCredentialProvider globusCredentialProvider;
+  private CredentialProvider globusCredentialProvider;
   
-  @Test(groups = "unit")
+  @Test(groups = "spring")
   public void localCredentialProvider() {
-    final GlobusCredentialOptions options =  new GlobusCredentialOptions();
-    options.setIdpUrl("local");
+    final CredentialCreationOptions options =  new CredentialCreationOptions();
+    options.setAuthenticationSource(new Local());
     final Credential credential = globusCredentialProvider.getGlobusCredential("admin", "admin", options);
     assert credential.getIdentity().equals("admin");
   }

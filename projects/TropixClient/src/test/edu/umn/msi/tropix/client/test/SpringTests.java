@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Resource;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 import javax.xml.namespace.QName;
 
 import org.springframework.test.context.ContextConfiguration;
@@ -75,6 +77,7 @@ public class SpringTests extends AbstractTestNGSpringContextTests {
     //if(true)
     //  throw new RuntimeException();
 
+    
     Supplier<Iterable<QueueGridService>> bowtieServiceSupplier = (Supplier<Iterable<QueueGridService>>) applicationContext
         .getBean("rawExtractGridServiceSupplier");
     for(QueueGridService service : bowtieServiceSupplier.get()) {

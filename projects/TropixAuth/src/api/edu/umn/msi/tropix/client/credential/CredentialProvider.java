@@ -24,41 +24,10 @@ package edu.umn.msi.tropix.client.credential;
 
 import javax.annotation.Nullable;
 
-public class GlobusCredentialOptions {
-  private Integer delegationPathLength = null;
-  private Long lifetime = null; // Lifetime measured in seconds
-  private String idpUrl = null;
-  private String ifsUrl = null;
+import edu.umn.msi.tropix.grid.credentials.Credential;
 
-  public Integer getDelegationPathLength() {
-    return delegationPathLength;
-  }
+public interface CredentialProvider {
 
-  public void setDelegationPathLength(@Nullable final Integer delegationPathLength) {
-    this.delegationPathLength = delegationPathLength;
-  }
+  Credential getGlobusCredential(String username, String password, @Nullable CredentialCreationOptions options) throws InvalidUsernameOrPasswordException;
 
-  public Long getLifetime() {
-    return lifetime;
-  }
-
-  public void setLifetime(@Nullable final Long lifetime) {
-    this.lifetime = lifetime;
-  }
-
-  public String getIdpUrl() {
-    return idpUrl;
-  }
-
-  public void setIdpUrl(@Nullable final String idpUrl) {
-    this.idpUrl = idpUrl;
-  }
-
-  public String getIfsUrl() {
-    return ifsUrl;
-  }
-
-  public void setIfsUrl(@Nullable final String ifsUrl) {
-    this.ifsUrl = ifsUrl;
-  }
 }

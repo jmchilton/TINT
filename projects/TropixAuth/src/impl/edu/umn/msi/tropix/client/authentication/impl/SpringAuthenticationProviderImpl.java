@@ -36,8 +36,8 @@ import com.google.common.base.Preconditions;
 import edu.umn.msi.tropix.client.authentication.AuthenticationSourceManager;
 import edu.umn.msi.tropix.client.authentication.AuthenticationToken;
 import edu.umn.msi.tropix.client.authentication.CredentialAuthenticationProducer;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
 /**
@@ -57,12 +57,12 @@ class UnknownProblemAuthenticationException extends AuthenticationException {
 @Named("authenticationProvider")
 class SpringAuthenticationProviderImpl implements AuthenticationProvider {
   private final AuthenticationSourceManager authenticationSourceManager;
-  private final GlobusCredentialProvider globusCredentialProvider;
+  private final CredentialProvider globusCredentialProvider;
   private final CredentialAuthenticationProducer credentialAuthenticationProvider;
 
   @Inject
   SpringAuthenticationProviderImpl(final AuthenticationSourceManager authenticationSourceManager,
-                                   final GlobusCredentialProvider globusCredentialProvider,
+                                   final CredentialProvider globusCredentialProvider,
                                    final CredentialAuthenticationProducer credentialAuthenticationProvider) {
     this.authenticationSourceManager = authenticationSourceManager;
     this.globusCredentialProvider = globusCredentialProvider;
@@ -79,7 +79,7 @@ class SpringAuthenticationProviderImpl implements AuthenticationProvider {
     if(userPassToken instanceof AuthenticationToken) {
       final AuthenticationToken authenticationToken = (AuthenticationToken) userPassToken;
       final String key = authenticationToken.getAuthenticationSource();
-      final GlobusCredentialOptions options = authenticationSourceManager.getAuthenticationOptions(key);
+      final CredentialCreationOptions options = authenticationSourceManager.getAuthenticationOptions(key);
       Credential credential = null;
       try {
         credential = globusCredentialProvider.getGlobusCredential(authenticationToken.getUsername(),

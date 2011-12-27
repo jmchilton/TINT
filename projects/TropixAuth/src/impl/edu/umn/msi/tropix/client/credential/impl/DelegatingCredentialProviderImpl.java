@@ -26,24 +26,24 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.authentication.config.AuthenticationSource;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.client.credential.InvalidUsernameOrPasswordException;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
-public class DelegatingCredentialProviderImpl implements GlobusCredentialProvider {
-  private Map<String, GlobusCredentialProvider> delegateMap;
+public class DelegatingCredentialProviderImpl implements CredentialProvider {
+  private Map<Class<? extends AuthenticationSource>, CredentialProvider> delegateMap;
   
-  public void setDelegateMap(final Map<String, GlobusCredentialProvider> delegateMap) {
+  public void setDelegateMap(final Map<Class<? extends AuthenticationSource>, CredentialProvider> delegateMap) {
     this.delegateMap = delegateMap;
   }
 
-  public Credential getGlobusCredential(final String username, final String password, final GlobusCredentialOptions options) throws InvalidUsernameOrPasswordException {
-    GlobusCredentialProvider provider = null;
-    for(final Map.Entry<String, GlobusCredentialProvider> entry : delegateMap.entrySet()) {
-      final String prefix = entry.getKey().toLowerCase();
-      final String idpUrl = options.getIdpUrl().toLowerCase();
-      if(idpUrl.startsWith(prefix)) {
+  public Credential getGlobusCredential(final String username, final String password, final CredentialCreationOptions options) throws InvalidUsernameOrPasswordException {
+    CredentialProvider provider = null;
+    final AuthenticationSource authSource = options.getAuthenticationSource();
+    for(final Map.Entry<Class<? extends AuthenticationSource>, CredentialProvider> entry : delegateMap.entrySet()) {
+      if(entry.getKey().isInstance(authSource)) {
         provider = entry.getValue();
       }
     }

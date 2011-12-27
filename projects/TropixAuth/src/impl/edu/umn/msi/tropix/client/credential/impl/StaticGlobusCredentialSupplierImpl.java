@@ -24,14 +24,14 @@ package edu.umn.msi.tropix.client.credential.impl;
 
 import com.google.common.base.Supplier;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
 public class StaticGlobusCredentialSupplierImpl implements Supplier<Credential> {
   private String username, password;
-  private GlobusCredentialOptions options;
-  private GlobusCredentialProvider globusCredentialProvider;
+  private CredentialCreationOptions options;
+  private CredentialProvider globusCredentialProvider;
 
   public Credential get() {
     return globusCredentialProvider.getGlobusCredential(username, password, options);
@@ -45,11 +45,11 @@ public class StaticGlobusCredentialSupplierImpl implements Supplier<Credential> 
     this.password = password;
   }
 
-  public void setOptions(final GlobusCredentialOptions options) {
+  public void setOptions(final CredentialCreationOptions options) {
     this.options = options;
   }
 
-  public void setGlobusCredentialProvider(final GlobusCredentialProvider globusCredentialProvider) {
+  public void setGlobusCredentialProvider(final CredentialProvider globusCredentialProvider) {
     this.globusCredentialProvider = globusCredentialProvider;
   }
 

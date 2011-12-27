@@ -22,6 +22,8 @@
     <dependency org="msi.umn.edu" name="tropix-grid" rev="${project.version}" />
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${project.version}" />
 
+    <dependency org="org.springframework.ldap" name="spring-ldap-core" rev="1.3.1.RELEASE" conf="api->master" />
+    <dependency org="org.springframework.security" name="spring-security-ldap" rev="${spring.security.version}" conf="api->master" />
     <dependency org="org.springframework.security" name="spring-security-web" rev="${spring.security.version}" conf="api->master" />
     <dependency org="org.springframework.security" name="spring-security-core" rev="${spring.security.version}" conf="api->master" />
     <dependency org="org.springframework.security" name="spring-security-config" rev="${spring.security.version}" conf="api->master" />

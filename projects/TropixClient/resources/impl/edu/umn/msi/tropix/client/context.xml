@@ -45,7 +45,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="user.iterable.cache" value="false" />
         <entry key="user.map.concurrency" value="10" />
         <entry key="modules" value="BASE, SHARING, LOCAL_SEARCH, PROTIP, GALAXY" />
-        
+        <entry key="ldap.truststore" value="" />        
         <entry key="ldap.institution.name" value="LDAP" />
         <entry key="ldap.id.prefix" value="" />
         <entry key="ldap.url" value="" />
@@ -172,6 +172,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
     <property name="userFirstNameLabel" value="${ldap.firstname.label}" /> <!-- value="givenName" /> -->
     <property name="userIdLabel" value="${ldap.userid.label}" /> <!--  value="cn" /> -->
     <property name="userLastNameLabel" value="${ldap.lastname.label}" /> <!--  value="sn" /> -->
+    <property name="truststorePath" value="${ldap.truststore}" />
     <property name="filter" value="${ldap.filter}" /> <!-- value="(&amp;(cn=*)(pwdChangedTime&gt;=20080912000000Z))" /> -->    
   </bean>
 

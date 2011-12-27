@@ -13,19 +13,45 @@
     </xs:complexType>
   </xs:element>
 
+
   <xs:group name="authenticationSource">
     <xs:choice>
       <xs:element name="local" type="Local" />
       <xs:element name="caGrid" type="CaGrid" />        
+      <xs:element name="ldap" type="Ldap" />
     </xs:choice> 
   </xs:group>
 
-  <xs:complexType name="Local" />
-
-  <xs:complexType name="CaGrid">
-    <xs:attribute name="title" type="xs:string" use="required" />
-    <xs:attribute name="dorianServiceUrl" type="xs:string" use="required" />
-    <xs:attribute name="authenticationServiceUrl" type="xs:string" use="optional" />
+  <xs:complexType name="AuthenticationSource">
+    <xs:attribute name="title" type="xs:string" use="optional" />
+    <xs:attribute name="lifetime" type="xs:long" use="optional" />
   </xs:complexType>
 
+  <xs:complexType name="Local">
+    <xs:complexContent>
+      <xs:extension base="AuthenticationSource" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CaGrid">
+    <xs:complexContent>
+      <xs:extension base="AuthenticationSource">
+	<xs:attribute name="dorianServiceUrl" type="xs:string" use="required" />
+	<xs:attribute name="authenticationServiceUrl" type="xs:string" use="optional" />
+	<xs:attribute name="delegationPathLength" type="xs:int" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Ldap">
+    <xs:complexContent>
+      <xs:extension base="AuthenticationSource">
+	<xs:attribute name="searchBase" type="xs:string" use="required" />
+	<xs:attribute name="host" type="xs:string" use="required" />
+	<xs:attribute name="userIdLabel" type="xs:string" use="required" />
+	<xs:attribute name="truststore" type="xs:string" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
 </xs:schema>
