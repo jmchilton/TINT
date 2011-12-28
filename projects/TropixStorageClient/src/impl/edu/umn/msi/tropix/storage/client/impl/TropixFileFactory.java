@@ -27,5 +27,5 @@ import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.storage.client.ModelStorageData;
 
 public interface TropixFileFactory {
-  ModelStorageData getStorageData(TropixFile tropixFile, Credential proxy);
+  ModelStorageData getStorageData(TropixFile tropixFile, Credential credential);
 }

@@ -21,6 +21,7 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" />
+
     <dependency rev="${cxf.version}" org="org.apache.cxf" name="cxf-rt-transports-http-jetty" conf="server->runtime,master">
       <!-- <exclude org="org.apache.xmlbeans" module="xmlbeans" /> -->
       <exclude org="org.slf4j" />

@@ -35,7 +35,7 @@ import edu.umn.msi.tropix.proteomics.utils.DTAUtils;
 
 public class MzXMLToDTAConverterStreamingImplTest {
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
-
+  
   @Test(groups = "unit")
   public void structureDefaultOptions() throws Exception {
     testStructure(null);
@@ -49,6 +49,16 @@ public class MzXMLToDTAConverterStreamingImplTest {
 
   @Test(groups = "unit")
   public void readw() {
+    /*
+    final Random random = new Random();
+    int count = 5000;
+    double[] peaks = new double[count];
+    for(int i =0; i < count; i++) {
+      peaks[i] = random.nextDouble();
+    }
+    
+    System.out.println(new String(Base64.encodeBase64(ConversionUtils.doubles2bytes(peaks))));
+    */
     final MzXMLToDTAConverterStreamingImpl converter = new MzXMLToDTAConverterStreamingImpl();
     DTAList dtaList;
     InputStream mzxmlStream;

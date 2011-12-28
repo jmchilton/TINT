@@ -25,24 +25,69 @@ import edu.umn.msi.tropix.proteomics.conversion.DTAToMzXMLConverter;
 import edu.umn.msi.tropix.proteomics.conversion.DTAToMzXMLOptions;
 
 public class BaseRawExtractJobFactoryImplTest {
-  protected String base = "file123base";
-  protected final String path = "/moo/cow/path";
-  protected final String params = "test params";
-  protected RawExtractJobFactoryImpl factory;
-  protected CredentialedStagingDirectoryFactory stagingDirectoryFactory;
-  protected StagingDirectory stagingDirectory;
-  protected DisposableResourceTracker tracker;
-  protected InputContext rawPopulator;
-  protected DTAToMzXMLConverter converter;
-  protected DTAToMzXMLOptions options;
-  protected final Credential proxy = Credentials.getMock();
-  protected MockObjectCollection mockObjects;
-  protected RawExtractJobProcessorImpl job;
+  protected static final String BASE = "file123base";
+  protected static final String PATH = "/moo/cow/path";
+  protected static final String PARAMS = "test params";
+  private RawExtractJobFactoryImpl factory;
+  private CredentialedStagingDirectoryFactory stagingDirectoryFactory;
+  private StagingDirectory stagingDirectory;
+  public StagingDirectory getStagingDirectory() {
+    return stagingDirectory;
+  }
+  
+  protected RawExtractJobFactoryImpl getFactory() {
+    return factory;
+  }
 
+  public void setStagingDirectory(final StagingDirectory stagingDirectory) {
+    this.stagingDirectory = stagingDirectory;
+  }
+
+  private DisposableResourceTracker tracker;
+  private InputContext rawPopulator;
+  private DTAToMzXMLConverter converter;
+  private DTAToMzXMLOptions options;
+  protected static final Credential PROXY = Credentials.getMock();
+  private MockObjectCollection mockObjects;
+  private RawExtractJobProcessorImpl job;
+
+  protected void setJob(final RawExtractJobProcessorImpl job) {
+    this.job = job;
+  }
+  
+  protected DisposableResourceTracker getTracker() {
+    return tracker;
+  }
+  
+  protected DTAToMzXMLConverter getConverter() {
+    return converter;
+  }
+  
   // Test specific fields
-  protected boolean doPreprocessing;
-  protected boolean completedNormally;
+  private boolean doPreprocessing;
+  private boolean completedNormally;
+  
+  protected DTAToMzXMLOptions getOptions() {
+    return options;
+  }
+  
+  protected void setDoPreprocessing(final boolean doPreprocessing) {
+    this.doPreprocessing = doPreprocessing;
+  }
 
+  protected void setCompletedNormally(final boolean completedNormally) {
+    this.completedNormally = completedNormally;
+  }
+  
+  protected boolean isCompletedNormally() {
+    return completedNormally;
+  }
+  
+  protected boolean getDoPreprocessing() {
+    return doPreprocessing;
+  }
+  
+  
   public BaseRawExtractJobFactoryImplTest() {
     super();
   }
@@ -52,7 +97,7 @@ public class BaseRawExtractJobFactoryImplTest {
     factory = new RawExtractJobFactoryImpl();
     stagingDirectoryFactory = EasyMock.createMock(CredentialedStagingDirectoryFactory.class);
     stagingDirectory = EasyMock.createMock(StagingDirectory.class);
-    EasyMock.expect(stagingDirectory.getAbsolutePath()).andStubReturn(path);
+    EasyMock.expect(stagingDirectory.getAbsolutePath()).andStubReturn(PATH);
 
     EasyMock.expect(stagingDirectory.getSep()).andStubReturn("/");
     final Supplier<DisposableResourceTracker> trackerSupplier = EasyMockUtils.createMockSupplier();
@@ -73,13 +118,13 @@ public class BaseRawExtractJobFactoryImplTest {
 
   protected void expectPreprocessingIfNeeded() {
     if(doPreprocessing) {
-      EasyMock.expect(stagingDirectoryFactory.get(proxy)).andReturn(stagingDirectory);
+      EasyMock.expect(stagingDirectoryFactory.get(PROXY)).andReturn(stagingDirectory);
       stagingDirectory.setup();
       final OutputContext rawContext = EasyMock.createMock(OutputContext.class);
-      EasyMock.expect(stagingDirectory.getOutputContext(String.format("%s.RAW", base))).andReturn(rawContext);
+      EasyMock.expect(stagingDirectory.getOutputContext(String.format("%s.RAW", BASE))).andReturn(rawContext);
       rawPopulator.get(rawContext);
     } else {
-      EasyMock.expect(stagingDirectoryFactory.get(proxy, path)).andReturn(stagingDirectory);
+      EasyMock.expect(stagingDirectoryFactory.get(PROXY, PATH)).andReturn(stagingDirectory);
     }
   }
 
@@ -102,8 +147,8 @@ public class BaseRawExtractJobFactoryImplTest {
   }
 
   protected ExecutableJobDescription buildJobAndPreprocess() {
-    final JobProcessorConfiguration configuration = JobProcessorConfigurationFactories.getInstance().get(proxy);
-    job = factory.buildJob(configuration, rawPopulator, params, base);
+    final JobProcessorConfiguration configuration = JobProcessorConfigurationFactories.getInstance().get(PROXY);
+    job = factory.buildJob(configuration, rawPopulator, PARAMS, BASE);
     final ExecutableJobDescription outputDescription = job.preprocess();
     return outputDescription;
   }

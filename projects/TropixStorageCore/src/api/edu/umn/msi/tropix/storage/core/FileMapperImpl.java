@@ -20,7 +20,7 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.storage.client.http.impl;
+package edu.umn.msi.tropix.storage.core;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,7 +35,8 @@ import edu.umn.msi.tropix.common.io.InputContext;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 
 public class FileMapperImpl implements FileMapper {
-  private final ConcurrentMap<String, Object> fileMap = new MapMaker().expiration(30 * 60, TimeUnit.SECONDS).makeMap();
+  // TODO: Replace with cache, cannot until Cache interface has put method (in guava 11)
+  private final ConcurrentMap<String, Object> fileMap = new MapMaker().expiration(120 * 60, TimeUnit.SECONDS).makeMap();
   private Supplier<String> downloadPrefix, uploadPrefix;
 
   public void setDownloadPrefix(final Supplier<String> downloadPrefix) {

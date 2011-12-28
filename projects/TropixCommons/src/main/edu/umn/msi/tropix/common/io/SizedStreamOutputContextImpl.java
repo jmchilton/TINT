@@ -76,6 +76,7 @@ public abstract class SizedStreamOutputContextImpl implements OutputContext {
     try {
       outputStream = FILE_UTILS.getFileOutputStream(tempFile);
       IO_UTILS.copyLarge(inputStream, outputStream);
+      put(tempFile);
     } finally {
       FILE_UTILS.deleteQuietly(tempFile);
       IO_UTILS.closeQuietly(outputStream);

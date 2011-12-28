@@ -61,29 +61,29 @@ public class DtaRawExtractJobFactoryImplTest extends BaseRawExtractJobFactoryImp
 
   @Test(groups = "unit")
   public void processTest() throws Exception {
-    this.doPreprocessing = true;
-    this.completedNormally = true;
+    setDoPreprocessing(true);
+    setCompletedNormally(true);
     runTest();
   }
 
   @Test(groups = "unit")
   public void processFailed() throws Exception {
-    this.doPreprocessing = true;
-    this.completedNormally = false;
+    setDoPreprocessing(true);
+    setCompletedNormally(false);
     runTest();
   }
 
   @Test(groups = "unit")
   public void processResume() throws Exception {
-    this.doPreprocessing = false;
-    this.completedNormally = true;
+    setDoPreprocessing(false);
+    setCompletedNormally(true);
     runTest();
   }
 
   @Test(groups = "unit")
   public void processResumeFailed() throws Exception {
-    this.doPreprocessing = false;
-    this.completedNormally = false;
+    setDoPreprocessing(false);
+    setCompletedNormally(false);
     runTest();
   }
 
@@ -95,35 +95,35 @@ public class DtaRawExtractJobFactoryImplTest extends BaseRawExtractJobFactoryImp
     final String[] dtaFileNames = new String[dtaFileExts.length];
     int i = 0;
     for(final String dtaFileExt : dtaFileExts) {
-      dtaFileNames[i++] = base + dtaFileExt;
+      dtaFileNames[i++] = BASE + dtaFileExt;
     }
 
     final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    if(completedNormally) {
-      EasyMock.expect(stagingDirectory.getResourceNames(null)).andReturn(Arrays.asList(dtaFileNames));
+    if(isCompletedNormally()) {
+      EasyMock.expect(getStagingDirectory().getResourceNames(null)).andReturn(Arrays.asList(dtaFileNames));
       for(final String dtaFileName : dtaFileNames) {
-        EasyMock.expect(stagingDirectory.getInputContext(dtaFileName)).andReturn(InputContexts.forString("moo" + dtaFileName));
+        EasyMock.expect(getStagingDirectory().getInputContext(dtaFileName)).andReturn(InputContexts.forString("moo" + dtaFileName));
       }
-      EasyMock.expect(converter.dtaToMzXML(getDTAList(dtaFileNames), getOptions(options))).andReturn(mzxml);
-      EasyMock.expect(tracker.newStream()).andReturn(stream);
+      EasyMock.expect(getConverter().dtaToMzXML(getDTAList(dtaFileNames), getOptions(getOptions()))).andReturn(mzxml);
+      EasyMock.expect(getTracker().newStream()).andReturn(stream);
     }
 
     expectPreprocessingAndReplayMocks();
 
-    if(doPreprocessing) {
+    if(getDoPreprocessing()) {
       final ExecutableJobDescription outputDescription = buildJobAndPreprocess();
-      assert JobDescriptionUtils.getExtensionParameter(outputDescription.getJobDescriptionType(), "rawextract_basename").equals(base);
-      assert outputDescription.getJobDescriptionType().getArgument(0).equals(params);
+      assert JobDescriptionUtils.getExtensionParameter(outputDescription.getJobDescriptionType(), "rawextract_basename").equals(BASE);
+      assert outputDescription.getJobDescriptionType().getArgument(0).equals(PARAMS);
     } else {
       final JobDescriptionType jobDescription = new JobDescriptionType();
-      JobDescriptionUtils.setExtensionParameter(jobDescription, "rawextract_basename", base);
-      JobDescriptionUtils.setStagingDirectory(jobDescription, path);
-      JobDescriptionUtils.setProxy(jobDescription, proxy);
-      job = factory.recover(ExecutableJobDescriptions.forJobDescriptionType(jobDescription));
+      JobDescriptionUtils.setExtensionParameter(jobDescription, "rawextract_basename", BASE);
+      JobDescriptionUtils.setStagingDirectory(jobDescription, PATH);
+      JobDescriptionUtils.setProxy(jobDescription, PROXY);
+      setJob(getFactory().recover(ExecutableJobDescriptions.forJobDescriptionType(jobDescription)));
     }
     postProcessAndVerify();
 
-    if(completedNormally) {
+    if(isCompletedNormally()) {
       final MzXMLUtility util = new MzXMLUtility();
       assert util.serialize(mzxml).equals(new String(stream.toByteArray()));
     }

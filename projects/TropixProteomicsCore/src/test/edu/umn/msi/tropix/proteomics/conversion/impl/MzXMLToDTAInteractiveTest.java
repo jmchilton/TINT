@@ -34,6 +34,7 @@ public class MzXMLToDTAInteractiveTest {
   public void testConvert() {
     final File directory = FILE_UTILS.createTempDirectory();
     //try {
+    
       System.out.println(directory.getAbsolutePath());
       final MzXMLToDTAConverterStreamingImpl converter = new MzXMLToDTAConverterStreamingImpl();
       final MzXMLToDTAOptions inputOptions = new MzXMLToDTAOptions();

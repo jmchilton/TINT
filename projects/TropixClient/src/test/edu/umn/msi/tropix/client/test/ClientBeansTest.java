@@ -24,7 +24,6 @@ package edu.umn.msi.tropix.client.test;
 
 import org.testng.annotations.Test;
 
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
 import edu.umn.msi.tropix.client.directory.GridUser;
 import edu.umn.msi.tropix.client.request.RequestBean;
 import edu.umn.msi.tropix.client.search.models.GridData;
@@ -43,7 +42,6 @@ public class ClientBeansTest extends BeanTest {
     this.getTestObjects().add(new GridUser());
     this.getTestObjects().add(new GridFile());
     this.getTestObjects().add(new GridData());
-    this.getTestObjects().add(new GlobusCredentialOptions());
   }
 
   @Test(groups = "unit")

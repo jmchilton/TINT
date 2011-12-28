@@ -115,7 +115,7 @@ public class SessionInfo implements Serializable {
     return primaryGroup;
   }
 
-  public void setPrimaryGroup(Group primaryGroup) {
+  public void setPrimaryGroup(final Group primaryGroup) {
     this.primaryGroup = primaryGroup;
   }
 
@@ -123,7 +123,7 @@ public class SessionInfo implements Serializable {
     return groups;
   }
 
-  public void setGroups(List<Group> groups) {
+  public void setGroups(final List<Group> groups) {
     this.groups = groups;
   }
 

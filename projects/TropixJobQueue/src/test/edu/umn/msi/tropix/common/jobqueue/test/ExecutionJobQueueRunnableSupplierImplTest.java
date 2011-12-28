@@ -39,7 +39,7 @@ import edu.umn.msi.tropix.common.jobqueue.utils.JobDescriptionUtils;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.common.test.EasyMockUtils.Reference;
 
-public class ExecutionJobQueueRunnableSupplierImplTset {
+public class ExecutionJobQueueRunnableSupplierImplTest {
   private ExecutionJobQueueRunnableSupplierImpl supplier;
   private ExecutionFactory executionFactory;
   private Function<JobDescriptionType, ExecutionConfiguration> jobDescriptionFunction;

@@ -27,17 +27,17 @@ public class Server {
   }
   
   @Value("${storage.server.host}")
-  public void setHost(String host) {
+  public void setHost(final String host) {
     this.host = host;
   }
 
   @Value("${storage.server.http.port}")
-  public void setHttpPort(int httpPort) {
+  public void setHttpPort(final int httpPort) {
     this.httpPort = httpPort;
   }
 
   @Value("${storage.server.https.port}")
-  public void setHttpsPort(int httpsPort) {
+  public void setHttpsPort(final int httpsPort) {
     this.httpsPort = httpsPort;
   }
 

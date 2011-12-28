@@ -10,6 +10,7 @@
 	<classpathentry kind="src" path="build/src/stubs"/>
 	<classpathentry kind="src" path="src/gridfs-impl"/>
 	<classpathentry kind="src" path="resources/gridfs-impl"/>
+	<classpathentry kind="src" path="resources/api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/addressing-1.0.jar"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/axis-url.jar"/>

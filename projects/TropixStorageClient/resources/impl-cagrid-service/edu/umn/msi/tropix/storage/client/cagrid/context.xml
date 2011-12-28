@@ -18,4 +18,5 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <bean id="cagridTropixFileFactory" class="edu.umn.msi.tropix.storage.client.impl.TropixFileFactoryGridImpl">
     <property name="transferContextFactory" ref="transferContextFactory" />
   </bean>
+  
 </beans>

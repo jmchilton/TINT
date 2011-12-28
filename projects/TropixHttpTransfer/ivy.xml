@@ -24,7 +24,8 @@
     
     <dependency org="org.springframework" name="spring-web" rev="${spring.version}" conf="server->default" />
     <dependency org="org.springframework" name="spring-webmvc" rev="${spring.version}" conf="server->default" />
-
+    <dependency org="org.ostermiller" name="utils" rev="1.07.00" conf="client->master" />
+            
     <!-- TODO: Rev to 4.1.2 -->
     <dependency rev="4.0.3" org="org.apache.httpcomponents" name="httpclient" conf="client->default" />
     <dependency org="org.mortbay.jetty" name="jetty" rev="${jetty.version}" conf="embedded->default" />

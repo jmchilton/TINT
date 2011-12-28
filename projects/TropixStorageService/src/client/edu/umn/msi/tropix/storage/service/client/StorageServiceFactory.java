@@ -4,6 +4,6 @@ import edu.umn.msi.tropix.storage.service.StorageService;
 
 public interface StorageServiceFactory {
   
-  public StorageService get(final String address);
+  StorageService get(final String address);
 
 }

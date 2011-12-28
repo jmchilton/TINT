@@ -64,7 +64,6 @@ import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.forms.ValidationListener;
 import edu.umn.msi.tropix.webgui.client.identification.ParametersPanelFactory;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
-import edu.umn.msi.tropix.webgui.client.utils.Lists;
 import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.widgets.Form;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;

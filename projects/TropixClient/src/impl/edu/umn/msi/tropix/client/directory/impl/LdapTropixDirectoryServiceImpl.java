@@ -22,15 +22,14 @@ import edu.umn.msi.tropix.client.credential.ConfiguredSslSocketFactory;
 
 public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
   private Optional<String> truststorePath;
-  protected String ldapUrl;
-  protected String ldapBase;
-  protected String filter = null;
-  protected String userIdLabel;
-  protected String userFirstNameLabel;
-  protected String userLastNameLabel;
-  protected String userEmailLabel;
-
-  protected String gridIdPrefix;
+  private String ldapUrl;
+  private String ldapBase;
+  private String filter = null;
+  private String userIdLabel;
+  private String userFirstNameLabel;
+  private String userLastNameLabel;
+  private String userEmailLabel;
+  private String gridIdPrefix;
 
   protected String getFilter() {
     return filter != null ? filter : (userIdLabel + "=*");

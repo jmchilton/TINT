@@ -17,64 +17,64 @@ public class MzxmlRawExtractJobFactoryImplTest extends BaseRawExtractJobFactoryI
 
   @Test(groups = "unit")
   public void mzxml() throws Exception {
-    this.doPreprocessing = true;
-    this.completedNormally = true;
+    setDoPreprocessing(true);
+    setCompletedNormally(true);
     this.mzxmlExt = ".mzxml";
     runTest();
   }
 
   @Test(groups = "unit")
   public void mzXML() throws Exception {
-    this.doPreprocessing = true;
-    this.completedNormally = true;
+    setDoPreprocessing(true);
+    setCompletedNormally(true);
     this.mzxmlExt = ".mzXML";
     runTest();
   }
 
   @Test(groups = "unit")
   public void extMZXML() throws Exception {
-    this.doPreprocessing = true;
-    this.completedNormally = true;
+    setDoPreprocessing(true);
+    setCompletedNormally(true);
     this.mzxmlExt = ".MzXML";
     runTest();
   }
 
   @Test(groups = "unit", expectedExceptions = RuntimeException.class)
   public void testInvalidMzxml() {
-    this.doPreprocessing = true;
-    this.completedNormally = true;
+    setDoPreprocessing(true);
+    setCompletedNormally(true);
     setupMzXMLResult("<mzXML>");
-    factory.setProducesMzxml(true);
+    getFactory().setProducesMzxml(true);
     expectPreprocessingAndReplayMocks();
     buildJobAndPreprocess();
     postProcessAndVerify();
   }
 
   private InputContext setupMzXMLResult(final String contents) {
-    final String mzxmlName = base + mzxmlExt;
+    final String mzxmlName = BASE + mzxmlExt;
     final InputContext mzxmlContext = InputContexts.forString(contents);
-    EasyMock.expect(stagingDirectory.getResourceNames(null)).andReturn(Arrays.asList(mzxmlName));
-    EasyMock.expect(stagingDirectory.getInputContext(mzxmlName)).andReturn(mzxmlContext).atLeastOnce();
+    EasyMock.expect(getStagingDirectory().getResourceNames(null)).andReturn(Arrays.asList(mzxmlName));
+    EasyMock.expect(getStagingDirectory().getInputContext(mzxmlName)).andReturn(mzxmlContext).atLeastOnce();
     return mzxmlContext;
   }
 
   public void runTest() throws Exception {
-    factory.setProducesMzxml(true);
+    getFactory().setProducesMzxml(true);
     final InputContext mzxmlContext = setupMzXMLResult("<mzXML></mzXML>");
-    tracker.add(mzxmlContext);
+    getTracker().add(mzxmlContext);
 
     expectPreprocessingAndReplayMocks();
 
-    if(doPreprocessing) {
+    if(getDoPreprocessing()) {
       final ExecutableJobDescription outputDescription = buildJobAndPreprocess();
-      assert JobDescriptionUtils.getExtensionParameter(outputDescription.getJobDescriptionType(), "rawextract_basename").equals(base);
-      assert outputDescription.getJobDescriptionType().getArgument(0).equals(params);
+      assert JobDescriptionUtils.getExtensionParameter(outputDescription.getJobDescriptionType(), "rawextract_basename").equals(BASE);
+      assert outputDescription.getJobDescriptionType().getArgument(0).equals(PARAMS);
     } else {
       final JobDescriptionType jobDescription = new JobDescriptionType();
-      JobDescriptionUtils.setProxy(jobDescription, proxy);
-      JobDescriptionUtils.setExtensionParameter(jobDescription, "rawextract_basename", base);
-      JobDescriptionUtils.setStagingDirectory(jobDescription, path);
-      job = factory.recover(ExecutableJobDescriptions.forJobDescriptionType(jobDescription));
+      JobDescriptionUtils.setProxy(jobDescription, PROXY);
+      JobDescriptionUtils.setExtensionParameter(jobDescription, "rawextract_basename", BASE);
+      JobDescriptionUtils.setStagingDirectory(jobDescription, PATH);
+      setJob(getFactory().recover(ExecutableJobDescriptions.forJobDescriptionType(jobDescription)));
     }
     postProcessAndVerify();
   }

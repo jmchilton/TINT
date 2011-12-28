@@ -8,18 +8,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
   <context:annotation-config/> 
 
-  <import resource="classpath:edu/umn/msi/tropix/storage/core/context.xml" />
-  <import resource="classpath:edu/umn/msi/tropix/transfer/http/server/embedded/context.xml" />
-
-  <bean id="httpStorageClientFileMapper" class="edu.umn.msi.tropix.storage.client.http.impl.FileMapperImpl" lazy-init="true">
-    <property name="downloadPrefix" ref="httpTransferDownloadUrlPrefixSupplier" />
-    <property name="uploadPrefix" ref="httpTransferUploadUrlPrefixSupplier" />
-  </bean>
-
-  <alias name="httpStorageClientFileMapper" alias="httpTransferServerFileKeyResolver" />
+  <import resource="classpath:edu/umn/msi/tropix/storage/core/mapperContext.xml" />
 
   <bean id="localTropixFileFactory" class="edu.umn.msi.tropix.storage.client.http.impl.TropixFileFactoryImpl" lazy-init="true">
-    <property name="fileMapper" ref="httpStorageClientFileMapper" />
+    <property name="fileMapper" ref="httpStorageFileMapper" />
     <property name="storageManager" ref="storageManager" />
   </bean>
   

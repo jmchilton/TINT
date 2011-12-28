@@ -50,5 +50,7 @@
   </httpj:engine-factory>
 
   <context:component-scan base-package="edu.umn.msi.tropix.storage.service.impl" />
+  
+  <import resource="classpath:edu/umn/msi/tropix/storage/core/mapperContext.xml" />
 
 </beans>

@@ -34,6 +34,13 @@ public class MzxmlParserImplTest {
     final MzxmlInfo info = parser.parse(ProteomicsTests.getResourceAsStream(resourceName));
     return info.iterator();
   }
+  
+  @Test(groups = "unit")
+  public void bigScanNotTruncated() {
+    final Iterator<Scan> scanIterator = getScans("bigscan.mzxml");
+    final Scan firstScan = scanIterator.next();
+    assert firstScan.getPeaks().length == 5000;
+  }
 
   @Test(groups = "unit")
   public void parentFilesPerScan() {

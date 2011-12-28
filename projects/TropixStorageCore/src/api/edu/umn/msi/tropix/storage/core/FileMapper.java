@@ -20,7 +20,7 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.storage.client.http.impl;
+package edu.umn.msi.tropix.storage.core;
 
 import edu.umn.msi.tropix.common.io.InputContext;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;

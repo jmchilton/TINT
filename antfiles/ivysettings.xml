@@ -2,7 +2,7 @@
 <ivysettings>
   <settings defaultResolver="default" circularDependencyStrategy="error"/>
   
-  <caches defaultCacheDir="${user.home}/.ivy2-tropix/cache" useOrigin="true"/> 
+  <caches defaultCacheDir="${user.home}/.ivy2-tropix/cache" useOrigin="false"/> 
 
   <macrodef name="www-resolver">
     <attribute name="repo.url"/>

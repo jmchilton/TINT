@@ -23,7 +23,6 @@
 package edu.umn.msi.tropix.storage.client.impl;
 
 import java.rmi.RemoteException;
-import java.util.UUID;
 
 import org.cagrid.transfer.context.stubs.types.TransferServiceContextReference;
 
@@ -52,35 +51,25 @@ public class TropixFileFactoryGridImpl implements TropixFileFactory {
     return storageDataImpl;
   }
 
-  final class StorageDataGridImpl implements ModelStorageData {
-    private final TropixFile tropixFile;
+  final class StorageDataGridImpl extends BaseStorageDataImpl {
     private final TropixStorageService client;
-    private final Credential credential;
 
     private StorageDataGridImpl(final TropixFile tropixFile, final TropixStorageService client, final Credential credential) {
-      this.tropixFile = tropixFile;
+      super(tropixFile, credential);
       this.client = client;
-      this.credential = credential;
-      if(tropixFile.getFileId() == null) {
-        tropixFile.setFileId(UUID.randomUUID().toString());
-      }
     }
 
     public InputContext getDownloadContext() {
-      return factory.getDownloadContext(prepareDownload(), credential);
-    }
-
-    public TropixFile getTropixFile() {
-      return tropixFile;
+      return factory.getDownloadContext(prepareDownload(), getCredential());
     }
 
     public OutputContext getUploadContext() {
-      return factory.getUploadContext(prepareUpload(), credential);
+      return factory.getUploadContext(prepareUpload(), getCredential());
     }
     
     public TransferServiceContextReference prepareDownload() {
       try {
-        return client.prepareDownload(tropixFile.getFileId());
+        return client.prepareDownload(getFileId());
       } catch(final RemoteException e) {
         throw new IllegalStateException(e);
       }
@@ -88,16 +77,12 @@ public class TropixFileFactoryGridImpl implements TropixFileFactory {
 
     public TransferServiceContextReference prepareUpload() {
       try {
-        return client.prepareUpload(tropixFile.getFileId());
+        return client.prepareUpload(getFileId());
       } catch(final RemoteException e) {
         throw new IllegalStateException(e);
       }
     }
-
-    public String getDataIdentifier() {
-      return tropixFile.getFileId();
-    }
-
+    
     public TransferResource prepareDownloadResource() {
       return new CaGridTransferResource(prepareDownload());
     }

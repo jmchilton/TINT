@@ -27,6 +27,8 @@
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" conf="impl-common->service-impl-dao" />
     <dependency org="msi.umn.edu" name="tropix-grid" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-http-transfer" rev="${ivy.project.version}" conf="api->embedded" />
+    
     <dependency org="org.mongodb" name="mongo-java-driver" rev="${mongodb.version}" conf="gridfs-impl->master" />
   </dependencies>  
 

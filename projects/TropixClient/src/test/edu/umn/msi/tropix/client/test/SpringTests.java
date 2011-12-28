@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Resource;
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 import javax.xml.namespace.QName;
 
 import org.springframework.test.context.ContextConfiguration;

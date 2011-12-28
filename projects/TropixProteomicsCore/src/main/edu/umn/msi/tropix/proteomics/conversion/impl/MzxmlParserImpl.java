@@ -80,13 +80,19 @@ public class MzxmlParserImpl implements MzxmlParser {
         }
       } while(!XMLStreamReaderUtils.isStartOfElement(reader, "peaks"));
       final boolean is64Bit = "64".equals(XMLStreamReaderUtils.getAttributeValue(reader, "precision"));
-      XMLStreamReaderUtils.next(reader);
+      
+      //XMLStreamReaderUtils.next(reader);
+      //XMLStreamReaderUtils.next(reader);
+      
       double[] peaks = new double[0];
-      if(reader.hasText()) {
-        final byte[] peaksBytes = reader.getText().getBytes();
-        final byte[] decodedBytes = Base64.decodeBase64(peaksBytes);
-        peaks = ConversionUtils.extractDoubles(decodedBytes, is64Bit);
-      }
+      //if(reader.hasText()) {
+      //if(reader.getEleme)
+      byte[] peaksBytes;
+      peaksBytes = XMLStreamReaderUtils.getElementText(reader).getBytes();
+      final byte[] decodedBytes = Base64.decodeBase64(peaksBytes);
+      peaks = ConversionUtils.extractDoubles(decodedBytes, is64Bit);
+      //}
+      XMLStreamReaderUtils.next(reader);
       final Scan scan = new Scan(level, number, peaks);
       scan.setPrecursorMz(precursorMz);
       scan.setPrecursorIntensity(precursorIntensity);

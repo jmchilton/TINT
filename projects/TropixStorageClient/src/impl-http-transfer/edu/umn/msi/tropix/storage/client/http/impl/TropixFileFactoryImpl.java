@@ -23,7 +23,6 @@
 package edu.umn.msi.tropix.storage.client.http.impl;
 
 import java.io.InputStream;
-import java.util.UUID;
 
 import edu.umn.msi.tropix.common.io.InputContext;
 import edu.umn.msi.tropix.common.io.OutputContext;
@@ -31,7 +30,9 @@ import edu.umn.msi.tropix.common.io.StreamOutputContextImpl;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.storage.client.ModelStorageData;
+import edu.umn.msi.tropix.storage.client.impl.BaseStorageDataImpl;
 import edu.umn.msi.tropix.storage.client.impl.TropixFileFactory;
+import edu.umn.msi.tropix.storage.core.FileMapper;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.UploadCallback;
 import edu.umn.msi.tropix.transfer.types.HttpTransferResource;
@@ -53,36 +54,18 @@ public class TropixFileFactoryImpl implements TropixFileFactory {
     this.fileMapper = fileMapper;
   }
 
-  class StorageDataGridImpl implements ModelStorageData {
-    private final TropixFile tropixFile;
-    private final Credential credential;
-
-    private String getIdentity() {
-      return credential == null ? null : credential.getIdentity();
-    }
+  class StorageDataGridImpl extends BaseStorageDataImpl {
 
     StorageDataGridImpl(final TropixFile tropixFile, final Credential credential) {
-      this.tropixFile = tropixFile;
-      this.credential = credential;
-      if(tropixFile.getFileId() == null) {
-        tropixFile.setFileId(UUID.randomUUID().toString());
-      }
-    }
-
-    public TropixFile getTropixFile() {
-      return tropixFile;
-    }
-
-    public String getDataIdentifier() {
-      return tropixFile.getFileId();
+      super(tropixFile, credential);
     }
 
     public InputContext getDownloadContext() {
-      return storageManager.download(tropixFile.getFileId(), getIdentity());
+      return storageManager.download(getFileId(), getIdentity());
     }
 
     public OutputContext getUploadContext() {
-      final UploadCallback callback = storageManager.upload(tropixFile.getFileId(), getIdentity());
+      final UploadCallback callback = storageManager.upload(getFileId(), getIdentity());
       return new StreamOutputContextImpl() {
         public void put(final InputStream inputStream) {
           callback.onUpload(inputStream);
@@ -91,13 +74,13 @@ public class TropixFileFactoryImpl implements TropixFileFactory {
     }
 
     public TransferResource prepareDownloadResource() {
-      final InputContext downloadFile = storageManager.download(tropixFile.getFileId(), getIdentity());
+      final InputContext downloadFile = storageManager.download(getFileId(), getIdentity());
       final String url = fileMapper.prepareDownload(downloadFile);
       return new HttpTransferResource(url);
     }
 
     public TransferResource prepareUploadResource() {
-      final UploadCallback uploadCallback = storageManager.upload(tropixFile.getFileId(), getIdentity());
+      final UploadCallback uploadCallback = storageManager.upload(getFileId(), getIdentity());
       final String url = fileMapper.prepareUpload(uploadCallback);
       return new HttpTransferResource(url);
     }

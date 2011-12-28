@@ -125,18 +125,18 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
 
   }
 
-  protected Collection<TreeItem> selectedTreeItems;
-  protected final Collection<TreeItem> initialTreeItems;
+  private Collection<TreeItem> selectedTreeItems;
+  private final Collection<TreeItem> initialTreeItems;
   private ArrayList<String> ids = new ArrayList<String>();
-  protected final TreeComponentFactory treeComponentFactory;
-  protected final LocationFactory locationFactory;
-  protected final ValidationListener validationListener;
-  protected InputType inputType;
-  protected Iterable<InputType> validInputTypes;
+  private final TreeComponentFactory treeComponentFactory;
+  private final LocationFactory locationFactory;
+  private final ValidationListener validationListener;
+  private InputType inputType;
+  private Iterable<InputType> validInputTypes;
   private TreeGrid inputTree;
-  protected boolean optionalRun;
-  protected boolean expand = false;
-  protected Layout treeLayout = new VLayout();
+  private boolean optionalRun;
+  private boolean expand = false;
+  private Layout treeLayout = new VLayout();
   private TreeComponent tree;
 
   public String getTreeId() {
@@ -172,8 +172,8 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
         if(validInputType == null) {
           throw new NullPointerException("Input type should not be null");
         }
-        if(initialTreeItems != null &&
-            Iterables.any(this.initialTreeItems, validInputType.getSelectionPredicate())) {
+        if(initialTreeItems != null 
+            && Iterables.any(this.initialTreeItems, validInputType.getSelectionPredicate())) {
           this.inputType = validInputType;
           break;
         }

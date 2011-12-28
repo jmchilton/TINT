@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,10 +48,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SFTP subsystem
+ * SFTP subsystem.
  * 
  * @author <a href="mailto:dev@mina.apache.org">Apache MINA SSHD Project</a>
  */
+/* CHECKSTYLE:OFF */@SuppressWarnings("all")
 public class SftpSubsystem implements Command, Runnable, SessionAware, FileSystemAware {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
@@ -915,7 +915,8 @@ public class SftpSubsystem implements Command, Runnable, SessionAware, FileSyste
     send(buffer);
   }
 
-  protected void sendPath(final int id, SshFile f) throws IOException {
+  protected void sendPath(final int id, final SshFile inputFile) throws IOException {
+    SshFile f = inputFile;
     final Buffer buffer = new Buffer();
     buffer.putByte((byte) SSH_FXP_NAME);
     buffer.putInt(id);
@@ -1094,12 +1095,12 @@ public class SftpSubsystem implements Command, Runnable, SessionAware, FileSyste
     return this.root.getFile(path);
   }
 
-  private final static String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+  private static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
   /**
    * Get unix style date string.
    */
-  private final static String getUnixDate(final long millis) {
+  private static String getUnixDate(final long millis) {
     if(millis < 0) {
       return "------------";
     }

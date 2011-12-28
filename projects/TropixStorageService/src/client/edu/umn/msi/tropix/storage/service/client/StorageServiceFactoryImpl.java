@@ -9,7 +9,7 @@ import edu.umn.msi.tropix.storage.service.StorageService;
 @ManagedBean
 public class StorageServiceFactoryImpl implements StorageServiceFactory {
 
-  public StorageService get(String address) {
+  public StorageService get(final String address) {
     return JAXRSClientFactory.create(address, StorageService.class);
   }
 

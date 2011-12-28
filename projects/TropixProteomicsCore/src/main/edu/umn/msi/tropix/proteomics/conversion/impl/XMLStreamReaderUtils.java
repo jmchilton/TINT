@@ -70,6 +70,14 @@ public class XMLStreamReaderUtils {
     }
     return reader.getText();
   }
+  
+  public static String getElementText(final XMLStreamReader reader) {
+    try {
+      return reader.getElementText();
+    } catch(final XMLStreamException e) {
+      throw new XMLStreamRuntimeException(e);
+    }
+  }
 
   public static boolean skipToElement(final XMLStreamReader reader, final String name) {
     while(XMLStreamReaderUtils.hasNext(reader)) {

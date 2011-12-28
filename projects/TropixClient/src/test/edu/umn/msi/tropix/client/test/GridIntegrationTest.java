@@ -11,8 +11,8 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.client.authentication.AuthenticationSourceManager;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialOptions;
-import edu.umn.msi.tropix.client.credential.GlobusCredentialProvider;
+import edu.umn.msi.tropix.client.credential.CredentialCreationOptions;
+import edu.umn.msi.tropix.client.credential.CredentialProvider;
 import edu.umn.msi.tropix.common.io.InputContexts;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.storage.client.StorageData;
@@ -29,7 +29,7 @@ public class GridIntegrationTest extends AbstractTestNGSpringContextTests {
   private AuthenticationSourceManager authManager;
   
   @Inject
-  private GlobusCredentialProvider credentialProvider;
+  private CredentialProvider credentialProvider;
   
   @Test(groups = "interaction")
   public void testMoo() throws IOException {
@@ -41,7 +41,7 @@ public class GridIntegrationTest extends AbstractTestNGSpringContextTests {
     final String password = edu.umn.msi.tropix.common.io.FileUtilsFactory.getInstance().readFileToString("/home/john/password").trim();
     
     System.out.println("Using password [" + password + "]");
-    final GlobusCredentialOptions options = authManager.getAuthenticationOptions("MSI Account");
+    final CredentialCreationOptions options = authManager.getAuthenticationOptions("MSI Account");
     final Credential credential = credentialProvider.getGlobusCredential("chilton", password, options);
     final StorageData storageData = storageDataFactory.getStorageData("e03ce286-2778-4290-a38a-92cb236c602a", "https://tint-storage.msi.umn.edu:8443/caGridTransfer/services/cagrid/TropixStorage", credential);
     System.out.println(InputContexts.toString(storageData.getDownloadContext()));
