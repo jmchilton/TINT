@@ -54,7 +54,7 @@
   </target> 
 
   <target name="javadoc" depends="prepare">
-    <dojavadoc />
+    <dojavadoc confs="client,server" />
   </target>
   
   <target name="test" description="Runs test cases" depends="compile">
