@@ -27,16 +27,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
@@ -47,6 +53,8 @@ import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 import com.smartgwt.client.widgets.toolbar.ToolStripMenuButton;
 
+import edu.mayo.mprc.dbcurator.client.CurationEditor;
+import edu.mayo.mprc.dbcurator.client.EditorCloseCallback;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.LocationCommandComponentFactory;
@@ -71,6 +79,7 @@ import edu.umn.msi.tropix.webgui.client.modules.ModuleInstaller;
 import edu.umn.msi.tropix.webgui.client.modules.ModuleManager;
 import edu.umn.msi.tropix.webgui.client.utils.Iterables;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
+import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.services.session.Module;
 
@@ -263,6 +272,40 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     menuBuilder.addMenuItem(getDialogMenuItem("About", "about", Resources.HELP));
     return menuBuilder.buildMenu(DomConstants.HELP_MENU_ID, "Help");
   }
+  
+  
+  private void popupDbCurator() {
+
+    Map<String, String> emailInitialPairs = new TreeMap<String, String>();
+    emailInitialPairs.put(session.getUserName(), session.getUserName());
+    final Layout panel =  SmartUtils.getFullVLayout();
+    
+    PopOutWindowBuilder.titled("foo").sized(600, 600).modal().withContents(panel).asCommand().execute();
+    
+    //final DialogBox dialogBox = new DialogBox(false);
+    //dialogBox.setHTML("<p>MooCow</p>");
+    CurationEditor ce = new CurationEditor(null, session.getUserName(), emailInitialPairs, new EditorCloseCallback() {
+      public void editorClosed(final Integer openCurationID) {
+        //dialogBox.hide();
+      }
+    });
+    ce.setSize("550px", "550px");
+    panel.addMember(ce);
+    //DOM.setElementAttribute(panel.getElement(), "id", "db-curator");
+    //dialogBox.setStyleName("dbCuratorEmbed");
+    //dialogBox.setWidget(ce);
+    //dialogBox.setSize(Window.getClientWidth() * .8 + "px", Window.getClientHeight() * .8 + "px");
+    //ce.setPixelSize(Math.max((int) (Window.getClientWidth() * .8), 770), (int) (Window.getClientHeight() * .8));
+//    LightBox lb = new LightBox(dialogBox);
+//    try {
+//      lb.show();
+//    } catch (Exception ignore) {
+    //dialogBox.show();
+//    }
+    //dialogBox.center();
+  }
+
+  
 
   private TitledMenu getToolsAdmin() {
     final MenuBuilder menuBuilder = new MenuBuilder();
@@ -275,6 +318,20 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
       newItem.setTitle("Galaxy Tools...");
       newItem.setIcon(Resources.ANALYSIS_16);
       menuBuilder.addMenuItem(newItem);
+      menuBuilder.addSeparator();
+    }
+    if(moduleManager.containsModules(Module.USER, Module.PROTIP)) {
+      final MenuItem dbCuratortem = new MenuItem();
+      dbCuratortem.setTitle("Database Curator");
+      dbCuratortem.setIcon(Resources.DATABASE_16);
+      dbCuratortem.addClickHandler(new ClickHandler() {
+
+        public void onClick(final MenuItemClickEvent event) {
+          popupDbCurator();
+        }
+        
+      });
+      menuBuilder.addMenuItem(dbCuratortem);
       menuBuilder.addSeparator();
     }
     if(moduleManager.containsModules(Module.USER, Module.REQUEST)) {

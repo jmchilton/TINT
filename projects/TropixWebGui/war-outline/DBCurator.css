@@ -1,0 +1,500 @@
+#db-curator {
+    background-color: #e0e0ff !important;
+    font-family: Arial, sans-serif;
+}
+
+#db-curator,
+#db-curator td,
+#db-curator tr {
+    font-size: 10px;
+}
+
+#db-curator .fontsize {
+    font-size: 10px;
+}
+
+#db-curator .shell-header-title {
+    margin-left: 10px;
+    text-align: left;
+    float: left;
+    font-size: 15px;
+}
+
+#db-curator .shell-header-stepimage {
+    font-size: 0.005px;
+    height: 15px;
+    width: 15px;
+
+    background-repeat: no-repeat;
+    background-position: right;
+    float: right;
+    color: #FFFFFF; /* change the color of the font to match the background */
+}
+
+#db-curator .shell-header-newdb {
+    background-image: url(images/step-icon-add.png);
+}
+
+#db-curator .shell-header-manipulation {
+    background-image: url(images/step-icon-manip.png);
+}
+
+#db-curator .shell-header-manualinclusion {
+    background-image: url(images/step-icon-add.png);
+}
+
+#db-curator .shell-header-headerfilter {
+    background-image: url(images/step-icon-filter.png);
+}
+
+/* these styles are for the date picker widget*/
+
+#db-curator TABLE.monthDates TD {
+    font-family: tahoma, sans-serif;
+    font-size: 11px;
+    color: #104A7B;
+    text-align: center;
+}
+
+#db-curator .txtbox {
+    background-image: url(images/calendar-icon.png);
+    padding-left: 25px;
+    width: 125px !important;
+    background-repeat: no-repeat;
+}
+
+#db-curator .popupPanel {
+    font-family: tahoma, sans-serif;
+    font-size: 10px;
+    background: #FFFFFF;
+
+}
+
+#db-curator .calendarPanel {
+    font-family: tahoma, sans-serif;
+    font-size: 10px;
+    color: #104A7B;
+    background: #CCCCFF;
+    border-bottom: 1px solid gray;
+    border-right: 1px solid gray;
+    border-left: 1px solid gray;
+    border-top: 1px solid gray;
+}
+
+#db-curator .todayPanel {
+    font-family: tahoma, sans-serif;
+    font-size: 11px;
+    float: right;
+    font-weight: bold;
+    color: #104A7B;
+    background: #FFFFFF;
+    text-align: center;
+    border-bottom: 1px solid gray;
+    border-right: 1px solid gray;
+    border-left: 1px solid gray;
+}
+
+#db-curator .todayLink {
+    font-family: tahoma, sans-serif;
+    font-size: 11px;
+    float: right;
+    font-weight: bold;
+    color: #104A7B;
+    background: #FFFFFF;
+    width: 100%;
+    text-align: center;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#db-curator .monthHeader {
+    font-family: tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: BOLD;
+    color: #000000;
+    text-align: center;
+}
+
+#db-curator .holidayWeek {
+    font-family: tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: BOLD;
+    color: #888888;
+    text-align: center;
+}
+
+#db-curator .holiday {
+    font-family: Arial, tahoma, sans-serif;
+    font-size: 10px;
+    color: #888888;
+    text-align: center;
+}
+
+#db-curator .holidaySelectable {
+    font-family: Arial, tahoma, sans-serif;
+    font-size: 10px;
+    color: #888888;
+    text-align: center;
+    cursor: pointer;
+}
+
+#db-curator .monthYearTraversorBtn {
+    font-family: tahoma, sans-serif;
+    font-size: 11px;
+    background: #104A7B;
+    color: #FFFFFF;
+    font-weight: bold;
+    border-right: 0 solid gray;
+    border-left: 0 solid gray;
+    border-bottom: 0 solid gray;
+    border-top: 0 solid gray;
+    cursor: pointer;
+}
+
+#db-curator .monthYearTraversor {
+    font-family: Arial, tahoma, sans-serif;
+    font-size: 11px;
+    background: #104A7B;
+    color: #FFFFFF;
+    font-weight: bold;
+
+}
+
+#db-curator .calendarDate {
+    font-family: Arial, tahoma, sans-serif;
+    font-size: 10px;
+    color: #000000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#db-curator .currentDate {
+    font-family: tahoma, sans-serif;
+    font-size: 10px;
+    color: #104A7B;
+    font-weight: BOLD;
+    background: #FFFFFF;
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px solid #336699;
+    border-right: 1px solid #336699;
+    border-left: 1px solid #336699;
+    border-top: 1px solid #336699;
+}
+
+#db-curator .wait-popup-panel {
+    background: #FFAAAA;
+    border-width: 5px;
+    font-weight: bold;
+    width: 300px;
+    height: 200px;
+    font-size: 25px;
+}
+
+#db-curator .textboxes-error {
+    background: #FFAAAA;
+}
+
+#db-curator .error-log {
+    width: 200px;
+    font-size: 10px;
+}
+
+#db-curator .choose-curation-popup {
+    background: #AAFFAA;
+    border-width: 10px;
+
+    border-bottom: 5px solid #336699;
+    border-right: 5px solid #336699;
+    border-left: 5px solid #336699;
+    border-top: 5px solid #336699;
+
+    font-size: 25px;
+
+}
+
+/* Drag and  drop styles */
+
+#db-curator .dragdrop-dropTarget {
+    /*border: 1px solid blue;*/
+    background-color: #FFFFFF;
+}
+
+#db-curator .dragdrop-dropTarget.dragdrop-engage {
+    background-color: #E0E8FF;
+}
+
+#db-curator .getting-started-label {
+    /*border: 1px solid #99AACC;*/
+    background-color: #AACCFF;
+    padding: 0.1em;
+}
+
+#db-curator .stepchooser {
+    width: 200px;
+    font-size: 10px;
+}
+
+#db-curator .stepeditor-scrollpanel {
+    background-color: #FFFFFF;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    width: 500px;
+    height: 100%;
+
+    border: 1px solid navy;
+    background-repeat: no-repeat;
+}
+
+#db-curator .stepeditor-dndboundarypanel {
+
+}
+
+#db-curator .stepshell-inerror {
+    background-color: #ffa0a0;
+}
+
+#db-curator .step-error-report {
+    background-color: transparent;
+    border: none;
+    width: 300px;
+    font-size: 10px;
+    float: left;
+    overflow: auto;
+}
+
+#db-curator .stepshell-stepnumber {
+    width: 15px;
+    text-align: center;
+    margin-left: 5px;
+    margin-right: 1px;
+    float: left;
+    color: #000000;
+    font-size: 14px;
+    background-image: url("images/stepnumberoutline.png");
+    background-repeat: no-repeat;
+}
+
+#db-curator .stepshell-stepcollapse {
+    font-size: 0.0005px;
+    height: 15px;
+    width: 15px;
+    background-image: url("images/downarrow.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    float: left;
+}
+
+#db-curator .warning-label {
+    color: #FF0000;
+    background-image: url("images/alert.gif");
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
+    text-align: right;
+}
+
+#db-curator .warning-label-ok {
+    visibility: hidden;
+}
+
+#db-curator .stepshell-header-panel {
+    width: 100%;
+    height: 15px;
+}
+
+#db-curator .stepshell-panel {
+    border: solid 1px #000000;
+    background-color: #aaaaff;
+    width: 475px;
+    margin: 5px;
+    margin-bottom: 0;
+}
+
+#db-curator .stepshell-footer {
+    width: 100%;
+    height: 15px;
+}
+
+#db-curator h1#appTitle {
+    font-size: small;
+    color: navy;
+
+}
+
+#db-curator h3#mprcRecognition {
+    font-size: small;
+}
+
+#db-curator .stepshell-moveupcommand {
+    background-image: url("images/moveUpArrow.png");
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    font-size: 0.0005px;
+    float: right;
+}
+
+#db-curator .stepshell-movedowncommand {
+    background-image: url("images/moveDownArrow.png");
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    font-size: 0.0005px;
+    float: right;
+}
+
+#db-curator .message-popup {
+
+}
+
+#db-curator .stepshell-removecommand {
+    background-image: url("images/delete.png");
+    width: 15px;
+    height: 15px;
+    font-size: 0.0005px;
+    background-repeat: no-repeat;
+    float: right;
+}
+
+#db-curator .stepshell-completioncount {
+    float: right;
+    width: 100px;
+    padding-right: 10px;
+    font-size: 10px;
+}
+
+#db-curator .stepshell-containedstep {
+    background-color: #e0e0ff;
+    width: 100%;
+}
+
+#db-curator .stepshell-containedstep-complete {
+    background-color: #c0c0c0;
+}
+
+#db-curator .stepshell-complete {
+    background-color: #a0a0a0;
+}
+
+#db-curator .stepshell-containedstep-inerror {
+    background-color: #fff0f0;
+}
+
+#db-curator .stepshell-title-inprogress {
+    color: #00AA00;
+    font-weight: bold; /*background-color: #a0FFa0;*/
+}
+
+#db-curator .resultfilepath {
+    width: 100%;
+}
+
+#db-curator .stepshell-header-collapserpanel {
+    width: 15px;
+    height: 15px;
+    float: left;
+}
+
+#db-curator .stepshell-header-stepremover {
+    float: right;
+}
+
+#db-curator .fileupload {
+    width: 100%;
+}
+
+#db-curator .uploadpanel-lblServerPath {
+    font-size: x-small;
+}
+
+#db-curator .uploadpanel-clientpath {
+    font-size: x-small;
+}
+
+#db-curator .fileupload-mainPanel {
+    padding: 10px;
+}
+
+#db-curator .fancyfileupload-pending {
+    font-size: 10px;
+    background: orange;
+    width: 200px;
+}
+
+#db-curator .fancyfileupload-loading {
+    font-size: 10px;
+    background: red;
+    width: 200px;
+}
+
+#db-curator .fancyfileupload-loaded {
+    font-size: 10px;
+    background: lightgreen;
+    width: 200px;
+}
+
+#db-curator .fancyfileupload-failed {
+    font-size: 10px;
+    background: blue;
+    width: 200px;
+}
+
+#db-curator .fancyfileupload-deleted {
+    background: gray;
+    font-size: 10px;
+    width: 200px;
+}
+
+#db-curator .steppanel-headertransform-lstcommontransforms {
+    width: 400px;
+}
+
+#db-curator .steppanel-headertransform-textentry {
+    width: 400px;
+}
+
+#db-curator .command-link {
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+#db-curator .curation-editor-border {
+    border-width: 2px;
+    border-color: navy;
+    border-style: solid;
+}
+
+#db-curator .curator-message-popup {
+    background: pink;
+    border-width: 4px;
+    border-style: solid;
+    border-color: navy;
+    padding: 25px;
+}
+
+#db-curator .disabled {
+    visibility: collapse;
+}
+
+.serverfilereader {
+    background: white;
+    border-width: 4px;
+    border-style: solid;
+    border-color: navy;
+}
+
+.serverfilereader_commands {
+    padding-right: 15px;
+    background: white;
+    height: 25px;
+}
+
+.serverfilereader_text {
+    font: monospace;
+    font-size: 12px;
+}
+
+.serverfilereader_commandbuttons {
+    padding-right: 15px;
+}

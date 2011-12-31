@@ -934,6 +934,7 @@ package]]></replacetoken>
 
   <macrodef name="start-jetty">
     <attribute name="port" />
+    <attribute name="home" default="${basedir}" />
     <sequential>
       <taskdef resource="cargo.tasks" classpathref="test.classpath" />
       <!-- TODO: Create property -->

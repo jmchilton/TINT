@@ -59,6 +59,11 @@
       <!-- This value assumes a GWT compile with '-deploy war/WEB-INF/deploy/' -->
       <param-value>WEB-INF/deploy/webgui/symbolMaps/</param-value>
     </init-param>
+    <init-param>
+      <param-name>symbolMaps</param-name>
+      <!-- This value assumes a GWT compile with '-deploy war/WEB-INF/deploy/' -->
+      <param-value>build/war/WEB-INF/deploy/webgui/symbolMaps/</param-value>
+    </init-param>
   </servlet>
 
 <servlet-mapping>

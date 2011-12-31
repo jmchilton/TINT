@@ -38,7 +38,9 @@
     </dependency>
     -->
     <dependency org="com.google.guava.gwt" name="guava-gwt" rev="r09" />
-    <dependency org="com.google.code.gwt-log" name="gwt-log" rev="3.1.3" />
+    <dependency org="com.allen-sauer.gwt.log" name="gwt-log" rev="3.1.7">
+      <exclude org="com.google.gwt" />
+    </dependency>
     <dependency org="swfupload-gwt" name="swfupload-gwt" rev="1.1" />
 
     
@@ -59,6 +61,7 @@
     </dependency>
     <!-- <dependency org="smartgwt" name="smartgwt" rev="2.5" /> --> <!-- Needs work! -->
     <dependency org="smartgwt" name="smartgwt" rev="2.4" />
+    <dependency org="msi.umn.edu" name="tropix-dbcurator" rev="${ivy.project.version}" />
     <dependency org="msi.umn.edu" name="tropix-webgui-constants" rev="${ivy.project.version}" conf="client->main" />
     <dependency org="msi.umn.edu" name="tropix-jobs" rev="${ivy.project.version}" conf="client->impl" />
     <dependency org="msi.umn.edu" name="tropix-client" rev="${ivy.project.version}" conf="client->impl" />

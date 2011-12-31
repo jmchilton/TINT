@@ -11,6 +11,7 @@
   <inherits name="com.google.gwt.json.JSON" />
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.inject.Inject"/>
+  <inherits name="edu.mayo.mprc.dbcurator.DBCurator"/>
   
   <inherits name='com.smartgwt.SmartGwt'/>
   

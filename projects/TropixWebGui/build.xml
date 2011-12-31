@@ -18,6 +18,9 @@
   <target name="defineClasspaths" depends="prepare">
     <!-- GWT Compiler doesn't respect ivy.resolved.artifacts.path, so explictly place GWT sources on classpath -->
     <path id="gwt.libs">
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*db-curator*.jar" />
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*gwt-dnd*.jar" />
+      <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/*gwt-common*.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/gwt-log*.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/validation*.jar" />
       <fileset dir="${ivy.resolved.artifacts.dir}" includes="**/another-gwt-mvc.jar" />
@@ -103,7 +106,8 @@
   </target>
 
   <target name="start-test-server" depends="prepare,defineClasspaths" >
-    <start-jetty port="8181" />
+    <symlink link="WEB-INF" resource="${build.war.dir}/WEB-INF"/>
+    <start-jetty port="8181" home="${build.war.dir}" />
     <sleep hours="8" />
   </target>
   
@@ -147,6 +151,7 @@
     <compile-gwt module="edu.umn.msi.tropix.webgui.TropixGui" />
   </target>
 
+  <target name="compile-gwt-firefox" depends="prepare-libraries,compile-java,compile-gwt-firefox_" />
   <target name="compile-gwt" depends="prepare-libraries,compile-java,compile-gwt_" />
 
   <target name="noserver-shell" depends="compile-java,noserver-shell_" />
@@ -202,6 +207,10 @@
   <target name="findbugs" depends="compile-java">
     <runfindbugs />
   </target>
+
+  <target name="prepackage-war-firefox" depends="compile-gwt-firefox,jar" />
+  <target name="prepackage-war" depends="compile-gwt,jar" />
+
   
   <target name="package-war_" depends="prepare">
     <war destfile="${war.location}" basedir="${build.war.dir}" >
@@ -209,7 +218,8 @@
     </war>
   </target>
 
-  <target name="package-war" depends="compile-gwt,jar,package-war_" />
+  <target name="package-war-firefox" depends="prepackage-war-firefox,package-war_" />
+  <target name="package-war" depends="prepackage-war,package-war_" />
 
   <target name="war" depends="package-war" />
 

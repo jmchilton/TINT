@@ -1,6 +1,7 @@
 <?xml version="1.0"?> 
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd"
+         xmlns:m="http://ant.apache.org/ivy/maven">
   
   <info organisation="msi.umn.edu" module="tropix-dbcurator" />
   
@@ -21,9 +22,26 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-persistence" rev="${ivy.project.version}" />
+    <!--
     <dependency org="edu.mayo.mprc" name="db-curator" rev="3.0-SNAPSHOT">
       <exclude org="org.springframework" />
     </dependency>
+    -->
+    <dependency org="edu.mayo.mprc" name="db-curator-ui" rev="3.0-SNAPSHOT">
+      <artifact name="db-curator-ui"/>
+      <artifact name="db-curator-ui" m:classifier="sources"/>
+      <exclude org="org.springframework" />
+      <exclude org="com.google.gwt" />
+    </dependency>
+
+    <dependency org="edu.mayo.mprc" name="gwt-common" rev="3.0-SNAPSHOT">
+      <artifact name="gwt-common"/>
+      <artifact name="gwt-common" m:classifier="sources"/>
+      <exclude org="org.springframework" />
+      <exclude org="com.google.gwt" />
+    </dependency>
+
+
   </dependencies>  
 
 </ivy-module>

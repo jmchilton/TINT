@@ -84,5 +84,9 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
   <bean id="dbcuratorDatabasePopulator" class="edu.mayo.mprc.database.DatabasePlaceholder">
     <property name="sessionFactory" ref="dbcuratorSessionFactory" />
   </bean>
+  
+  <bean id="curationDao" class="edu.mayo.mprc.dbcurator.model.persistence.CurationDaoImpl">
+    <constructor-arg ref="dbcuratorDatabasePopulator" />
+  </bean>
 
 </beans>
