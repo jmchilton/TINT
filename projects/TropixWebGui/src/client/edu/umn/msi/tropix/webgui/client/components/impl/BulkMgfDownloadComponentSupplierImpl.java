@@ -34,8 +34,8 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
   private final String mgfStyle;
 
   protected BulkMgfDownloadComponentSupplierImpl(final TreeComponentFactory treeComponentFactory,
-                                                 final LocationFactory locationFactory,
-                                                 final String mgfStyle) {
+      final LocationFactory locationFactory,
+      final String mgfStyle) {
     this.treeComponentFactory = treeComponentFactory;
     this.locationFactory = locationFactory;
     this.mgfStyle = mgfStyle;
@@ -56,7 +56,8 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
         smartDownloadFormPanel.execute();
       }
     };
-    //private SelectItem mgfStyleItem;
+
+    // private SelectItem mgfStyleItem;
 
     BulkMgfDownloadComponentImpl() {
       smartDownloadFormPanel = new GWTDownloadFormPanel("mgfStyle");
@@ -80,24 +81,25 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
       downloadButton.addClickHandler(new CommandClickHandlerImpl(downloadCommand));
 
       /*
-      mgfStyleItem = new SelectItem("mgfStyle", "MGF Style");
-      final LinkedHashMap<String, String> styleMap = Maps.newLinkedHashMap();
-      styleMap.put("DEFAULT", "Standard");
-      styleMap.put("MSM", "MSM style");
-      styleMap.put("PROTEIN_PILOT", "ProtinPilot style");
-      mgfStyleItem.setValueMap(styleMap);
-      mgfStyleItem.setValue("DEFAULT");
-      */
-      //final Form form = new Form("BulkMgfDownload");
-      //form.setWidth100();
+       * mgfStyleItem = new SelectItem("mgfStyle", "MGF Style");
+       * final LinkedHashMap<String, String> styleMap = Maps.newLinkedHashMap();
+       * styleMap.put("DEFAULT", "Standard");
+       * styleMap.put("MSM", "MSM style");
+       * styleMap.put("PROTEIN_PILOT", "ProtinPilot style");
+       * mgfStyleItem.setValueMap(styleMap);
+       * mgfStyleItem.setValue("DEFAULT");
+       */
+      // final Form form = new Form("BulkMgfDownload");
+      // form.setWidth100();
 
       final Layout formLayout = SmartUtils.getFullVLayout(runTreeComponent.get());
 
       final CanvasWithOpsLayout<Canvas> layout = new CanvasWithOpsLayout<Canvas>(formLayout, downloadButton);
-      layout.setWidth("400px");
-      layout.setHeight("500px");
+      // layout.setWidth("400px");
+      // layout.setHeight("500px");
+      // layout
       layout.addChild(smartDownloadFormPanel);
-      this.setWidget(PopOutWindowBuilder.titled("Bulk MGF Download").autoSized().withContents(layout).get());
+      this.setWidget(PopOutWindowBuilder.titled("Bulk MGF Download").sized(600, 600).withContents(layout).get());
     }
 
     public void onValidation(final boolean isValid) {

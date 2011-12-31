@@ -32,6 +32,11 @@
       <exclude org="xml-apis" />
     </dependency>
 
+    <!--
+    <dependency org="com.google.guava" name="guava" rev="${guava.version}" conf="client->master">
+      <artifact name="guava" />
+    </dependency>
+    -->
     <dependency org="com.google.guava.gwt" name="guava-gwt" rev="r09" />
     <dependency org="com.google.code.gwt-log" name="gwt-log" rev="3.1.3" />
     <dependency org="swfupload-gwt" name="swfupload-gwt" rev="1.1" />

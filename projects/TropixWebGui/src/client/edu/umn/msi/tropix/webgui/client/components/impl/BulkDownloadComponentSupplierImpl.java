@@ -57,7 +57,7 @@ public class BulkDownloadComponentSupplierImpl implements Supplier<WindowCompone
 
   @Inject
   public BulkDownloadComponentSupplierImpl(final TreeComponentFactory treeComponentFactory,
-                                           final LocationFactory locationFactory) {
+      final LocationFactory locationFactory) {
     this.treeComponentFactory = treeComponentFactory;
     this.locationFactory = locationFactory;
   }
@@ -92,10 +92,10 @@ public class BulkDownloadComponentSupplierImpl implements Supplier<WindowCompone
       downloadButton.setDisabled(treeComponent.getMultiSelection().isEmpty());
       downloadButton.addClickHandler(new CommandClickHandlerImpl(downloadCommand));
       final CanvasWithOpsLayout<TreeGrid> layout = new CanvasWithOpsLayout<TreeGrid>(treeComponent.get(), downloadButton);
-      layout.setWidth("400px");
-      layout.setHeight("500px");
+      // layout.setWidth("400px");
+      // layout.setHeight("500px");
       layout.addChild(smartDownloadFormPanel);
-      this.setWidget(PopOutWindowBuilder.titled("Bulk Download").autoSized().withContents(layout).get());
+      this.setWidget(PopOutWindowBuilder.titled("Bulk Download").sized(600, 600).withContents(layout).get());
     }
   }
 

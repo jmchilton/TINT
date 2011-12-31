@@ -107,6 +107,7 @@ public class ObjectServiceImpl implements ObjectService {
     return this.beanSanitizer.sanitize(object);
   }
 
+  @ServiceMethod(readOnly = true)
   public List<TropixObject> getAssociations(final String objectId, final String associationName) {
     final TropixObject[] objects = this.tropixObjectService.getAssociations(this.userSession.getGridId(), objectId, associationName);
     return this.sanitizeObjects(objects);
@@ -159,7 +160,7 @@ public class ObjectServiceImpl implements ObjectService {
   public void addGroupSharedFolder(final String groupId, final String folderId) {
     this.tropixObjectService.addGroupSharedFolder(this.userSession.getGridId(), groupId, folderId);
   }
-  
+
   @ServiceMethod
   public void removeSharedFolder(final String rootSharedFolderId, final boolean removeOwnedItems) {
     tropixObjectService.removeSharedFolder(userSession.getGridId(), rootSharedFolderId, removeOwnedItems);
@@ -203,9 +204,6 @@ public class ObjectServiceImpl implements ObjectService {
     return count;
   }
 
-  
-
-  
   @ServiceMethod
   public void addToSharedFolder(final Collection<String> objectIds, final String folderId, final boolean recursive) {
     RuntimeException lastException = null;
@@ -302,6 +300,5 @@ public class ObjectServiceImpl implements ObjectService {
   public void setUserSession(final UserSession userSession) {
     this.userSession = userSession;
   }
-
 
 }

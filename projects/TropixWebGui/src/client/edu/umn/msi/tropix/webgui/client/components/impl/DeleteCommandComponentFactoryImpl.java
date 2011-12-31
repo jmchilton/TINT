@@ -44,9 +44,9 @@ public class DeleteCommandComponentFactoryImpl implements DescribableLocationCom
 
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
     System.out.println("In acceptsLocations");
-    if(!(treeItems != null && treeItems.size() > 0 
-         && TreeItems.allTropixObjectTreeItemsWithSameRoot(treeItems) 
-         && TreeItems.allParentsAreFolder(treeItems))) {
+    if(!(treeItems != null && treeItems.size() > 0
+        && TreeItems.allTropixObjectTreeItemsWithSameRoot(treeItems)
+        && TreeItems.allParentsAreFolder(treeItems))) {
       return false;
     }
     final TreeItem firstItem = treeItems.iterator().next();
@@ -58,11 +58,16 @@ public class DeleteCommandComponentFactoryImpl implements DescribableLocationCom
         if(Locations.isMySharedFoldersItem(treeItem.getParent()) != Locations.isMySharedFoldersItem(firstItem.getParent())) {
           return false;
         }
+        if(Locations.isMyGroupSharedFoldersItem(treeItem.getParent()) != Locations.isMyGroupSharedFoldersItem(firstItem.getParent())) {
+          return false;
+        }
+
       }
     }
 
     // Don't let you delete from searches, etc...
-    return firstItem instanceof TropixObjectTreeItem && (rootItem instanceof TropixObjectTreeItem || Locations.isRootLocationAFolder(rootItem) || Locations.isMyRecentActivityItem(rootItem));
+    return firstItem instanceof TropixObjectTreeItem
+        && (rootItem instanceof TropixObjectTreeItem || Locations.isRootLocationAFolder(rootItem) || Locations.isMyRecentActivityItem(rootItem));
   }
 
   public Command get(final Collection<TreeItem> treeItems) {
@@ -70,8 +75,9 @@ public class DeleteCommandComponentFactoryImpl implements DescribableLocationCom
       public void execute() {
         final TreeItem firstItem = treeItems.iterator().next();
         final Location rootItem = firstItem.getRoot();
-        final boolean isVirtual = Locations.isMySharedFoldersItem(rootItem);
-        final boolean isVirtualRoot = isVirtual && Locations.isMySharedFoldersItem(firstItem.getParent());
+        final boolean isVirtual = Locations.isMySharedFoldersItem(rootItem) || Locations.isMyGroupFoldersItem(rootItem);
+        final boolean isVirtualRoot = isVirtual
+            && (Locations.isMySharedFoldersItem(firstItem.getParent()) || Locations.isMyGroupSharedFoldersItem(firstItem.getParent()));
         final Collection<String> ids = new ArrayList<String>(treeItems.size());
         for(final TreeItem treeItem : treeItems) {
           ids.add(treeItem.getId());
@@ -100,11 +106,12 @@ public class DeleteCommandComponentFactoryImpl implements DescribableLocationCom
                   if(objectCount == 0) {
                     remove(false);
                   } else {
-                    SC.ask("The selected shared folder(s) contain objects owned by you, do you wish to remove these from the shared folder?", new BooleanCallback() {
-                      public void execute(final Boolean value) {
-                        remove(value);
-                      }
-                    });
+                    SC.ask("The selected shared folder(s) contain objects owned by you, do you wish to remove these from the shared folder?",
+                        new BooleanCallback() {
+                          public void execute(final Boolean value) {
+                            remove(value);
+                          }
+                        });
                   }
                 }
               });
