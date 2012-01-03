@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -258,8 +259,10 @@ public class ObjectServiceImpl implements ObjectService {
 
   @ServiceMethod(readOnly = true)
   public TropixObjectContext<VirtualFolder> getRoot(final String virtualFolderId) {
-    return new TropixObjectContext<VirtualFolder>(this.beanSanitizer.sanitize(this.tropixObjectService.getRoot(this.userSession.getGridId(),
-        virtualFolderId)));
+    final VirtualFolder sanitizedBean = this.beanSanitizer.sanitize(this.tropixObjectService.getRoot(this.userSession.getGridId(), virtualFolderId));
+    Preconditions.checkNotNull(sanitizedBean);
+    final TropixObjectContext<VirtualFolder> context = new TropixObjectContext<VirtualFolder>(sanitizedBean);
+    return context;
   }
 
   @ServiceMethod

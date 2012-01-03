@@ -32,6 +32,7 @@ import com.google.common.base.Function;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
 import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
@@ -75,7 +76,7 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
     }
   }
 
-  public TropixObjectTreeItemImpl(@Nullable final TreeItem parent,
+  public TropixObjectTreeItemImpl(@Nullable final Location parent,
       final TropixObjectUserAuthorities context,
       final TropixObject object,
       final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {

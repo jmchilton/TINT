@@ -22,19 +22,19 @@
 
 package edu.umn.msi.tropix.webgui.client.components.tree.impl;
 
-
 import javax.annotation.Nullable;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.LocationImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 
 public abstract class TreeItemImpl extends LocationImpl implements TreeItem {
   private String icon;
   private boolean valid = true;
-  
-  protected TreeItemImpl(@Nullable final TreeItem parent) {
+
+  protected TreeItemImpl(@Nullable final Location parent) {
     super(parent);
   }
 

@@ -40,6 +40,7 @@ import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectContexts;
@@ -108,7 +109,7 @@ public class LocationFactoryImpl implements LocationFactory {
     };
   }
 
-  public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final TreeItem parent,
+  public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final Location parent,
       @Nullable final TropixObjectUserAuthorities context,
       final TropixObject object,
       final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {

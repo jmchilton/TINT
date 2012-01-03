@@ -25,11 +25,15 @@ package edu.umn.msi.tropix.webgui.client.mediators;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
+import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
+import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerList;
 import edu.umn.msi.tropix.webgui.client.utils.ListenerLists;
@@ -79,9 +83,16 @@ public class NavigationSelectionMediator implements Listener<NavigationSelection
     this.contextListeners.add(selectionChangedListener);
   }
 
-  public void go(final TropixObjectContext tropixObjectWithContext) {
-    final TreeItem treeItem = locationFactory.getTropixObjectTreeItem(null, tropixObjectWithContext.getTropixObjectContext(), tropixObjectWithContext.getTropixObject(), null);
-    this.onEvent(new NavigationSelection(treeItem));
+  public void go(final TropixObjectContext<? extends TropixObject> tropixObjectWithContext) {
+    final TropixObject tropixObject = tropixObjectWithContext.getTropixObject();
+    final TropixObjectUserAuthorities authorities = tropixObjectWithContext.getTropixObjectContext();
+    Preconditions.checkNotNull(tropixObject);
+    final TropixObjectTreeItem treeItem = locationFactory.getTropixObjectTreeItem(null, authorities, tropixObject, null);
+    go(treeItem);
+  }
+
+  public void go(final TropixObjectTreeItem tropixObjectLocation) {
+    this.onEvent(new NavigationSelection(tropixObjectLocation));
   }
 
   public void onEvent(final NavigationSelection treeItem) {

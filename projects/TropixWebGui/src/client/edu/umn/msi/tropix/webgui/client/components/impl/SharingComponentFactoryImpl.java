@@ -50,6 +50,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
@@ -57,7 +58,9 @@ import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.PageConfiguration;
 import edu.umn.msi.tropix.webgui.client.components.SelectionWindowComponent;
+import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
+import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.constants.PageConstants;
 import edu.umn.msi.tropix.webgui.client.mediators.NavigationSelectionMediator;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
@@ -71,11 +74,17 @@ import edu.umn.msi.tropix.webgui.services.object.Permission;
 
 public class SharingComponentFactoryImpl implements ComponentFactory<PageConfiguration, CanvasComponent<Layout>> {
   private NavigationSelectionMediator navigationSelectionMediator;
+  private LocationFactory locationFactory;
   private Supplier<? extends SelectionWindowComponent<GridUser, ? extends Window>> userSelectionWindowComponentSupplier;
   private Supplier<? extends SelectionWindowComponent<Group, ? extends Window>> groupSelectionWindowComponentSupplier;
   private Supplier<? extends SelectionWindowComponent<TreeItem, ? extends Window>> virtualFolderSelectionWindowComponentSupplier;
 
   private ObjectServiceAsync objectService;
+
+  @Inject
+  public void setLocationFactory(final LocationFactory locationFactory) {
+    this.locationFactory = locationFactory;
+  }
 
   @Inject
   public void setObjectService(final ObjectServiceAsync objectService) {
@@ -107,6 +116,7 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
 
   class SharingLayoutHandler extends WidgetSupplierImpl<Layout> implements CanvasComponent<Layout> {
     // private final Label loadingLabel;
+    private TropixObjectLocation tropixObjectLocation;
     private final TropixObject tropixObject;
     private final String objectId;
     private ClientListGrid userAndGroupGrid, sharedFoldersGrid;
@@ -124,7 +134,8 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
     }
 
     SharingLayoutHandler(final PageConfiguration pageConfiguration) {
-      this.tropixObject = pageConfiguration.getLocation().getObject();
+      this.tropixObjectLocation = pageConfiguration.getLocation();
+      this.tropixObject = tropixObjectLocation.getObject();
       this.objectId = tropixObject.getId();
 
       // this.loadingLabel = SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingLoading());
@@ -144,7 +155,10 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
           public void onSuccess(final TropixObjectContext<VirtualFolder> sharedFolderContext) {
             button.addClickHandler(new ClickHandler() {
               public void onClick(final ClickEvent event) {
-                navigationSelectionMediator.go(sharedFolderContext);
+                final TropixObjectTreeItem item;
+                item = locationFactory.getTropixObjectTreeItem(tropixObjectLocation.getRoot(), sharedFolderContext.getTropixObjectContext(),
+                    sharedFolderContext.getTropixObject(), null);
+                navigationSelectionMediator.go(item);
               }
             });
             button.setDisabled(false);
