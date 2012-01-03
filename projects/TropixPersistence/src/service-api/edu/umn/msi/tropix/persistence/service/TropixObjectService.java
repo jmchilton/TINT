@@ -65,7 +65,7 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   TropixObject getAssociation(@UserId String cagridId, @Reads String objectId, String associationName);
 
   @PersistenceMethod
-  PermissionReport[] getPermissionReports(@UserId String cagridId, @Owns String objectId);
+  PermissionReport[] getPermissionReports(@UserId String cagridId, @Reads String objectId);
 
   String getOwnerId(String objectId);
 
@@ -142,6 +142,6 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   void hideSharedFolder(@UserId final String cagridId, @Reads final String rootSharedFolderId);
 
   @PersistenceMethod
-  void hideGroupSharedFolder(@UserId final String cagridId, @MemberOf String groupId,  @Reads final String rootSharedFolderId);
+  void hideGroupSharedFolder(@UserId final String cagridId, @MemberOf String groupId, @Reads final String rootSharedFolderId);
 
 }

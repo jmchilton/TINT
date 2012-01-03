@@ -528,7 +528,8 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
 
         final Command goCommand = new Command() {
           public void execute() {
-            navigationSelectionMediator.go((TropixObjectContext) PageVisitor.this.associationGrid.getSelectedRecord().getAttributeAsObject("object"));
+            navigationSelectionMediator.go((TropixObjectContext<TropixObject>) PageVisitor.this.associationGrid.getSelectedRecord()
+                .getAttributeAsObject("object"));
           }
         };
         this.associationGrid.addDoubleClickHandler(new CommandDoubleClickHandlerImpl(goCommand));

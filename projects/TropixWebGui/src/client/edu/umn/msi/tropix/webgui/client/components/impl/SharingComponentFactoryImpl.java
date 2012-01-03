@@ -121,6 +121,7 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
     private final String objectId;
     private ClientListGrid userAndGroupGrid, sharedFoldersGrid;
     private Button removeButton, toogleEditButton, removeFolderButton;
+    private boolean canModify;
 
     private boolean isNonRootSharedFolder() {
       boolean nonRootSharedFolder = false;
@@ -166,6 +167,9 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
         });
         layout.addMember(button);
       } else {
+        this.canModify = pageConfiguration.getTropixObjectContext().canModifySharing();
+        // TODO: Use canModify to always init, just in a read-only mode if false.
+        // TODO: Eliminate sharingNoPermission constant.
         if(pageConfiguration.getTropixObjectContext().canModifySharing()) {
           init();
         } else {
