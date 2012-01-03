@@ -42,8 +42,10 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.util.StringUtils;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
@@ -677,6 +679,22 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   // TODO:
   public TropixObject getSharedDirectoryPath(final String userId, final List<String> asList) {
     return null;
+  }
+
+  public Multimap<String, String> getRoles(final String userIdentity, final Iterable<String> objectIds) {
+    final Multimap<String, String> roleMap = HashMultimap.create();
+    final Iterable<List<String>> objectIdPartitions = Iterables.partition(objectIds, 500);
+    for(List<String> objectIdPartition : objectIdPartitions) {
+      final Query query = getSession().getNamedQuery("getRolesForObjects");
+      query.setParameter("userId", userIdentity);
+      query.setParameterList("objectIds", objectIdPartition);
+      @SuppressWarnings("unchecked")
+      final List<Object[]> results = query.list();
+      for(Object[] result : results) {
+        roleMap.put((String) result[0], (String) result[1]);
+      }
+    }
+    return roleMap;
   }
 
 }

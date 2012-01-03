@@ -40,8 +40,10 @@ import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.logging.ExceptionUtils;
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
+import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.persistence.service.permission.PermissionReport;
 import edu.umn.msi.tropix.persistence.service.permission.PermissionType;
@@ -51,7 +53,6 @@ import edu.umn.msi.tropix.webgui.server.models.BeanSanitizerUtils;
 import edu.umn.msi.tropix.webgui.server.security.UserSession;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
 import edu.umn.msi.tropix.webgui.services.object.Permission;
-import edu.umn.msi.tropix.webgui.services.object.TropixObjectContext;
 
 @ManagedBean
 public class ObjectServiceImpl implements ObjectService {
@@ -102,15 +103,20 @@ public class ObjectServiceImpl implements ObjectService {
   }
 
   @ServiceMethod(readOnly = true)
-  public TropixObject getAssociation(final String objectId, final String associationName) {
+  public TropixObjectWithContext<TropixObject> getAssociation(final String objectId, final String associationName) {
     final TropixObject object = this.tropixObjectService.getAssociation(this.userSession.getGridId(), objectId, associationName);
-    return this.beanSanitizer.sanitize(object);
+    return new TropixObjectWithContext<TropixObject>(null, this.beanSanitizer.sanitize(object));
   }
 
   @ServiceMethod(readOnly = true)
-  public List<TropixObject> getAssociations(final String objectId, final String associationName) {
+  public List<TropixObjectWithContext> getAssociations(final String objectId, final String associationName) {
     final TropixObject[] objects = this.tropixObjectService.getAssociations(this.userSession.getGridId(), objectId, associationName);
-    return this.sanitizeObjects(objects);
+    final List<TropixObject> sanitizedObjects = this.sanitizeObjects(objects);
+    final List<TropixObjectWithContext> contexts = Lists.newArrayListWithCapacity(objects.length);
+    for(TropixObject sanitizedObject : sanitizedObjects) {
+      contexts.add(new TropixObjectWithContext<TropixObject>(null, sanitizedObject));
+    }
+    return contexts;
   }
 
   @ServiceMethod
@@ -251,8 +257,8 @@ public class ObjectServiceImpl implements ObjectService {
   }
 
   @ServiceMethod(readOnly = true)
-  public VirtualFolder getRoot(final String virtualFolderId) {
-    return this.beanSanitizer.sanitize(this.tropixObjectService.getRoot(this.userSession.getGridId(), virtualFolderId));
+  public SharedFolderContext getRoot(final String virtualFolderId) {
+    return new SharedFolderContext(null, this.beanSanitizer.sanitize(this.tropixObjectService.getRoot(this.userSession.getGridId(), virtualFolderId)));
   }
 
   @ServiceMethod

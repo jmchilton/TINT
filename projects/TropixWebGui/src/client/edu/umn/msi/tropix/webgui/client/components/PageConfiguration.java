@@ -22,8 +22,8 @@
 
 package edu.umn.msi.tropix.webgui.client.components;
 
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
-import edu.umn.msi.tropix.webgui.services.object.TropixObjectContext;
 
 public class PageConfiguration {
   private final TropixObjectTreeItem location;

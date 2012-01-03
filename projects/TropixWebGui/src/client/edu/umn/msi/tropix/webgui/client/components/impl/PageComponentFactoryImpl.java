@@ -77,8 +77,10 @@ import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectVisitorImpl;
 import edu.umn.msi.tropix.models.utils.TropixObjectVistorUtils;
+import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.Session;
@@ -114,7 +116,6 @@ import edu.umn.msi.tropix.webgui.client.widgets.PageFrameSupplierImpl.Section;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.WidgetSupplierImpl;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
-import edu.umn.msi.tropix.webgui.services.object.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.services.protip.IdentificationParametersService;
 import edu.umn.msi.tropix.webgui.services.session.Module;
 import edu.umn.msi.tropix.webgui.services.tropix.RequestService;
@@ -130,16 +131,16 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
   private NavigationSelectionMediator navigationSelectionMediator;
   private ParametersPanelFactory parametersPanelFactory;
   private LocationCommandComponentFactory<? extends Command> deleteCommandComponentFactory, renameCommandComponentFactory,
-      changeDescriptionCommandComponentFactory;
+  changeDescriptionCommandComponentFactory;
   private final HashMap<String, Boolean> expandedMap = new HashMap<String, Boolean>();
   private ModuleManager moduleManager;
   private Session session;
-  
+
   @Inject
   public void setSession(final Session session) {
     this.session = session;
   }
-  
+
   @Inject
   public void setModuleManager(final ModuleManager moduleManager) {
     this.moduleManager = moduleManager;
@@ -438,7 +439,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
       if(Locations.isMyGroupSharedFoldersItem(tropixObjectTreeItem.getParent())) {
         this.addOperation("Hide this shared folder", getHideGroupSharedFolderCommand(virtualFolder));
       }
-      
+
       if(tropixObjectContext.isModifiable()) {
         this.addOperation("Add items to this shared folder", getAddItemsToSharedFolderCommand(virtualFolder));
       }
@@ -465,11 +466,11 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
           if(parametersMap != null) {
             final ParametersPanel panel = PageComponentFactoryImpl.this.parametersPanelFactory.createParametersPanel(parameters.getType(),
                 new AsyncCallbackImpl<ParametersPanel>() {
-                  @Override
-                  public void onSuccess(final ParametersPanel panel) {
-                    panel.setTemplateMap(parametersMap);
-                  }
-                }, true);
+              @Override
+              public void onSuccess(final ParametersPanel panel) {
+                panel.setTemplateMap(parametersMap);
+              }
+            }, true);
             panel.setHeight("500px");
             panel.setWidth("100%");
             final Label label = new Label("These parameters have already been saved and cannot be modified.");
@@ -526,7 +527,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
 
         final Command goCommand = new Command() {
           public void execute() {
-            navigationSelectionMediator.go((TropixObject) PageVisitor.this.associationGrid.getSelectedRecord().getAttributeAsObject("object"));
+            navigationSelectionMediator.go((TropixObjectWithContext) PageVisitor.this.associationGrid.getSelectedRecord().getAttributeAsObject("object"));
           }
         };
         this.associationGrid.addDoubleClickHandler(new CommandDoubleClickHandlerImpl(goCommand));
@@ -550,14 +551,14 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
       this.operationsGrid.addData(record);
     }
 
-    private void addToAssociationGrid(final TropixObject object, final String name) {
+    private void addToAssociationGrid(final TropixObjectWithContext object, final String name) {
       if(object == null) {
         return;
       }
       final ListGridRecord record = new ListGridRecord();
-      record.setAttribute("name", StringUtils.sanitize(object.getName()));
-      record.setAttribute("description", StringUtils.sanitize(object.getDescription()));
-      record.setAttribute("icon", iconFunction.apply(object));
+      record.setAttribute("name", StringUtils.sanitize(object.getTropixObject().getName()));
+      record.setAttribute("description", StringUtils.sanitize(object.getTropixObject().getDescription()));
+      record.setAttribute("icon", iconFunction.apply(object.getTropixObject()));
       record.setAttribute("object", object);
       record.setAttribute("associationName", name);
       this.associationGrid.addData(record);
@@ -566,18 +567,18 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
     private void addAssociations(final TropixObject object, final String name, final String associationName, final boolean multiple) {
       this.initAssociationGrid();
       if(multiple) {
-        ObjectService.Util.getInstance().getAssociations(object.getId(), associationName, new AsyncCallbackImpl<List<TropixObject>>() {
+        ObjectService.Util.getInstance().getAssociations(object.getId(), associationName, new AsyncCallbackImpl<List<TropixObjectWithContext>>() {
           @Override
-          public void onSuccess(final List<TropixObject> objects) {
-            for(final TropixObject object : objects) {
+          public void onSuccess(final List<TropixObjectWithContext> objects) {
+            for(final TropixObjectWithContext object : objects) {
               PageVisitor.this.addToAssociationGrid(object, name);
             }
           }
         });
       } else {
-        ObjectService.Util.getInstance().getAssociation(object.getId(), associationName, new AsyncCallbackImpl<TropixObject>() {
+        ObjectService.Util.getInstance().getAssociation(object.getId(), associationName, new AsyncCallbackImpl<TropixObjectWithContext>() {
           @Override
-          public void onSuccess(final TropixObject object) {
+          public void onSuccess(final TropixObjectWithContext object) {
             PageVisitor.this.addToAssociationGrid(object, name);
           }
         });
@@ -724,9 +725,10 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
         final boolean multiple) {
       this.initDownloads();
       if(!multiple) {
-        ObjectService.Util.getInstance().getAssociation(object.getId(), associationName, new AsyncCallbackImpl<TropixObject>() {
+        ObjectService.Util.getInstance().getAssociation(object.getId(), associationName, new AsyncCallbackImpl<TropixObjectWithContext>() {
           @Override
-          public void onSuccess(final TropixObject to) {
+          public void onSuccess(final TropixObjectWithContext toContext) {
+            final TropixObject to = toContext.getTropixObject();
             if(to instanceof TropixFile) {
               final String filename = basename + ModelUtils.getExtension((TropixFile) to);
               final ListGridRecord record = new ListGridRecord();
@@ -738,16 +740,19 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
           }
         });
       } else {
-        ObjectService.Util.getInstance().getAssociations(object.getId(), associationName, new AsyncCallbackImpl<List<TropixObject>>() {
+        ObjectService.Util.getInstance().getAssociations(object.getId(), associationName, new AsyncCallbackImpl<List<TropixObjectWithContext>>() {
           @Override
-          public void onSuccess(final List<TropixObject> tos) {
-            for(final TropixObject to : tos) {
-              final String filename = basename + ModelUtils.getExtension((TropixFile) to);
-              final ListGridRecord record = new ListGridRecord();
-              record.setAttribute("id", to.getId());
-              record.setAttribute("filename", StringUtils.sanitize(filename));
-              record.setAttribute("File", StringUtils.sanitize(name));
-              downloadGrid.addData(record);
+          public void onSuccess(final List<TropixObjectWithContext> tosContexts) {
+            for(final TropixObjectWithContext toContext : tosContexts) {
+              final TropixObject to = toContext.getTropixObject();
+              if(to instanceof TropixFile) {
+                final String filename = basename + ModelUtils.getExtension((TropixFile) to);
+                final ListGridRecord record = new ListGridRecord();
+                record.setAttribute("id", to.getId());
+                record.setAttribute("filename", StringUtils.sanitize(filename));
+                record.setAttribute("File", StringUtils.sanitize(name));
+                downloadGrid.addData(record);
+              }
             }
           }
         });

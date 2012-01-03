@@ -33,6 +33,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
@@ -44,6 +45,7 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
   private static final Function<TropixObject, String> ICON_FUNCTION = ModelFunctions.getIconFunction16();
   private static final Function<TropixObject, String> TYPE_FUNCTION = ModelFunctions.getTypeFunction();
   private TropixObjectTreeItem tropixObjectTreeItemRoot;
+  private TropixObjectContext tropixObjectContext;
   private TropixObject object;
   private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;
 
@@ -72,9 +74,12 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
     }
   }
 
-  public TropixObjectTreeItemImpl(@Nullable final TreeItem parent, final TropixObject object,
-      final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+  public TropixObjectTreeItemImpl(@Nullable final TreeItem parent,
+                                  @Nullable final TropixObjectContext context,
+                                  final TropixObject object,
+                                  final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     super(parent);
+    this.tropixObjectContext = context;
     this.init(object);
     if(parent != null && parent instanceof TropixObjectTreeItem) {
       this.tropixObjectTreeItemRoot = (TropixObjectTreeItem) parent;
@@ -89,6 +94,7 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
     this.tropixObjectTreeItemRoot = parent.getTropixObjectTreeItemRoot();
     this.init(object);
     this.tropixObjectTreeItemExpander = parent.tropixObjectTreeItemExpander;
+    this.tropixObjectContext = parent.getContext();
   }
 
   public TropixObject getObject() {
@@ -133,5 +139,9 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
         callback.onSuccess(null);
       }
     });
+  }
+
+  public TropixObjectContext getContext() {
+    return tropixObjectContext;
   }
 }

@@ -29,7 +29,11 @@ import java.util.HashSet;
 import javax.annotation.ManagedBean;
 import javax.inject.Named;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.models.Folder;
@@ -37,6 +41,10 @@ import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.ModelPredicates;
+import edu.umn.msi.tropix.models.utils.ModelUtils;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.dao.Dao;
 import edu.umn.msi.tropix.persistence.service.FolderService;
@@ -60,15 +68,35 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
     super.saveNewObjectToDestination(folder, userGridId, parentFolderId);
     return folder;
   }
+  
+  private Collection<SharedFolderContext> buildSharedFolderContexts(final Collection<VirtualFolder> virtualFolders, final String gridId) {
+    final Multimap<String, String> objectsRoles = getTropixObjectDao().getRoles(gridId, ModelUtils.getIds(virtualFolders));
+    return Collections2.transform(Collections2.filter(virtualFolders, new Predicate<TropixObject>() {
 
-  public VirtualFolder[] getSavedVirtualFolders(final String gridId) {
-    final User user = getUserDao().loadUser(gridId);
-    return filter(user.getSharedFolders(), VirtualFolder.class, gridId);
+      public boolean apply(final TropixObject input) {
+        return objectsRoles.containsKey(input.getId()) && ModelPredicates.isValidObjectPredicate().apply(input);
+      }
+      
+    }), new Function<VirtualFolder, SharedFolderContext>() {
+
+      public SharedFolderContext apply(final VirtualFolder input) {
+        final Collection<String> objectRoles = objectsRoles.get(input.getId());
+        final TropixObjectContext context = new TropixObjectContext(objectRoles.contains("write"), objectRoles.contains("owns"));
+        return new SharedFolderContext(context, input);
+      }
+      
+    });
+    
   }
 
-  public VirtualFolder[] getGroupSharedFolders(final String userId, final String groupId) {
+  public Collection<SharedFolderContext> getSavedVirtualFolders(final String gridId) {
+    final User user = getUserDao().loadUser(gridId);
+    return buildSharedFolderContexts(user.getSharedFolders(), gridId);
+  }
+
+  public Collection<SharedFolderContext> getGroupSharedFolders(final String userId, final String groupId) {
     final Group group = getDaoFactory().getDao(Group.class).load(groupId);
-    return filter(group.getSharedFolders(), VirtualFolder.class, userId);
+    return buildSharedFolderContexts(group.getSharedFolders(), userId);
   }
 
   public VirtualFolder createGroupVirtualFolder(final String gridId, final String groupId, final VirtualFolder inputFolder) {

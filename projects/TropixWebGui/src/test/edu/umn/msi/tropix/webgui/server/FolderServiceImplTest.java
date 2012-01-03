@@ -28,6 +28,7 @@ import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -35,7 +36,10 @@ import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContexts;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
+import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.ProviderService;
 
@@ -74,9 +78,10 @@ public class FolderServiceImplTest extends BaseGwtServiceTest {
   public void getGroupSharedFolders() {
     final String groupId = UUID.randomUUID().toString();
     final VirtualFolder folder1 = createTropixObject(VirtualFolder.class);
-    EasyMock.expect(folderService.getGroupSharedFolders(getUserId(), groupId)).andReturn(new VirtualFolder[] {folder1});
+    final SharedFolderContext context = new SharedFolderContext(TropixObjectContexts.getOwnerContext(), folder1);
+    EasyMock.expect(folderService.getGroupSharedFolders(getUserId(), groupId)).andReturn(Lists.newArrayList(context));
     replay();
-    verifyOneObjectReturned(gwtFolderService.getGroupSharedFolders(groupId), folder1);
+    verifyOneContextReturned(gwtFolderService.getGroupSharedFolders(groupId), folder1);
   }
 
   @Test(groups = "unit", dataProvider = "bool1", dataProviderClass = TestNGDataProviders.class)
@@ -102,6 +107,15 @@ public class FolderServiceImplTest extends BaseGwtServiceTest {
     EasyMock.replay(folderService);
   }
 
+  private <T extends TropixObject> void verifyOneContextReturned(final Iterable<? extends TropixObjectWithContext<T>> results, final T expectedFolder) {
+    verifyOneObjectReturned(Iterables.transform(results, new Function<TropixObjectWithContext<? extends T>, T>() {
+      @Override
+      public T apply(final TropixObjectWithContext<? extends T> input) {
+        return input.getTropixObject();
+      }      
+    }), expectedFolder);
+  }
+  
   private <T> void verifyOneObjectReturned(final Iterable<T> results, final T expectedFolder) {
     assert Iterables.elementsEqual(results, Lists.<T>newArrayList(expectedFolder));
     assert getSanitizer().wasSanitized(expectedFolder);

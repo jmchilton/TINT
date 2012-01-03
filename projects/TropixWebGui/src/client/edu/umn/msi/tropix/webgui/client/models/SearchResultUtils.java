@@ -26,6 +26,8 @@ import java.util.Date;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
+import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 import edu.umn.msi.tropix.webgui.services.object.SearchResult;
 
@@ -48,7 +50,7 @@ public class SearchResultUtils {
     }
     final String ownerDisplay = searchResult.getOwner().substring(searchResult.getOwner().lastIndexOf('=') + 1);
     record.setAttribute("owner", ownerDisplay);
-    record.setAttribute("object", searchResult.getTropixObject());
+    record.setAttribute("object", new TropixObjectWithContext<TropixObject>(searchResult.getTropixObjectContext(), searchResult.getTropixObject()));
     return record;
   }
 }

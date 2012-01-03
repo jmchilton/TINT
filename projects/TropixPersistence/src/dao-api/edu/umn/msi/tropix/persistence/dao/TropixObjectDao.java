@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Multimap;
+
 import edu.umn.msi.tropix.models.DirectPermission;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Group;
@@ -39,6 +41,8 @@ import edu.umn.msi.tropix.models.VirtualFolder;
 
 public interface TropixObjectDao {
 
+  Multimap<String, String> getRoles(String userIdentity, Iterable<String> objectIds);
+  
   Collection<Folder> getGroupFolders(final String userId);
 
   Collection<Folder> getAllGroupFolders();

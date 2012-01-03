@@ -25,13 +25,14 @@ package edu.umn.msi.tropix.persistence.service.impl.utils;
 import com.google.common.base.Predicate;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.utils.ModelPredicates;
 import edu.umn.msi.tropix.persistence.service.security.SecurityProvider;
 
 public class Predicates {
   public static Predicate<TropixObject> getValidAndCanReadPredicate(final SecurityProvider provider, final String userGridId) {
     return new Predicate<TropixObject>() {
       public boolean apply(final TropixObject object) {
-        return object.getCommitted() != null && object.getCommitted() && object.getDeletedTime() == null && provider.canRead(object.getId(), userGridId);
+        return ModelPredicates.isValidObjectPredicate().apply(object) && provider.canRead(object.getId(), userGridId);
       }
     };
   }

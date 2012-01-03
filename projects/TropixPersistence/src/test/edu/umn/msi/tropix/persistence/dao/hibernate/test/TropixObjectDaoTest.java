@@ -30,6 +30,8 @@ import org.springframework.test.annotation.NotTransactional;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.models.Folder;
@@ -544,6 +546,42 @@ public class TropixObjectDaoTest extends DaoTest {
     final Collection<Folder> groupFolders = this.objectDao.getGroupFolders(userId);
     assert Iterables.getOnlyElement(groupFolders).getId().equals(objectId);
   }
+  
+  @Test
+  public void testGetRoleForObjectsUserOwner() {
+    final String userId = newUser();
+    final String roleId = newDirectPermissionForUser(userId);
+    final String id1 = newObjectWithPermission(roleId);
+    flush();
+    final Multimap<String, String> roleMap = objectDao.getRoles(userId, Lists.newArrayList(id1));
+    roleMap.get(id1).contains("owner");
+  }
+  
+  @Test
+  public void testGetRoleForObjectsUserMultiple() {
+    final String userId = newUser();
+    final String roleId = newDirectPermissionForUser(userId);
+    final String realRoleId = newDirectPermissionForUser(userId, "read");
+    final String id1 = newObjectWithPermission(roleId);
+    addObjectPermission(realRoleId, id1);
+    flush();
+    final Multimap<String, String> roleMap = objectDao.getRoles(userId, Lists.newArrayList(id1));
+    roleMap.get(id1).containsAll(Lists.newArrayList("read", "owner"));
+  }
+
+  @Test
+  public void testGetRoleForObjectsGroupMultiple() {
+    final String userId = newUser();
+    final String groupId = newGroupWithUser(userId);
+    final String readId = newDirectPermissionForGroup(groupId, "read");
+    final String writeId = newDirectPermissionForGroup(groupId, "write");
+    final String id1 = newObjectWithPermission(readId);
+    addObjectPermission(writeId, id1);
+    flush();
+    final Multimap<String, String> roleMap = objectDao.getRoles(userId, Lists.newArrayList(id1));
+    roleMap.get(id1).containsAll(Lists.newArrayList("read", "write"));
+    
+  }
 
   @Test
   public void testGetAllGroupFolders() {
@@ -715,16 +753,26 @@ public class TropixObjectDaoTest extends DaoTest {
     execute("INSERT INTO VIRTUAL_FOLDER(OBJECT_ID, ROOT) VALUES ('%s','%d')", objectId, root ? 1 : 0);
   }
 
-  private String newDirectPermissionForUser(final String userId) {
-    final String roleId = newDirectPermission();
+  private String newDirectPermissionForGroup(final String groupId, final String role) {
+    final String roleId = newDirectPermission(role);
+    addGroupPermission(roleId, groupId);
+    return roleId;
+  }
+  
+  private String newDirectPermissionForUser(final String userId, final String role) {
+    final String roleId = newDirectPermission(role);
     addUserPermission(roleId, userId);
     return roleId;
   }
 
-  private String newDirectPermission() {
-    final String roleId = newPermission();
+  private String newDirectPermissionForUser(final String userId) {
+    return newDirectPermissionForUser(userId, "owner");
+  }
+  
+  private String newDirectPermission(final String role) {
+    final String roleId = newPermission(role);
     makeDirectPermission(roleId);
-    return roleId;
+    return roleId;    
   }
 
   public String newObjectWithPermission(final String permissionId) {

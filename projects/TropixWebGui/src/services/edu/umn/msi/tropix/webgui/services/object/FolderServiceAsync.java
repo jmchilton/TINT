@@ -29,14 +29,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 
 public interface FolderServiceAsync {
   void getFolderContents(String folderId, TropixObjectType[] types, AsyncCallback<List<TropixObject>> callback);
 
   void createFolder(String parentFolderId, Folder folder, AsyncCallback<Void> callback);
-
-  void getSavedVirtualFolders(AsyncCallback<VirtualFolder[]> callback);
 
   void createVirtualFolder(String parentFolderId, VirtualFolder folder, AsyncCallback<Void> callback);
 
@@ -50,7 +49,9 @@ public interface FolderServiceAsync {
 
   void addGroupToGroupFolder(String objectId, String groupId, AsyncCallback<Void> callback);
 
-  void getGroupSharedFolders(final String groupId, AsyncCallback<List<VirtualFolder>> callback);
+  void getMySharedFolders(AsyncCallback<List<SharedFolderContext>> callback);
+
+  void getGroupSharedFolders(String groupId, AsyncCallback<List<SharedFolderContext>> callback);
 
   void createGroupVirtualFolder(String groupId, VirtualFolder folder, AsyncCallback<Void> callback);
 }

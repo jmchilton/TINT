@@ -100,6 +100,18 @@
        join p.objects o
   where o.id = :objectId
   ]]></query>
+  <query name="getRolesForObjects"><![CDATA[
+    select distinct o.id, r.role
+    from Permission r
+           join r.objects o
+           left join r.users u
+           left join r.groups g
+           left join g.users gu
+    where 
+        o.id in (:objectIds)
+      and 
+        (u.cagridId = :userId or gu.cagridId = :userId)  
+  ]]></query>
   <query name="loadRecent"><![CDATA[
     select o
     from DirectPermission r

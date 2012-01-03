@@ -32,6 +32,7 @@ import com.google.common.collect.Lists;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.ProviderService;
@@ -74,17 +75,23 @@ public class FolderServiceImpl implements edu.umn.msi.tropix.webgui.services.obj
   }
 
   @ServiceMethod(readOnly = true)
-  public VirtualFolder[] getSavedVirtualFolders() {
-    final VirtualFolder[] savedVirtualFolders = this.folderService.getSavedVirtualFolders(this.userSession.getGridId());
-    this.sanitizeArray(savedVirtualFolders);
-    return savedVirtualFolders;
+  public List<SharedFolderContext> getMySharedFolders() {
+    return sanitize(folderService.getSavedVirtualFolders(this.userSession.getGridId()));
   }
 
   @ServiceMethod(readOnly = true)
-  public List<VirtualFolder> getGroupSharedFolders(final String groupId) {
-    final VirtualFolder[] savedVirtualFolders = this.folderService.getGroupSharedFolders(this.userSession.getGridId(), groupId);
-    return Lists.<VirtualFolder>newArrayList(this.sanitizeArray(savedVirtualFolders));
+  public List<SharedFolderContext> getGroupSharedFolders(final String groupId) {
+    return sanitize(folderService.getGroupSharedFolders(this.userSession.getGridId(), groupId));
   }
+  
+  private List<SharedFolderContext> sanitize(final Iterable<SharedFolderContext> contexts) {
+    final List<SharedFolderContext> sanitizedContexts = Lists.newArrayList();
+    for(SharedFolderContext context : contexts) {
+      sanitizedContexts.add(new SharedFolderContext(context.getTropixObjectContext(), beanSanitizer.sanitize(context.getTropixObject())));
+    }
+    return sanitizedContexts;
+  }
+  
 
   private <T> T[] sanitizeArray(final T[] objects) {
     for(int i = 0; i < objects.length; i++) {

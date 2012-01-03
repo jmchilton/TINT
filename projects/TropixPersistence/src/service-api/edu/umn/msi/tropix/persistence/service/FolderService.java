@@ -22,11 +22,14 @@
 
 package edu.umn.msi.tropix.persistence.service;
 
+import java.util.Collection;
+
 import javax.annotation.Nullable;
 
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.persistence.aop.Admin;
 import edu.umn.msi.tropix.persistence.aop.MemberOf;
@@ -56,7 +59,10 @@ public interface FolderService {
   VirtualFolder createVirtualFolder(@UserId String userGridId, @Modifies @Nullable String parentFolderId, VirtualFolder folder);
 
   @PersistenceMethod
-  VirtualFolder[] getSavedVirtualFolders(@UserId String gridId);
+  Collection<SharedFolderContext> getSavedVirtualFolders(@UserId String gridId);
+
+  @PersistenceMethod
+  Collection<SharedFolderContext> getGroupSharedFolders(@UserId String userId, @MemberOf String groupId);
 
   @PersistenceMethod
   VirtualFolder getOrCreateVirtualPath(@UserId String userGridId, @Modifies String rootVirtualFolderId, String[] subfolderNames);
@@ -64,8 +70,6 @@ public interface FolderService {
   @PersistenceMethod
   VirtualFolder getOrCreateRootVirtualFolderWithName(@UserId String userGridId, final String name);
 
-  @PersistenceMethod
-  VirtualFolder[] getGroupSharedFolders(@UserId String userId, @MemberOf String groupId);
 
   @PersistenceMethod
   VirtualFolder createGroupVirtualFolder(@UserId String gridId, @MemberOf String groupId, VirtualFolder folder);

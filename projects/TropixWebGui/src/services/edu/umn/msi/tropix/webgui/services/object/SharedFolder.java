@@ -31,7 +31,7 @@ public class SharedFolder extends SearchResult {
   } // Needed for GWT
 
   public SharedFolder(final VirtualFolder virtualFolder, final String owner) {
-    super(virtualFolder, owner);
+    super(virtualFolder, null, owner);
   }
 
 }

@@ -34,6 +34,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.PageConfiguration;
@@ -49,7 +50,6 @@ import edu.umn.msi.tropix.webgui.client.widgets.Frame;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.WidgetSupplierImpl;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
-import edu.umn.msi.tropix.webgui.services.object.TropixObjectContext;
 
 public class PageManager extends WidgetSupplierImpl<Layout> implements Listener<NavigationSelection>, CanvasComponent<Layout> {
   private Canvas displayedCanvas = null;

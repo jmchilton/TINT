@@ -106,7 +106,6 @@
   </target>
 
   <target name="start-test-server" depends="prepare,defineClasspaths" >
-    <symlink link="WEB-INF" resource="${build.war.dir}/WEB-INF"/>
     <start-jetty port="8181" home="${build.war.dir}" />
     <sleep hours="8" />
   </target>

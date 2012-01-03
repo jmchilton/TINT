@@ -50,6 +50,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
@@ -135,12 +136,12 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
       if(this.isNonRootSharedFolder()) {
         layout.addMember(SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingFoldersInherittedDescription()));
         final Button button = SmartUtils.getButton(PageConstants.INSTANCE.sharingOpenRoot(), Resources.GO, null, null);
-        objectService.getRoot(tropixObject.getId(), new AsyncCallbackImpl<VirtualFolder>() {
+        objectService.getRoot(tropixObject.getId(), new AsyncCallbackImpl<SharedFolderContext>() {
           @Override
-          public void onSuccess(final VirtualFolder virtualFolder) {
+          public void onSuccess(final SharedFolderContext sharedFolderContext) {
             button.addClickHandler(new ClickHandler() {
               public void onClick(final ClickEvent event) {
-                navigationSelectionMediator.go(virtualFolder);
+                navigationSelectionMediator.go(sharedFolderContext);
               }
             });
             button.setDisabled(false);

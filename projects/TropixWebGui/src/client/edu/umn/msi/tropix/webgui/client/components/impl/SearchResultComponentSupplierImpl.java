@@ -36,7 +36,7 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
 import edu.umn.msi.tropix.webgui.client.components.ResultComponent;
 import edu.umn.msi.tropix.webgui.client.mediators.NavigationSelectionMediator;
 import edu.umn.msi.tropix.webgui.client.models.SearchResultUtils;
@@ -63,7 +63,7 @@ public class SearchResultComponentSupplierImpl implements Supplier<ResultCompone
       public void execute() {
         final ListGridRecord selectedRecord = SearchResultComponentImpl.this.resultGrid.getSelectedRecord();
         if(selectedRecord != null) {
-          SearchResultComponentSupplierImpl.this.pageDisplayListener.go((TropixObject) selectedRecord.getAttributeAsObject("object"));
+          SearchResultComponentSupplierImpl.this.pageDisplayListener.go((TropixObjectWithContext) selectedRecord.getAttributeAsObject("object"));
         }
       }
     };

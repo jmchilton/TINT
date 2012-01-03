@@ -32,8 +32,10 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
+import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
 
 @RemoteServiceRelativePath("ObjectService.rpc")
 @GWTRequestMapping("/webgui/ObjectService.rpc")
@@ -61,13 +63,13 @@ public interface ObjectService extends RemoteService {
 
   boolean canModifySharing(String objectId);
 
-  VirtualFolder getRoot(String virtualFolderId);
+  SharedFolderContext getRoot(String virtualFolderId);
 
   void delete(String objectId, String rootId);
 
-  TropixObject getAssociation(String objectId, String assoicationName);
+  TropixObjectWithContext getAssociation(String objectId, String assoicationName);
 
-  List<TropixObject> getAssociations(String objectId, String assoicationName);
+  List<TropixObjectWithContext> getAssociations(String objectId, String assoicationName);
 
   void addSharedFolder(String folderId);
 

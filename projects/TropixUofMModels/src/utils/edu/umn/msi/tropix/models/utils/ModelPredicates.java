@@ -34,7 +34,19 @@ import edu.umn.msi.tropix.models.TropixObject;
  *
  */
 public class ModelPredicates {
+  
+  private static Predicate<TropixObject> IS_VALID_OBJECT_PREDICATE =
+    new Predicate<TropixObject>() {
 
+      public boolean apply(TropixObject object) {
+        return object.getCommitted() != null && object.getCommitted() && object.getDeletedTime() == null;
+      }
+      
+    };
+  
+  public static Predicate<TropixObject> isValidObjectPredicate() {
+    return IS_VALID_OBJECT_PREDICATE;
+  }
   /**
    * 
    * @param <S> Subclass of TropixObject for predicate if needed.

@@ -41,6 +41,9 @@ import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContexts;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.WrappedAsyncCallback;
@@ -106,9 +109,10 @@ public class LocationFactoryImpl implements LocationFactory {
   }
 
   public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final TreeItem parent,
+      @Nullable final TropixObjectContext context,
       final TropixObject object,
       final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
-    return new TropixObjectTreeItemImpl(parent, object, tropixObjectTreeItemExpander);
+    return new TropixObjectTreeItemImpl(parent, context, object, tropixObjectTreeItemExpander);
   }
 
   /*
@@ -133,11 +137,11 @@ public class LocationFactoryImpl implements LocationFactory {
     }
 
     public void getChildren(final AsyncCallback<List<TreeItem>> callback) {
-      FolderService.Util.getInstance().getSavedVirtualFolders(new WrappedAsyncCallback<List<TreeItem>, VirtualFolder[]>(callback) {
-        public void onSuccess(final VirtualFolder[] folders) {
-          final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folders.length);
-          for(final VirtualFolder folder : folders) {
-            treeItems.add(new TropixObjectTreeItemImpl(treeItem, folder, tropixObjectTreeItemExpander));
+      FolderService.Util.getInstance().getMySharedFolders(new WrappedAsyncCallback<List<TreeItem>, List<SharedFolderContext>>(callback) {
+        public void onSuccess(final List<SharedFolderContext> folderContexts) {
+          final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folderContexts.size());
+          for(final SharedFolderContext folderContext : folderContexts) {
+            treeItems.add(new TropixObjectTreeItemImpl(treeItem, folderContext.getTropixObjectContext(), folderContext.getTropixObject(), tropixObjectTreeItemExpander));
           }
           callback.onSuccess(treeItems);
         }
@@ -170,7 +174,7 @@ public class LocationFactoryImpl implements LocationFactory {
         public void onSuccess(final Collection<Request> requests) {
           final List<TreeItem> children = new LinkedList<TreeItem>();
           for(final Request request : requests) {
-            children.add(new TropixObjectTreeItemImpl(treeItem, request, TropixObjectTreeItemExpanders.get()));
+            children.add(new TropixObjectTreeItemImpl(treeItem, TropixObjectContexts.getOwnerContext(), request, TropixObjectTreeItemExpanders.get()));
           }
           getWrappedCallback().onSuccess(children);
         }
@@ -199,7 +203,7 @@ public class LocationFactoryImpl implements LocationFactory {
         public void onSuccess(final Collection<InternalRequest> requests) {
           final List<TreeItem> children = new LinkedList<TreeItem>();
           for(final Request request : requests) {
-            children.add(new TropixObjectTreeItemImpl(treeItem, request, null));
+            children.add(new TropixObjectTreeItemImpl(treeItem, TropixObjectContexts.getOwnerContext(), request, null));
           }
           getWrappedCallback().onSuccess(children);
         }
@@ -231,16 +235,17 @@ public class LocationFactoryImpl implements LocationFactory {
       this.setFolder(true);
     }
 
+    // TODO: Reduce code duplication with MySharedFolderItem
     public void getChildren(final AsyncCallback<List<TreeItem>> childrenCallback) {
       final Group primaryGroup = session.getPrimaryGroup();
       Log.info("Primary group id is " + session.getPrimaryGroup().getId());
       FolderService.Util.getInstance().getGroupSharedFolders(primaryGroup.getId(),
-          new WrappedAsyncCallback<List<TreeItem>, List<VirtualFolder>>(childrenCallback) {
-            public void onSuccess(final List<VirtualFolder> folders) {
+          new WrappedAsyncCallback<List<TreeItem>, List<SharedFolderContext>>(childrenCallback) {
+            public void onSuccess(final List<SharedFolderContext> folderContexts) {
               Log.info("Have virtual folders ");
-              final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folders.size());
-              for(final VirtualFolder folder : folders) {
-                treeItems.add(new TropixObjectTreeItemImpl(treeItem, folder, tropixObjectTreeItemExpander));
+              final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folderContexts.size());
+              for(final SharedFolderContext folderContext : folderContexts) {
+                treeItems.add(new TropixObjectTreeItemImpl(treeItem, folderContext.getTropixObjectContext(), folderContext.getTropixObject(), tropixObjectTreeItemExpander));
               }
               childrenCallback.onSuccess(treeItems);
             }
@@ -277,7 +282,7 @@ public class LocationFactoryImpl implements LocationFactory {
         public void onSuccess(final List<Folder> folders) {
           final ArrayList<TreeItem> treeItems = new ArrayList<TreeItem>(folders.size());
           for(final Folder folder : folders) {
-            treeItems.add(new TropixObjectTreeItemImpl(treeItem, folder, tropixObjectTreeItemExpander));
+            treeItems.add(new TropixObjectTreeItemImpl(treeItem, TropixObjectContexts.getOwnerContext(), folder, tropixObjectTreeItemExpander));
           }
           childrenCallback.onSuccess(treeItems);
         }
@@ -310,7 +315,7 @@ public class LocationFactoryImpl implements LocationFactory {
             if(object instanceof Folder || object instanceof VirtualFolder) {
               continue;
             }
-            items.add(getTropixObjectTreeItem(treeItem, object, getExpander(null)));
+            items.add(getTropixObjectTreeItem(treeItem, TropixObjectContexts.getOwnerContext(), object, getExpander(null)));
           }
           getWrappedCallback().onSuccess(items);
         }
@@ -373,7 +378,7 @@ public class LocationFactoryImpl implements LocationFactory {
         if(tropixObject instanceof Folder || tropixObject instanceof VirtualFolder) {
           continue;
         }
-        children.add(getTropixObjectTreeItem(this, result.getTropixObject(), getExpander(null)));
+        children.add(getTropixObjectTreeItem(this, result.getTropixObjectContext(), result.getTropixObject(), getExpander(null)));
       }
       callback.onSuccess(children);
     }
@@ -397,7 +402,7 @@ public class LocationFactoryImpl implements LocationFactory {
   }
 
   public TreeItem getHomeRootItem(@Nullable final TropixObjectTreeItemExpander expander) {
-    return getTropixObjectTreeItem(null, session.getUser().getHomeFolder(), getExpander(expander));
+    return getTropixObjectTreeItem(null, TropixObjectContexts.getOwnerContext(), session.getUser().getHomeFolder(), getExpander(expander));
   }
 
   public TreeItem getSharedRootItem(@Nullable final TropixObjectTreeItemExpander expander) {

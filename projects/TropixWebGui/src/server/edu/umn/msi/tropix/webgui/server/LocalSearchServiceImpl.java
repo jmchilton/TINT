@@ -65,7 +65,7 @@ public class LocalSearchServiceImpl implements LocalSearchService {
     final ArrayList<SearchResult> results = new ArrayList<SearchResult>(resultObjects.length);
     for(final TropixObject resultObject : resultObjects) {
       try {
-        results.add(new SearchResult(this.beanSanitizer.sanitize(resultObject), this.tropixObjectService.getOwnerId(resultObject.getId())));
+        results.add(new SearchResult(this.beanSanitizer.sanitize(resultObject), null, this.tropixObjectService.getOwnerId(resultObject.getId())));
       } catch(final RuntimeException e) {
         ExceptionUtils.logQuietly(LocalSearchServiceImpl.LOG, e, "Failed to add search result with id " + resultObject.getId());
       }

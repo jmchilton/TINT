@@ -34,9 +34,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.smartgwt.client.util.SC;

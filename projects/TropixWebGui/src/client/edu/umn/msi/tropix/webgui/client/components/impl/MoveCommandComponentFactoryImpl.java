@@ -102,9 +102,10 @@ public class MoveCommandComponentFactoryImpl implements DescribableLocationComma
       final Button okButton = Buttons.getOkButton();
       final TropixObjectTreeItem itemToMove = (TropixObjectTreeItem) treeItems.iterator().next();
       final TreeOptions treeOptions = new TreeOptions();
-      final TropixObject tropixObjectRoot = itemToMove.getTropixObjectTreeItemRoot().getObject();
+      final TropixObjectTreeItem tropixObjectRootItem = itemToMove.getTropixObjectTreeItemRoot();
+      final TropixObject tropixObjectRoot = tropixObjectRootItem.getObject();
       final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.FOLDER});
-      final TreeItem moveRoot = locationFactory.getTropixObjectTreeItem(null, tropixObjectRoot, expander);
+      final TreeItem moveRoot = locationFactory.getTropixObjectTreeItem(null, tropixObjectRootItem.getContext(), tropixObjectRoot, expander);
       treeOptions.setInitialItems(Arrays.asList(moveRoot));
       final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
       okButton.setDisabled(this.selectedTreeItem == null);

@@ -20,7 +20,7 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.webgui.services.object;
+package edu.umn.msi.tropix.models.utils;
 
 import java.io.Serializable;
 
