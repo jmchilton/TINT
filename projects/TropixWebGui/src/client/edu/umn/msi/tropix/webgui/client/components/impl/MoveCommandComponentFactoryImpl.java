@@ -40,6 +40,7 @@ import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
@@ -48,7 +49,6 @@ import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
@@ -78,17 +78,18 @@ public class MoveCommandComponentFactoryImpl implements DescribableLocationComma
   public String getDescription() {
     return "Move";
   }
-  
+
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
-    if(!(treeItems != null 
-         && treeItems.size() > 0 
-         && TreeItems.allTropixObjectTreeItemsWithSameRoot(treeItems)
-         && TreeItems.allParentsAreFolder(treeItems))) {
-     return false;
+    if(!(treeItems != null
+        && treeItems.size() > 0
+        && Locations.allTropixObjectTreeItemsWithSameRoot(treeItems)
+        && Locations.allParentsAreFolder(treeItems))) {
+      return false;
     }
     final Location rootItem = treeItems.iterator().next().getRoot();
     // Don't let you delete from searches, recent activity, etc...
-    return rootItem instanceof TropixObjectTreeItem || Locations.isRootLocationAFolder(rootItem);
+    boolean movableRoot = rootItem instanceof TropixObjectLocation || Locations.isRootLocationAFolder(rootItem);
+    return movableRoot && Locations.allTropixObjectLocationsAreModifiable(treeItems);
   }
 
   public Command get(final Collection<TreeItem> treeItems) {
@@ -100,11 +101,12 @@ public class MoveCommandComponentFactoryImpl implements DescribableLocationComma
 
     MoveWindowComponent(final Collection<TreeItem> treeItems, final LocationFactory locationFactory, final TreeComponentFactory treeComponentFactory) {
       final Button okButton = Buttons.getOkButton();
-      final TropixObjectTreeItem itemToMove = (TropixObjectTreeItem) treeItems.iterator().next();
+      final TropixObjectLocation itemToMove = (TropixObjectLocation) treeItems.iterator().next();
       final TreeOptions treeOptions = new TreeOptions();
-      final TropixObjectTreeItem tropixObjectRootItem = itemToMove.getTropixObjectTreeItemRoot();
+      final TropixObjectLocation tropixObjectRootItem = itemToMove.getTropixObjectLocationRoot();
       final TropixObject tropixObjectRoot = tropixObjectRootItem.getObject();
-      final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.FOLDER});
+      final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER,
+          TropixObjectTypeEnum.FOLDER});
       final TreeItem moveRoot = locationFactory.getTropixObjectTreeItem(null, tropixObjectRootItem.getContext(), tropixObjectRoot, expander);
       treeOptions.setInitialItems(Arrays.asList(moveRoot));
       final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
@@ -150,7 +152,8 @@ public class MoveCommandComponentFactoryImpl implements DescribableLocationComma
               }
             };
             if(tropixObjectRoot instanceof VirtualFolder) {
-              ObjectService.Util.getInstance().moveVirtually(treeItem.getId(), treeItem.getParent().getId(), selectedTreeItem.getObject().getId(), callback);
+              ObjectService.Util.getInstance().moveVirtually(treeItem.getId(), treeItem.getParent().getId(), selectedTreeItem.getObject().getId(),
+                  callback);
             } else {
               ObjectService.Util.getInstance().move(treeItem.getId(), selectedTreeItem.getObject().getId(), callback);
             }

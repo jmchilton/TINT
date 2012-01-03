@@ -28,31 +28,34 @@ import edu.umn.msi.tropix.models.TropixObject;
 
 /**
  * This class contains static methods for obtaining {@link Predicate} objects that
- * perform some basic operations on {@link TropixObject}s. 
+ * perform some basic operations on {@link TropixObject}s.
  * 
  * @author John Chilton
- *
+ * 
  */
 public class ModelPredicates {
-  
-  private static Predicate<TropixObject> IS_VALID_OBJECT_PREDICATE =
-    new Predicate<TropixObject>() {
 
-      public boolean apply(TropixObject object) {
-        return object.getCommitted() != null && object.getCommitted() && object.getDeletedTime() == null;
-      }
-      
-    };
-  
+  private static Predicate<TropixObject> IS_VALID_OBJECT_PREDICATE =
+      new Predicate<TropixObject>() {
+
+        public boolean apply(TropixObject object) {
+          return ModelUtils.isValid(object);
+        }
+
+      };
+
   public static Predicate<TropixObject> isValidObjectPredicate() {
     return IS_VALID_OBJECT_PREDICATE;
   }
+
   /**
    * 
-   * @param <S> Subclass of TropixObject for predicate if needed.
-   * @param tropixObjectType A description of the type to query against.
+   * @param <S>
+   *          Subclass of TropixObject for predicate if needed.
+   * @param tropixObjectType
+   *          A description of the type to query against.
    * @return A predicate that returns true iff the input object is an object
-   * of the type described by tropixObjectType.
+   *         of the type described by tropixObjectType.
    */
   public static <S extends TropixObject> Predicate<S> getTypePredicate(final TropixObjectType tropixObjectType) {
     return new Predicate<S>() {

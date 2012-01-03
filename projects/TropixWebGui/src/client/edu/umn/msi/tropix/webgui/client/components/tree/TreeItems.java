@@ -28,9 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.umn.msi.tropix.models.Folder;
-import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Location;
 
 // TODO: Move more items to Locations
@@ -80,50 +77,6 @@ public class TreeItems {
       ids.add(treeItem.getId());
     }
     return ids;
-  }
-
-  public static boolean allParentsAreFolder(final Collection<TreeItem> treeItems) {
-    boolean allParentsAreFolder = true;
-    for(final TreeItem item : treeItems) {
-      if(!(item.getParent() instanceof TropixObjectTreeItem)) {
-        allParentsAreFolder = false;
-        break;
-      }
-      final TropixObjectTreeItem parentItem = (TropixObjectTreeItem) item.getParent();
-      final TropixObject tropixObject = parentItem.getObject();
-      if(!(tropixObject instanceof Folder || tropixObject instanceof VirtualFolder)) {
-        allParentsAreFolder = false;
-        break;
-      }
-    }
-    System.out.println("Returing allParentsAreFolder " + allParentsAreFolder);
-    return allParentsAreFolder;
-  }
-
-  /**
-   * Test used by deleteItem and moveItem, could be useful elsewhere as well.
-   * 
-   * @param treeItems
-   * @return
-   */
-  public static boolean allTropixObjectTreeItemsWithSameRoot(final Collection<TreeItem> treeItems) {
-    TropixObjectTreeItem firstItem = null;
-    boolean result = true;
-    for(final TreeItem item : treeItems) {
-      if(!(item instanceof TropixObjectTreeItem)) {
-        result = false;
-        break;
-      }
-      final TropixObjectTreeItem tropixObjectTreeItem = (TropixObjectTreeItem) item;
-      if(firstItem == null) {
-        firstItem = tropixObjectTreeItem;
-      }
-      if(tropixObjectTreeItem.getTropixObjectTreeItemRoot() != firstItem.getTropixObjectTreeItemRoot()) {
-        result = false;
-        break;
-      }
-    }
-    return result;
   }
 
 }

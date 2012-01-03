@@ -50,7 +50,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
-import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
@@ -83,12 +83,14 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
   }
 
   @Inject
-  public void setUserSelectionWindowComponentSupplier(final Supplier<? extends SelectionWindowComponent<GridUser, ? extends Window>> userSelectionWindowComponentSupplier) {
+  public void setUserSelectionWindowComponentSupplier(
+      final Supplier<? extends SelectionWindowComponent<GridUser, ? extends Window>> userSelectionWindowComponentSupplier) {
     this.userSelectionWindowComponentSupplier = userSelectionWindowComponentSupplier;
   }
 
   @Inject
-  public void setGroupSelectionWindowComponentSupplier(final Supplier<? extends SelectionWindowComponent<Group, ? extends Window>> groupSelectionWindowComponentSupplier) {
+  public void setGroupSelectionWindowComponentSupplier(
+      final Supplier<? extends SelectionWindowComponent<Group, ? extends Window>> groupSelectionWindowComponentSupplier) {
     this.groupSelectionWindowComponentSupplier = groupSelectionWindowComponentSupplier;
   }
 
@@ -98,12 +100,13 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
   }
 
   @Inject
-  public void setVirtualFolderSelectionWindowComponentSupplier(@Named("sharedFolder") final Supplier<? extends SelectionWindowComponent<TreeItem, ? extends Window>> virtualFolderSelectionWindowComponentSupplier) {
+  public void setVirtualFolderSelectionWindowComponentSupplier(
+      @Named("sharedFolder") final Supplier<? extends SelectionWindowComponent<TreeItem, ? extends Window>> virtualFolderSelectionWindowComponentSupplier) {
     this.virtualFolderSelectionWindowComponentSupplier = virtualFolderSelectionWindowComponentSupplier;
   }
 
   class SharingLayoutHandler extends WidgetSupplierImpl<Layout> implements CanvasComponent<Layout> {
-    //private final Label loadingLabel;
+    // private final Label loadingLabel;
     private final TropixObject tropixObject;
     private final String objectId;
     private ClientListGrid userAndGroupGrid, sharedFoldersGrid;
@@ -123,22 +126,22 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
     SharingLayoutHandler(final PageConfiguration pageConfiguration) {
       this.tropixObject = pageConfiguration.getLocation().getObject();
       this.objectId = tropixObject.getId();
-      
-      //this.loadingLabel = SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingLoading());
+
+      // this.loadingLabel = SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingLoading());
       final VLayout layout = new VLayout();
-      //layout.setHeight100();
+      // layout.setHeight100();
       layout.setWidth100();
       layout.setAutoHeight();
       layout.setMargin(10);
       layout.setMembersMargin(10);
       this.setWidget(layout);
-      //this.get().addMember(this.loadingLabel);
+      // this.get().addMember(this.loadingLabel);
       if(this.isNonRootSharedFolder()) {
         layout.addMember(SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingFoldersInherittedDescription()));
         final Button button = SmartUtils.getButton(PageConstants.INSTANCE.sharingOpenRoot(), Resources.GO, null, null);
-        objectService.getRoot(tropixObject.getId(), new AsyncCallbackImpl<SharedFolderContext>() {
+        objectService.getRoot(tropixObject.getId(), new AsyncCallbackImpl<TropixObjectContext<VirtualFolder>>() {
           @Override
-          public void onSuccess(final SharedFolderContext sharedFolderContext) {
+          public void onSuccess(final TropixObjectContext<VirtualFolder> sharedFolderContext) {
             button.addClickHandler(new ClickHandler() {
               public void onClick(final ClickEvent event) {
                 navigationSelectionMediator.go(sharedFolderContext);
@@ -168,13 +171,13 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
       final DataSourceField nameField = SmartUtils.getFieldBuilder("name", "Name").get();
       final DataSourceField typeField = SmartUtils.getFieldBuilder("type", " ").withWidth(20).image().get();
       final DataSourceField canEditField = SmartUtils.getFieldBuilder("writeIcon", " ").withWidth("35%").image().get();
-      final DataSourceField idField = SmartUtils.getHiddenIdField();   
+      final DataSourceField idField = SmartUtils.getHiddenIdField();
       final DataSource dataSource = SmartUtils.newDataSourceWithFields(typeField, nameField, canEditField, idField);
       this.userAndGroupGrid = new ClientListGrid(dataSource);
       this.userAndGroupGrid.setMinHeight(10);
       this.userAndGroupGrid.setAutoFitMaxRecords(3);
       this.userAndGroupGrid.setAutoFitData(Autofit.VERTICAL);
-            
+
       final Button addUserButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingAddUser(), Resources.PERSON_ABSOLUTE, 140);
       final Button addGroupButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingAddGroup(), Resources.GROUP_ABSOLUTE, 140);
       removeButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingRemovePermission(), Resources.CROSS, 140);
@@ -189,7 +192,8 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
         }
       });
 
-      final Canvas userAndGroupLayout = new CanvasWithOpsLayout<ClientListGrid>(this.userAndGroupGrid, addUserButton, addGroupButton, this.removeButton, this.toogleEditButton);
+      final Canvas userAndGroupLayout = new CanvasWithOpsLayout<ClientListGrid>(this.userAndGroupGrid, addUserButton, addGroupButton,
+          this.removeButton, this.toogleEditButton);
       userAndGroupLayout.setIsGroup(true);
       userAndGroupLayout.setAutoHeight();
       userAndGroupLayout.setGroupTitle("Users and Groups");
@@ -319,20 +323,21 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
         this.sharedFoldersGrid.setAutoFitMaxRecords(3);
         this.sharedFoldersGrid.setEmptyMessage(PageConstants.INSTANCE.sharingObjectsNoSharedFolders());
 
-        final Button addToFolderButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingAddToASharedFolder(), Resources.SHARED_FOLDER, new Command() {
-          public void execute() {
-            final SelectionWindowComponent<TreeItem, ? extends Window> component = virtualFolderSelectionWindowComponentSupplier.get();
-            component.setSelectionCallback(new Listener<TreeItem>() {
-              public void onEvent(final TreeItem selectedItem) {
-                if(selectedItem == null) {
-                  return;
-                }
-                objectService.addToSharedFolder(Arrays.asList(objectId), selectedItem.getId(), false, callback);
+        final Button addToFolderButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingAddToASharedFolder(), Resources.SHARED_FOLDER,
+            new Command() {
+              public void execute() {
+                final SelectionWindowComponent<TreeItem, ? extends Window> component = virtualFolderSelectionWindowComponentSupplier.get();
+                component.setSelectionCallback(new Listener<TreeItem>() {
+                  public void onEvent(final TreeItem selectedItem) {
+                    if(selectedItem == null) {
+                      return;
+                    }
+                    objectService.addToSharedFolder(Arrays.asList(objectId), selectedItem.getId(), false, callback);
+                  }
+                });
+                component.execute();
               }
-            });
-            component.execute();
-          }
-        }, 180);
+            }, 180);
         this.removeFolderButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingRemoveFromSharedFolder(), Resources.CROSS, new Command() {
           public void execute() {
             final ListGridRecord record = sharedFoldersGrid.getSelectedRecord();

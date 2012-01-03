@@ -2,9 +2,10 @@ package edu.umn.msi.tropix.webgui.server;
 
 import javax.inject.Inject;
 
-import org.python.google.common.base.Joiner;
 import org.springframework.util.StringUtils;
 import org.testng.annotations.Test;
+
+import com.google.common.base.Joiner;
 
 import edu.umn.msi.tropix.client.services.Constants;
 import edu.umn.msi.tropix.common.test.ConfigDirBuilder;

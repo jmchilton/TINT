@@ -2,16 +2,17 @@
 <ivysettings>
   <settings defaultResolver="default" circularDependencyStrategy="error"/>
   
-  <caches defaultCacheDir="${tropix.ivy.cache.dir}" useOrigin="false"/>
+  <caches defaultCacheDir="${tropix.ivy.cache.dir}" useOrigin="true"/>
 
   <resolvers>
     <chain name="default">
-      <filesystem name="local-fs" local="true" checkmodified="true"  force="true" changingPattern=".*">
+      <!-- 
+      <filesystem name="local-fs" local="true" checkmodified="true"  force="true">
         <ivy pattern="${integration.repository.dir}/[organisation]/[module]/ivy-[revision].xml"/>
         <artifact pattern="${integration.repository.dir}/[organisation]/[module]/[revision]/[artifact].[ext]"/>
         <artifact pattern="${integration.repository.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
       </filesystem>
-
+      -->
       <ibiblio name="maven2" m2compatible="true" />
       <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true" />
 

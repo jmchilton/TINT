@@ -27,12 +27,12 @@ import java.util.Date;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 import edu.umn.msi.tropix.webgui.services.object.SearchResult;
 
 public class SearchResultUtils {
-  
+
   @SuppressWarnings("deprecation")
   public static ListGridRecord toRecord(final SearchResult searchResult) {
     final ListGridRecord record = new ListGridRecord();
@@ -40,7 +40,7 @@ public class SearchResultUtils {
     record.setAttribute("name", StringUtils.sanitize(searchResult.getTropixObject().getName()));
     record.setAttribute("description", StringUtils.sanitize(searchResult.getTropixObject().getDescription()));
     record.setAttribute("icon", ModelFunctions.getIconFunction16().apply(searchResult.getTropixObject()));
-    if(searchResult.getTropixObject().getCreationTime() != null) {      
+    if(searchResult.getTropixObject().getCreationTime() != null) {
       final Date creationDate = new Date(Long.parseLong(searchResult.getTropixObject().getCreationTime()));
       // Deprecated methods needed because GWT lacks java.util.Calandar class...
       creationDate.setHours(0);
@@ -50,7 +50,8 @@ public class SearchResultUtils {
     }
     final String ownerDisplay = searchResult.getOwner().substring(searchResult.getOwner().lastIndexOf('=') + 1);
     record.setAttribute("owner", ownerDisplay);
-    record.setAttribute("object", new TropixObjectWithContext<TropixObject>(searchResult.getTropixObjectContext(), searchResult.getTropixObject()));
+    record.setAttribute("object",
+        new TropixObjectContext<TropixObject>(searchResult.getTropixObject()));
     return record;
   }
 }

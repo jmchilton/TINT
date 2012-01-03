@@ -70,6 +70,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitGalaxyDescription;
 import edu.umn.msi.tropix.models.GalaxyTool;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
@@ -217,7 +218,7 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             treeComponent.addSelectionListener(new Listener<TreeItem>() {
               public void onEvent(final TreeItem location) {
                 if(location instanceof TropixObjectTreeItem) {
-                  final TropixObject tropixObject = ((TropixObjectTreeItem) location).getObject();
+                  final TropixObject tropixObject = ((TropixObjectLocation) location).getObject();
                   String locationName = tropixObject.getName();
                   if(tropixObject instanceof TropixFile) {
                     final TropixFile file = (TropixFile) tropixObject;

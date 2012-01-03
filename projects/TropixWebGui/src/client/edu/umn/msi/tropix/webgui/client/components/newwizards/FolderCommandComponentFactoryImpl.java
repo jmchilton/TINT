@@ -40,6 +40,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
@@ -116,7 +117,7 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
               String description;
               if(Locations.isMySharedFoldersItem(treeItem)) {
                 description = NewWizardConstants.INSTANCE.rootSharedFolderDescription();
-              } else if(((TropixObjectTreeItem) treeItem).getObject() instanceof Folder) {
+              } else if(((TropixObjectLocation) treeItem).getObject() instanceof Folder) {
                 if(Locations.isMyGroupFoldersItem(rootLocation)) {
                   description = NewWizardConstants.INSTANCE.groupFolderDescription();
                 } else {
@@ -156,7 +157,7 @@ public class FolderCommandComponentFactoryImpl extends WizardCommandComponentFac
             final MetadataInputComponent metadataSupplier = metadataWizardPage.metadataCanvasSupplier;
             final TreeItem parentObject = metadataSupplier.getParentObject();
             final String id = metadataSupplier.getDestinationId();
-            if(parentObject instanceof TropixObjectTreeItem && ((TropixObjectTreeItem) parentObject).getObject() instanceof Folder) {
+            if(parentObject instanceof TropixObjectTreeItem && ((TropixObjectLocation) parentObject).getObject() instanceof Folder) {
               final JobDescription jobDescription = new JobDescription("Create folder " + metadataSupplier.getName());
               final CreateFolderDescription description = new CreateFolderDescription();
               description.setJobDescription(jobDescription);

@@ -34,7 +34,6 @@ import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator;
 import edu.umn.msi.tropix.webgui.client.mediators.LocationUpdateMediator.UpdateEvent;
@@ -45,8 +44,8 @@ public class DeleteCommandComponentFactoryImpl implements DescribableLocationCom
   public boolean acceptsLocations(final Collection<TreeItem> treeItems) {
     System.out.println("In acceptsLocations");
     if(!(treeItems != null && treeItems.size() > 0
-        && TreeItems.allTropixObjectTreeItemsWithSameRoot(treeItems)
-        && TreeItems.allParentsAreFolder(treeItems))) {
+        && Locations.allTropixObjectTreeItemsWithSameRoot(treeItems)
+        && Locations.allParentsAreFolder(treeItems))) {
       return false;
     }
     final TreeItem firstItem = treeItems.iterator().next();
@@ -66,18 +65,20 @@ public class DeleteCommandComponentFactoryImpl implements DescribableLocationCom
     }
 
     // Don't let you delete from searches, etc...
-    return firstItem instanceof TropixObjectTreeItem
+    boolean deleteableType = firstItem instanceof TropixObjectTreeItem
         && (rootItem instanceof TropixObjectTreeItem || Locations.isRootLocationAFolder(rootItem) || Locations.isMyRecentActivityItem(rootItem));
+    if(!deleteableType) {
+      return false;
+    }
+    return Locations.allTropixObjectLocationsAreModifiable(treeItems);
   }
 
   public Command get(final Collection<TreeItem> treeItems) {
     return new Command() {
       public void execute() {
         final TreeItem firstItem = treeItems.iterator().next();
-        final Location rootItem = firstItem.getRoot();
-        final boolean isVirtual = Locations.isMySharedFoldersItem(rootItem) || Locations.isMyGroupFoldersItem(rootItem);
-        final boolean isVirtualRoot = isVirtual
-            && (Locations.isMySharedFoldersItem(firstItem.getParent()) || Locations.isMyGroupSharedFoldersItem(firstItem.getParent()));
+        final boolean isVirtual = Locations.isRootASharedRootMetaLocation(firstItem);
+        final boolean isVirtualRoot = Locations.isSharedFolderRoot(firstItem);
         final Collection<String> ids = new ArrayList<String>(treeItems.size());
         for(final TreeItem treeItem : treeItems) {
           ids.add(treeItem.getId());

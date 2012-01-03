@@ -27,7 +27,7 @@ import java.util.Collection;
 
 import com.google.inject.Inject;
 
-import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
@@ -79,7 +79,7 @@ public class NavigationSelectionMediator implements Listener<NavigationSelection
     this.contextListeners.add(selectionChangedListener);
   }
 
-  public void go(final TropixObjectWithContext tropixObjectWithContext) {
+  public void go(final TropixObjectContext tropixObjectWithContext) {
     final TreeItem treeItem = locationFactory.getTropixObjectTreeItem(null, tropixObjectWithContext.getTropixObjectContext(), tropixObjectWithContext.getTropixObject(), null);
     this.onEvent(new NavigationSelection(treeItem));
   }

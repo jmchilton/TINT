@@ -22,6 +22,8 @@
 
 package edu.umn.msi.tropix.models.utils;
 
+import java.util.Date;
+
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.models.Folder;
@@ -40,6 +42,29 @@ public class ModelPredicatesTest {
     assert ModelPredicates.getTypePredicate(TropixObjectTypeEnum.ANALYSIS).apply(new IdentificationAnalysis());
     assert !ModelPredicates.getTypePredicate(TropixObjectTypeEnum.ANALYSIS).apply(new TropixObject());
     assert !ModelPredicates.getTypePredicate(TropixObjectTypeEnum.ANALYSIS).apply(new Folder());
+  }
+
+  @Test(groups = "unit")
+  public void testDeletedObjectsInvalid() {
+    final TropixObject object = new TropixObject();
+    object.setDeletedTime(new Date().getTime() + "");
+    assert !ModelPredicates.isValidObjectPredicate().apply(object);
+  }
+
+  @Test(groups = "unit")
+  public void testUncommittedObjectsInvalid() {
+    final TropixObject object = new TropixObject();
+    object.setCommitted(false);
+    assert !ModelPredicates.isValidObjectPredicate().apply(object);
+    object.setCommitted(null);
+    assert !ModelPredicates.isValidObjectPredicate().apply(object);
+  }
+
+  @Test(groups = "unit")
+  public void testCommittedObjectsIsValid() {
+    final TropixObject object = new TropixObject();
+    object.setCommitted(true);
+    assert ModelPredicates.isValidObjectPredicate().apply(object);
   }
 
 }

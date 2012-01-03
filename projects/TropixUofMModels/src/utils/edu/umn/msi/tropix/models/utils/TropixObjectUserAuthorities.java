@@ -20,25 +20,30 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.webgui.client.components;
+package edu.umn.msi.tropix.models.utils;
 
-import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
-import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
+import java.io.Serializable;
 
-public class PageConfiguration {
-  private final TropixObjectTreeItem location;
-  private final TropixObjectUserAuthorities tropixObjectContext;
+public class TropixObjectUserAuthorities implements Serializable {
+  private static final long serialVersionUID = 1L;
+  private boolean modifiable = false, canModifySharing = false;
 
-  public PageConfiguration(final TropixObjectTreeItem location, final TropixObjectUserAuthorities tropixObjectContext) {
-    this.location = location;
-    this.tropixObjectContext = tropixObjectContext;
+  /*
+   * Required for GWT serialization.
+   */
+  protected TropixObjectUserAuthorities() {
   }
 
-  public TropixObjectTreeItem getLocation() {
-    return location;
+  public TropixObjectUserAuthorities(final boolean modifiable, final boolean canModifySharing) {
+    this.modifiable = modifiable;
+    this.canModifySharing = canModifySharing;
   }
 
-  public TropixObjectUserAuthorities getTropixObjectContext() {
-    return tropixObjectContext;
+  public boolean isModifiable() {
+    return modifiable;
+  }
+
+  public boolean canModifySharing() {
+    return canModifySharing;
   }
 }

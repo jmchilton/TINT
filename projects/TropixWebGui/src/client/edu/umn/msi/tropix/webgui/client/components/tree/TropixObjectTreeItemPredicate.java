@@ -25,6 +25,7 @@ package edu.umn.msi.tropix.webgui.client.components.tree;
 import com.google.common.base.Predicate;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 
 public class TropixObjectTreeItemPredicate implements Predicate<TreeItem> {
   /**
@@ -49,7 +50,7 @@ public class TropixObjectTreeItemPredicate implements Predicate<TreeItem> {
     if(treeItem == null || !(treeItem instanceof TropixObjectTreeItem)) {
       return this.notTropixObjectDefault;
     } else {
-      return this.apply(((TropixObjectTreeItem) treeItem).getObject());
+      return this.apply(((TropixObjectLocation) treeItem).getObject());
     }
   }
 

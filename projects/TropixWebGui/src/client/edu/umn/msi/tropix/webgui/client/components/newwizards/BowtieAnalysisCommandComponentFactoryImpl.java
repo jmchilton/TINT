@@ -52,6 +52,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.StringParameterSet;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitBowtieAnalysisDescription;
 import edu.umn.msi.tropix.models.BowtieIndex;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
@@ -218,7 +219,7 @@ public class BowtieAnalysisCommandComponentFactoryImpl extends WizardCommandComp
         public void onEvent(final TreeItem treeItem) {
           indexId = null;
           if(treeItem instanceof TropixObjectTreeItem) {
-            final TropixObject object = ((TropixObjectTreeItem) treeItem).getObject();
+            final TropixObject object = ((TropixObjectLocation) treeItem).getObject();
             indexId = (treeItem == null || !(object instanceof BowtieIndex)) ? null : object.getId();
           }
           setValid(indexId != null);

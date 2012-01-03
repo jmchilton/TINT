@@ -28,10 +28,10 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
-import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 
 public interface ObjectServiceAsync {
 
@@ -41,13 +41,13 @@ public interface ObjectServiceAsync {
 
   void canModifySharing(String objectId, AsyncCallback<Boolean> callback);
 
-  void getRoot(String virtualFolderId, AsyncCallback<SharedFolderContext> callback);
+  void getRoot(String virtualFolderId, AsyncCallback<TropixObjectContext<VirtualFolder>> callback);
 
   void delete(String objectId, String rootId, AsyncCallback<Void> callback);
 
-  void getAssociation(String objectId, String assoicationName, AsyncCallback<TropixObjectWithContext> callback);
+  void getAssociation(String objectId, String assoicationName, AsyncCallback<TropixObjectContext<TropixObject>> callback);
 
-  void getAssociations(String objectId, String assoicationName, AsyncCallback<List<TropixObjectWithContext>> callback);
+  void getAssociations(String objectId, String assoicationName, AsyncCallback<List<TropixObjectContext<TropixObject>>> callback);
 
   void addSharedFolder(String folderId, AsyncCallback<Void> callback);
 
@@ -85,7 +85,7 @@ public interface ObjectServiceAsync {
 
   void removeSharedFolder(String rootSharedFolderId, boolean removeOwnedItems, AsyncCallback<Void> callback);
 
-  void getObjectContext(String objectId, AsyncCallback<TropixObjectContext> callback);
+  void getObjectContext(String objectId, AsyncCallback<TropixObjectUserAuthorities> callback);
 
   void getChildren(String objectId, TropixObjectType[] filterTypes, AsyncCallback<List<TropixObject>> callback);
 

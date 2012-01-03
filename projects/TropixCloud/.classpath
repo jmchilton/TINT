@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
   <classpathentry kind="src" path="src/api" />
-  <classpathentry kind="src" path="resources/api" />
   <classpathentry kind="src" path="src/impl" />
   <classpathentry kind="src" path="resources/impl" />
   <classpathentry kind="src" path="src/test" />
-  <classpathentry kind="src" path="resources/test" />
   
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="GLOBUS_LOCATION/lib/addressing-1.0.jar"/>

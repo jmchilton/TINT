@@ -604,7 +604,7 @@
       <property name="ivy.xml.file" location="ivy.xml" />
 
       <!-- Ivy setup -->
-      <ivy:settings id="ivy.instance" file="${shared.antfiles.dir}/ivysettings-eclipse.xml" />
+      <ivy:settings id="ivy.instance" file="${shared.antfiles.dir}/ivysettings.xml" />
 
       <ivy:info file="${ivy.xml.file}" />
 

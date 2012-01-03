@@ -34,7 +34,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
-import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 import edu.umn.msi.tropix.webgui.client.components.CanvasComponent;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.PageConfiguration;
@@ -122,13 +123,13 @@ public class PageManager extends WidgetSupplierImpl<Layout> implements Listener<
     this.loadedObject = treeItem;
     final Location parentItem = treeItem.getParent();
     if(parentItem != null && Locations.isIncomingRequestsItem(parentItem)) {
-      final Request request = (Request) ((TropixObjectTreeItem) loadedObject).getObject();
+      final Request request = (Request) ((TropixObjectLocation) loadedObject).getObject();
       this.setCanvas(incomingRequestComponentFactory.get(request));
     } else if(treeItem instanceof TropixObjectTreeItem) {
       setCanvas(SmartUtils.getLoadingCanvas());
       // Create a new page to display and display it
-      ObjectService.Util.getInstance().getObjectContext(treeItem.getId(), new AsyncCallbackImpl<TropixObjectContext>() {
-        public void onSuccess(final TropixObjectContext tropixObjectContext) {
+      ObjectService.Util.getInstance().getObjectContext(treeItem.getId(), new AsyncCallbackImpl<TropixObjectUserAuthorities>() {
+        public void onSuccess(final TropixObjectUserAuthorities tropixObjectContext) {
           final TropixObjectTreeItem tropixObjectTreeItem = (TropixObjectTreeItem) treeItem;
           final PageConfiguration pageConfiguration = new PageConfiguration(tropixObjectTreeItem, tropixObjectContext);
           final Canvas pageCanvas = pageComponentFactory.get(pageConfiguration).get();

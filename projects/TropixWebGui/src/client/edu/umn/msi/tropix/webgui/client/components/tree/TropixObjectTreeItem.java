@@ -22,15 +22,10 @@
 
 package edu.umn.msi.tropix.webgui.client.components.tree;
 
-import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 
-public interface TropixObjectTreeItem extends TreeItem {
+public interface TropixObjectTreeItem extends TreeItem, TropixObjectLocation {
 
-  TropixObjectTreeItem getTropixObjectTreeItemRoot();
+  TropixObjectLocation getTropixObjectLocationRoot();
 
-  TropixObject getObject();
-  
-  TropixObjectContext getContext();
-  
 }

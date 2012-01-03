@@ -32,10 +32,10 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
-import edu.umn.msi.tropix.models.utils.TropixObjectWithContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 
 @RemoteServiceRelativePath("ObjectService.rpc")
 @GWTRequestMapping("/webgui/ObjectService.rpc")
@@ -49,7 +49,7 @@ public interface ObjectService extends RemoteService {
 
   List<TropixObject> getChildren(final String objectId, TropixObjectType[] filterTypes);
 
-  TropixObjectContext getObjectContext(final String objectId);
+  TropixObjectUserAuthorities getObjectContext(final String objectId);
 
   List<TropixObject> loadRecent(int num, boolean includeFolders, TropixObjectType[] filterTypes);
 
@@ -63,13 +63,13 @@ public interface ObjectService extends RemoteService {
 
   boolean canModifySharing(String objectId);
 
-  SharedFolderContext getRoot(String virtualFolderId);
+  TropixObjectContext<VirtualFolder> getRoot(String virtualFolderId);
 
   void delete(String objectId, String rootId);
 
-  TropixObjectWithContext getAssociation(String objectId, String assoicationName);
+  TropixObjectContext<TropixObject> getAssociation(String objectId, String assoicationName);
 
-  List<TropixObjectWithContext> getAssociations(String objectId, String assoicationName);
+  List<TropixObjectContext<TropixObject>> getAssociations(String objectId, String assoicationName);
 
   void addSharedFolder(String folderId);
 

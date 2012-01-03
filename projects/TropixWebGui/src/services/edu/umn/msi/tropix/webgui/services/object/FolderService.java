@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
-import edu.umn.msi.tropix.models.utils.SharedFolderContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 
 @RemoteServiceRelativePath("FolderService.rpc")
@@ -55,9 +55,9 @@ public interface FolderService extends RemoteService {
 
   void createGroupVirtualFolder(final String groupId, final VirtualFolder folder);
 
-  List<SharedFolderContext> getMySharedFolders();
+  List<TropixObjectContext<VirtualFolder>> getMySharedFolders();
 
-  List<SharedFolderContext> getGroupSharedFolders(String groupId);
+  List<TropixObjectContext<VirtualFolder>> getGroupSharedFolders(String groupId);
 
   List<Folder> getGroupFolders();
 

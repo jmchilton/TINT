@@ -25,24 +25,24 @@ package edu.umn.msi.tropix.webgui.services.object;
 import java.io.Serializable;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 
 @SuppressWarnings("serial")
 public class SearchResult implements Serializable {
   private TropixObject object;
-  private TropixObjectContext context;
+  private TropixObjectUserAuthorities context;
   private String owner;
 
   public SearchResult() {
   } // Needed for GWT
 
-  public SearchResult(final TropixObject object, final TropixObjectContext context, final String owner) {
+  public SearchResult(final TropixObject object, final TropixObjectUserAuthorities context, final String owner) {
     this.object = object;
     this.context = context;
     this.owner = owner;
   }
   
-  public TropixObjectContext getTropixObjectContext() {
+  public TropixObjectUserAuthorities getTropixObjectContext() {
     return context;
   }
 

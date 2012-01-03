@@ -72,15 +72,15 @@ public class ModelUtils {
    */
   public static boolean hasChildren(final TropixObject tropixObject) {
     return (tropixObject instanceof Folder
-             || tropixObject instanceof VirtualFolder
-             || tropixObject instanceof Request
-             || tropixObject instanceof ProteomicsRun
-             || tropixObject instanceof IdentificationAnalysis
-             || tropixObject instanceof ScaffoldAnalysis
-             || tropixObject instanceof ITraqQuantitationAnalysis
-             || tropixObject instanceof BowtieAnalysis
-             || tropixObject instanceof Database
-             || tropixObject instanceof BowtieIndex || tropixObject instanceof ITraqQuantitationTraining);
+        || tropixObject instanceof VirtualFolder
+        || tropixObject instanceof Request
+        || tropixObject instanceof ProteomicsRun
+        || tropixObject instanceof IdentificationAnalysis
+        || tropixObject instanceof ScaffoldAnalysis
+        || tropixObject instanceof ITraqQuantitationAnalysis
+        || tropixObject instanceof BowtieAnalysis
+        || tropixObject instanceof Database
+        || tropixObject instanceof BowtieIndex || tropixObject instanceof ITraqQuantitationTraining);
   }
 
   /**
@@ -158,6 +158,10 @@ public class ModelUtils {
       ids.add(object.getId());
     }
     return ids;
+  }
+
+  public static boolean isValid(final TropixObject object) {
+    return object.getCommitted() != null && object.getCommitted() && object.getDeletedTime() == null;
   }
 
 }

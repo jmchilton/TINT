@@ -36,8 +36,9 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.models.utils.TropixObjectContext;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.Session;
@@ -55,38 +56,39 @@ import edu.umn.msi.tropix.webgui.services.object.SharedFolder;
 
 public class FindSharedFoldersWindowComponentSupplierImpl implements Supplier<WindowComponent<Window>> {
   private Session session;
-  
-  
+
   @Inject
   public FindSharedFoldersWindowComponentSupplierImpl(final Session session) {
     this.session = session;
   }
-  
+
   private class FindSharedFoldersWindowComponentImpl extends WindowComponentImpl<Window> {
 
     FindSharedFoldersWindowComponentImpl() {
       final ListGrid grid = this.getGrid();
       grid.setShowFilterEditor(true);
-      
+
       final Button addButton = SmartUtils.getButton(ConstantsInstances.COMPONENT_INSTANCE.findSharedAdd(), Resources.FOLDER_NEW, new Command() {
         public void execute() {
           final ListGridRecord record = grid.getSelectedRecord();
-          final TropixObject object = (TropixObject) record.getAttributeAsObject("object");
-          addSharedFolder(object.getId());
-        }        
+          @SuppressWarnings("unchecked")
+          final TropixObjectContext<VirtualFolder> object = (TropixObjectContext<VirtualFolder>) record.getAttributeAsObject("object");
+          addSharedFolder(object.getTropixObject().getId());
+        }
       });
       addButton.setAutoFit(true);
-      
-      final Button addGroupButton = SmartUtils.getButton(ConstantsInstances.COMPONENT_INSTANCE.findSharedAddGroup(), Resources.FOLDER_NEW, new Command() {
-        public void execute() {
-          final ListGridRecord record = grid.getSelectedRecord();
-          final TropixObject object = (TropixObject) record.getAttributeAsObject("object");
-          addGroupSharedFolder(object.getId());
-        }        
-      });
+
+      final Button addGroupButton = SmartUtils.getButton(ConstantsInstances.COMPONENT_INSTANCE.findSharedAddGroup(), Resources.FOLDER_NEW,
+          new Command() {
+            public void execute() {
+              final ListGridRecord record = grid.getSelectedRecord();
+              @SuppressWarnings("unchecked")
+              final TropixObjectContext<VirtualFolder> object = (TropixObjectContext<VirtualFolder>) record.getAttributeAsObject("object");
+              addGroupSharedFolder(object.getTropixObject().getId());
+            }
+          });
       addGroupButton.setAutoFit(true);
 
-      
       SmartUtils.enabledWhenHasSelection(addButton, grid, false);
       SmartUtils.enabledWhenHasSelection(addGroupButton, grid, false);
       final Button cancelButton = SmartUtils.getCancelButton(this);
@@ -94,12 +96,14 @@ public class FindSharedFoldersWindowComponentSupplierImpl implements Supplier<Wi
       populateData(grid);
       final Canvas[] buttons;
       if(session.getPrimaryGroup() != null) {
-        buttons = new Canvas[] {addButton, addGroupButton, cancelButton };
+        buttons = new Canvas[] {addButton, addGroupButton, cancelButton};
       } else {
-        buttons = new Canvas[] {addButton, cancelButton };
+        buttons = new Canvas[] {addButton, cancelButton};
       }
-      final CanvasWithOpsLayout<ListGrid> layout = new CanvasWithOpsLayout<ListGrid>("Choose a shared folder to add to your shared folders.", grid, buttons);     
-      setWidget(PopOutWindowBuilder.titled(ConstantsInstances.COMPONENT_INSTANCE.findSharedTitle()).sized(600, 400).withIcon(Resources.SHARED_FOLDER_16).withContents(layout).get());
+      final CanvasWithOpsLayout<ListGrid> layout = new CanvasWithOpsLayout<ListGrid>("Choose a shared folder to add to your shared folders.", grid,
+          buttons);
+      setWidget(PopOutWindowBuilder.titled(ConstantsInstances.COMPONENT_INSTANCE.findSharedTitle()).sized(600, 400)
+          .withIcon(Resources.SHARED_FOLDER_16).withContents(layout).get());
     }
 
     private ListGrid getGrid() {
@@ -123,10 +127,10 @@ public class FindSharedFoldersWindowComponentSupplierImpl implements Supplier<Wi
       listGrid.setAutoFetchData(true);
       return listGrid;
     }
-    
+
     private void addGroupSharedFolder(final String folderId) {
       final AsyncCallbackImpl<Void> callback = getCallback(Locations.MY_GROUP_SHARED_FOLDERS_ID);
-      ObjectService.Util.getInstance().addGroupSharedFolder(session.getPrimaryGroup().getId(), folderId, callback);      
+      ObjectService.Util.getInstance().addGroupSharedFolder(session.getPrimaryGroup().getId(), folderId, callback);
     }
 
     private AsyncCallbackImpl<Void> getCallback(final String updateLocationId) {

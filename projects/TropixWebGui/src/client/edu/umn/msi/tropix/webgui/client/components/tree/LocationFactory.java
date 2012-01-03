@@ -25,17 +25,18 @@ package edu.umn.msi.tropix.webgui.client.components.tree;
 import javax.annotation.Nullable;
 
 import edu.umn.msi.tropix.models.TropixObject;
-import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 
 public interface LocationFactory {
-  TropixObjectTreeItem getTropixObjectTreeItem(@Nullable TreeItem parent, @Nullable TropixObjectContext context, TropixObject object, TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
+  TropixObjectTreeItem getTropixObjectTreeItem(@Nullable TreeItem parent, TropixObjectUserAuthorities context, TropixObject object,
+      TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
 
   TreeItem getMySharedFoldersItem(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
 
   TreeItem getTropixHomeItem();
 
   TreeItem getMyGroupSharedFoldersItem(@Nullable TropixObjectTreeItemExpander expander);
-  
+
   TreeItem getMyGroupFoldersItem(@Nullable TropixObjectTreeItemExpander expander);
 
   TreeItem getHomeRootItem(@Nullable TropixObjectTreeItemExpander expander);
@@ -45,7 +46,7 @@ public interface LocationFactory {
   Iterable<TreeItem> getTropixObjectSourceRootItems(@Nullable TropixObjectTreeItemExpander expander);
 
   Iterable<TreeItem> getTropixObjectDestinationRootItems(@Nullable TropixObjectTreeItemExpander expander);
-  
+
   Iterable<TreeItem> getConcreteTropixObjectRootItems(@Nullable TropixObjectTreeItemExpander expander);
 
   Iterable<TreeItem> getFolderDestinationRootItems(@Nullable TropixObjectTreeItemExpander expander);

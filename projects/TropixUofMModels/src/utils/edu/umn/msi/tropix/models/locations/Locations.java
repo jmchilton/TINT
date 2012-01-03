@@ -1,8 +1,14 @@
 package edu.umn.msi.tropix.models.locations;
 
+import java.util.Collection;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+
+import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 
 public class Locations {
   public static final String MY_HOME = "My Home";
@@ -27,7 +33,7 @@ public class Locations {
   public static boolean isMyGroupSharedFoldersItem(final Location treeItem) {
     return MY_GROUP_SHARED_FOLDERS_ID.equals(treeItem.getId());
   }
-  
+
   public static boolean isMyGroupFoldersItem(final Location treeItem) {
     return MY_GROUP_FOLDERS_ID.equals(treeItem.getId());
   }
@@ -47,11 +53,24 @@ public class Locations {
   public static boolean isMyRecentActivityItem(final Location treeItem) {
     return MY_RECENT_ACTIVITY_ID.equals(treeItem.getId());
   }
-  
+
   public static boolean isRootLocationAFolder(final Location rootLocation) {
-    return isMySharedFoldersItem(rootLocation) || 
-           isMyGroupFoldersItem(rootLocation) || 
-           isMyGroupSharedFoldersItem(rootLocation);
+    return isMySharedFoldersItem(rootLocation) ||
+        isMyGroupFoldersItem(rootLocation) ||
+        isMyGroupSharedFoldersItem(rootLocation);
+  }
+
+  public static boolean isRootASharedRootMetaLocation(final Location location) {
+    final Location root = location.getRoot();
+    return isASharedRootMetaLocation(root);
+  }
+
+  public static boolean isASharedRootMetaLocation(final Location location) {
+    return Locations.isMySharedFoldersItem(location) || Locations.isMyGroupSharedFoldersItem(location);
+  }
+
+  public static boolean isSharedFolderRoot(final Location location) {
+    return isRootASharedRootMetaLocation(location) && isASharedRootMetaLocation(location.getParent());
   }
 
   /**
@@ -79,6 +98,62 @@ public class Locations {
       result = treeItem1.getParent().getId().equals(treeItem2.getParent().getId());
     }
     return result;
+  }
+
+  public static boolean allParentsAreFolder(final Collection<? extends Location> treeItems) {
+    boolean allParentsAreFolder = true;
+    for(final Location item : treeItems) {
+      if(!(item.getParent() instanceof TropixObjectLocation)) {
+        allParentsAreFolder = false;
+        break;
+      }
+      final TropixObjectLocation parentItem = (TropixObjectLocation) item.getParent();
+      final TropixObject tropixObject = parentItem.getObject();
+      if(!(tropixObject instanceof Folder || tropixObject instanceof VirtualFolder)) {
+        allParentsAreFolder = false;
+        break;
+      }
+    }
+    return allParentsAreFolder;
+  }
+
+  /**
+   * Test used by deleteItem and moveItem, could be useful elsewhere as well.
+   * 
+   * @param treeItems
+   * @return
+   */
+  public static boolean allTropixObjectTreeItemsWithSameRoot(final Collection<? extends Location> treeItems) {
+    TropixObjectLocation firstItem = null;
+    boolean result = true;
+    for(final Location item : treeItems) {
+      if(!(item instanceof TropixObjectLocation)) {
+        result = false;
+        break;
+      }
+      final TropixObjectLocation tropixObjectTreeItem = (TropixObjectLocation) item;
+      if(firstItem == null) {
+        firstItem = tropixObjectTreeItem;
+      }
+      if(tropixObjectTreeItem.getTropixObjectLocationRoot() != firstItem.getTropixObjectLocationRoot()) {
+        result = false;
+        break;
+      }
+    }
+    return result;
+  }
+
+  public static boolean allTropixObjectLocationsAreModifiable(final Collection<? extends Location> locations) {
+    boolean anyUndeletable = false;
+    for(final Location treeItem : locations) {
+      final TropixObjectLocation tropixObjectItem = (TropixObjectLocation) treeItem;
+      final TropixObjectUserAuthorities authorities = tropixObjectItem.getContext();
+      if(authorities != null && !authorities.isModifiable()) {
+        anyUndeletable = true;
+        break;
+      }
+    }
+    return !anyUndeletable;
   }
 
 }

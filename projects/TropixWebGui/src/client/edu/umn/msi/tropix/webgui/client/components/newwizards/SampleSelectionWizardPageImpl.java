@@ -35,6 +35,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.IdList;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ScaffoldSample;
 import edu.umn.msi.tropix.models.IdentificationAnalysis;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
@@ -228,7 +229,7 @@ class SampleSelectionWizardPageImpl extends WizardPageImpl<VLayout> implements H
       if(!StringUtils.hasText(nameItem.getValue()) && selection.size() == 1) {
         // Cast is valid because selection predicate supplied to TreeOptions
         // precludes non TropixObjectTreeItems
-        final TropixObjectTreeItem selectionItem = (TropixObjectTreeItem) Iterables.getOnlyElement(selection);
+        final TropixObjectLocation selectionItem = (TropixObjectLocation) Iterables.getOnlyElement(selection);
         nameItem.setValue(selectionItem.getObject().getName());
       }
     }
@@ -261,7 +262,7 @@ class SampleSelectionWizardPageImpl extends WizardPageImpl<VLayout> implements H
       if(!(treeItem instanceof TropixObjectTreeItem)) {
         return true;
       }
-      final TropixObjectTreeItem tropixObjectTreeItem = (TropixObjectTreeItem) treeItem;
+      final TropixObjectLocation tropixObjectTreeItem = (TropixObjectLocation) treeItem;
       final TropixObject tropixObject = tropixObjectTreeItem.getObject();
       if(!(tropixObject instanceof IdentificationAnalysis)) {
         return true;

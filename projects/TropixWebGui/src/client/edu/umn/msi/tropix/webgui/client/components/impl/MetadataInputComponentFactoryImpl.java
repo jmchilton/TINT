@@ -38,6 +38,7 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
@@ -120,7 +121,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
 
     private boolean validInitialItem(final TreeItem treeItem) {
       if(treeItem instanceof TropixObjectTreeItem) {
-        final TropixObjectTreeItem toItem = (TropixObjectTreeItem) treeItem;
+        final TropixObjectLocation toItem = (TropixObjectLocation) treeItem;
         return toItem.getObject() instanceof Folder || toItem.getObject() instanceof VirtualFolder;
       } else {
         return Locations.isMySharedFoldersItem(treeItem);

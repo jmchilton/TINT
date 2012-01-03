@@ -32,8 +32,9 @@ import com.google.common.base.Function;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
-import edu.umn.msi.tropix.models.utils.TropixObjectContext;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
@@ -44,8 +45,8 @@ import edu.umn.msi.tropix.webgui.services.object.ObjectService;
 public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObjectTreeItem {
   private static final Function<TropixObject, String> ICON_FUNCTION = ModelFunctions.getIconFunction16();
   private static final Function<TropixObject, String> TYPE_FUNCTION = ModelFunctions.getTypeFunction();
-  private TropixObjectTreeItem tropixObjectTreeItemRoot;
-  private TropixObjectContext tropixObjectContext;
+  private TropixObjectLocation tropixObjectTreeItemRoot;
+  private TropixObjectUserAuthorities tropixObjectContext;
   private TropixObject object;
   private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;
 
@@ -75,14 +76,14 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
   }
 
   public TropixObjectTreeItemImpl(@Nullable final TreeItem parent,
-                                  @Nullable final TropixObjectContext context,
-                                  final TropixObject object,
-                                  final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
+      final TropixObjectUserAuthorities context,
+      final TropixObject object,
+      final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     super(parent);
     this.tropixObjectContext = context;
     this.init(object);
     if(parent != null && parent instanceof TropixObjectTreeItem) {
-      this.tropixObjectTreeItemRoot = (TropixObjectTreeItem) parent;
+      this.tropixObjectTreeItemRoot = (TropixObjectLocation) parent;
     } else {
       this.tropixObjectTreeItemRoot = this;
     }
@@ -91,7 +92,7 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
 
   public TropixObjectTreeItemImpl(final TropixObjectTreeItemImpl parent, final TropixObject object) {
     super(parent);
-    this.tropixObjectTreeItemRoot = parent.getTropixObjectTreeItemRoot();
+    this.tropixObjectTreeItemRoot = parent.getTropixObjectLocationRoot();
     this.init(object);
     this.tropixObjectTreeItemExpander = parent.tropixObjectTreeItemExpander;
     this.tropixObjectContext = parent.getContext();
@@ -121,7 +122,7 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
     return this.object.getId();
   }
 
-  public TropixObjectTreeItem getTropixObjectTreeItemRoot() {
+  public TropixObjectLocation getTropixObjectLocationRoot() {
     return this.tropixObjectTreeItemRoot;
   }
 
@@ -141,7 +142,7 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
     });
   }
 
-  public TropixObjectContext getContext() {
+  public TropixObjectUserAuthorities getContext() {
     return tropixObjectContext;
   }
 }

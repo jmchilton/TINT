@@ -7,6 +7,7 @@ import com.google.common.base.Predicate;
 
 import edu.umn.msi.tropix.models.IdentificationAnalysis;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
@@ -23,7 +24,7 @@ public class ScaffoldConstants {
     if(!(treeItem instanceof TropixObjectTreeItem)) {
       return true;
     }
-    final TropixObjectTreeItem tropixObjectTreeItem = (TropixObjectTreeItem) treeItem;
+    final TropixObjectLocation tropixObjectTreeItem = (TropixObjectLocation) treeItem;
     final TropixObject tropixObject = tropixObjectTreeItem.getObject();
     if(!(tropixObject instanceof IdentificationAnalysis)) {
       return true;

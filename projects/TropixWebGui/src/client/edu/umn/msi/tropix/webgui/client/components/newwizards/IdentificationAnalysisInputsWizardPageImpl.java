@@ -34,6 +34,7 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.LocationSelectionComponentImpl.InputType;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
@@ -79,7 +80,7 @@ public class IdentificationAnalysisInputsWizardPageImpl extends WizardPageImpl<V
       public void onEvent(final TreeItem treeItem) {
         database = null;
         if(treeItem instanceof TropixObjectTreeItem) {
-          final TropixObject object = ((TropixObjectTreeItem) treeItem).getObject();
+          final TropixObject object = ((TropixObjectLocation) treeItem).getObject();
           database = (Database) ((treeItem == null || !(object instanceof Database)) ? null : object);
         }
         checkValid();

@@ -48,6 +48,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.ProteomicsRun;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
@@ -206,7 +207,7 @@ public class IdentificationWorkflowCommandComponentFactoryImpl extends WizardCom
           public void onEvent(final TreeItem treeItem) {
             database = null;
             if(treeItem instanceof TropixObjectTreeItem) {
-              final TropixObject object = ((TropixObjectTreeItem) treeItem).getObject();
+              final TropixObject object = ((TropixObjectLocation) treeItem).getObject();
               database = (Database) ((treeItem == null || !(object instanceof Database)) ? null : object);
             }
             setValid(database != null);

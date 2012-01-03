@@ -34,6 +34,7 @@ import edu.umn.msi.tropix.models.IdentificationParameters;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 
@@ -115,7 +116,7 @@ public class TreeItemPredicates {
         if(!TROPIX_OBJECT_TREE_ITEM_PREDICATE.apply(treeItem)) {
           return false;
         } else {
-          return predicate.apply(((TropixObjectTreeItem) treeItem).getObject());
+          return predicate.apply(((TropixObjectLocation) treeItem).getObject());
         }
       }
     };
@@ -127,7 +128,7 @@ public class TreeItemPredicates {
       public boolean apply(final TreeItem treeItem) {
         boolean show = true;
         if(TROPIX_OBJECT_TREE_ITEM_PREDICATE.apply(treeItem)) {
-          final TropixObjectTreeItem toTreeItem = (TropixObjectTreeItem) treeItem;
+          final TropixObjectLocation toTreeItem = (TropixObjectLocation) treeItem;
           final TropixObject tropixObject = toTreeItem.getObject();
           
           if(tropixObject instanceof Database) {
@@ -148,7 +149,7 @@ public class TreeItemPredicates {
 
       public boolean apply(final TreeItem treeItem) {
         if(TROPIX_OBJECT_TREE_ITEM_PREDICATE.apply(treeItem)) {
-          final TropixObjectTreeItem toTreeItem = (TropixObjectTreeItem) treeItem;
+          final TropixObjectLocation toTreeItem = (TropixObjectLocation) treeItem;
           final TropixObject tropixObject = toTreeItem.getObject();
           if(tropixObject instanceof Database) {
             final Database database = (Database) tropixObject;

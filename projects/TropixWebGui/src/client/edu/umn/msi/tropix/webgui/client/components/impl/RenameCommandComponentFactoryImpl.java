@@ -30,6 +30,8 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
+import edu.umn.msi.tropix.models.utils.TropixObjectUserAuthorities;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
@@ -52,9 +54,13 @@ public class RenameCommandComponentFactoryImpl implements DescribableLocationCom
       return false;
     }
     final TreeItem item = treeItems.iterator().next();
-    return item instanceof TropixObjectTreeItem && item.getParent() != null;
+    if(!(item instanceof TropixObjectTreeItem && item.getParent() != null)) {
+      return false;
+    }
+    final TropixObjectLocation tropixObjectItem = (TropixObjectLocation) item;
+    final TropixObjectUserAuthorities authorities = tropixObjectItem.getContext();
+    return authorities == null || authorities.isModifiable();
   }
-
 
   public Command get(final Collection<TreeItem> input) {
     return new WindowComponent((TropixObjectTreeItem) Iterables.getOnlyElement(input));
@@ -81,11 +87,11 @@ public class RenameCommandComponentFactoryImpl implements DescribableLocationCom
       final CanvasWithOpsLayout<DynamicForm> layout = new CanvasWithOpsLayout<DynamicForm>(form, okButton);
       setWidget(PopOutWindowBuilder.titled("Rename").withIcon(Resources.EDIT_CLEAR).autoSized().withContents(layout).get());
     }
-    
+
   }
 
   public String getDescription() {
     return "Rename";
   }
-  
+
 }
