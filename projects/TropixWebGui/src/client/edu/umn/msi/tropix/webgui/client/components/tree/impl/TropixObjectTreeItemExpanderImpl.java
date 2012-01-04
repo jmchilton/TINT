@@ -30,8 +30,8 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
-import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
 import edu.umn.msi.tropix.webgui.services.object.FolderService;
 import edu.umn.msi.tropix.webgui.services.object.ObjectService;
@@ -43,7 +43,7 @@ public class TropixObjectTreeItemExpanderImpl implements TropixObjectTreeItemExp
     this.types = types;
   }
 
-  public void expand(final TropixObjectTreeItem tropixObjectTreeItem, final AsyncCallback<List<TropixObject>> callback) {
+  public void expand(final TropixObjectLocation tropixObjectTreeItem, final AsyncCallback<List<TropixObject>> callback) {
     final String id = tropixObjectTreeItem.getId();
     final TropixObject object = tropixObjectTreeItem.getObject();
     // Wrong place to check if this was folder IMHO but this pipeline was implemented for folders first

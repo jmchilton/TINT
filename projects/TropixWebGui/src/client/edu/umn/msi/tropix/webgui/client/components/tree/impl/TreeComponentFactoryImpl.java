@@ -67,6 +67,7 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedEvent;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedHandler;
 
+import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.impl.SelectionComponentBaseImpl;
@@ -112,7 +113,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
     private Iterable<TreeItem> selectedItems;
     private Tree tree;
     private TreeNode contextNode = null;
-    private final Predicate<TreeItem> selectionPredicate, showPredicate;
+    private final Predicate<? super Location> selectionPredicate, showPredicate;
     private final boolean acceptsDrops;
     private final SelectionType selectionType;
 
@@ -180,7 +181,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
         selectedItems = Iterables.filter(otherTreeComponent.getMultiSelection(), this.selectionPredicate);
       }
       this.selectedItems = selectedItems;
-      this.expandIds = TreeItems.getAncestorIds(selectedItems);
+      this.expandIds = Locations.getAncestorIds(selectedItems);
       this.expandAndSelect();
     }
 
@@ -583,7 +584,7 @@ public class TreeComponentFactoryImpl implements TreeComponentFactory {
           // constant
           // time
           // insertions
-          final HashMap<String, TreeItem> itemMap = TreeItems.getIdMap(filteredItems); // O(n),
+          final HashMap<String, TreeItem> itemMap = Locations.getIdMap(filteredItems); // O(n),
           // n
           // constant
           // time

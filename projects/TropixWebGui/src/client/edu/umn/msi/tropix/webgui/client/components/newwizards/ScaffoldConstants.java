@@ -7,12 +7,12 @@ import com.google.common.base.Predicate;
 
 import edu.umn.msi.tropix.models.IdentificationAnalysis;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.utils.Lists;
 
@@ -20,7 +20,7 @@ public class ScaffoldConstants {
   private static final TropixObjectType[] TYPES = new TropixObjectType[] {TropixObjectTypeEnum.FOLDER, TropixObjectTypeEnum.VIRTUAL_FOLDER,
       TropixObjectTypeEnum.PROTEIN_IDENTIFICATION_ANALYSIS};
 
-  private static boolean validIdentification(final TreeItem treeItem, final List<IdentificationType> validAnalysisTypes) {
+  private static boolean validIdentification(final Location treeItem, final List<IdentificationType> validAnalysisTypes) {
     if(!(treeItem instanceof TropixObjectTreeItem)) {
       return true;
     }
@@ -37,10 +37,10 @@ public class ScaffoldConstants {
   public static final ArrayList<IdentificationType> VALID_SCAFFOLD_IDENTIFICATION_TYPES = Lists.<IdentificationType>newArrayList(
       IdentificationType.SEQUEST, IdentificationType.XTANDEM, IdentificationType.MASCOT, IdentificationType.OMSSA);
 
-  public static Predicate<TreeItem> validForSampleSelection(final List<IdentificationType> validAnalysisTypes) {
-    final Predicate<TreeItem> typePredicate = TreeItemPredicates.getTropixObjectTreeItemTypePredicate(TYPES, true);
-    return new Predicate<TreeItem>() {
-      public boolean apply(final TreeItem treeItem) {
+  public static Predicate<Location> validForSampleSelection(final List<IdentificationType> validAnalysisTypes) {
+    final Predicate<Location> typePredicate = LocationPredicates.getTropixObjectTreeItemTypePredicate(TYPES, true);
+    return new Predicate<Location>() {
+      public boolean apply(final Location treeItem) {
         return typePredicate.apply(treeItem) && validIdentification(treeItem, validAnalysisTypes);
       }
     };

@@ -70,6 +70,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitGalaxyDescription;
 import edu.umn.msi.tropix.models.GalaxyTool;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.ModelUtils;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
@@ -82,7 +83,6 @@ import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandChangedHandlerImpl;
@@ -210,8 +210,8 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
             treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(null));
             System.out.println("Format: " + param.getFormat());
             final String extension = GalaxyFormatUtils.formatToExtension(param.getFormat());
-            treeOptions.setShowPredicate(TreeItemPredicates.getTropixFileTreeItemPredicate(extension, true));
-            treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixFileTreeItemPredicate(extension, false));
+            treeOptions.setShowPredicate(LocationPredicates.getTropixFileTreeItemPredicate(extension, true));
+            treeOptions.setSelectionPredicate(LocationPredicates.getTropixFileTreeItemPredicate(extension, false));
             final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
             final Input input = new Input();
             input.setName(param.getName());
@@ -417,8 +417,8 @@ public class GalaxyActionComponentFactoryImpl implements ComponentFactory<Galaxy
     private void init() {
       final TreeOptions treeOptions = new TreeOptions();
       treeOptions.setInitialItems(locationFactory.getTropixObjectDestinationRootItems(null));
-      treeOptions.setShowPredicate(TreeItemPredicates.getDestinationsPredicate(true));
-      treeOptions.setSelectionPredicate(TreeItemPredicates.getDestinationsPredicate(false));
+      treeOptions.setShowPredicate(LocationPredicates.getDestinationsPredicate(true));
+      treeOptions.setSelectionPredicate(LocationPredicates.getDestinationsPredicate(false));
       // TODO: Handle initial items...
 
       parentTreeComponent = treeComponentFactory.get(treeOptions);

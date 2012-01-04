@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -430,7 +431,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     refreshItem.addClickHandler(new ClickHandler() {
       public void onClick(final MenuItemClickEvent event) {
         mainTreeComponent.reset();
-        navigationSelectionMediator.onEvent(new NavigationSelection(locationFactory.getTropixHomeItem()));
+        navigationSelectionMediator.onEvent(new NavigationSelection(Lists.<TreeItem>newArrayList()));
       }
     });
     refreshItem.setIcon(Resources.REFRESH);

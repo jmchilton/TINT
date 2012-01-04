@@ -30,6 +30,7 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.DescribableLocationCommandComponentFactory;
@@ -60,12 +61,12 @@ public class ChangeDescriptionCommandComponentFactoryImpl implements Describable
   }
 
   public Command get(final Collection<TreeItem> input) {
-    return new WindowComponent((TropixObjectTreeItem) Iterables.getOnlyElement(input));
+    return new WindowComponent((TropixObjectLocation) Iterables.getOnlyElement(input));
   }
 
   class WindowComponent extends WindowComponentImpl<Window> {
 
-    WindowComponent(final TropixObjectTreeItem treeItem) {
+    WindowComponent(final TropixObjectLocation treeItem) {
       final TextAreaItem textAreaItem = new TextAreaItem("description", "New Description");
       textAreaItem.setValue(treeItem.getObject().getDescription());
       textAreaItem.setWidth("*");

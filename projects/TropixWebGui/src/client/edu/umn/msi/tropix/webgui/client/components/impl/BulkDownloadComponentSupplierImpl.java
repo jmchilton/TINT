@@ -31,6 +31,8 @@ import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.WindowComponent;
@@ -38,8 +40,6 @@ import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
@@ -73,13 +73,13 @@ public class BulkDownloadComponentSupplierImpl implements Supplier<WindowCompone
       final TreeOptions treeOptions = new TreeOptions();
       treeOptions.setSelectionType(SelectionType.MULTIPlE);
       treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(null));
-      treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.FILE, false));
+      treeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.FILE, false));
       final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
       final Command downloadCommand = new Command() {
         public void execute() {
           smartDownloadFormPanel.setFilename(ConstantsInstances.COMPONENT_INSTANCE.bulkDownloadName());
           final Collection<TreeItem> selectedObjects = treeComponent.getMultiSelection();
-          final String ids = StringUtils.join(TreeItems.getIds(selectedObjects));
+          final String ids = StringUtils.join(Locations.getIds(selectedObjects));
           smartDownloadFormPanel.setId(ids);
           smartDownloadFormPanel.execute();
         }

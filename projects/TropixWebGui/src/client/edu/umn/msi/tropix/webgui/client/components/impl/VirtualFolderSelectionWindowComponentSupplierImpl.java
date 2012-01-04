@@ -27,12 +27,12 @@ import java.util.Arrays;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
@@ -50,7 +50,7 @@ public class VirtualFolderSelectionWindowComponentSupplierImpl extends Selection
       public TreeOptions get() {
         final TreeOptions treeOptions = new TreeOptions();
         treeOptions.setInitialItems(Arrays.<TreeItem>asList(locationFactory.getMySharedFoldersItem(TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER}))));
-        treeOptions.setSelectionPredicate(TreeItemPredicates.getIsTropixObjectTreeItemPredicate());
+        treeOptions.setSelectionPredicate(LocationPredicates.getIsTropixObjectTreeItemPredicate());
         treeOptions.setSelectionType(SelectionType.SINGLE);
         return treeOptions;
       }

@@ -26,9 +26,9 @@ import java.util.Collection;
 
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.forms.ValidationListener;
@@ -64,7 +64,7 @@ class ParametersWizardPage extends WizardPageImpl<VLayout> {
     if(type.equals(this.currentParametersType)) {
       return;
     }
-    final TreeItem parametersItem = Iterables.find(locations, TreeItemPredicates.getIdentificationParametersOfTypePredicate(type, false));
+    final TreeItem parametersItem = Iterables.find(locations, LocationPredicates.getIdentificationParametersOfTypePredicate(type, false));
     final String parametersId = parametersItem == null ? null : parametersItem.getId();
     final ParametersPanel parametersPanel = parametersPanelFactory.createParametersPanel(type, new AsyncCallbackImpl<ParametersPanel>(), false,
         parametersId);

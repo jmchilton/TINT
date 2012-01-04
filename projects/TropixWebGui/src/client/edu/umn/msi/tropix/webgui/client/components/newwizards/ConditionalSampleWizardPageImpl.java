@@ -26,12 +26,12 @@ import javax.annotation.Nullable;
 
 import com.smartgwt.client.widgets.layout.Layout;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -50,8 +50,8 @@ class ConditionalSampleWizardPageImpl extends WizardPageImpl<Layout> {
     final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(types);
     final TreeOptions treeOptions = new TreeOptions();
     treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(expander));
-    treeOptions.setShowPredicate(TreeItemPredicates.getTropixObjectTreeItemTypePredicate(types, true));
-    treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectNotFolderPredicate());
+    treeOptions.setShowPredicate(LocationPredicates.getTropixObjectTreeItemTypePredicate(types, true));
+    treeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectNotFolderPredicate());
     sampleTree = treeComponentFactory.get(treeOptions);
     conditionalSampleComponent = SmartUtils.getConditionalSelectionWidget("Specify Sample", sampleTree, getValidationListener());
     setCanvas(conditionalSampleComponent.get());

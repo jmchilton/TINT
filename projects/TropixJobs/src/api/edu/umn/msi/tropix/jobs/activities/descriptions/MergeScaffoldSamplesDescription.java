@@ -29,7 +29,8 @@ import org.hibernate.annotations.IndexColumn;
 @Entity
 public class MergeScaffoldSamplesDescription extends ActivityDescription {
   private boolean mudpit;
-
+  private boolean autoCategories;
+  
   @OneToOne(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
   private IdList names = new IdList(); /* Thats unfortunate, maybe IdList should be renamed to StringList */
   @OneToOne(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
@@ -39,6 +40,15 @@ public class MergeScaffoldSamplesDescription extends ActivityDescription {
   @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
   @IndexColumn(name="id")
   private List<ScaffoldSample> samples;
+
+  public boolean getAutoCategories() {
+    return autoCategories;
+  }
+
+  @Consumes
+  public void setAutoCategories(final boolean autoCategories) {
+    this.autoCategories = autoCategories;
+  }
 
   public boolean getMudpit() {
     return mudpit;

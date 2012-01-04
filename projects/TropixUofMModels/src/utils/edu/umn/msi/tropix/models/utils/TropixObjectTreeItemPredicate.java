@@ -20,14 +20,15 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.webgui.client.components.tree;
+package edu.umn.msi.tropix.models.utils;
 
 import com.google.common.base.Predicate;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 
-public class TropixObjectTreeItemPredicate implements Predicate<TreeItem> {
+public class TropixObjectTreeItemPredicate implements Predicate<Location> {
   /**
    * The default value to return when this predicate is applied to items which are not TropixObjectTreeItem. For instance, in selection predicates this should usually be false, but for expansion predicates this should usually be true. So that items like My Recent Searches appear,
    * but cannot be selected.
@@ -46,8 +47,8 @@ public class TropixObjectTreeItemPredicate implements Predicate<TreeItem> {
     return true;
   }
 
-  public boolean apply(final TreeItem treeItem) {
-    if(treeItem == null || !(treeItem instanceof TropixObjectTreeItem)) {
+  public boolean apply(final Location treeItem) {
+    if(treeItem == null || !(treeItem instanceof TropixObjectLocation)) {
       return this.notTropixObjectDefault;
     } else {
       return this.apply(((TropixObjectLocation) treeItem).getObject());

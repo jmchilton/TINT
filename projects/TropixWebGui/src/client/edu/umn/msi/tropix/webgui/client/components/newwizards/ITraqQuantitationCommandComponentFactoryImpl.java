@@ -62,6 +62,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitJobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.TropixObjectDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.UploadFileDescription;
 import edu.umn.msi.tropix.models.ProteomicsRun;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.ModelFunctions;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
@@ -73,7 +74,6 @@ import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.Upload
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -290,8 +290,8 @@ public class ITraqQuantitationCommandComponentFactoryImpl extends WizardCommandC
         final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(types);
         final TreeOptions treeOptions = new TreeOptions();
         treeOptions.setInitialItems(getLocationFactory().getTropixObjectSourceRootItems(expander));
-        treeOptions.setShowPredicate(TreeItemPredicates.getTropixObjectTreeItemTypePredicate(types, true));
-        treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectNotFolderPredicate());
+        treeOptions.setShowPredicate(LocationPredicates.getTropixObjectTreeItemTypePredicate(types, true));
+        treeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectNotFolderPredicate());
         final TreeComponent tree = getTreeComponentFactory().get(treeOptions);
 
         tree.addSelectionListener(new Listener<TreeItem>() {
@@ -319,8 +319,8 @@ public class ITraqQuantitationCommandComponentFactoryImpl extends WizardCommandC
         final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(types);
         final TreeOptions treeOptions = new TreeOptions();
         treeOptions.setInitialItems(getLocationFactory().getTropixObjectSourceRootItems(expander));
-        treeOptions.setShowPredicate(TreeItemPredicates.getTropixObjectTreeItemTypePredicate(types, true));
-        treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectNotFolderPredicate());
+        treeOptions.setShowPredicate(LocationPredicates.getTropixObjectTreeItemTypePredicate(types, true));
+        treeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectNotFolderPredicate());
         trainingTree = getTreeComponentFactory().get(treeOptions);
 
         conditionalTrainingComponent = SmartUtils.getConditionalSelectionWidget(CONSTANTS.ltqiquantWizardUseTraining(), trainingTree,

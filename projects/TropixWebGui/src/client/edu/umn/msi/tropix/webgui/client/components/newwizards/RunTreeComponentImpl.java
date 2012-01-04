@@ -29,11 +29,12 @@ import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.ProteomicsRun;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.forms.ValidationListener;
@@ -43,7 +44,7 @@ import edu.umn.msi.tropix.webgui.services.protip.IdentificationJob;
 
 public class RunTreeComponentImpl extends LocationSelectionComponentImpl {
   private static final ComponentConstants CONSTANTS = ConstantsInstances.COMPONENT_INSTANCE;
-  private static final Predicate<TreeItem> PROTEOMICS_RUN_PREDICATE = TreeItemPredicates.getTropixObjectTreeItemTypePredicate(
+  private static final Predicate<Location> PROTEOMICS_RUN_PREDICATE = LocationPredicates.getTropixObjectTreeItemTypePredicate(
       TropixObjectTypeEnum.PROTEOMICS_RUN, false);
 
   public static class RunInputTypeEnum {
@@ -52,7 +53,7 @@ public class RunTreeComponentImpl extends LocationSelectionComponentImpl {
     public static final InputType BATCH_RUNS = new InputTypeImpl("BATCH_RUNS", TropixObjectTypeEnum.PROTEOMICS_RUN, true, true, PROTEOMICS_RUN_PREDICATE,
         CONSTANTS.runWizardSelectByRuns());
     public static final InputType BATCH_FOLDER = new InputTypeImpl("BATCH_FOLDER", TropixObjectTypeEnum.FOLDER, false, true,
-        TreeItemPredicates.getFolderPredicate(), CONSTANTS.runWizardSelectByFolder());
+        LocationPredicates.getFolderPredicate(), CONSTANTS.runWizardSelectByFolder());
   }
 
   public boolean mayHaveMultipleRuns() {

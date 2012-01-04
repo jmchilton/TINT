@@ -235,7 +235,7 @@ public class PollJobActivityFactoryImplTest {
     }
   }
 
-  @Test(groups = "unit", timeOut = 5000)
+  @Test(groups = "unit", timeOut = 10000)
   public void routing() throws InterruptedException {
     final int count = 10;
     final Map<String, PollJobDescription> descriptions = Maps.newHashMapWithExpectedSize(count);

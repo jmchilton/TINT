@@ -20,7 +20,7 @@
  * Minnesota Supercomputing Institute - initial API and implementation
  ******************************************************************************/
 
-package edu.umn.msi.tropix.webgui.client.components.tree;
+package edu.umn.msi.tropix.models.locations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,15 +34,15 @@ import edu.umn.msi.tropix.models.IdentificationParameters;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
-import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
+import edu.umn.msi.tropix.models.utils.TropixObjectTreeItemPredicate;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 
-public class TreeItemPredicates {
+public class LocationPredicates {
   private static final List<TropixObjectType> DESTINATION_TYPES = Arrays.<TropixObjectType>asList(TropixObjectTypeEnum.FOLDER, TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.REQUEST);
-  static final Predicate<TreeItem> NOT_FOLDER_PREDICATE = new NotFolderPredicate();
-  static final Predicate<TreeItem> TROPIX_OBJECT_TREE_ITEM_PREDICATE = new TropixObjectTreeItemPredicate();
-  static final Predicate<TreeItem> FOLDER_PREDICATE = new FolderPredicate();
+  static final Predicate<Location> NOT_FOLDER_PREDICATE = new NotFolderPredicate();
+  static final Predicate<Location> TROPIX_OBJECT_TREE_ITEM_PREDICATE = new TropixObjectTreeItemPredicate();
+  static final Predicate<Location> FOLDER_PREDICATE = new FolderPredicate();
 
   private static class NotFolderPredicate extends TropixObjectTreeItemPredicate {
     @Override
@@ -58,7 +58,7 @@ public class TreeItemPredicates {
     }
   }
   
-  public static Predicate<TreeItem> getTropixFileTreeItemPredicate(final String extension, final boolean otherObjects) {
+  public static Predicate<Location> getTropixFileTreeItemPredicate(final String extension, final boolean otherObjects) {
     return new TropixObjectTreeItemPredicate(otherObjects) {
       @Override
       public boolean apply(final TropixObject tropixObject) {
@@ -73,7 +73,7 @@ public class TreeItemPredicates {
     };
   }
 
-  public static Predicate<TreeItem> getIdentificationParametersOfTypePredicate(final String type, final boolean notTropixObjectDefault) {
+  public static Predicate<Location> getIdentificationParametersOfTypePredicate(final String type, final boolean notTropixObjectDefault) {
     return new TropixObjectTreeItemPredicate() {
       @Override
       public boolean apply(final TropixObject tropixObject) {
@@ -82,13 +82,13 @@ public class TreeItemPredicates {
     };
   }
   
-  public static Predicate<TreeItem> getDestinationsPredicate(final boolean notTropixObjectDefault) {
+  public static Predicate<Location> getDestinationsPredicate(final boolean notTropixObjectDefault) {
     return getTropixObjectTreeItemTypePredicate(DESTINATION_TYPES, notTropixObjectDefault);
   }
 
   
-  public static Predicate<TreeItem> getTropixObjectTreeItemTypePredicate(final Iterable<TropixObjectType> types, final boolean notTropixObjectDefault) {
-    return TreeItemPredicates.getTropixObjectTreeItemPredicate(new Predicate<TropixObject>() {
+  public static Predicate<Location> getTropixObjectTreeItemTypePredicate(final Iterable<TropixObjectType> types, final boolean notTropixObjectDefault) {
+    return LocationPredicates.getTropixObjectTreeItemPredicate(new Predicate<TropixObject>() {
       public boolean apply(final TropixObject object) {
         boolean isInstance = false;
         for(final TropixObjectType type : types) {
@@ -102,17 +102,17 @@ public class TreeItemPredicates {
     }, false);
   }
 
-  public static Predicate<TreeItem> getTropixObjectTreeItemTypePredicate(final TropixObjectType[] types, final boolean notTropixObjectDefault) {
-    return TreeItemPredicates.getTropixObjectTreeItemTypePredicate(Arrays.asList(types), notTropixObjectDefault);
+  public static Predicate<Location> getTropixObjectTreeItemTypePredicate(final TropixObjectType[] types, final boolean notTropixObjectDefault) {
+    return LocationPredicates.getTropixObjectTreeItemTypePredicate(Arrays.asList(types), notTropixObjectDefault);
   }
 
-  public static Predicate<TreeItem> getTropixObjectTreeItemTypePredicate(final TropixObjectType type, final boolean notTropixObjectDefault) {
-    return TreeItemPredicates.getTropixObjectTreeItemTypePredicate(Arrays.asList(type), false);
+  public static Predicate<Location> getTropixObjectTreeItemTypePredicate(final TropixObjectType type, final boolean notTropixObjectDefault) {
+    return LocationPredicates.getTropixObjectTreeItemTypePredicate(Arrays.asList(type), false);
   }
 
-  public static Predicate<TreeItem> getTropixObjectTreeItemPredicate(final Predicate<TropixObject> predicate, final boolean notTropixObjectDefault) {
-    return new Predicate<TreeItem>() {
-      public boolean apply(final TreeItem treeItem) {
+  public static Predicate<Location> getTropixObjectTreeItemPredicate(final Predicate<TropixObject> predicate, final boolean notTropixObjectDefault) {
+    return new Predicate<Location>() {
+      public boolean apply(final Location treeItem) {
         if(!TROPIX_OBJECT_TREE_ITEM_PREDICATE.apply(treeItem)) {
           return false;
         } else {
@@ -122,10 +122,10 @@ public class TreeItemPredicates {
     };
   }
 
-  public static Predicate<TreeItem> showDatabaseTypePredicate(final String format) {
-    return new Predicate<TreeItem>() {
+  public static Predicate<Location> showDatabaseTypePredicate(final String format) {
+    return new Predicate<Location>() {
 
-      public boolean apply(final TreeItem treeItem) {
+      public boolean apply(final Location treeItem) {
         boolean show = true;
         if(TROPIX_OBJECT_TREE_ITEM_PREDICATE.apply(treeItem)) {
           final TropixObjectLocation toTreeItem = (TropixObjectLocation) treeItem;
@@ -144,10 +144,10 @@ public class TreeItemPredicates {
     };
   }
 
-  public static Predicate<TreeItem> selectDatabaseTypePredicate(final String format) {
-    return new Predicate<TreeItem>() {
+  public static Predicate<Location> selectDatabaseTypePredicate(final String format) {
+    return new Predicate<Location>() {
 
-      public boolean apply(final TreeItem treeItem) {
+      public boolean apply(final Location treeItem) {
         if(TROPIX_OBJECT_TREE_ITEM_PREDICATE.apply(treeItem)) {
           final TropixObjectLocation toTreeItem = (TropixObjectLocation) treeItem;
           final TropixObject tropixObject = toTreeItem.getObject();
@@ -162,16 +162,16 @@ public class TreeItemPredicates {
     };
   }
 
-  public static Predicate<TreeItem> getIsTropixObjectTreeItemPredicate() {
-    return TreeItemPredicates.TROPIX_OBJECT_TREE_ITEM_PREDICATE;
+  public static Predicate<Location> getIsTropixObjectTreeItemPredicate() {
+    return LocationPredicates.TROPIX_OBJECT_TREE_ITEM_PREDICATE;
   }
 
-  public static Predicate<TreeItem> getFolderPredicate() {
-    return TreeItemPredicates.FOLDER_PREDICATE;
+  public static Predicate<Location> getFolderPredicate() {
+    return LocationPredicates.FOLDER_PREDICATE;
   }
 
-  public static Predicate<TreeItem> getTropixObjectNotFolderPredicate() {
-    return TreeItemPredicates.NOT_FOLDER_PREDICATE;
+  public static Predicate<Location> getTropixObjectNotFolderPredicate() {
+    return LocationPredicates.NOT_FOLDER_PREDICATE;
   }
 
 }

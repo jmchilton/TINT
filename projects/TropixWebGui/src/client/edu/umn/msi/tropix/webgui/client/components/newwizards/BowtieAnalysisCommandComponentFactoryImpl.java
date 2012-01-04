@@ -52,6 +52,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.StringParameterSet;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitBowtieAnalysisDescription;
 import edu.umn.msi.tropix.models.BowtieIndex;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
@@ -61,7 +62,6 @@ import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -146,8 +146,8 @@ public class BowtieAnalysisCommandComponentFactoryImpl extends WizardCommandComp
       final TropixObjectType[] inputTypes = new TropixObjectType[] {TropixObjectTypeEnum.FOLDER, TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.DATABASE};
 
       treeOptions.setInitialItems(getLocationFactory().getTropixObjectSourceRootItems(TropixObjectTreeItemExpanders.get(inputTypes)));
-      treeOptions.setShowPredicate(TreeItemPredicates.showDatabaseTypePredicate(format));
-      treeOptions.setSelectionPredicate(TreeItemPredicates.selectDatabaseTypePredicate(format));
+      treeOptions.setShowPredicate(LocationPredicates.showDatabaseTypePredicate(format));
+      treeOptions.setSelectionPredicate(LocationPredicates.selectDatabaseTypePredicate(format));
 
       final TreeComponent tree = getTreeComponentFactory().get(treeOptions);
       tree.addMultiSelectionListener(new Listener<Collection<TreeItem>>() {
@@ -211,8 +211,8 @@ public class BowtieAnalysisCommandComponentFactoryImpl extends WizardCommandComp
       final TreeOptions databaseTreeOptions = new TreeOptions();
       final TropixObjectType[] dbTypes = new TropixObjectType[] {TropixObjectTypeEnum.FOLDER, TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.BOWTIE_INDEX};
       databaseTreeOptions.setInitialItems(getLocationFactory().getTropixObjectSourceRootItems(TropixObjectTreeItemExpanders.get(dbTypes)));
-      databaseTreeOptions.setShowPredicate(TreeItemPredicates.getTropixObjectTreeItemTypePredicate(dbTypes, true));
-      databaseTreeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectNotFolderPredicate());
+      databaseTreeOptions.setShowPredicate(LocationPredicates.getTropixObjectTreeItemTypePredicate(dbTypes, true));
+      databaseTreeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectNotFolderPredicate());
 
       final TreeComponent databaseTree = getTreeComponentFactory().get(databaseTreeOptions);
       databaseTree.addSelectionListener(new Listener<TreeItem>() {

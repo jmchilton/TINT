@@ -25,10 +25,10 @@ package edu.umn.msi.tropix.webgui.client.components.impl;
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -45,7 +45,7 @@ public class ObjectSelectionWindowComponentSupplierImpl extends SelectionWindowC
       public TreeOptions get() {
         final TreeOptions treeOptions = new TreeOptions();
         treeOptions.setInitialItems(locationFactory.getConcreteTropixObjectRootItems(TropixObjectTreeItemExpanders.get()));
-        treeOptions.setSelectionPredicate(TreeItemPredicates.getIsTropixObjectTreeItemPredicate());
+        treeOptions.setSelectionPredicate(LocationPredicates.getIsTropixObjectTreeItemPredicate());
         treeOptions.setSelectionType(SelectionType.MULTIPlE);
         return treeOptions;
       }

@@ -36,6 +36,8 @@ import com.smartgwt.client.widgets.form.events.ItemChangedHandler;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.Resources;
@@ -44,8 +46,6 @@ import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
 import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandClickHandlerImpl;
@@ -102,7 +102,7 @@ public class GridFtpExportComponentSupplierImpl implements Supplier<WindowCompon
       final TreeOptions treeOptions = new TreeOptions();
       treeOptions.setSelectionType(SelectionType.MULTIPlE);
       treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(null));
-      treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.FILE, false));
+      treeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.FILE, false));
       treeComponent = treeComponentFactory.get(treeOptions);
       final Command downloadCommand = new Command() {
         public void execute() {
@@ -110,7 +110,7 @@ public class GridFtpExportComponentSupplierImpl implements Supplier<WindowCompon
           options.setHostname(StringUtils.toString(hostItem.getValue()));
           options.setPath(StringUtils.toString(pathItem.getValue()));
           options.setPort(Integer.parseInt(StringUtils.toString(portItem.getValue())));
-          ExportService.Util.getInstance().export(TreeItems.getIds(treeComponent.getMultiSelection()).toArray(new String[0]), options, new AsyncCallbackImpl<Void>() {
+          ExportService.Util.getInstance().export(Locations.getIds(treeComponent.getMultiSelection()).toArray(new String[0]), options, new AsyncCallbackImpl<Void>() {
             protected void handleSuccess() {
               SC.say("Files exported successfully.");
             }

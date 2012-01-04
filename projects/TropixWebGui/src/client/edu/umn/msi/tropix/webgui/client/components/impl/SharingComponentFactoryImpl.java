@@ -151,6 +151,7 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
       if(this.isNonRootSharedFolder()) {
         layout.addMember(SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingFoldersInherittedDescription()));
         final Button button = SmartUtils.getButton(PageConstants.INSTANCE.sharingOpenRoot(), Resources.GO, null, null);
+        button.setAutoFit(true);
         objectService.getRoot(tropixObject.getId(), new AsyncCallbackImpl<TropixObjectContext<VirtualFolder>>() {
           @Override
           public void onSuccess(final TropixObjectContext<VirtualFolder> sharedFolderContext) {

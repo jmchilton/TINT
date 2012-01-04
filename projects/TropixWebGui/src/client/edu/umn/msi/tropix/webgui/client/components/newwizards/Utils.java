@@ -26,25 +26,26 @@ import java.util.Collection;
 
 import com.google.common.base.Predicate;
 
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
 
 class Utils {
-  private static final Predicate<TreeItem> DATABASE_PREDICATE = TreeItemPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.DATABASE, false);
+  private static final Predicate<Location> DATABASE_PREDICATE = LocationPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.DATABASE, false);
 
   static TreeComponent getDatabaseTreeComponent(final LocationFactory locationFactory, final TreeComponentFactory treeComponentFactory, final Collection<TreeItem> locations) {
     final TropixObjectType[] dbTypes = new TropixObjectType[] {TropixObjectTypeEnum.FOLDER, TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.DATABASE};
     final TreeOptions databaseTreeOptions = new TreeOptions();
     databaseTreeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(TropixObjectTreeItemExpanders.get(dbTypes)));
-    databaseTreeOptions.setShowPredicate(TreeItemPredicates.showDatabaseTypePredicate("FASTA"));
-    databaseTreeOptions.setSelectionPredicate(TreeItemPredicates.selectDatabaseTypePredicate("FASTA"));
+    databaseTreeOptions.setShowPredicate(LocationPredicates.showDatabaseTypePredicate("FASTA"));
+    databaseTreeOptions.setSelectionPredicate(LocationPredicates.selectDatabaseTypePredicate("FASTA"));
     databaseTreeOptions.expandAndSelectValidItem(locations);
 
     final TreeComponent databaseTree = treeComponentFactory.get(databaseTreeOptions);    

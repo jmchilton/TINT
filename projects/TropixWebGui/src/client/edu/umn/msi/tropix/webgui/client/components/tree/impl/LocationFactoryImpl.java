@@ -93,34 +93,12 @@ public class LocationFactoryImpl implements LocationFactory {
     return new MyGroupSharedFoldersItemImpl(getExpander(expander));
   }
 
-  public TreeItem getTropixHomeItem() {
-    return new TreeItemImpl(null) {
-      {
-        this.setId(Locations.TROPIX_HOME_ID);
-        this.setIcon(Resources.OBJECT_16);
-        this.setType("");
-        this.setName("Tropix Home");
-        this.setFolder(false);
-      }
-
-      public void getChildren(final AsyncCallback<List<TreeItem>> children) {
-      }
-
-    };
-  }
-
   public TropixObjectTreeItem getTropixObjectTreeItem(@Nullable final Location parent,
       @Nullable final TropixObjectUserAuthorities context,
       final TropixObject object,
       final TropixObjectTreeItemExpander tropixObjectTreeItemExpander) {
     return new TropixObjectTreeItemImpl(parent, context, object, tropixObjectTreeItemExpander);
   }
-
-  /*
-   * public TropixObjectTreeItem getTropixObjectTreeItem(final TropixObjectTreeItemImpl parent, final TropixObject object) {
-   * return new TropixObjectTreeItemImpl(parent, object);
-   * }
-   */
 
   static class MySharedFoldersItemImpl extends TreeItemImpl implements RequiresModules {
     private final TropixObjectTreeItemExpander tropixObjectTreeItemExpander;

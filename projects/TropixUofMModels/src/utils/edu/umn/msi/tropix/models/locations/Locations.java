@@ -1,6 +1,10 @@
 package edu.umn.msi.tropix.models.locations;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -22,7 +26,6 @@ public class Locations {
   }
 
   public static final String MY_SHARED_FOLDERS_ID = "-1";
-  public static final String TROPIX_HOME_ID = "-2";
   public static final String MY_RECENT_ACTIVITY_ID = "-3";
   public static final String MY_RECENT_SEARCHES_ID = "-4";
   public static final String MY_INCOMING_REQUESTS_ID = "-5";
@@ -56,8 +59,8 @@ public class Locations {
 
   public static boolean isRootLocationAFolder(final Location rootLocation) {
     return isMySharedFoldersItem(rootLocation) ||
-        isMyGroupFoldersItem(rootLocation) ||
-        isMyGroupSharedFoldersItem(rootLocation);
+           isMyGroupFoldersItem(rootLocation) ||
+           isMyGroupSharedFoldersItem(rootLocation);
   }
 
   public static boolean isRootASharedRootMetaLocation(final Location location) {
@@ -154,6 +157,40 @@ public class Locations {
       }
     }
     return !anyUndeletable;
+  }
+
+  public static <T extends Location> HashMap<String, T> getIdMap(final Iterable<T> items) {
+    final HashMap<String, T> idMap = new HashMap<String, T>();
+    for(final T item : items) {
+      idMap.put(item.getId(), item);
+    }
+    return idMap;
+  }
+
+  public static List<String> getAncestorIds(final Location initialItem) {
+    final LinkedList<String> ancestorIds = new LinkedList<String>();
+    Location currentItem = initialItem;
+    while(currentItem.getParent() != null) {
+      currentItem = currentItem.getParent();
+      ancestorIds.addFirst(currentItem.getId());
+    }
+    return ancestorIds;
+  }
+
+  public static Collection<String> getIds(final Iterable<? extends Location> treeItems) {
+    final LinkedList<String> ids = new LinkedList<String>();
+    for(Location treeItem : treeItems) {
+      ids.add(treeItem.getId());
+    }
+    return ids;
+  }
+
+  public static LinkedHashSet<String> getAncestorIds(final Iterable<? extends Location> treeItems) {
+    final LinkedHashSet<String> ancestorIds = new LinkedHashSet<String>();
+    for(final Location treeItem : treeItems) {
+      ancestorIds.addAll(getAncestorIds(treeItem));
+    }
+    return ancestorIds;
   }
 
 }

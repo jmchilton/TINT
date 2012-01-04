@@ -34,13 +34,13 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -71,8 +71,8 @@ public class LoadCommand implements Command {
     final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(types);
     final TreeOptions treeOptions = new TreeOptions();
     treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(expander));
-    treeOptions.setShowPredicate(TreeItemPredicates.getTropixObjectTreeItemPredicate(predicate, true));
-    treeOptions.setSelectionPredicate(TreeItemPredicates.getIdentificationParametersOfTypePredicate(this.parameterType, false));
+    treeOptions.setShowPredicate(LocationPredicates.getTropixObjectTreeItemPredicate(predicate, true));
+    treeOptions.setSelectionPredicate(LocationPredicates.getIdentificationParametersOfTypePredicate(this.parameterType, false));
     final TreeComponent tree = this.treeComponentFactory.get(treeOptions);
     final TreeGrid treeGrid = tree.get();
     SmartUtils.enabledWhenHasSelection(okButton, treeGrid, false);

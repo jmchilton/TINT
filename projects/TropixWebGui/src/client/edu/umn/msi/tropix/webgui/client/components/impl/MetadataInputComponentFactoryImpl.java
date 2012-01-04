@@ -37,6 +37,8 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 
 import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.VirtualFolder;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
@@ -45,8 +47,6 @@ import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
@@ -85,12 +85,12 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       } else {
         treeOptions.setInitialItems(locationFactory.getFolderDestinationRootItems(null));
       }
-      treeOptions.setShowPredicate(TreeItemPredicates.getDestinationsPredicate(true));
+      treeOptions.setShowPredicate(LocationPredicates.getDestinationsPredicate(true));
       if(destinationType != MetadataOptions.DestinationType.FOLDER) {
-        treeOptions.setSelectionPredicate(TreeItemPredicates.getDestinationsPredicate(false));
+        treeOptions.setSelectionPredicate(LocationPredicates.getDestinationsPredicate(false));
       } else {
-        treeOptions.setSelectionPredicate(new Predicate<TreeItem>() {
-          public boolean apply(final TreeItem treeItem) {
+        treeOptions.setSelectionPredicate(new Predicate<Location>() {
+          public boolean apply(final Location treeItem) {
             return !Locations.isMyGroupFoldersItem(treeItem);
           }
         });
@@ -98,7 +98,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       if(initialItems != null) {
         for(final TreeItem initialItem : initialItems) {
           if(validInitialItem(initialItem)) {
-            treeOptions.setExpandIds(TreeItems.getAncestorIds(initialItem));
+            treeOptions.setExpandIds(Locations.getAncestorIds(initialItem));
             treeOptions.setSelectedItems(Arrays.asList(initialItem));
             break;
           }

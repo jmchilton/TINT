@@ -72,6 +72,23 @@ public class DescriptionPersistenceTest extends AbstractTransactionalTestNGSprin
 
     assert entityManager.find(ActivityDescription.class, d1.getId()).getActivityStatus() == ActivityStatus.CANCELLED;
   }
+  
+  private <T extends ActivityDescription> T persistDetachAndFind(final Class<T> clazz, final T instance) {
+    entityManager.persist(instance);
+    entityManager.detach(instance);
+    return entityManager.find(clazz, instance.getId());
+  }
+  
+  @Test(groups = "unit")
+  public void test1dot19Migration() {
+    final CreateTropixFileDescription createFileDescription = new CreateTropixFileDescription();
+    createFileDescription.setFilename("moocow");
+    assert persistDetachAndFind(CreateTropixFileDescription.class, createFileDescription).getFilename().equals("moocow");
+    
+    final MergeScaffoldSamplesDescription mergeDescription = new MergeScaffoldSamplesDescription();
+    mergeDescription.setAutoCategories(true);
+    assert persistDetachAndFind(MergeScaffoldSamplesDescription.class, mergeDescription).getAutoCategories();
+  }
 
   @Test(groups = "unit")
   public void testSubmitGalaxyDescription() {

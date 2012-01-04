@@ -64,8 +64,8 @@ public class TropixObjectTreeItemImpl extends TreeItemImpl implements TropixObje
       this.setValid(false);
     } else {
       this.setFolder(ModelUtils.hasChildren(object));
-      this.setIcon(TropixObjectTreeItemImpl.ICON_FUNCTION.apply(object));
-      this.setType(TropixObjectTreeItemImpl.TYPE_FUNCTION.apply(object));
+      this.setIcon(ICON_FUNCTION.apply(object));
+      this.setType(TYPE_FUNCTION.apply(object));
       this.setName(StringUtils.sanitize(object.getName()));
       if(StringUtils.hasText(this.getType())) {
         this.setName(this.getName() + "&nbsp;<span style=\"color: #AAA; font-style: italic;\">(" + this.getType() + ")</span>");

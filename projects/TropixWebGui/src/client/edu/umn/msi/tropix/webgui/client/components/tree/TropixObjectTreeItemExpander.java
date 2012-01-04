@@ -27,7 +27,8 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 
 public interface TropixObjectTreeItemExpander {
-  void expand(TropixObjectTreeItem tropixObjectTreeItem, AsyncCallback<List<TropixObject>> callback);
+  void expand(TropixObjectLocation tropixObjectTreeItem, AsyncCallback<List<TropixObject>> callback);
 }

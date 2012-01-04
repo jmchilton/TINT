@@ -22,15 +22,6 @@
 
 package edu.umn.msi.tropix.webgui.client.components.tree;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import edu.umn.msi.tropix.models.locations.Location;
-
-// TODO: Move more items to Locations
 public class TreeItems {
   // Used in items
   public static final String ATTRIBUTE_TYPE = "type";
@@ -44,39 +35,4 @@ public class TreeItems {
   // Managed internally by the tree
   public static final String ATTRIBUTE_PARENT_ID = "parent";
   public static final String ATTRIBUTE_OBJECT = "object";
-
-  public static HashMap<String, TreeItem> getIdMap(final Iterable<TreeItem> items) {
-    final HashMap<String, TreeItem> idMap = new HashMap<String, TreeItem>();
-    for(final TreeItem item : items) {
-      idMap.put(item.getId(), item);
-    }
-    return idMap;
-  }
-
-  public static List<String> getAncestorIds(final Location initialItem) {
-    final LinkedList<String> ancestorIds = new LinkedList<String>();
-    Location currentItem = initialItem;
-    while(currentItem.getParent() != null) {
-      currentItem = currentItem.getParent();
-      ancestorIds.addFirst(currentItem.getId());
-    }
-    return ancestorIds;
-  }
-
-  public static LinkedHashSet<String> getAncestorIds(final Iterable<TreeItem> treeItems) {
-    final LinkedHashSet<String> ancestorIds = new LinkedHashSet<String>();
-    for(final TreeItem treeItem : treeItems) {
-      ancestorIds.addAll(TreeItems.getAncestorIds(treeItem));
-    }
-    return ancestorIds;
-  }
-
-  public static Collection<String> getIds(final Iterable<TreeItem> treeItems) {
-    final LinkedList<String> ids = new LinkedList<String>();
-    for(TreeItem treeItem : treeItems) {
-      ids.add(treeItem.getId());
-    }
-    return ids;
-  }
-
 }

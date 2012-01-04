@@ -2,6 +2,7 @@ package edu.umn.msi.tropix.models.locations;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class LocationImpl implements Location {
@@ -16,13 +17,22 @@ public class LocationImpl implements Location {
   private Date creationDate;
   private boolean folder;
 
-  public LocationImpl(final Location parent) {
+  public LocationImpl(@Nullable final Location parent) {
     this.parent = parent;
     if(parent == null) {
       this.root = this;
     } else {
       this.root = parent.getRoot();
     }
+  }
+  
+  public LocationImpl(@Nullable final Location parent, @Nonnull final Location template) {
+    this(parent);
+    this.type = template.getType();
+    this.name = template.getName();
+    this.sort = template.getSort();
+    this.id = template.getId();
+    this.folder = template.isFolder();
   }
 
   public Location getParent() {

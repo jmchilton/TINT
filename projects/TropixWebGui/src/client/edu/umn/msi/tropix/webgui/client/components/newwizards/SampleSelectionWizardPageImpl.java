@@ -35,6 +35,9 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.IdList;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ScaffoldSample;
 import edu.umn.msi.tropix.models.IdentificationAnalysis;
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.proteomics.IdentificationType;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
@@ -45,8 +48,6 @@ import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItems;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
@@ -258,7 +259,7 @@ class SampleSelectionWizardPageImpl extends WizardPageImpl<VLayout> implements H
       init(sampleRecord, add);
     }
 
-    private boolean validIdentification(final TreeItem treeItem) {
+    private boolean validIdentification(final Location treeItem) {
       if(!(treeItem instanceof TropixObjectTreeItem)) {
         return true;
       }
@@ -272,10 +273,10 @@ class SampleSelectionWizardPageImpl extends WizardPageImpl<VLayout> implements H
       return validAnalysisTypes.contains(analysisType);
     }
 
-    private Predicate<TreeItem> getShowItemPredicate() {
-      final Predicate<TreeItem> typePredicate = TreeItemPredicates.getTropixObjectTreeItemTypePredicate(types, true);
-      return new Predicate<TreeItem>() {
-        public boolean apply(final TreeItem treeItem) {
+    private Predicate<Location> getShowItemPredicate() {
+      final Predicate<Location> typePredicate = LocationPredicates.getTropixObjectTreeItemTypePredicate(types, true);
+      return new Predicate<Location>() {
+        public boolean apply(final Location treeItem) {
           return typePredicate.apply(treeItem) && validIdentification(treeItem);
         }
       };
@@ -300,11 +301,11 @@ class SampleSelectionWizardPageImpl extends WizardPageImpl<VLayout> implements H
       final TreeOptions treeOptions = new TreeOptions();
       treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(TropixObjectTreeItemExpanders.get(types)));
       treeOptions.setShowPredicate(getShowItemPredicate());
-      treeOptions.setSelectionPredicate(TreeItemPredicates.getTropixObjectNotFolderPredicate());
+      treeOptions.setSelectionPredicate(LocationPredicates.getTropixObjectNotFolderPredicate());
       treeOptions.setSelectionType(SelectionType.MULTIPlE);
       @SuppressWarnings("unchecked")
       final Collection<TreeItem> selectedItems = (Collection<TreeItem>) sampleRecord.getAttributeAsObject("Selection");
-      treeOptions.setExpandIds(TreeItems.getAncestorIds(selectedItems));
+      treeOptions.setExpandIds(Locations.getAncestorIds(selectedItems));
       treeOptions.setSelectedItems(selectedItems);
       final TreeComponent tree = treeComponentFactory.get(treeOptions);
       tree.addMultiSelectionListener(this);

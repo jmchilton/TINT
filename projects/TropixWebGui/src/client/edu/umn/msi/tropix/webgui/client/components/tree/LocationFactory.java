@@ -34,8 +34,6 @@ public interface LocationFactory {
 
   TreeItem getMySharedFoldersItem(final TropixObjectTreeItemExpander tropixObjectTreeItemExpander);
 
-  TreeItem getTropixHomeItem();
-
   TreeItem getMyGroupSharedFoldersItem(@Nullable TropixObjectTreeItemExpander expander);
 
   TreeItem getMyGroupFoldersItem(@Nullable TropixObjectTreeItemExpander expander);

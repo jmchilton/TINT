@@ -63,12 +63,12 @@ public class RenameCommandComponentFactoryImpl implements DescribableLocationCom
   }
 
   public Command get(final Collection<TreeItem> input) {
-    return new WindowComponent((TropixObjectTreeItem) Iterables.getOnlyElement(input));
+    return new WindowComponent((TropixObjectLocation) Iterables.getOnlyElement(input));
   }
 
   static class WindowComponent extends WindowComponentImpl<Window> {
 
-    WindowComponent(final TropixObjectTreeItem treeItem) {
+    WindowComponent(final TropixObjectLocation treeItem) {
       final TextItem textItem = new TextItem("name", "New Name");
       textItem.setValue(treeItem.getObject().getName());
       final Form form = new Form();

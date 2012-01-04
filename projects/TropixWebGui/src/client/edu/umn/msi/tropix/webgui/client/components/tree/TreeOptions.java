@@ -29,6 +29,8 @@ import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.SelectionStyle;
 
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.webgui.client.utils.Iterables;
 import edu.umn.msi.tropix.webgui.client.utils.Lists;
 
@@ -64,8 +66,8 @@ public class TreeOptions {
 
   private SelectionType selectionType = SelectionType.SINGLE;
   private GetTreeState getTreeState;
-  private Predicate<TreeItem> showPredicate;
-  private Predicate<TreeItem> selectionPredicate;
+  private Predicate<? super Location> showPredicate;
+  private Predicate<? super Location> selectionPredicate;
   private Iterable<String> expandIds = null;
   private Iterable<TreeItem> selectedItems = null;
   private boolean acceptsDrops = true;
@@ -128,19 +130,19 @@ public class TreeOptions {
     this.selectionType = selectionType;
   }
 
-  public Predicate<TreeItem> getSelectionPredicate() {
+  public Predicate<? super Location> getSelectionPredicate() {
     return this.selectionPredicate;
   }
 
-  public void setSelectionPredicate(final Predicate<TreeItem> selectionPredicate) {
+  public void setSelectionPredicate(final Predicate<? super Location> selectionPredicate) {
     this.selectionPredicate = selectionPredicate;
   }
 
-  public Predicate<TreeItem> getShowPredicate() {
+  public Predicate<? super Location> getShowPredicate() {
     return this.showPredicate;
   }
 
-  public void setShowPredicate(final Predicate<TreeItem> showPredicate) {
+  public void setShowPredicate(final Predicate<? super Location> showPredicate) {
     this.showPredicate = showPredicate;
   }
 
@@ -158,7 +160,7 @@ public class TreeOptions {
 
   private void expandAndSelectItems(final Iterable<TreeItem> selectedItems) {
     setSelectedItems(selectedItems);
-    setExpandIds(TreeItems.getAncestorIds(selectedItems));
+    setExpandIds(Locations.getAncestorIds(selectedItems));
   }
 
 }

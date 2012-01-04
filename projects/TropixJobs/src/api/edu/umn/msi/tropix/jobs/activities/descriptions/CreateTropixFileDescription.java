@@ -21,6 +21,8 @@ import javax.persistence.Entity;
 
 @Entity
 public class CreateTropixFileDescription extends TropixObjectDescription implements ConsumesStorageServiceUrl {
+  private String filename;
+
   private String fileId;
   @Nullable private String extension;
   private String storageServiceUrl;
@@ -29,7 +31,16 @@ public class CreateTropixFileDescription extends TropixObjectDescription impleme
   protected String fieldsToString() {
     return super.fieldsToString() + ",fileId=" + fileId + ",extension=" + extension +",storageServiceUrl=" + storageServiceUrl;
   }
-  
+
+  public String getFilename() {
+    return filename;
+  }
+
+  @Consumes
+  public void setFilename(final String filename) {
+    this.filename = filename;
+  }
+
   public String getFileId() {
     return fileId;
   }

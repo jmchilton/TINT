@@ -46,13 +46,13 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.MergeScaffoldSamplesDescr
 import edu.umn.msi.tropix.jobs.activities.descriptions.PollJobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.StringParameterSet;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitScaffoldAnalysisDescription;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.MetadataInputComponent;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.MetadataWizardPageFactory.MetadataWizardPageImpl;
 import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleTypeWizardPageImpl.ScaffoldSampleType;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
 import edu.umn.msi.tropix.webgui.client.forms.ValidationListener;
@@ -123,7 +123,7 @@ public class BatchScaffoldAnalysisCommandComponentFactoryImpl extends WizardComm
           descriptions.add(scaffoldFolder);
 
           for(TreeItem treeItem : treeItems) {
-            final TropixObjectTreeItem identificationAnalysisItem = (TropixObjectTreeItem) treeItem;
+            final TropixObjectLocation identificationAnalysisItem = (TropixObjectLocation) treeItem;
             final String name = identificationAnalysisItem.getObject().getName();
             final JobDescription jobDescription = new JobDescription(getAnalysisJobDescriptionName(name));
             final MergeScaffoldSamplesDescription mergeSamples = new MergeScaffoldSamplesDescription();
@@ -145,7 +145,7 @@ public class BatchScaffoldAnalysisCommandComponentFactoryImpl extends WizardComm
             mergeSamples.setProduceMultipleSamples(true);
           }
           for(TreeItem treeItem : treeItems) {
-            final TropixObjectTreeItem identificationAnalysisItem = (TropixObjectTreeItem) treeItem;
+            final TropixObjectLocation identificationAnalysisItem = (TropixObjectLocation) treeItem;
             mergeSamples.addIdentificationId(identificationAnalysisItem.getId());
             if(scaffoldType == ScaffoldSampleType.MANY_SAMPLE) {
               mergeSamples.addName(identificationAnalysisItem.getObject().getName());

@@ -28,6 +28,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.models.TropixObject;
+import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.components.tree.impl.TropixObjectTreeItemExpanderImpl;
@@ -47,7 +48,7 @@ public class TropixObjectTreeItemExpanders {
 
   public static TropixObjectTreeItemExpander nullExpander() {
     return new TropixObjectTreeItemExpander() {
-      public void expand(final TropixObjectTreeItem tropixObjectTreeItem, final AsyncCallback<List<TropixObject>> callback) {
+      public void expand(final TropixObjectLocation tropixObjectTreeItem, final AsyncCallback<List<TropixObject>> callback) {
         callback.onSuccess(Arrays.<TropixObject>asList());
       }
     };

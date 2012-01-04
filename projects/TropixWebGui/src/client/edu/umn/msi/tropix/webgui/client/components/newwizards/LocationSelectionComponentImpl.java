@@ -18,13 +18,14 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 
+import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
-import edu.umn.msi.tropix.webgui.client.components.tree.TreeItemPredicates;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
@@ -41,13 +42,13 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
 
     boolean getAllowMultiple();
 
-    Predicate<TreeItem> getSelectionPredicate();
+    Predicate<? super Location> getSelectionPredicate();
 
     boolean isBatch();
 
     String getSelectionLabel();
 
-    Predicate<TreeItem> getShowPredicate();
+    Predicate<? super Location> getShowPredicate();
 
   }
 
@@ -55,8 +56,8 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
     private final String name;
     private final TropixObjectType inputType;
     private final boolean allowMultiple;
-    private final Predicate<TreeItem> selectionPredicate;
-    private final Predicate<TreeItem> showPredicate;
+    private final Predicate<? super Location> selectionPredicate;
+    private final Predicate<? super Location> showPredicate;
     private final String selectionLabel;
     private final boolean isBatch;
 
@@ -64,14 +65,14 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
         final TropixObjectType inputType,
         final boolean allowMultiple,
         final boolean isBatch,
-        final Predicate<TreeItem> selectionPredicate,
+        final Predicate<? super Location> selectionPredicate,
         final String selectionLabel) {
       this(name,
           inputType,
           allowMultiple,
           isBatch,
           selectionPredicate,
-          TreeItemPredicates.getTropixObjectTreeItemTypePredicate(
+          LocationPredicates.getTropixObjectTreeItemTypePredicate(
               new TropixObjectType[] {
                   TropixObjectTypeEnum.FOLDER,
                   TropixObjectTypeEnum.VIRTUAL_FOLDER, inputType},
@@ -83,8 +84,8 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
         final TropixObjectType inputType,
         final boolean allowMultiple,
         final boolean isBatch,
-        final Predicate<TreeItem> selectionPredicate,
-        final Predicate<TreeItem> showPredicate,
+        final Predicate<? super Location> selectionPredicate,
+        final Predicate<? super Location> showPredicate,
         final String selectionLabel) {
       this.name = name;
       this.inputType = inputType;
@@ -111,11 +112,11 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
       return allowMultiple;
     }
 
-    public Predicate<TreeItem> getShowPredicate() {
+    public Predicate<? super Location> getShowPredicate() {
       return showPredicate;
     }
 
-    public Predicate<TreeItem> getSelectionPredicate() {
+    public Predicate<? super Location> getSelectionPredicate() {
       return selectionPredicate;
     }
 
