@@ -82,6 +82,7 @@ import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.services.session.Module;
 
 public class MainToolStripComponentImpl implements MainToolStripComponent, Listener<NavigationSelection> {
+  private static final boolean ENABLE_DB_CURATOR = false;
   private static final MenuItemSeparator SEPARATOR = new MenuItemSeparator();
   private ModuleManager moduleManager;
   private Collection<TreeItem> treeItem = new ArrayList<TreeItem>(0);
@@ -270,40 +271,37 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
     menuBuilder.addMenuItem(getDialogMenuItem("About", "about", Resources.HELP));
     return menuBuilder.buildMenu(DomConstants.HELP_MENU_ID, "Help");
   }
-  
-  
+
   private void popupDbCurator() {
 
     Map<String, String> emailInitialPairs = new TreeMap<String, String>();
     emailInitialPairs.put(session.getUserName(), session.getUserName());
-    final Layout panel =  SmartUtils.getFullVLayout();
-    
+    final Layout panel = SmartUtils.getFullVLayout();
+
     PopOutWindowBuilder.titled("foo").sized(600, 600).modal().withContents(panel).asCommand().execute();
-    
-    //final DialogBox dialogBox = new DialogBox(false);
-    //dialogBox.setHTML("<p>MooCow</p>");
+
+    // final DialogBox dialogBox = new DialogBox(false);
+    // dialogBox.setHTML("<p>MooCow</p>");
     CurationEditor ce = new CurationEditor(null, session.getUserName(), emailInitialPairs, new EditorCloseCallback() {
       public void editorClosed(final Integer openCurationID) {
-        //dialogBox.hide();
+        // dialogBox.hide();
       }
     });
     ce.setSize("550px", "550px");
     panel.addMember(ce);
-    //DOM.setElementAttribute(panel.getElement(), "id", "db-curator");
-    //dialogBox.setStyleName("dbCuratorEmbed");
-    //dialogBox.setWidget(ce);
-    //dialogBox.setSize(Window.getClientWidth() * .8 + "px", Window.getClientHeight() * .8 + "px");
-    //ce.setPixelSize(Math.max((int) (Window.getClientWidth() * .8), 770), (int) (Window.getClientHeight() * .8));
-//    LightBox lb = new LightBox(dialogBox);
-//    try {
-//      lb.show();
-//    } catch (Exception ignore) {
-    //dialogBox.show();
-//    }
-    //dialogBox.center();
+    // DOM.setElementAttribute(panel.getElement(), "id", "db-curator");
+    // dialogBox.setStyleName("dbCuratorEmbed");
+    // dialogBox.setWidget(ce);
+    // dialogBox.setSize(Window.getClientWidth() * .8 + "px", Window.getClientHeight() * .8 + "px");
+    // ce.setPixelSize(Math.max((int) (Window.getClientWidth() * .8), 770), (int) (Window.getClientHeight() * .8));
+    // LightBox lb = new LightBox(dialogBox);
+    // try {
+    // lb.show();
+    // } catch (Exception ignore) {
+    // dialogBox.show();
+    // }
+    // dialogBox.center();
   }
-
-  
 
   private TitledMenu getToolsAdmin() {
     final MenuBuilder menuBuilder = new MenuBuilder();
@@ -318,7 +316,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
       menuBuilder.addMenuItem(newItem);
       menuBuilder.addSeparator();
     }
-    if(moduleManager.containsModules(Module.USER, Module.PROTIP)) {
+    if(ENABLE_DB_CURATOR && moduleManager.containsModules(Module.USER, Module.PROTIP)) {
       final MenuItem dbCuratortem = new MenuItem();
       dbCuratortem.setTitle("Database Curator");
       dbCuratortem.setIcon(Resources.DATABASE_16);
@@ -327,7 +325,7 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
         public void onClick(final MenuItemClickEvent event) {
           popupDbCurator();
         }
-        
+
       });
       menuBuilder.addMenuItem(dbCuratortem);
       menuBuilder.addSeparator();

@@ -34,8 +34,9 @@ import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
-import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
+import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpander;
+import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
 import edu.umn.msi.tropix.webgui.client.components.tree.impl.TreeComponentFactoryImpl;
 import edu.umn.msi.tropix.webgui.client.widgets.PopOutWindowBuilder;
 
@@ -49,7 +50,9 @@ public class VirtualFolderSelectionWindowComponentSupplierImpl extends Selection
     treeFactory.setDefaultTreeOptionsSupplier(new Supplier<TreeOptions>() {
       public TreeOptions get() {
         final TreeOptions treeOptions = new TreeOptions();
-        treeOptions.setInitialItems(Arrays.<TreeItem>asList(locationFactory.getMySharedFoldersItem(TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER}))));
+        final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER});
+        treeOptions.setInitialItems(Arrays.<TreeItem>asList(locationFactory.getMySharedFoldersItem(expander),
+            locationFactory.getMyGroupSharedFoldersItem(expander)));
         treeOptions.setSelectionPredicate(LocationPredicates.getIsTropixObjectTreeItemPredicate());
         treeOptions.setSelectionType(SelectionType.SINGLE);
         return treeOptions;
