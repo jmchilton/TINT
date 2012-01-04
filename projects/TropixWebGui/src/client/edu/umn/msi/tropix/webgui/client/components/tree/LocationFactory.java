@@ -50,4 +50,6 @@ public interface LocationFactory {
 
   Iterable<TreeItem> getFolderDestinationRootItems(@Nullable TropixObjectTreeItemExpander expander);
 
+  Iterable<TreeItem> getSharedFolderRootItems(@Nullable TropixObjectTreeItemExpander expander);
+
 }

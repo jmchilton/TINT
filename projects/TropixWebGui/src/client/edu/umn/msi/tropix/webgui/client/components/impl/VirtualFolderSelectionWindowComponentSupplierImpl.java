@@ -22,8 +22,6 @@
 
 package edu.umn.msi.tropix.webgui.client.components.impl;
 
-import java.util.Arrays;
-
 import com.google.common.base.Supplier;
 import com.google.inject.Inject;
 
@@ -51,8 +49,7 @@ public class VirtualFolderSelectionWindowComponentSupplierImpl extends Selection
       public TreeOptions get() {
         final TreeOptions treeOptions = new TreeOptions();
         final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER});
-        treeOptions.setInitialItems(Arrays.<TreeItem>asList(locationFactory.getMySharedFoldersItem(expander),
-            locationFactory.getMyGroupSharedFoldersItem(expander)));
+        treeOptions.setInitialItems(locationFactory.getSharedFolderRootItems(expander));
         treeOptions.setSelectionPredicate(LocationPredicates.getIsTropixObjectTreeItemPredicate());
         treeOptions.setSelectionType(SelectionType.SINGLE);
         return treeOptions;

@@ -450,4 +450,9 @@ public class LocationFactoryImpl implements LocationFactory {
         session.getPrimaryGroup() != null ? getMyGroupSharedFoldersItem(expander) : null);
   }
 
+  public Iterable<TreeItem> getSharedFolderRootItems(TropixObjectTreeItemExpander expander) {
+    return filter(getMySharedFoldersItem(expander),
+        session.getPrimaryGroup() != null ? getMyGroupSharedFoldersItem(expander) : null);
+  }
+
 }
