@@ -168,13 +168,7 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
         layout.addMember(button);
       } else {
         this.canModify = pageConfiguration.getTropixObjectContext().canModifySharing();
-        // TODO: Use canModify to always init, just in a read-only mode if false.
-        // TODO: Eliminate sharingNoPermission constant.
-        if(pageConfiguration.getTropixObjectContext().canModifySharing()) {
-          init();
-        } else {
-          layout.addMember(SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingNoPermission()));
-        }
+        init();
       }
     }
 
@@ -201,14 +195,21 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
       removeButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingRemovePermission(), Resources.CROSS, 140);
       toogleEditButton = SmartUtils.getButton(PageConstants.INSTANCE.sharingToogleEdit(), Resources.EDIT, 140);
 
-      userAndGroupGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
-        public void onSelectionChanged(final SelectionEvent event) {
-          final ListGridRecord record = userAndGroupGrid.getSelectedRecord();
-          final boolean disabled = record == null ? true : record.getAttributeAsBoolean("immutable");
-          removeButton.setDisabled(disabled);
-          toogleEditButton.setDisabled(disabled);
-        }
-      });
+      if(canModify) {
+        userAndGroupGrid.addSelectionChangedHandler(new SelectionChangedHandler() {
+          public void onSelectionChanged(final SelectionEvent event) {
+            final ListGridRecord record = userAndGroupGrid.getSelectedRecord();
+            final boolean disabled = record == null ? true : record.getAttributeAsBoolean("immutable");
+            removeButton.setDisabled(disabled);
+            toogleEditButton.setDisabled(disabled);
+          }
+        });
+      } else {
+        SmartUtils.markDisabled(removeButton);
+        SmartUtils.markDisabled(toogleEditButton);
+        SmartUtils.markDisabled(addGroupButton);
+        SmartUtils.markDisabled(addUserButton);
+      }
 
       final Canvas userAndGroupLayout = new CanvasWithOpsLayout<ClientListGrid>(this.userAndGroupGrid, addUserButton, addGroupButton,
           this.removeButton, this.toogleEditButton);
@@ -363,12 +364,18 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
           }
         }, 180);
 
-        SmartUtils.enabledWhenHasSelection(removeFolderButton, sharedFoldersGrid);
+        if(canModify) {
+          SmartUtils.enabledWhenHasSelection(removeFolderButton, sharedFoldersGrid);
+        } else {
+          SmartUtils.markDisabled(removeFolderButton);
+          SmartUtils.markDisabled(addToFolderButton);
+        }
         final Layout sharedFoldersLayout = new CanvasWithOpsLayout<ClientListGrid>(sharedFoldersGrid, addToFolderButton, removeFolderButton);
         sharedFoldersLayout.setIsGroup(true);
         sharedFoldersLayout.setAutoHeight();
         sharedFoldersLayout.setGroupTitle("Shared Folders");
-        final Label description = SmartUtils.smartParagraph(PageConstants.INSTANCE.sharingObjectsDescription());
+        final Label description = SmartUtils.smartParagraph(canModify ? PageConstants.INSTANCE.sharingObjectsDescription() : PageConstants.INSTANCE
+            .sharingNoPermission());
         this.get().addMember(description);
         this.get().addMember(userAndGroupLayout);
         this.get().addMember(sharedFoldersLayout);
@@ -378,10 +385,12 @@ public class SharingComponentFactoryImpl implements ComponentFactory<PageConfigu
     }
 
     private void resetButtons() {
-      this.toogleEditButton.setDisabled(true);
-      this.removeButton.setDisabled(true);
-      if(this.removeFolderButton != null) {
-        this.removeFolderButton.setDisabled(true);
+      if(canModify) {
+        this.toogleEditButton.setDisabled(true);
+        this.removeButton.setDisabled(true);
+        if(this.removeFolderButton != null) {
+          this.removeFolderButton.setDisabled(true);
+        }
       }
     }
 

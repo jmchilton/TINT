@@ -33,6 +33,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.ProteomicsRun;
+import edu.umn.msi.tropix.models.Provider;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -42,7 +43,7 @@ import edu.umn.msi.tropix.models.VirtualFolder;
 public interface TropixObjectDao {
 
   Multimap<String, String> getRoles(String userIdentity, Iterable<String> objectIds);
-  
+
   Collection<Folder> getGroupFolders(final String userId);
 
   Collection<Folder> getAllGroupFolders();
@@ -109,7 +110,7 @@ public interface TropixObjectDao {
 
   Collection<DirectPermission> getRoles(String objectId);
 
-  // public Collection<Permission> getGroupRoles(String objectId);
+  Collection<Provider> getProviderRoles(final String objectId);
 
   String getOwnerId(String objectId);
 
@@ -154,9 +155,9 @@ public interface TropixObjectDao {
   boolean isAnOwner(final String userId, final String objectId);
 
   boolean fileExists(final String fileId);
-  
+
   String getFilesObjectId(final String fileId);
-  
+
   Set<String> getFilesObjectIds(final Set<String> fileIds);
-  
+
 }

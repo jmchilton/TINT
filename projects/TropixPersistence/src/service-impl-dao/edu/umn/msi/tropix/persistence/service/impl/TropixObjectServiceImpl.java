@@ -268,6 +268,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
       final Map<String, PermissionReport> userReports = new HashMap<String, PermissionReport>();
       final Map<String, PermissionReport> groupReports = new HashMap<String, PermissionReport>();
       final Collection<DirectPermission> permissions = getTropixObjectDao().getRoles(objectId);
+
       for(final DirectPermission permission : permissions) {
         for(final User user : permission.getUsers()) {
           final String userId = user.getCagridId();
@@ -320,7 +321,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     addSharedFolder(virtualFolderId, user.getSharedFolders());
     getUserDao().saveOrUpdateUser(user);
   }
-  
+
   private void addSharedFolder(final String folderId, final Collection<VirtualFolder> sharedFolders) {
     final VirtualFolder folder = loadSharedFolder(folderId);
     if(!isRoot(folder)) {
@@ -328,7 +329,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     }
     sharedFolders.add(folder);
   }
-  
+
   public void addGroupSharedFolder(final String gridId, final String groupId, final String folderId) {
     final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
     final Group group = groupDao.load(groupId);
@@ -338,7 +339,6 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     addSharedFolder(folderId, group.getSharedFolders());
     groupDao.saveObject(group);
   }
-
 
   public void removeSharedFolder(final String cagridId, final String rootSharedFolderId, final boolean removeOwnedObjects) {
     final User user = getUserDao().loadUser(cagridId);
@@ -363,7 +363,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
 
     hideSharedFolder(user, folder);
   }
-  
+
   public void hideGroupSharedFolder(final String cagridId, final String groupId, final String rootSharedFolderId) {
     final Dao<Group> groupDao = getDaoFactory().getDao(Group.class);
     final Group group = groupDao.load(groupId);
@@ -371,7 +371,6 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     group.getSharedFolders().remove(folder);
     groupDao.saveObject(group);
   }
-
 
   public void hideSharedFolder(final String cagridId, final String rootSharedFolderId) {
     final User user = getUserDao().loadUser(cagridId);

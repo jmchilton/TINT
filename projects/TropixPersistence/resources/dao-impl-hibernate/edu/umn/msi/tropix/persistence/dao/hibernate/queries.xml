@@ -232,6 +232,13 @@
   where
     o.id = :objectId
   ]]></query>  
+  <query name="getProviderRoles"><![CDATA[
+  select role 
+  from Provider role
+       join role.objects o
+  where
+    o.id = :objectId
+  ]]></query>  
   <query name="getRoles"><![CDATA[
   select role 
   from Permission role

@@ -56,6 +56,7 @@ import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.InternalRequest;
 import edu.umn.msi.tropix.models.Permission;
 import edu.umn.msi.tropix.models.ProteomicsRun;
+import edu.umn.msi.tropix.models.Provider;
 import edu.umn.msi.tropix.models.Request;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -479,16 +480,16 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
       return (Long) groupQuery.uniqueResult() > 0L;
     }
   }
-  
+
   public boolean fileExists(final String fileId) {
     final Query query = super.getSession().createQuery("select count(*) from TropixFile f where f.fileId = :fileId");
     query.setParameter("fileId", fileId);
     return 0L < (Long) query.uniqueResult();
   }
-  
+
   public String getFilesObjectId(final String fileId) {
     final Query query = super.getSession().createQuery("select f.id from TropixFile f where f.fileId = :fileId");
-    query.setParameter("fileId", fileId);    
+    query.setParameter("fileId", fileId);
     return (String) query.uniqueResult();
   }
 
@@ -503,8 +504,6 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     }
     return objectIds;
   }
-
-
 
   public long virtualHierarchyCount(final String objectId, final String rootId) {
     final Query query = super.getSession().getNamedQuery("virtualHierarchyCount");
@@ -695,6 +694,14 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
       }
     }
     return roleMap;
+  }
+
+  public Collection<Provider> getProviderRoles(String objectId) {
+    final Query query = getSession().getNamedQuery("getProviderRoles");
+    query.setParameter("objectId", objectId);
+    @SuppressWarnings("unchecked")
+    final Collection<Provider> roles = query.list();
+    return roles;
   }
 
 }

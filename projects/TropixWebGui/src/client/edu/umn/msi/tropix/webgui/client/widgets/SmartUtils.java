@@ -235,6 +235,16 @@ public class SmartUtils {
     return text.replace(" ", "_");
   }
 
+  public static void markDisabled(final Canvas canvas) {
+    canvas.setOpacity(30);
+    canvas.disable();
+  }
+
+  public static void unmarkDisabled(final Canvas canvas) {
+    canvas.setOpacity(100);
+    canvas.enable();
+  }
+
   private static class ConditionalWidgetSupplierImpl<S, T extends Canvas> extends WidgetSupplierImpl<Layout> implements ConditionalWidgetSupplier {
     private boolean useSelection;
 
@@ -252,20 +262,17 @@ public class SmartUtils {
         selectItem.setValue(true);
       } else {
         useSelection = false;
-        selectionCanvas.disable();
-        selectionCanvas.setOpacity(30);
+        markDisabled(selectionCanvas);
       }
       selectItem.addChangeHandler(new ChangeHandler() {
         public void onChange(final ChangeEvent event) {
           if((Boolean) event.getValue()) {
             useSelection = true;
-            selectionCanvas.enable();
-            selectionCanvas.setOpacity(100);
+            unmarkDisabled(selectionCanvas);
             validationListener.onEvent(widget.getSelection() != null);
           } else {
             useSelection = false;
-            selectionCanvas.disable();
-            selectionCanvas.setOpacity(30);
+            markDisabled(selectionCanvas);
             validationListener.onEvent(true);
           }
         }
