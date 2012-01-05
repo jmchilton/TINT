@@ -5,10 +5,10 @@ import info.minnesotapartnership.tropix.directory.models.Person;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
@@ -18,6 +18,8 @@ import javax.naming.directory.SearchResult;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.client.credential.ConfiguredSslSocketFactory;
 
@@ -31,6 +33,11 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
   private String userLastNameLabel;
   private String userEmailLabel;
   private String gridIdPrefix;
+  private Iterable<String> ignoreIds;
+  
+  public void setIgnoreIds(final Iterable<String> ignoreIds) {
+    this.ignoreIds = ignoreIds;
+  }
 
   protected String getFilter() {
     return filter != null ? filter : (userIdLabel + "=*");
@@ -57,8 +64,8 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
       ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
       String filter = getFilter();
       NamingEnumeration<SearchResult> answer = ctx.search(ldapBase, filter, ctls);
-      boolean firstAttribute = true;
-      
+      //boolean firstAttribute = true;
+      final Set<String> ignoreIds = Sets.newHashSet(this.ignoreIds);
       while(answer.hasMore()) {
 
         SearchResult result = answer.next();
@@ -68,6 +75,7 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
         }
       
         
+        /*
         if(firstAttribute) {
           NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
           while(enumeration.hasMore()) {
@@ -76,9 +84,12 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
           }
           firstAttribute = false;
         }
-        
         System.out.println(attributes.get("mail").get());
+        */
         String userId = attributes.get(userIdLabel).get().toString();
+        if(ignoreIds.contains(userId)) {
+          continue;
+        }
         String userFirstName = attributes.get(userFirstNameLabel).get().toString();
         String userLastName = attributes.get(userLastNameLabel).get().toString();
         String userEmail = attributes.get(userEmailLabel).get().toString();

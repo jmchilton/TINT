@@ -53,7 +53,8 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="ldap.firstname.label" value="" />
         <entry key="ldap.userid.label" value="" />
         <entry key="ldap.lastname.label" value="" />
-        <entry key="ldap.filter" value="" />        
+        <entry key="ldap.filter" value="" />
+        <entry key="ldap.ignore.ids" value="" />        
       </map>
     </property>
   </bean>    
@@ -173,7 +174,12 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
     <property name="userIdLabel" value="${ldap.userid.label}" /> <!--  value="cn" /> -->
     <property name="userLastNameLabel" value="${ldap.lastname.label}" /> <!--  value="sn" /> -->
     <property name="truststorePath" value="${ldap.truststore}" />
-    <property name="filter" value="${ldap.filter}" /> <!-- value="(&amp;(cn=*)(pwdChangedTime&gt;=20080912000000Z))" /> -->    
+    <property name="filter" value="${ldap.filter}" /> <!-- value="(&amp;(cn=*)(pwdChangedTime&gt;=20080912000000Z))" /> -->
+    <property name="ignoreIds">
+      <bean class="edu.umn.msi.tropix.common.collect.spring.JmxStringIterable">
+        <property name="contents" value="${ldap.ignore.ids}" />
+      </bean>
+    </property>    
   </bean>
 
   <bean id="localPersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.LocalPersonSupplierImpl">

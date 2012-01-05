@@ -25,7 +25,10 @@ public class DirectoryInteractionTest extends AbstractTestNGSpringContextTests {
     int count = 0;
     for(Person person : persons.values()) {
       count++;
-      //System.out.println(person.getCagridIdentity());
+      if(person.getCagridIdentity().contains("chilton")) {
+        System.out.println(person.getCagridIdentity());
+      }
+      //
     }
     System.out.println("/Persons" + count);
 
