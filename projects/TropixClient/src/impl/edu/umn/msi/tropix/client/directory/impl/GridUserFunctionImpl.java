@@ -2,8 +2,6 @@ package edu.umn.msi.tropix.client.directory.impl;
 
 import java.util.Map;
 
-import org.python.google.common.base.Preconditions;
-
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 
@@ -29,7 +27,7 @@ public class GridUserFunctionImpl implements Function<String, GridUser> {
         }
       }
     }
-    Preconditions.checkNotNull(gridUser, String.format("Could not find user with grid id [%s]", input));
+    //Preconditions.checkNotNull(gridUser, String.format("Could not find user with grid id [%s]", input));
     return gridUser;
   }
 

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
@@ -45,10 +46,19 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
     try {
       DirContext ctx = new InitialDirContext(env);
 
+      //Attributes attrs = ctx.getAttributes("cn=chilton, ou=people, ou=internal, dc=DTC");
+      //NamingEnumeration<? extends Attribute> enumeration = attrs.getAll();
+      //while(enumeration.hasMore()) {
+      // Attribute attribute = enumeration.next();
+      //  System.out.println("Attribute: " + attribute.getID());
+      //}
+      
       SearchControls ctls = new SearchControls();
       ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
       String filter = getFilter();
       NamingEnumeration<SearchResult> answer = ctx.search(ldapBase, filter, ctls);
+      boolean firstAttribute = true;
+      
       while(answer.hasMore()) {
 
         SearchResult result = answer.next();
@@ -56,7 +66,18 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
         if(attributes == null) {
           continue;
         }
-
+      
+        
+        if(firstAttribute) {
+          NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
+          while(enumeration.hasMore()) {
+            Attribute attribute = enumeration.next();
+            System.out.println("Attribute: " + attribute.getID());
+          }
+          firstAttribute = false;
+        }
+        
+        System.out.println(attributes.get("mail").get());
         String userId = attributes.get(userIdLabel).get().toString();
         String userFirstName = attributes.get(userFirstNameLabel).get().toString();
         String userLastName = attributes.get(userLastNameLabel).get().toString();

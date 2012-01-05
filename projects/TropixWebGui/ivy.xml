@@ -69,7 +69,7 @@
     
     <dependency org="com.google.gwt" name="gwt-user" rev="${gwt.version}" />
     <dependency org="com.google.gwt" name="gwt-dev" rev="${gwt.version}" />
-    <dependency org="com.google.gwt" name="gwt-servlet" rev="${gwt.version}" />
+    <dependency org="com.google.gwt" name="gwt-servlet" rev="${gwt.version}" conf="server->master" />
 
 
     <dependency org="javax.validation" name="validation-api" rev="1.0.0.GA"> 
