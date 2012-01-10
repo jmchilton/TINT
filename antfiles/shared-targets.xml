@@ -280,8 +280,11 @@
     <attribute name="webinfconf" default="war" />
     <attribute name="includewscore" default="false" />
     <sequential>
+      <copy todir="${build.war.dir}">
+	<fileset dir="${shared.war.template.dir}" includes="**/*" />
+      </copy>
       <copy todir="${build.lib.dir}" flatten="true" >
-	<fileset refid="ivy.fileset" />
+	<fileset refid="ivy.@{webinfconf}.fileset" />
 	<fileset dir="${jars.dir}" includes="**/*.jar" />
       </copy>
       <if>
@@ -620,8 +623,9 @@
     <if>	
       <isset property="confs" />
       <then>
-        <for list="@{confs}" param="conf" parallel="true">
+        <for list="${confs}" param="conf" parallel="true">
           <sequential>
+	    <echo message="Setting up fileset ivy.@{conf}.fileset." />
             <ivy:cachefileset setid="ivy.@{conf}.fileset" />
             <ivy:cachepath pathid="ivy.@{conf}.path" />
           </sequential>

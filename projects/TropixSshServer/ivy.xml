@@ -15,20 +15,11 @@
     <artifact name="tropix-ssh-server-test" type="jar" conf="test" ext="jar" />
   </publications>
   
-  <dependencies>
-    <dependency org="org.codehaus.cargo" name="cargo-ant" rev="1.1.2">
-      <exclude org="jdom" />
-      <exclude org="dom4j" />
-      <exclude org="com.sun.xml.bind" />
-      <exclude org="javax.xml.bind" />
-      <exclude org="javax.xml.stream" />
-      <exclude org="xerces" />
-      <exclude org="xml-apis" />
-    </dependency>
-    
+  <dependencies>    
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${project.version}" conf="default->impls;test->test" />
     <dependency org="msi.umn.edu" name="tropix-files" rev="${project.version}" conf="default->impl" />
     <dependency org="msi.umn.edu" name="tropix-auth" rev="${project.version}" conf="default->impl" />
+    <dependency org="msi.umn.edu" name="tropix-war" rev="${project.version}" conf="war->war;test->war-test" />
     <!--
     <dependency org="org.apache.sshd" name="apache-sshd" rev="0.6.0">
       <exclude org="org.slf4j" />

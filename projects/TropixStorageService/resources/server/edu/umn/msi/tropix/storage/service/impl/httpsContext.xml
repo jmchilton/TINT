@@ -17,28 +17,38 @@
             http://www.springframework.org/schema/beans                                                                                 
             http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-  <context:annotation-config/> 
-  
-  <!-- Load Storage Manager -->
-  <import resource="classpath:edu/umn/msi/tropix/storage/core/context.xml" />
+  <context:annotation-config />
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
-    <property name="properties">  
-      <props>  
-        <prop key="service.address">https://localhost:9001/tint</prop>
-        <prop key="storage.server.enable">false</prop>
-        <prop key="storage.server.secure">false</prop>        
-        <prop key="storage.server.https.port">8743</prop>
-        <prop key="storage.server.http.port">8780</prop>
-        <prop key="storage.server.host">localhost</prop>
-        <prop key="foo">dog</prop>
-      </props>  
-    </property>
-    <property name="ignoreResourceNotFound" value="true" />
-    <property name="ignoreUnresolvablePlaceholders" value="true" />
-  </bean>
+  <httpj:engine-factory>
+   <httpj:engine port="${storage.service.https.port}">
+    <httpj:tlsServerParameters>
+      <sec:keyManagers keyPassword="password">
+           <sec:keyStore type="JKS" 
+			 password="${storage.service.keymanager.password}" 
+			 file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getServiceKeyManager('${storage.service.keymanager.file}', '${tropix.storage.config.dir}')}" />
+      </sec:keyManagers>
+      <sec:trustManagers>
+          <sec:keyStore type="JKS" 
+			password="${storage.service.trustmanager.password}" 
+			file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getTrustManager('${storage.service.trustmanager.file}', '${tropix.storage.config.dir}')}"/>
+      </sec:trustManagers>
+      <sec:cipherSuitesFilter>
+        <!-- these filters ensure that a ciphersuite with   
+          export-suitable or null encryption is used,
+          but exclude anonymous Diffie-Hellman key change as               
+          this is vulnerable to man-in-the-middle attacks -->
+        <sec:include>.*_EXPORT_.*</sec:include>
+        <sec:include>.*_EXPORT1024_.*</sec:include>
+        <sec:include>.*_WITH_DES_.*</sec:include>
+        <sec:include>.*_WITH_AES_.*</sec:include>
+        <sec:include>.*_WITH_NULL_.*</sec:include>
+        <sec:exclude>.*_DH_anon_.*</sec:exclude>
+      </sec:cipherSuitesFilter>
+      <sec:clientAuthentication want="true" required="true"/>
+    </httpj:tlsServerParameters>
+   </httpj:engine>
+  </httpj:engine-factory>
 
-  <import resource="client/context.xml" />
-  <import resource="impl/context.xml" />  
+  <import resource="context.xml" />
 
 </beans>

@@ -22,16 +22,6 @@
   </publications>
 
   <dependencies>
-    <dependency org="org.codehaus.cargo" name="cargo-ant" rev="1.1.2">
-      <exclude org="jdom" />
-      <exclude org="dom4j" />
-      <exclude org="com.sun.xml.bind" />
-      <exclude org="javax.xml.bind" />
-      <exclude org="javax.xml.stream" />
-      <exclude org="xerces" />
-      <exclude org="xml-apis" />
-    </dependency>
-
 
     <dependency org="com.google.guava" name="guava" rev="${guava.version}" conf="client->master">
       <artifact name="guava" />
@@ -60,6 +50,7 @@
     </dependency>
     <!-- <dependency org="smartgwt" name="smartgwt" rev="2.5" /> --> <!-- Needs work! -->
     <dependency org="smartgwt" name="smartgwt" rev="2.4" />
+    <dependency org="msi.umn.edu" name="tropix-war" rev="${ivy.project.version}" conf="server->war;test->war-test" />
     <dependency org="msi.umn.edu" name="tropix-dbcurator" rev="${ivy.project.version}" />
     <dependency org="msi.umn.edu" name="tropix-webgui-constants" rev="${ivy.project.version}" conf="client->main" />
     <dependency org="msi.umn.edu" name="tropix-jobs" rev="${ivy.project.version}" conf="client->impl" />

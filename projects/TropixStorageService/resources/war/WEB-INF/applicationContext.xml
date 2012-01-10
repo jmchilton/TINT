@@ -14,14 +14,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <context:annotation-config />
   <aop:aspectj-autoproxy/>
 
-  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
-    <property name="properties">
-      <map>
-        <entry key="messaging.broker.start" value="true" />
-      </map>
-    </property>
-  </bean>
-
-  <import resource="classpath:edu/umn/msi/tropix/messaging/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/storage/service/impl/httpsContext.xml" />
 
 </beans>

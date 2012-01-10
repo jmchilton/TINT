@@ -22,13 +22,13 @@
   <http:conduit name="https://.*:.*/storage/.*">
 	<http:client ConnectionTimeout="3000000" ReceiveTimeout="3000000"/>
 	<http:tlsClientParameters disableCNCheck="true">
-            <sec:keyManagers keyPassword="password">
-              <sec:keyStore type="JKS" password="password"
-                   file="wibble.jks"/>
+            <sec:keyManagers keyPassword="${storage.client.keymanager.key.password}">
+              <sec:keyStore type="JKS" password="${storage.client.keymanager.password}"
+                   file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getClientKeyManager('${storage.client.keymanager.file}', '${tropix.storageclient.config.dir}')}"/>
               </sec:keyManagers>
            <sec:trustManagers>
-              <sec:keyStore type="JKS" password="password"
-                  file="truststore.jks"/>
+              <sec:keyStore type="JKS" password="${storage.client.trustmanager.password}"
+                  file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getTrustManager('${storage.client.keymanager.file}', '${tropix.storageclient.config.dir}')}"/>
            </sec:trustManagers>
 	</http:tlsClientParameters>
   </http:conduit>

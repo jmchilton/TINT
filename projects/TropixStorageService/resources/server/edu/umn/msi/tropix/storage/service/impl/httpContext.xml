@@ -17,11 +17,13 @@
             http://www.springframework.org/schema/beans                                                                                 
             http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-  <context:annotation-config/> 
+  <context:annotation-config />
 
-  <context:component-scan base-package="edu.umn.msi.tropix.storage.service.client" />  
+  <httpj:engine-factory>
+   <httpj:engine port="${storage.server.http.port}">
+   </httpj:engine>
+  </httpj:engine-factory>
 
-  <import resource="insecure-conduit.xml" />
-  <import resource="secure-conduit.xml" />
+  <import resource="context.xml" />
 
 </beans>

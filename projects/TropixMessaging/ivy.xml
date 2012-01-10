@@ -7,7 +7,8 @@
   <configurations>
     <conf name="api" visibility="public" />
     <conf name="impl" extends="api" visibility="public" /> 
-    <conf name="test" description="Tests" extends="impl" visibility="public" />
+    <conf name="war" extends="impl" visibility="public" />
+    <conf name="test" description="Tests" extends="war" visibility="public" />
     <conf name="all" description="All Dependencies" extends="test" visibility="private" />
   </configurations>
 
@@ -19,6 +20,8 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-war" rev="${ivy.project.version}" conf="war->war;test->war-test" />
+
     <dependency org="javax.jms" name="jms" rev="1.1" conf="impl->runtime"/>
 
     <dependency org="org.springframework" name="spring-jms" rev="${spring.version}" conf="impl->runtime" />

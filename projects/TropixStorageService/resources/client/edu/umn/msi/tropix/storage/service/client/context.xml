@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.1.xsd
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+  <context:annotation-config/> 
+
+  <bean id="tropixConfigDir" class="edu.umn.msi.tropix.common.spring.TropixConfigDirPropertyPlaceholderConfigurer" />
+
+  <bean id="storageclientConfigDir" class="edu.umn.msi.tropix.common.spring.ConfigDir">
+    <constructor-arg value="storageclient" />
+  </bean>
+
+  <bean class="edu.umn.msi.tropix.common.spring.DeployPropertiesPlaceholderConfigurer">
+    <constructor-arg value="storageclient" />
+  </bean>
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+    <property name="properties">  
+      <props>
+        <prop key="storage.client.keymanager.key.password">password</prop>
+        <prop key="storage.client.keymanager.password">password</prop>
+        <prop key="storage.client.keymanager.file"></prop>
+        <prop key="storage.client.trustmanager.password">password</prop>
+        <prop key="storage.client.trustmanager.file"></prop>
+      </props>  
+    </property>
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
+
+  <context:component-scan base-package="edu.umn.msi.tropix.storage.service.client" />  
+
+  <import resource="insecure-conduit.xml" />
+  <import resource="secure-conduit.xml" />
+    
+</beans>

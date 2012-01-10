@@ -26,27 +26,27 @@ public class Server {
     this.implementation = implementation;
   }
   
-  @Value("${storage.server.host}")
+  @Value("${storage.service.host}")
   public void setHost(final String host) {
     this.host = host;
   }
 
-  @Value("${storage.server.http.port}")
+  @Value("${storage.service.http.port}")
   public void setHttpPort(final int httpPort) {
     this.httpPort = httpPort;
   }
 
-  @Value("${storage.server.https.port}")
+  @Value("${storage.service.https.port}")
   public void setHttpsPort(final int httpsPort) {
     this.httpsPort = httpsPort;
   }
 
-  @Value("${storage.server.enable}")
+  @Value("${storage.service.enable}")
   public void setEnable(final boolean enable) {
     this.enable = enable;
   } 
   
-  @Value("${storage.server.secure}")
+  @Value("${storage.service.secure}")
   public void setSecure(final boolean secure) {
     this.secure = secure;
   }

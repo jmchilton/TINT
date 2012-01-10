@@ -105,6 +105,7 @@
 /projects/TropixLabs/temp-testng-customsuite.xml
 
 # /projects/TropixMessaging/
+/projects/TropixMessaging/logs
 /projects/TropixMessaging/activemq-data
 /projects/TropixMessaging/bin
 /projects/TropixMessaging/ext
@@ -170,6 +171,14 @@
 /projects/TropixUofMModels/bin
 /projects/TropixUofMModels/test-output
 /projects/TropixUofMModels/temp-testng-customsuite.xml
+
+# /projects/TropixWar/
+/projects/TropixWar/build
+/projects/TropixWar/ext
+/projects/TropixWar/bin
+/projects/TropixWar/test-output
+/projects/TropixWar/temp-testng-customsuite.xml
+
 
 # /projects/TropixWebGui/
 /projects/TropixWebGui/.out

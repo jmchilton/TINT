@@ -10,19 +10,27 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
+import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.storage.service.client.StorageServiceFactory;
 
 @ContextConfiguration(locations = "testContext.xml")
-public class ServerTest extends AbstractTestNGSpringContextTests {
+public class ServerTest extends FreshConfigTest {
   
   @Inject 
   private StorageServiceFactory storageServiceFactory;
     
   private boolean secure = true;
 
+  @Override
+  protected void initializeConfigDir(final ConfigDirBuilder builder) {
+    builder.createSubConfigDir("storage").addDeployProperty("storage.service.enable", "true");
+  }
+  
   @Test
   public void test() throws InterruptedException, HttpException, IOException {
-
+    proxyClientCall();
+    
     //SpringBusFactory bf = new SpringBusFactory();
     //URL busFile = getClass().getResource("server.xml");
     //Bus bus = bf.createBus(busFile.toString());
@@ -42,7 +50,6 @@ public class ServerTest extends AbstractTestNGSpringContextTests {
     */
     //setupProtocol();
     //httpCall();
-    proxyClientCall();
 
     
     // If Basic Authentication required could use:                                                                                  
@@ -73,6 +80,7 @@ public class ServerTest extends AbstractTestNGSpringContextTests {
     //Object implementor = new TestImpl();
     //String address = "https://localhost:9001/storage";
     //Endpoint.publish(address, implementor);
+
   }
   
   private void proxyClientCall() {

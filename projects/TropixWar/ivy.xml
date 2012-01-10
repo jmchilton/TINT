@@ -1,0 +1,34 @@
+<?xml version="1.0"?> 
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://incubator.apache.org/ivy/schemas/ivy.xsd">
+  
+  <info organisation="msi.umn.edu" module="tropix-war" />
+  
+  <configurations>
+    <conf name="war" visibility="public" />
+    <conf name="war-test" visibility="public" />
+    <conf name="test" description="Tests" extends="war" visibility="public" />
+    <conf name="all" description="All Dependencies" extends="test" visibility="private" />
+  </configurations>
+
+  <publications>
+  </publications>
+  
+  <dependencies>
+    <!-- TODO: Reevaluate which of these excludes are needed. -->
+    <dependency org="org.codehaus.cargo" name="cargo-ant" rev="${cargo.version}" conf="war-test->runtime,master" >
+      <exclude org="jdom" />
+      <exclude org="dom4j" />
+      <exclude org="com.sun.xml.bind" />
+      <exclude org="javax.xml.bind" />
+      <exclude org="javax.xml.stream" />
+      <exclude org="xerces" />
+      <exclude org="xml-apis" />
+    </dependency>
+    <dependency org="msi.umn.edu" name="tropix-commons" rev="${ivy.project.version}" />
+
+    <dependency org="org.springframework" name="spring-web" rev="${spring.version}" conf="war->default" />
+    <dependency org="org.springframework" name="spring-webmvc" rev="${spring.version}" conf="war->default" />
+  </dependencies>  
+
+</ivy-module>

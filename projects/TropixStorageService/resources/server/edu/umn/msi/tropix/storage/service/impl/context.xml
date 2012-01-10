@@ -5,52 +5,47 @@
   xmlns:sec="http://cxf.apache.org/configuration/security"
   xmlns:http="http://cxf.apache.org/transports/http/configuration"
   xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
-  xsi:schemaLocation="                                                                                                                     
-            http://www.springframework.org/schema/context 
+  xsi:schemaLocation="
+            http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-3.1.xsd
-            http://cxf.apache.org/configuration/security                                                                                
-            http://cxf.apache.org/schemas/configuration/security.xsd                                                                    
-            http://cxf.apache.org/transports/http/configuration                                                                         
-            http://cxf.apache.org/schemas/configuration/http-conf.xsd                                                                   
-            http://cxf.apache.org/transports/http-jetty/configuration                                                                   
-            http://cxf.apache.org/schemas/configuration/http-jetty.xsd                                                                  
-            http://www.springframework.org/schema/beans                                                                                 
+            http://cxf.apache.org/configuration/security                                             
+            http://cxf.apache.org/schemas/configuration/security.xsd              
+            http://cxf.apache.org/transports/http/configuration                            
+            http://cxf.apache.org/schemas/configuration/http-conf.xsd 
+            http://cxf.apache.org/transports/http-jetty/configuration                                                                  
+            http://cxf.apache.org/schemas/configuration/http-jetty.xsd    
+            http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-  <context:annotation-config />
+  <context:annotation-config/> 
+  
+  <!-- Load Storage Manager -->
+  <import resource="classpath:edu/umn/msi/tropix/storage/core/context.xml" />
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+    <property name="properties">  
+      <props>  
+        <prop key="service.address">https://localhost:9001/tint</prop>
+        <prop key="storage.service.enable">false</prop>
+        <prop key="storage.service.secure">false</prop>        
+        <prop key="storage.service.https.port">8743</prop>
+        <prop key="storage.service.http.port">8780</prop>
+        <prop key="storage.service.host">localhost</prop>
+        <prop key="storage.service.keymanager.password">password</prop>
+        <prop key="storage.service.keymanager.file"></prop>
+        <prop key="storage.service.trustmanager.password">password</prop>
+        <prop key="storage.service.trustmanager.file"></prop>
+      </props>  
+    </property>
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+  </bean>
 
   <import resource="classpath:META-INF/cxf/cxf.xml" />
-
-  <httpj:engine-factory>
-   <httpj:engine port="${storage.server.https.port}">
-    <httpj:tlsServerParameters>
-      <sec:keyManagers keyPassword="password">
-           <sec:keyStore type="JKS" password="password" file="#{T(edu.umn.msi.tropix.storage.service.impl.TransportSecurity).getPath('${tropix.storage.config.dir}${moo.cow.dog}')}" />
-      </sec:keyManagers>
-      <sec:trustManagers>
-          <sec:keyStore type="JKS" password="password" file="truststore.jks"/>
-      </sec:trustManagers>
-      <sec:cipherSuitesFilter>
-        <!-- these filters ensure that a ciphersuite with                                                                               
-          export-suitable or null encryption is used,                                                                                   
-          but exclude anonymous Diffie-Hellman key change as                                                                            
-          this is vulnerable to man-in-the-middle attacks -->
-        <sec:include>.*_EXPORT_.*</sec:include>
-        <sec:include>.*_EXPORT1024_.*</sec:include>
-        <sec:include>.*_WITH_DES_.*</sec:include>
-        <sec:include>.*_WITH_AES_.*</sec:include>
-        <sec:include>.*_WITH_NULL_.*</sec:include>
-        <sec:exclude>.*_DH_anon_.*</sec:exclude>
-      </sec:cipherSuitesFilter>
-      <sec:clientAuthentication want="true" required="true"/>
-    </httpj:tlsServerParameters>
-   </httpj:engine>
-   <httpj:engine port="${storage.server.http.port}">
-   </httpj:engine>
-  </httpj:engine-factory>
-
   <context:component-scan base-package="edu.umn.msi.tropix.storage.service.impl" />
-  
   <import resource="classpath:edu/umn/msi/tropix/storage/core/mapperContext.xml" />
+
+  <!-- <import resource="client/context.xml" /> -->
+  <!-- <import resource="impl/context.xml" />   -->
 
 </beans>

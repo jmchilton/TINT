@@ -7,23 +7,22 @@
   <configurations>
     <conf name="client" visibility="public" />
     <conf name="server" extends="client" visibility="public" />
-
-    <conf name="test" description="Tests" extends="client,server" visibility="public" />
+    <conf name="war" extends="server" visibility="public" />
+    <conf name="test" description="Tests" extends="client,server,war" visibility="public" />
     <conf name="all" description="All Dependencies" extends="test" visibility="private" />
   </configurations>
 
   <publications>
     <artifact name="tropix-storage-cxf-client" type="jar" conf="client" ext="jar" />
     <artifact name="tropix-storage-cxf-server" type="jar" conf="server" ext="jar" />
-    <artifact name="tropix-storage-cxf-test" type="jar" conf="test" ext="jar" />
-    
+    <artifact name="tropix-storage-cxf-test" type="jar" conf="test" ext="jar" />    
   </publications>
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" />
+    <dependency org="msi.umn.edu" name="tropix-storage-war" rev="${ivy.project.version}" conf="war->war;test->war-test"/>
 
     <dependency rev="${cxf.version}" org="org.apache.cxf" name="cxf-rt-transports-http-jetty" conf="server->runtime,master">
-      <!-- <exclude org="org.apache.xmlbeans" module="xmlbeans" /> -->
       <exclude org="org.slf4j" />
     </dependency>
 
