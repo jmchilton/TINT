@@ -6,6 +6,7 @@
   
   <configurations>
     <conf name="default" description="Default" visibility="public" />
+    
     <conf name="test" description="Tests" extends="default" visibility="public" />
     <conf name="all" description="All Dependencies" extends="test" visibility="private" />
   </configurations>
@@ -19,7 +20,7 @@
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${project.version}" conf="default->impls;test->test" />
     <dependency org="msi.umn.edu" name="tropix-files" rev="${project.version}" conf="default->impl" />
     <dependency org="msi.umn.edu" name="tropix-auth" rev="${project.version}" conf="default->impl" />
-    <dependency org="msi.umn.edu" name="tropix-war" rev="${project.version}" conf="war->war;test->war-test" />
+    <dependency org="msi.umn.edu" name="tropix-war" rev="${project.version}" conf="default->war;test->war-test" />
     <!--
     <dependency org="org.apache.sshd" name="apache-sshd" rev="0.6.0">
       <exclude org="org.slf4j" />
