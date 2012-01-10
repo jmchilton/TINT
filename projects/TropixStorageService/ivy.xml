@@ -20,7 +20,7 @@
   
   <dependencies>
     <dependency org="msi.umn.edu" name="tropix-storage-core" rev="${ivy.project.version}" />
-    <dependency org="msi.umn.edu" name="tropix-storage-war" rev="${ivy.project.version}" conf="war->war;test->war-test"/>
+    <dependency org="msi.umn.edu" name="tropix-war" rev="${ivy.project.version}" conf="war->war;test->war-test"/>
 
     <dependency rev="${cxf.version}" org="org.apache.cxf" name="cxf-rt-transports-http-jetty" conf="server->runtime,master">
       <exclude org="org.slf4j" />

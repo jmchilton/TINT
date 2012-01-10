@@ -44,6 +44,7 @@ import edu.umn.msi.tropix.common.jobqueue.jobprocessors.BaseExecutableJobProcess
 import edu.umn.msi.tropix.common.jobqueue.progress.LineProcessingFileProgressTracker;
 import edu.umn.msi.tropix.common.jobqueue.progress.ProgressTrackable;
 import edu.umn.msi.tropix.common.jobqueue.progress.ProgressTracker;
+import edu.umn.msi.tropix.common.xml.FormattedXmlUtility;
 import edu.umn.msi.tropix.proteomics.scaffold.input.BiologicalSample;
 import edu.umn.msi.tropix.proteomics.scaffold.input.Experiment;
 import edu.umn.msi.tropix.proteomics.scaffold.input.Export;
@@ -57,6 +58,7 @@ class ScaffoldJobProcessorImpl extends BaseExecutableJobProcessorImpl implements
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
   private static final ZipUtils ZIP_UTILS = ZipUtilsFactory.getInstance();
   private static final ScaffoldUtility SCAFFOLD_XML_UTILITY = new ScaffoldUtility();
+  private static final FormattedXmlUtility<Scaffold> SCAFFOLD_WRITER = new FormattedXmlUtility<Scaffold>(Scaffold.class);
   private static final String XML_DRIVER_PATH = "input.xml", INPUT_PATH = "input", OUTPUT_PATH = "output", DB_PATH = "db";
 
   private boolean quiteMode = false;
@@ -187,7 +189,7 @@ class ScaffoldJobProcessorImpl extends BaseExecutableJobProcessorImpl implements
       }
     }
 
-    SCAFFOLD_XML_UTILITY.serialize(scaffoldInput, getStagingDirectory().getOutputContext(XML_DRIVER_PATH));
+    SCAFFOLD_WRITER.serialize(scaffoldInput, getStagingDirectory().getOutputContext(XML_DRIVER_PATH));
 
     final List<String> arguments = new LinkedList<String>();
     arguments.add("-f");

@@ -623,7 +623,7 @@
     <if>	
       <isset property="confs" />
       <then>
-        <for list="${confs}" param="conf" parallel="true">
+        <for list="${confs}" param="conf" parallel="false">
           <sequential>
 	    <echo message="Setting up fileset ivy.@{conf}.fileset." />
             <ivy:cachefileset setid="ivy.@{conf}.fileset" />
