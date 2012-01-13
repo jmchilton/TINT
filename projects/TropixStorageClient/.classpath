@@ -7,7 +7,6 @@
 	<classpathentry kind="src" path="src/impl-http-transfer"/>
 	<classpathentry kind="src" path="resources/impl-cagrid-service"/>
 	<classpathentry kind="src" path="src/impl-cagrid-service"/>
-	<classpathentry kind="src" path="resources/impl-rest"/>
 	<classpathentry kind="src" path="src/impl-rest"/>
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
