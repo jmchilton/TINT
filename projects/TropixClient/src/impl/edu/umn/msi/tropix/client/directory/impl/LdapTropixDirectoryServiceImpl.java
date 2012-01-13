@@ -18,7 +18,6 @@ import javax.naming.directory.SearchResult;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.client.credential.ConfiguredSslSocketFactory;
@@ -34,7 +33,7 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
   private String userEmailLabel;
   private String gridIdPrefix;
   private Iterable<String> ignoreIds;
-  
+
   public void setIgnoreIds(final Iterable<String> ignoreIds) {
     this.ignoreIds = ignoreIds;
   }
@@ -53,18 +52,18 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
     try {
       DirContext ctx = new InitialDirContext(env);
 
-      //Attributes attrs = ctx.getAttributes("cn=chilton, ou=people, ou=internal, dc=DTC");
-      //NamingEnumeration<? extends Attribute> enumeration = attrs.getAll();
-      //while(enumeration.hasMore()) {
+      // Attributes attrs = ctx.getAttributes("cn=chilton, ou=people, ou=internal, dc=DTC");
+      // NamingEnumeration<? extends Attribute> enumeration = attrs.getAll();
+      // while(enumeration.hasMore()) {
       // Attribute attribute = enumeration.next();
-      //  System.out.println("Attribute: " + attribute.getID());
-      //}
-      
+      // System.out.println("Attribute: " + attribute.getID());
+      // }
+
       SearchControls ctls = new SearchControls();
       ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
       String filter = getFilter();
       NamingEnumeration<SearchResult> answer = ctx.search(ldapBase, filter, ctls);
-      //boolean firstAttribute = true;
+      // boolean firstAttribute = true;
       final Set<String> ignoreIds = Sets.newHashSet(this.ignoreIds);
       while(answer.hasMore()) {
 
@@ -73,20 +72,18 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
         if(attributes == null) {
           continue;
         }
-      
-        
+
+        final String userId = attributes.get(userIdLabel).get().toString();
         /*
-        if(firstAttribute) {
-          NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
-          while(enumeration.hasMore()) {
-            Attribute attribute = enumeration.next();
-            System.out.println("Attribute: " + attribute.getID());
-          }
-          firstAttribute = false;
-        }
-        System.out.println(attributes.get("mail").get());
-        */
-        String userId = attributes.get(userIdLabel).get().toString();
+         * if(userId.contains("XXXX")) {
+         * NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
+         * while(enumeration.hasMore()) {
+         * Attribute attribute = enumeration.next();
+         * System.out.println("Attribute " + attribute.getID() + " value " + attribute.get().toString());
+         * }
+         * }
+         */
+
         if(ignoreIds.contains(userId)) {
           continue;
         }
@@ -110,7 +107,7 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
       throw new IllegalStateException("Failed to fetch list of users", t);
     }
   }
-  
+
   /**
    * Custom truststore for interacting with directory service.
    * 
@@ -157,5 +154,5 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
       this.filter = filter;
     }
   }
-  
+
 }

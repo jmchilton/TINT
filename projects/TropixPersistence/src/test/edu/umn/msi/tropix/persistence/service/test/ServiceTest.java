@@ -151,22 +151,25 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return group;
   }
 
-  protected Group createTempGroup(final User user, final boolean primary) {
+  protected Group createTempGroup(final boolean primary, final User... users) {
     final Group group = createTempGroup();
-    group.getUsers().add(user);
-    user.getGroups().add(group);
+    for(final User user : users) {
+      group.getUsers().add(user);
+      user.getGroups().add(group);
+    }
     group.setSharedFolders(Sets.<VirtualFolder>newHashSet());
     daoFactory.getDao(Group.class).saveObject(group);
-    if(primary) {
-      user.setPrimaryGroup(group);
+    for(final User user : users) {
+      if(primary) {
+        user.setPrimaryGroup(group);
+      }
+      userDao.saveOrUpdateUser(user);
     }
-    userDao.saveOrUpdateUser(user);
     return group;
-
   }
 
-  protected Group createTempGroup(final User user) {
-    return createTempGroup(user, false);
+  protected Group createTempGroup(final User... users) {
+    return createTempGroup(false, users);
   }
 
   protected TropixObject saveNewTropixObject(final TropixObject tropixObject) {
@@ -201,10 +204,8 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return provider;
   }
 
-  protected Folder createTempGroupFolder(final User user, final String name) {
-    final User owner = createTempUser();
-
-    final Group group = createTempGroup(user);
+  protected Folder createTempGroupFolder(final User user, final User owner, final String name) {
+    final Group group = createTempGroup(owner, user);
 
     final Folder folder = newFolder();
     saveWithName(folder, name, owner);
@@ -216,6 +217,12 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     saveProvider(provider);
 
     return folder;
+
+  }
+
+  protected Folder createTempGroupFolder(final User user, final String name) {
+    final User owner = createTempUser();
+    return createTempGroupFolder(user, owner, name);
   }
 
   protected void initTempRequest(final Request request) {
@@ -491,8 +498,13 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
   }
 
   protected <T extends TropixObject> T saveToParent(final T object, final Folder parent, final User owner) {
-    saveNewCommitted(object, owner);
+    final T savedObject = saveToParentObject(object, parent, owner);
     getTropixObjectDao().addToFolder(parent.getId(), object.getId());
+    return savedObject;
+  }
+
+  protected <T extends TropixObject> T saveToParentObject(final T object, final TropixObject parent, final User owner) {
+    saveNewCommitted(object, owner);
     getTropixObjectDao().addPermissionParent(object.getId(), parent.getId());
     return object;
   }

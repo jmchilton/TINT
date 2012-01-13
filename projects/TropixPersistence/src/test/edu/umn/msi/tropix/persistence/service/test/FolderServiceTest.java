@@ -103,7 +103,7 @@ public class FolderServiceTest extends ServiceTest {
   @Test
   public void createGroupSharedFolder() {
     final User user = createTempUser();
-    final Group group = createTempGroup(user, true);
+    final Group group = createTempGroup(true, user);
 
     VirtualFolder root = getInputVirtualFolder();
     root = folderService.createGroupVirtualFolder(user.getCagridId(), group.getId(), root);

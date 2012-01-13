@@ -169,8 +169,16 @@ public abstract class ServiceBase {
 
   protected void saveNewObjectWithParent(final TropixObject object, final String userId, @Nonnull final String parentId) {
     initAndSaveObject(object);
-    final String objectId = object.getId();
+    setupParent(parentId, object);
+  }
+
+  protected void setupParent(final String parentId, final TropixObject object) {
     tropixObjectDao.addPermissionParent(object.getId(), parentId);
+    copyParentPermissions(parentId, object);
+  }
+
+  protected void copyParentPermissions(final String parentId, final TropixObject object) {
+    final String objectId = object.getId();
     final User destinationOwner = tropixObjectDao.getOwner(parentId);
     if(destinationOwner != null) {
       tropixObjectDao.setOwner(objectId, destinationOwner);
@@ -206,11 +214,7 @@ public abstract class ServiceBase {
     if(folderId != null) {
       final String objectId = object.getId();
       tropixObjectDao.addToFolder(folderId, objectId);
-      tropixObjectDao.addPermissionParent(objectId, folderId);
-      final User owner = tropixObjectDao.getOwner(folderId);
-      tropixObjectDao.setOwner(objectId, owner);
-      final Provider provider = providerDao.getObjectsProvider(folderId);
-      saveToProvider(provider, object);
+      setupParent(folderId, object);
     }
     if(destination instanceof Request) {
       final Request request = (Request) destination;

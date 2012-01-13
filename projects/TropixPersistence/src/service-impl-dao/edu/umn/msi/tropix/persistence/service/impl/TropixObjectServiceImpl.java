@@ -140,21 +140,51 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
 
   public void move(final String cagridId, final String objectId, final String folderId) {
     final TropixObject object = getTropixObjectDao().loadTropixObject(objectId, TropixObject.class);
-    if(getTropixObjectDao().loadTropixObject(objectId, TropixObject.class).getParentFolder() == null) {
+    final Folder objectParentFolder = getTropixObjectDao().loadTropixObject(objectId, TropixObject.class).getParentFolder();
+    if(objectParentFolder == null) {
       throw new IllegalArgumentException("Attempted to move a users home folder or an object not currently in the folder hierarchy.");
     }
-    if(object instanceof Folder) {
-      Folder destAncestor = getTropixObjectDao().loadTropixObject(folderId, Folder.class);
-      while(destAncestor != null) {
-        if(destAncestor.getId().equals(objectId)) {
+    Folder objectAncestor = objectParentFolder;
+    while(objectAncestor.getParentFolder() != null) {
+      objectAncestor = objectAncestor.getParentFolder();
+    }
+    Folder folderDestinationAncestor = getTropixObjectDao().loadTropixObject(folderId, Folder.class);
+    while(folderDestinationAncestor.getParentFolder() != null) {
+      if(folderDestinationAncestor.getId().equals(objectId)) {
+        if(object instanceof Folder) {
           throw new IllegalArgumentException("Attempted to move a folder into a child folder");
         }
-        destAncestor = destAncestor.getParentFolder();
       }
+      folderDestinationAncestor = folderDestinationAncestor.getParentFolder();
     }
-    getTropixObjectDao().removePermissionParent(objectId, getTropixObjectDao().loadTropixObject(objectId).getParentFolder().getId());
+    if(objectAncestor.getId().equals(folderDestinationAncestor.getId())) {
+      changeParentFolder(objectId, folderId);
+    } else {
+      if(!objectAncestor.getId().equals(getUserDao().loadUser(cagridId).getHomeFolder().getId())) {
+        throw new IllegalArgumentException("Attempt to move an object outside a user's home directory into a group folder, this is not implemented.");
+      }
+      moveToGroupFolder(cagridId, objectId, folderId);
+    }
+  }
+
+  private void moveToGroupFolder(String cagridId, String objectId, String folderId) {
+    TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new DropOwnerPermission(cagridId));
+    changeParentFolder(objectId, folderId);
+    TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new CopyOwnerPermission(folderId));
+  }
+
+  private void changeParentFolder(final String objectId, final String folderId) {
+    removeParentFolderPermissionParent(objectId);
     getTropixObjectDao().move(objectId, folderId);
+    addParentFolderPermissionParent(objectId, folderId);
+  }
+
+  private void addParentFolderPermissionParent(final String objectId, final String folderId) {
     getTropixObjectDao().addPermissionParent(objectId, folderId);
+  }
+
+  private void removeParentFolderPermissionParent(final String objectId) {
+    getTropixObjectDao().removePermissionParent(objectId, getTropixObjectDao().loadTropixObject(objectId).getParentFolder().getId());
   }
 
   public TropixObject[] getAssociations(final String cagridId, final String objectId, final String associationName) {
@@ -423,6 +453,41 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     }
   }
 
+  class CopyOwnerPermission implements Closure<TropixObject> {
+    private final String folderId;
+
+    public CopyOwnerPermission(final String folderId) {
+      this.folderId = folderId;
+    }
+
+    public void apply(TropixObject input) {
+      copyParentPermissions(folderId, input);
+    }
+
+  }
+
+  class DropOwnerPermission implements Closure<TropixObject> {
+    private final String userId;
+
+    public DropOwnerPermission(final String userId) {
+      super();
+      this.userId = userId;
+    }
+
+    public void apply(final TropixObject object) {
+      final DirectPermission role = getTropixObjectDao().getUserDirectRole(userId, object.getId());
+      if(role.getRole().equals("owner")) {
+        getRoleDao().delete(role.getId());
+      }
+    }
+
+  }
+
+  private Dao<DirectPermission> getRoleDao() {
+    final Dao<DirectPermission> roleDao = getDaoFactory().getDao(DirectPermission.class);
+    return roleDao;
+  }
+
   class RemovePermissionForUser implements Closure<TropixObject> {
     private String userId;
     private PermissionType permissionType;
@@ -437,8 +502,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
       if(role == null) {
         return;
       } else if(permissionType.equals(PermissionType.Read)) {
-        final Dao<DirectPermission> roleDao = getDaoFactory().getDao(DirectPermission.class);
-        roleDao.delete(role.getId());
+        getRoleDao().delete(role.getId());
       } else {
         if(!role.getRole().equals("read")) {
           role.setRole("read");
