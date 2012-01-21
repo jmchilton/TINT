@@ -1,6 +1,7 @@
 package edu.umn.msi.tropix.storage.service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,7 @@ public class ServerTest extends FreshConfigTest {
   @Inject 
   private StorageServiceFactory storageServiceFactory;
     
-  private boolean secure = true;
+  private boolean secure = false;
 
   @Override
   protected void initializeConfigDir(final ConfigDirBuilder builder) {
@@ -102,7 +103,8 @@ public class ServerTest extends FreshConfigTest {
     //bean.setConduitSelector(new UpfrontConduitSelector(conduit));
     //final WebClient wc = bean.createWebClient();
     
-    testI.getData("User", "MooCow");    
+    final String dataId = UUID.randomUUID().toString();
+    testI.getData("User", dataId);    
   }
     
 }

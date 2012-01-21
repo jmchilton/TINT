@@ -36,7 +36,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.mortbay.jetty.handler.AbstractHandler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;
@@ -47,7 +48,6 @@ import edu.umn.msi.tropix.common.io.InputContexts;
 
 public class JettyServerTest {
 
-
   //  private static final MultiThreadedHttpConnectionManager HTTP_CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
   //  private static final HttpClient HTTP_CLIENT = new HttpClient(HTTP_CONNECTION_MANAGER);
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
@@ -55,7 +55,7 @@ public class JettyServerTest {
   private class TestHandlerImpl extends AbstractHandler {
     private final List<byte[]> inputs = Lists.newArrayList();
 
-    public void handle(final String arg0, final HttpServletRequest request, final HttpServletResponse response, final int arg3) throws IOException, ServletException {
+    public void handle(final String arg0, final Request jettyRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       IO_UTILS.copy(request.getInputStream(), outputStream);
       inputs.add(outputStream.toByteArray());

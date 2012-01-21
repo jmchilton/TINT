@@ -28,7 +28,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mortbay.jetty.handler.AbstractHandler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.springframework.web.servlet.mvc.Controller;
 
 /**
@@ -44,7 +45,7 @@ public class ControllerHandlerImpl extends AbstractHandler {
     this.controller = controller;
   }
 
-  public void handle(final String ticket, final HttpServletRequest request, final HttpServletResponse response, final int dispatch) throws IOException, ServletException {
+  public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
     try {
       controller.handleRequest(request, response);
     } catch(final IOException e) {

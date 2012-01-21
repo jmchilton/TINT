@@ -17,6 +17,7 @@ public class StorageServiceImpl implements StorageService {
 
   @Inject
   public StorageServiceImpl(final StorageManager storageManager, @Named("httpStorageFileMapper") final FileMapper fileMapper) {
+    System.out.println("Constructing StorageServiceImpl");
     this.storageManager = storageManager;
     this.fileMapper = fileMapper;
   }

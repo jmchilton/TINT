@@ -18,14 +18,14 @@
             http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
   <context:annotation-config/> 
-  
+
   <!-- Load Storage Manager -->
   <import resource="classpath:edu/umn/msi/tropix/storage/core/context.xml" />
-
+  
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
     <property name="properties">  
       <props>  
-        <prop key="service.address">https://localhost:9001/tint</prop>
+        <!-- <prop key="service.address">https://localhost:9001/tint</prop>  -->
         <prop key="storage.service.enable">false</prop>
         <prop key="storage.service.secure">false</prop>        
         <prop key="storage.service.https.port">8743</prop>
@@ -40,12 +40,10 @@
     <property name="ignoreResourceNotFound" value="true" />
     <property name="ignoreUnresolvablePlaceholders" value="true" />
   </bean>
+  
 
   <import resource="classpath:META-INF/cxf/cxf.xml" />
   <context:component-scan base-package="edu.umn.msi.tropix.storage.service.impl" />
   <import resource="classpath:edu/umn/msi/tropix/storage/core/mapperContext.xml" />
-
-  <!-- <import resource="client/context.xml" /> -->
-  <!-- <import resource="impl/context.xml" />   -->
 
 </beans>

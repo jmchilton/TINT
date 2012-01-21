@@ -35,9 +35,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.jmchilton.concurrent.CountDownLatch;
 
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.AbstractHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.springframework.util.DigestUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -204,7 +205,7 @@ public class HttpTransferClientsTest {
   private static class TestHandlerImpl extends AbstractHandler {
     private final List<byte[]> inputs = Lists.newArrayList();
 
-    public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response, final int action) throws IOException, ServletException {
+    public void handle(final String target, final Request jettyRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       IO_UTILS.copy(request.getInputStream(), outputStream);
       inputs.add(outputStream.toByteArray());
@@ -217,7 +218,7 @@ public class HttpTransferClientsTest {
   private static class ExceptionHandlerImpl extends AbstractHandler {
     private Exception e;
     
-    public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response, final int dispatch) throws IOException, ServletException {
+    public void handle(final String target,  final Request jettyRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
       try {
         final InputStream stream = request.getInputStream();
         InputContexts.getAsByteArray(InputContexts.forInputStream(stream));
@@ -231,7 +232,7 @@ public class HttpTransferClientsTest {
 
   private static class ServletExceptionHandlerImpl extends AbstractHandler {
 
-    public void handle(final String target, final HttpServletRequest request, final HttpServletResponse response, final int action) throws ServletException {
+    public void handle(final String target, final Request jettyRequest, final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
       throw new ServletException();
     }
 
