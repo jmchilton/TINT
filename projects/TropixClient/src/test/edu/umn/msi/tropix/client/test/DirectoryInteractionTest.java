@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 
-@ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/client/test/testApplicationContext.xml")
+@ContextConfiguration(locations = "classpath:edu/umn/msi/tropix/client/directory/testContext.xml")
 public class DirectoryInteractionTest extends AbstractTestNGSpringContextTests {
 
   @Resource
@@ -28,7 +28,6 @@ public class DirectoryInteractionTest extends AbstractTestNGSpringContextTests {
       if(person.getCagridIdentity().contains("chilton")) {
         System.out.println(person.getCagridIdentity());
       }
-      //
     }
     System.out.println("/Persons" + count);
 

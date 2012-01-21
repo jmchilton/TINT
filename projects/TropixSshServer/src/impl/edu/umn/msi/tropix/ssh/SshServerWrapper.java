@@ -22,31 +22,32 @@ import com.google.common.collect.Lists;
 public class SshServerWrapper {
   public static final int DEFAULT_PORT = 8021;
   private static final Log LOG = LogFactory.getLog(SshServerWrapper.class);
-  private final PasswordAuthenticator passwordAuthenticator; 
+  private final PasswordAuthenticator passwordAuthenticator;
   private final FileSystemFactory fileSystemFactory;
   private final boolean useCustomSftpSubsystem = true;
 
   private final SshServer wrappedServer;
-  
+
   private static final class ScpCommandFactoryWrapper extends ScpCommandFactory {
-    
+
     @Override
     public Command createCommand(final String command) {
       LOG.debug(String.format("Creating SCP command object for string [%s]", command));
       return super.createCommand(command);
     }
-    
+
   }
 
   @Inject
   public SshServerWrapper(final PasswordAuthenticator passwordAuthenticator,
-                          final FileSystemFactory fileSystemFactory,
-                          final KeyPairProvider keyPairProvider,
-                          @Value("${ssh.port}") final Integer port) {
+      final FileSystemFactory fileSystemFactory,
+      final KeyPairProvider keyPairProvider,
+      @Value("${ssh.port}") final Integer port) {
     this.passwordAuthenticator = passwordAuthenticator;
     this.fileSystemFactory = fileSystemFactory;
-    
+
     wrappedServer = SshServer.setUpDefaultServer();
+
     final NamedFactory<Command> sftpCommand;
     if(useCustomSftpSubsystem) {
       sftpCommand = new SftpSubsystem.Factory();
@@ -55,7 +56,7 @@ public class SshServerWrapper {
     }
 
     wrappedServer.setSubsystemFactories(Lists.<NamedFactory<Command>>newArrayList(sftpCommand));
-    //final KeyPairProvider keyPair = new SimpleGeneratorHostKeyProvider();
+    // final KeyPairProvider keyPair = new SimpleGeneratorHostKeyProvider();
     wrappedServer.setKeyPairProvider(keyPairProvider);
     wrappedServer.setCommandFactory(new ScpCommandFactoryWrapper());
     wrappedServer.setPort(port);

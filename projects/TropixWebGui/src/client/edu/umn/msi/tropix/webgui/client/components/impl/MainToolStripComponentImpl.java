@@ -82,7 +82,7 @@ import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.services.session.Module;
 
 public class MainToolStripComponentImpl implements MainToolStripComponent, Listener<NavigationSelection> {
-  private static final boolean ENABLE_DB_CURATOR = false;
+  private static final boolean ENABLE_DB_CURATOR = true;
   private static final MenuItemSeparator SEPARATOR = new MenuItemSeparator();
   private ModuleManager moduleManager;
   private Collection<TreeItem> treeItem = new ArrayList<TreeItem>(0);

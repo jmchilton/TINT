@@ -25,8 +25,6 @@
       <exclude org="org.slf4j" />
     </dependency>
     <dependency org="org.apache.mina" name="mina-core" rev="2.0.4" conf="default->runtime" />
-
-    <!-- <dependency org="org.apache.sshd" name="apache-sshd" rev="0.6.0-SNAPSHOT" />-->
     <dependency org="com.jcraft" name="jsch" rev="0.1.44-1" />
     <dependency org="org.syslog4j" name="syslog4j" rev="0.9.30" />    
   </dependencies>  

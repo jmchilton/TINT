@@ -29,7 +29,6 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
   <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
     <property name="properties">
       <map>
-        <entry key="person.source" value="local" />
         <!-- Make sure proxy.lifetime - 2 * (delegated.credential.lifetime - delegation.lifetime) - estimatedMaxJobWaitTime >= login.timeout -->
         <entry key="proxy.lifetime" value="43200" />
         <entry key="delegated.credential.lifetime" value="3600" />
@@ -42,30 +41,10 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <entry key="admin.only" value="false" />
         <entry key="blocked.service.urls" value="" />
         <entry key="local.catalog.host" value="http://localhost:8080/" />
-        <entry key="user.iterable.cache" value="false" />
-        <entry key="user.map.concurrency" value="10" />
         <entry key="modules" value="BASE, SHARING, LOCAL_SEARCH, PROTIP, GALAXY" />
-        <entry key="ldap.truststore" value="" />        
-        <entry key="ldap.institution.name" value="LDAP" />
-        <entry key="ldap.id.prefix" value="" />
-        <entry key="ldap.url" value="" />
-        <entry key="ldap.email.label" value="" />
-        <entry key="ldap.firstname.label" value="" />
-        <entry key="ldap.userid.label" value="" />
-        <entry key="ldap.lastname.label" value="" />
-        <entry key="ldap.filter" value="" />
-        <entry key="ldap.ignore.ids" value="" />        
       </map>
     </property>
   </bean>    
-
-  <!-- Define directory services -->
-  <gc:properties-to-map id="directoryServices" lazy-init="true">
-    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-      <property name="location" value="file:${tropix.client.config.dir}/directory-services.properties" />
-      <property name="ignoreResourceNotFound" value="true" />
-    </bean>    
-  </gc:properties-to-map>
 
   <gc:properties-to-map id="catalogToRequestMap" lazy-init="true">
     <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -84,6 +63,7 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
   <import resource="classpath:edu/umn/msi/tropix/client/metadata/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/client/authentication/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/client/request/actions/context.xml" />
+  <import resource="classpath:edu/umn/msi/tropix/client/directory/context.xml" />
   <import resource="classpath:edu/umn/msi/tropix/grid/impl/gridContext.xml" />
   
   <bean id="requestManager" class="edu.umn.msi.tropix.client.request.impl.RequestManagerImpl" scope="singleton">
@@ -106,90 +86,6 @@ http://jmchilton.net/spring/collect/google http://jmchilton.net/spring/collect/g
         <property name="requestService" ref="requestService" />
       </bean>
     </property>    
-  </bean>
-
-   <bean id="cachedUserIterableLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton">
-    <property name="haltOnException" value="false" />
-    <property name="waitTime" value="600" />
-    <property name="waitTimeUnitAsString" value="SECONDS" />
-  </bean>
-
-  <bean id="cachedUserIterableLoopingRunnableSupplier" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableSupplierImpl">
-    <property name="loopingRunnableConfig" ref="cachedUserIterableLoopingConfig" />
-  </bean>
-
-  <bean id="cachedGridUserIterable" class="edu.umn.msi.tropix.common.concurrent.impl.CachedIterableImpl" scope="singleton">
-    <property name="baseIterable" ref="userIterable" />
-    <property name="executor" ref="executorService" />
-    <property name="loopingRunnableSupplier" ref="cachedUserIterableLoopingRunnableSupplier" />
-    <property name="cache" value="${user.iterable.cache}" />
-  </bean>
-
-  <bean id="gridUserMap" class="java.util.concurrent.ConcurrentHashMap" scope="singleton">
-    <constructor-arg value="${user.map.concurrency}" />
-  </bean>
-  
-  <bean id="gridUserFunction" class="edu.umn.msi.tropix.client.directory.impl.GridUserFunctionImpl">
-    <constructor-arg ref="gridUserMap" />
-    <constructor-arg ref="userIterable" />
-  </bean>
-
-<!--   
-  <gc:map-to-function id="gridUserFunction">
-    <ref bean="gridUserMap" />
-  </gc:map-to-function>
- -->  
-  
-  <bean id="directoryServicePersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.CaGridTropixDirectoryServicePersonSupplierImpl">
-    <property name="institutionToServiceAddressMap" ref="directoryServices" />
-    <property name="proxySupplier" ref="hostProxySupplier" />
-    <property name="serviceFactory"> 
-      <bean parent="gridServiceFactory">
-        <constructor-arg value="info.minnesotapartnership.tropix.directory.cagrid.client.TropixDirectoryServiceInterfacesClient" />
-      </bean>
-    </property>
-  </bean>
-  
-  <bean id="ldapPersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.MapTropixDirectoryServicePersonSupplierImpl">
-    <property name="institutionToServiceAddressMap">
-      <map>
-        <entry key="${ldap.institution.name}" value="local://ldap" />
-      </map>
-    </property>
-    <property name="serviceMap">
-      <map>
-        <entry key="local://ldap" value-ref="ldapDirectoryService" />
-      </map>
-    </property>
-  </bean>
-  
-  <bean id="ldapDirectoryService" class="edu.umn.msi.tropix.client.directory.impl.LdapTropixDirectoryServiceImpl">
-    <property name="gridIdPrefix" value="${ldap.id.prefix}" /> <!--  /C=US/O=UMN/OU=MSI/OU=caGrid/OU=Users/OU=MSI AuthnSvc IdP/CN -->
-
-    <property name="ldapBase" value="${ldap.base}" /> <!--  value="ou=people, ou=internal, dc=DTC" -->
-    <property name="ldapUrl" value="${ldap.url}" /> <!-- ldaps://owl.msi.umn.edu:636" -->
-
-    <property name="userEmailLabel" value="${ldap.email.label}" /> <!--  value="mail"  -->
-    <property name="userFirstNameLabel" value="${ldap.firstname.label}" /> <!-- value="givenName" /> -->
-    <property name="userIdLabel" value="${ldap.userid.label}" /> <!--  value="cn" /> -->
-    <property name="userLastNameLabel" value="${ldap.lastname.label}" /> <!--  value="sn" /> -->
-    <property name="truststorePath" value="${ldap.truststore}" />
-    <property name="filter" value="${ldap.filter}" /> <!-- value="(&amp;(cn=*)(pwdChangedTime&gt;=20080912000000Z))" /> -->
-    <property name="ignoreIds">
-      <bean class="edu.umn.msi.tropix.common.collect.spring.JmxStringIterable">
-        <property name="contents" value="${ldap.ignore.ids}" />
-      </bean>
-    </property>    
-  </bean>
-
-  <bean id="localPersonSupplier" class="edu.umn.msi.tropix.client.directory.impl.LocalPersonSupplierImpl">
-    <property name="institution" value="Local" />
-    <property name="userService" ref="userService" />
-  </bean>
-  
-  <bean id="userIterable" class="edu.umn.msi.tropix.client.directory.impl.UserIterableImpl">
-    <property name="personSupplier" ref="${person.source}PersonSupplier" />
-    <property name="gridUserMap" ref="gridUserMap" />
   </bean>
  
   <bean id="cachedIndexServiceUrlSupplierLoopingConfig" class="edu.umn.msi.tropix.common.concurrent.impl.LoopingRunnableConfig" scope="singleton">

@@ -14,13 +14,13 @@ public class DaoTest extends FreshConfigTest {
 
   @Inject
   private DatabasePlaceholder databasePopulator;
-  
+
   @Inject
   private CurationDao curationDao;
-  
+
   @Test(groups = "spring")
   public void testDaoOperations() {
-    
+
   }
-  
+
 }

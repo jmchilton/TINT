@@ -74,15 +74,14 @@ public class LdapTropixDirectoryServiceImpl implements TropixDirectoryService {
         }
 
         final String userId = attributes.get(userIdLabel).get().toString();
-        /*
-         * if(userId.contains("XXXX")) {
-         * NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
-         * while(enumeration.hasMore()) {
-         * Attribute attribute = enumeration.next();
-         * System.out.println("Attribute " + attribute.getID() + " value " + attribute.get().toString());
-         * }
-         * }
-         */
+
+        // if(userId.contains("posokho0")) {
+        // NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
+        // while(enumeration.hasMore()) {
+        // Attribute attribute = enumeration.next();
+        // System.out.println("Attribute " + attribute.getID() + " value " + attribute.get().toString());
+        // }
+        // }
 
         if(ignoreIds.contains(userId)) {
           continue;

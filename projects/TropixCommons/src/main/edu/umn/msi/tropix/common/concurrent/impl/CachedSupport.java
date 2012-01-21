@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.common.concurrent.impl;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 
@@ -46,9 +47,14 @@ abstract class CachedSupport<T> {
   private Supplier<LoopingRunnable> loopingRunnableSupplier;
   private Executor executor;
   private boolean cache = true;
+  private boolean cacheDuringInitialization = true;
 
   public void setCache(final boolean cache) {
     this.cache = cache;
+  }
+
+  public void setCacheDuringInitialization(final boolean cacheDuringInitialization) {
+    this.cacheDuringInitialization = cacheDuringInitialization;
   }
 
   private void setupCachingLoop() {
@@ -74,7 +80,17 @@ abstract class CachedSupport<T> {
   @PostConstruct
   public void init() {
     if(cache) {
-      setupCachingLoop();
+      if(cacheDuringInitialization) {
+        setupCachingLoop();
+      } else {
+        // Avoid bug in spring by letting init() finish before setupCachingLoop needs to.
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+          public void run() {
+            setupCachingLoop();
+          }
+        });
+
+      }
     }
   }
 

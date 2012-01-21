@@ -16,7 +16,7 @@ public class SystemLoggerSupplierImpl implements Supplier<SyslogIF> {
   private String protocol = "authudp";
   private String facility = "auth";
   private String host = "0.0.0.0";
- 
+
   @Inject
   public void setEnableSyslog(@Value("#{${ssh.use.syslog}?:false}") final boolean enableSyslog) {
     this.enableSyslog = enableSyslog;

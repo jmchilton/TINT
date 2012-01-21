@@ -883,7 +883,7 @@ public class SftpSubsystem implements Command, Runnable, SessionAware, FileSyste
         int atime = buffer.getInt();
         int mtime = buffer.getInt();
         long modifiedTime = mtime * 1000L;
-        log.error(String.format("Version: %d atime: %d mtime: %d", version, atime, mtime));
+        //log.error(String.format("Version: %d atime: %d mtime: %d", version, atime, mtime));
         file.setLastModified(modifiedTime);
       }
       
