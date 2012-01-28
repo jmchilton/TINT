@@ -32,6 +32,7 @@
       <pathelement path="${resources.dir}/impl" />
       <pathelement path="${resources.dir}/impl-http-transfer" />
       <pathelement path="${resources.dir}/impl-cagrid-service" />
+      <pathelement path="${resources.dir}/impl-rest" />
       <pathelement path="${resources.dir}/test" />
       <path refid="compile.classpath" />
     </path>

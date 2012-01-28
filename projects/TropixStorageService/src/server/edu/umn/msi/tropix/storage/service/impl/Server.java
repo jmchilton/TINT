@@ -53,7 +53,9 @@ public class Server {
   
   @PostConstruct
   public void init() {
-    LOG.debug(String.format("Enable storage service - %b", enable)); 
+    final String logMessage = String.format("Enable storage service - %b", enable);
+    LOG.debug(logMessage);
+    System.out.println(logMessage);
     if(enable) {
       startServer();
     }
@@ -74,7 +76,7 @@ public class Server {
     final int port = getPort();
     String schema = getSchema();
     final String address = String.format("%s://%s:%s/", schema, host, port);
-    LOG.info(String.format("Starting storage service wit address [%s]", address));
+    LOG.info(String.format("Starting storage service with address [%s]", address));
     sf.setAddress(address);
     sf.create();
   }

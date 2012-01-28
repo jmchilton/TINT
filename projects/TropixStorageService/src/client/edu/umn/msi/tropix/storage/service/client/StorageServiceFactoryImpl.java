@@ -10,7 +10,6 @@ import edu.umn.msi.tropix.storage.service.StorageService;
 public class StorageServiceFactoryImpl implements StorageServiceFactory {
 
   public StorageServiceFactoryImpl() {
-    System.out.println("Constructing");
   }
   
   public StorageService get(final String address) {

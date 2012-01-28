@@ -30,8 +30,8 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
 
 import edu.umn.msi.tropix.common.shutdown.ShutdownAware;
 

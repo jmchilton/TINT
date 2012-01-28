@@ -45,7 +45,7 @@ public class ControllerHandlerImplTest {
 
     EasyMock.expect(controller.handleRequest(request, response)).andReturn(null);
     EasyMock.replay(controller);
-    handler.handle("123", request, response, 5);
+    handler.handle("123", null, request, response);
     EasyMockUtils.verifyAndReset(controller);
   }
 
@@ -61,7 +61,7 @@ public class ControllerHandlerImplTest {
     EasyMock.replay(controller);
     ServletException se = null;
     try {
-      handler.handle("123", request, response, 5);
+      handler.handle("123", null, request, response);
     } catch(final ServletException ise) {
       se = ise;
     }
@@ -73,7 +73,7 @@ public class ControllerHandlerImplTest {
     EasyMock.replay(controller);
     IOException caughtIoe = null;
     try {
-      handler.handle("123", request, response, 5);
+      handler.handle("123", null, request, response);
     } catch(final IOException iioe) {
       caughtIoe = iioe;
     }

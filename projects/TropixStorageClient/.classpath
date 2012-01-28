@@ -8,6 +8,7 @@
 	<classpathentry kind="src" path="resources/impl-cagrid-service"/>
 	<classpathentry kind="src" path="src/impl-cagrid-service"/>
 	<classpathentry kind="src" path="src/impl-rest"/>
+	<classpathentry kind="src" path="resources/impl-rest" />
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="GLOBUS_LOCATION/lib/addressing-1.0.jar"/>
