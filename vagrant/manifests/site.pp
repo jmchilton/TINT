@@ -46,6 +46,15 @@ class tint_ssh_server {
 
 }
 
+class tint_storage_server {
+  include tint_base
+  include tint_metadata
+
+  tomcat::deployment { 'tint-storage' :
+
+  }
+}
+
 class tint_webapp {
   include tint_base
   include tint_metadata
@@ -63,5 +72,6 @@ node "sshserver" {
 
 node "webapp" {
   include tint_metadata_server
+  include tint_activemq_server
   include tint_webapp
 }

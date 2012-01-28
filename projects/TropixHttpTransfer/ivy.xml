@@ -28,7 +28,8 @@
             
     <!-- TODO: Rev to 4.1.2 -->
     <dependency rev="4.0.3" org="org.apache.httpcomponents" name="httpclient" conf="client->default" />
-    <dependency org="org.mortbay.jetty" name="jetty" rev="${jetty.version}" conf="embedded->default" />
+    <!-- <dependency org="org.mortbay.jetty" name="jetty" rev="${jetty.version}" conf="embedded->default" /> -->
+    <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}" conf="embedded->runtime,master" />
   </dependencies>  
 
 </ivy-module> 
