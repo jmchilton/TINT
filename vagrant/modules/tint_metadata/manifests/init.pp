@@ -1,6 +1,12 @@
 class tint_metadata {
+  include tint_config
+  include tint_metadata::params
 
-  notice("Setting up metadata")
+  file { "$tint_metadata::params::tint_metadata_config_dir":
+    owner => $tint_config::params::web_user,
+    mode => '700',
+    ensure => 'directory',
+  }
 
   mysql::createuser { 'create_tint_user':
     db_user => 'tint',
@@ -13,8 +19,8 @@ class tint_metadata {
     db_pass => 'qs3Dd!moc$'
   }
 
-  file { "/usr/share/tomcat6/.tropix/metadata/deploy.properties":
-    owner => 'tomcat6',
+  file { "$tint_metadata::params::tint_metadata_config_dir/deploy.properties":
+    owner => $tint_config::params::web_user,
     mode => '700',
     content => template('tint_metadata/deploy.properties.erb'),
     require => Package['tomcat6-user']

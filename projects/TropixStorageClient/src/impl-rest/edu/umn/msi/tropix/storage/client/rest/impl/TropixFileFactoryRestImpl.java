@@ -2,6 +2,7 @@ package edu.umn.msi.tropix.storage.client.rest.impl;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import edu.umn.msi.tropix.common.io.InputContext;
 import edu.umn.msi.tropix.common.io.OutputContext;
@@ -16,7 +17,7 @@ import edu.umn.msi.tropix.storage.service.client.StorageServiceFactory;
 import edu.umn.msi.tropix.transfer.types.HttpTransferResource;
 import edu.umn.msi.tropix.transfer.types.TransferResource;
 
-@ManagedBean
+@ManagedBean @Named("restTropixFileFactory")
 public class TropixFileFactoryRestImpl implements TropixFileFactory {
   private final StorageServiceFactory storageServiceFactory;
   private final TransferResourceContextFactory contextFactory;

@@ -1,4 +1,5 @@
 class tomcat {
+  include tomcat::params
 
   notice("Establishing http://$hostname:$tomcat_port/")
 
@@ -24,8 +25,15 @@ class tomcat {
     content => template('tomcat/tomcat-users.xml.erb')
   }
 
+  file { "/etc/default/tomcat6":
+    owner => 'root',
+    mode => '644',
+    notify => Service['tomcat6'],
+    content => template('tomcat/tomcat6_environment.sh.erb')
+  }
+
   file { "/usr/share/tomcat6/":
-    owner => 'tomcat6',
+    owner => $tomcat::params::web_user,
     mode => '700'
   }
 

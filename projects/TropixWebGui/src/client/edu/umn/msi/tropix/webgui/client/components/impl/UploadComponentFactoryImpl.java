@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.webgui.client.components.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -66,15 +67,25 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.tree.TreeGrid;
 
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.webgui.client.Resources;
 import edu.umn.msi.tropix.webgui.client.Session;
 import edu.umn.msi.tropix.webgui.client.components.DynamicUploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponent;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
+import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
+import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
+import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
+import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
+import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
 import edu.umn.msi.tropix.webgui.client.utils.FlashUtils;
 import edu.umn.msi.tropix.webgui.client.utils.JObject;
+import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.Lists;
+import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.CanvasWithOpsLayout;
 import edu.umn.msi.tropix.webgui.client.widgets.ClientListGrid;
 import edu.umn.msi.tropix.webgui.client.widgets.Form;
@@ -85,10 +96,22 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
   private static boolean debug = false;
   private static int componentCount = 0;
   private Session session;
-
+  private LocationFactory locationFactory;
+  private TreeComponentFactory treeComponentFactory;
+  
   @Inject
   public void setSession(final Session session) {
     this.session = session;
+  }
+  
+  @Inject
+  public void setLocationFactory(final LocationFactory locationFactory) {
+    this.locationFactory = locationFactory;
+  }
+  
+  @Inject
+  public void setTreeComponentFactory(final TreeComponentFactory treeComponentFactory) {
+    this.treeComponentFactory = treeComponentFactory;
   }
 
   private static String getUniqueId() {
@@ -100,6 +123,72 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
     canvas.setWidth100();
     canvas.setHeight100();
     return canvas;
+  }
+    
+  private class FileLocationComponentImpl extends WidgetSupplierImpl<Canvas> implements UploadComponent {
+    private TreeComponent treeComponent;
+    private UploadComponentOptions options;
+    
+    FileLocationComponentImpl(final UploadComponentOptions uploadOptions) {
+      this.options = uploadOptions;
+      final TreeOptions treeOptions = new TreeOptions();
+      final String extension = uploadOptions.getExtension();
+      treeOptions.setSelectionType(uploadOptions.isAllowMultiple() ? SelectionType.MULTIPlE : SelectionType.SINGLE);
+      treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(null));
+      treeOptions.setShowPredicate(LocationPredicates.getTropixFileTreeItemPredicate(extension, true));
+      treeOptions.setSelectionPredicate(LocationPredicates.getTropixFileTreeItemPredicate(extension, false));
+      final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
+      treeComponent.addSelectionListener(new Listener<TreeItem>() {
+        public void onEvent(final TreeItem location) {
+        }
+      });
+      final TreeGrid treeGrid = treeComponent.get();
+      super.setWidget(treeGrid);
+    }
+    
+    public CanUpload canUpload() {
+      final CanUpload canUpload;
+      if(treeComponent.getMultiSelection().isEmpty()) {
+        canUpload = CanUpload.cannotUpload("No files selected");
+      } else {
+        canUpload = CanUpload.canUpload();
+      }
+      return canUpload;
+    }
+
+    public void startUpload() {
+      final List<FileSource> fileSources = Lists.newArrayList();
+      for(final TreeItem treeItem : getTreeItems()) {
+        final FileSource fileSource = new FileSource(treeItem.getId(), treeItem.getName(), false);
+        fileSources.add(fileSource);
+      }
+      options.getCompletionCallback().onSuccess(fileSources);   
+    }
+    
+    private Collection<TreeItem> getTreeItems() {
+      return treeComponent.getMultiSelection();
+    }
+
+    public int getNumSelectedFiles() {
+      return treeComponent.getMultiSelection().size();
+    }
+
+    public boolean isZip() {
+      return false;
+    }
+
+    public boolean hasNames() {
+      return true;
+    }
+
+    public List<String> getNames() {
+      final List<String> names = Lists.newArrayList();      
+      for(final TreeItem treeItem : getTreeItems()) {
+        names.add(treeItem.getName());
+      }
+      return names;
+    }
+    
   }
 
   private class FlashUploadComponentImpl extends WidgetSupplierImpl<Canvas> implements UploadComponent {
@@ -249,7 +338,7 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
     }
 
     public CanUpload canUpload() {
-      CanUpload canUpload;
+      final CanUpload canUpload;
       if(filesGrid.getDataAsRecordList().isEmpty()) {
         canUpload = CanUpload.cannotUpload("No files selected");
       } else {
@@ -539,13 +628,16 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
     private void resetComponents(final UploadComponentOptions options) {
       components.clear();
       if(FlashUtils.flashMajorVersion() > 8) {
-        components.put("Flash", new FlashUploadComponentImpl(options));
+        components.put("Flash Upload", new FlashUploadComponentImpl(options));
       }
       if(options.isAllowMultiple()) {
-        components.put("Traditional (select files as zip)", new HtmlUploadComponentImpl(options, true));
-        components.put("Traditional (select individual files)", new HtmlUploadComponentImpl(options, false));
+        components.put("Traditional Upload (select files as zip)", new HtmlUploadComponentImpl(options, true));
+        components.put("Traditional Upload (select individual files)", new HtmlUploadComponentImpl(options, false));
       } else {
-        components.put("Traditional", new HtmlUploadComponentImpl(options, false));
+        components.put("Traditional Upload", new HtmlUploadComponentImpl(options, false));
+      }
+      if(StringUtils.hasText(options.getExtension())) {
+        components.put("Select Existing TINT Files", new FileLocationComponentImpl(options));
       }
     }
 

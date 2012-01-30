@@ -26,15 +26,15 @@ Vagrant::Config.run do |config|
   #  vm.name = "My Project VM"
   #end
 
-  #config.vm.define :webapp do |webapp|
-  #  webapp.vm.host_name = "webapp"
-  #  webapp.vm.network "33.33.33.11"
-  #end
-
-  config.vm.define :sshserver do |sshserver| 
-    sshserver.vm.host_name = "sshserver"
-    sshserver.vm.network "33.33.33.11" 
-    sshserver.vm.forward_port "tint_ssh", 8021, 18021
+  config.vm.define :webapp do |webapp|
+    webapp.vm.host_name = "webapp"
+    webapp.vm.network :hostonly, "33.33.33.11"
   end
+
+  #config.vm.define :sshserver do |sshserver| 
+  #  sshserver.vm.host_name = "sshserver"
+  #  sshserver.vm.network :hostonly, "33.33.33.11" 
+  #  sshserver.vm.forward_port "tint_ssh", 8021, 18021
+  #end
 
 end

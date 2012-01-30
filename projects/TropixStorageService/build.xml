@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<project name="Tropix" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="TropixStorageService" default="jar" basedir="."  xmlns:ivy="antlib:org.apache.ivy.ant">
   <description>
   </description>
 
@@ -73,8 +73,23 @@
     <runcheckstyle />
   </target>
 
+  <target name="prepare-war" depends="jar">
+    <prepare-war webinfconf="war" includewscore="false" />
+  </target>
+
+  <target name="start-server" depends="prepare-war">
+    <start-jetty port="8093" />
+    <sleep hours="1" />
+  </target>
+
+  <target name="package-war" depends="prepare-war">
+    <package-war name="tint-storage" />
+  </target>
+
+  <target name="war" depends="package-war" />
+
   <target name="all" depends="jar" />
   
-  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc, war" />
 
 </project>

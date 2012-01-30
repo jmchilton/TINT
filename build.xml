@@ -195,6 +195,8 @@
   <target name="_dist-wars">
     <mkdir dir="${artifacts.dir}/wars" />
     <copy toDir="${artifacts.dir}/wars">
+      <fileset dir="${projects.dir}/TropixMessaging/build/wars" includes="**/*" />
+      <fileset dir="${projects.dir}/TropixStorageService/build/wars" includes="**/*" />
       <fileset dir="${projects.dir}/TropixStorageCaGridService/build/wars" includes="**/*" />
       <fileset dir="${projects.dir}/TIPsServices/build/wars" includes="**/*" />
       <fileset dir="${projects.dir}/TropixWebGui/build/wars" includes="**/*" />

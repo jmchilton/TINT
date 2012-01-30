@@ -101,6 +101,7 @@ public interface UploadComponentFactory<T extends UploadComponent> extends Compo
      * Callback to reterive ids on completion.
      */
     private final AsyncCallback<List<FileSource>> completionCallback;
+    private String extension;
     private String types;
     private String typesDescription;
     private boolean allowMultiple;
@@ -111,6 +112,15 @@ public interface UploadComponentFactory<T extends UploadComponent> extends Compo
 
     public boolean isAllowMultiple() {
       return allowMultiple;
+    }
+    
+    public void setExtension(@Nullable final String extension) {
+      this.extension = extension;
+    }
+    
+    @Nullable
+    public String getExtension() {
+      return extension;
     }
 
     @Nullable

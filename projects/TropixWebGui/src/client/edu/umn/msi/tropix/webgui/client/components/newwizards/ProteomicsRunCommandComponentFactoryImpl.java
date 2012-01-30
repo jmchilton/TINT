@@ -191,7 +191,7 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
         }
       }
     });
-
+    
     private final DynamicUploadComponent uploadComponent = uploadComponentFactory.get(uploadOpts);
     private UploadWizardPageImpl uploadWizardPage = new UploadWizardPageImpl(uploadComponent, CONSTANTS.runWizardSourceTitle(),
         CONSTANTS.runWizardSourceDescription());
@@ -224,12 +224,15 @@ public class ProteomicsRunCommandComponentFactoryImpl extends WizardCommandCompo
       if(type == ProteomicsRunSource.THERMO) {
         uploadOpts.setTypes("*.raw;*.RAW");
         uploadOpts.setTypesDescription("Thermo Finnigan RAW");
+        uploadOpts.setExtension(StockFileExtensionEnum.THERMO_RAW.getExtension());
       } else if(type == ProteomicsRunSource.MZXML) {
         uploadOpts.setTypes("*.mzXML;*.mzxml;*.MZXML;*.MzXML");
         uploadOpts.setTypesDescription("MzXML");
+        uploadOpts.setExtension(null);
       } else if(type == ProteomicsRunSource.MGF) {
         uploadOpts.setTypes("*.mgf;*.MGF;*.msm;*.MSM");
         uploadOpts.setTypesDescription("Mascot Generic Format");
+        uploadOpts.setExtension(null);
       }
       uploadOpts.setAllowMultiple(batch);
       uploadComponent.update(uploadOpts);

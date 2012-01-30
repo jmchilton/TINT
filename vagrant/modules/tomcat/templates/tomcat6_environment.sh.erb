@@ -1,0 +1,8 @@
+# Address perm gen issues
+JAVA_OPTS="$JAVA_OPTS -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:MaxPermSize=156m"
+
+# Increase maximum heap size
+JAVA_OPTS="$JAVA_OPTS -Xmx2G"
+
+# Enable JMX
+JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9011 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"

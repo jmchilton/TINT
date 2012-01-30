@@ -163,6 +163,7 @@
 /projects/TropixStorageService/build
 /projects/TropixStorageService/ext
 /projects/TropixStorageService/bin
+/projects/TropixStorageService/logs
 /projects/TropixStorageService/test-output
 
 # /projects/TropixUofMModels/

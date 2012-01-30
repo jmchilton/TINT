@@ -59,7 +59,7 @@
   </target>
   
   <target name="test" description="Runs test cases" depends="compile">
-    <runtestng />
+    <runtestng /> 
   </target>
 
   <target name="test-coverage" description="Runs test cases and produces coverage report" depends="compile">
@@ -76,6 +76,6 @@
 
   <target name="all" depends="jar" />
   
-  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  <target name="dist" depends="publish" />
 
 </project>

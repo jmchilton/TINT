@@ -11,7 +11,7 @@ class security {
 
   file { "/etc/security/limits.conf":
     owner => 'root',
-    content => '*                         soft  nofile  16384\n*                         hard  nofile  65536'
+    content => '*                         soft  nofile  16384\n*                   hard  nofile  65536'
   }
 
 }
@@ -51,8 +51,9 @@ class tint_storage_server {
   include tint_metadata
 
   tomcat::deployment { 'tint-storage' :
-
+    path => '/tint/projects/TropixStorageService/build/wars/tint-storage.war'
   }
+
 }
 
 class tint_webapp {
@@ -74,4 +75,6 @@ node "webapp" {
   include tint_metadata_server
   include tint_activemq_server
   include tint_webapp
+  include tint_storage_server
+  include tint_client
 }

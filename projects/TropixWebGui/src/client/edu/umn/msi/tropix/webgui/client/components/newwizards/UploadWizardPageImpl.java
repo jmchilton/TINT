@@ -29,6 +29,7 @@ import edu.umn.msi.tropix.webgui.client.components.UploadComponent.CanUpload;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPageImpl;
 
 class UploadWizardPageImpl extends WizardPageImpl<Canvas> {
+  
   @Override
   public boolean allowNext() {
     return true;
