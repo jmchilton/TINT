@@ -72,6 +72,8 @@ node "sshserver" {
 }
 
 node "webapp" {
+  class { tint_messaging: tint_messaging_enabled => "false" }
+
   include tint_metadata_server
   include tint_activemq_server
   include tint_webapp
