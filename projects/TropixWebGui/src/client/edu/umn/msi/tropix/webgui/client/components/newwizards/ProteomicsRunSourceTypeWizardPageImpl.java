@@ -40,7 +40,7 @@ import edu.umn.msi.tropix.webgui.client.widgets.Form;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPageImpl;
 
-class ProteomicsRunSourceTypeWizardPageImpl extends WizardPageImpl<Canvas> {
+class ProteomicsRunSourceTypeWizardPageImpl extends WizardPageImpl<Canvas> implements PeakListSourceTypeWizardPage {
   private static final ComponentConstants CONSTANTS = ConstantsInstances.COMPONENT_INSTANCE;
   private Property<ProteomicsRunSource> proteomicsRunSourceProperty = Properties.newProperty(ProteomicsRunSource.THERMO);
   private Property<Boolean> batchProperty = Properties.newProperty(true);
@@ -60,11 +60,11 @@ class ProteomicsRunSourceTypeWizardPageImpl extends WizardPageImpl<Canvas> {
 
   }
 
-  Property<ProteomicsRunSource> getProteomicsRunSourceProperty() {
+  public Property<ProteomicsRunSource> getProteomicsRunSourceProperty() {
     return proteomicsRunSourceProperty;
   }
 
-  Property<Boolean> getBatchProperty() {
+  public Property<Boolean> getBatchProperty() {
     return batchProperty;
   }
 

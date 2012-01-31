@@ -2,24 +2,17 @@ package edu.umn.msi.tropix.webgui.client.components.newwizards;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import edu.umn.msi.tropix.client.services.IdentificationGridService;
 import edu.umn.msi.tropix.client.services.QueueGridService;
 import edu.umn.msi.tropix.client.services.ScaffoldGridService;
-import edu.umn.msi.tropix.jobs.activities.WorkflowVerificationUtils;
-import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CommonMetadataProvider;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldAnalysisDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateScaffoldDriverDescription;
@@ -29,8 +22,7 @@ import edu.umn.msi.tropix.webgui.client.components.newwizards.ScaffoldSampleType
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantProxies;
 
-public class IdentificationWorkflowBuilderTest {
-  private IdentificationWorkflowBuilder builder;
+public class IdentificationWorkflowBuilderTest extends BaseWorkflowBuilderTest<IdentificationWorkflowBuilder> {
   private IdentificationGridService idService;
   private QueueGridService rawExtractService;
   private ScaffoldGridService scaffoldGridService;
@@ -40,26 +32,23 @@ public class IdentificationWorkflowBuilderTest {
   private Map<String, String> identificationParameters;
   private Map<String, String> scaffoldParameters;
   private Map<String, String> uploadedRunMap;
-  private ScaffoldSampleType scaffoldType = ScaffoldSampleType.MANY_SAMPLE;
-  private Set<ActivityDescription> builtDescriptions;
+  ScaffoldSampleType scaffoldType = ScaffoldSampleType.MANY_SAMPLE;
 
   @BeforeMethod(groups = "unit")
   public void init() {
-    builder = new IdentificationWorkflowBuilder(ConstantProxies.getProxy(ComponentConstants.class));
+    final IdentificationWorkflowBuilder builder = new IdentificationWorkflowBuilder(ConstantProxies.getProxy(ComponentConstants.class));
+    setWorkflowBuilder(builder);
 
     testRunIndex = 0;
 
     // Setup ID Service
-    idService = new IdentificationGridService();
-    idService.setServiceAddress(UUID.randomUUID().toString());
+    idService = TestGridServices.getTestService(IdentificationGridService.class);
     builder.setIdService(idService);
 
-    rawExtractService = new QueueGridService();
-    rawExtractService.setServiceAddress(UUID.randomUUID().toString());
+    rawExtractService = TestGridServices.getTestService(QueueGridService.class);
     builder.setRawExtractGridService(rawExtractService);
 
-    scaffoldGridService = new ScaffoldGridService();
-    scaffoldGridService.setServiceAddress(UUID.randomUUID().toString());
+    scaffoldGridService = TestGridServices.getTestService(ScaffoldGridService.class);
     builder.setScaffoldGridService(scaffoldGridService);
 
     builder.setSelectedRuns(runs);
@@ -79,22 +68,21 @@ public class IdentificationWorkflowBuilderTest {
   }
 
   private void useExistingRuns() {
-    builder.setUseExistingRuns(true);
+    getWorkflowBuilder().setUseExistingRuns(true);
   }
 
   private void noScaffold() {
-    builder.setUseScaffold(false);
+    getWorkflowBuilder().setUseScaffold(false);
   }
 
   private void createSubfolders() {
-    builder.setCreateSubfolders(true);
+    getWorkflowBuilder().setCreateSubfolders(true);
   }
 
-  private void buildAndVerify() {
-    builder.setScaffoldType(scaffoldType);
-    final Set<ActivityDescription> descriptions = builder.build();
-    WorkflowVerificationUtils.checkDependencies(descriptions);
-    builtDescriptions = descriptions;
+  @Override
+  protected void buildAndVerify() {
+    getWorkflowBuilder().setScaffoldType(scaffoldType);
+    super.buildAndVerify();
   }
 
   @Test
@@ -158,11 +146,6 @@ public class IdentificationWorkflowBuilderTest {
     buildAndVerify();
     assertBuiltNDescriptionsOfType(1, MergeScaffoldSamplesDescription.class);
     assertBuiltNDescriptionsOfType(1, CreateScaffoldAnalysisDescription.class);
-  }
-
-  private void assertBuiltNDescriptionsOfType(final int n, final Class<? extends ActivityDescription> activityDescription) {
-    final int numDescriptions = Sets.filter(builtDescriptions, (Predicate) Predicates.instanceOf(activityDescription)).size();
-    Assert.assertEquals(n, numDescriptions);
   }
 
   private void registerNewUpload() {

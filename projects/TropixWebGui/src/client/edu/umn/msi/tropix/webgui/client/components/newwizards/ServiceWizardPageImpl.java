@@ -32,10 +32,9 @@ import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.widgets.wizards.WizardPageImpl;
 
-public class ServiceWizardPageImpl<T extends GridService> extends WizardPageImpl<VLayout> {
+public class ServiceWizardPageImpl<T extends GridService> extends WizardPageImpl<VLayout> implements ServiceWizardPage<T> {
   private T gridService;
   private final ArrayList<Listener<T>> listeners = new ArrayList<Listener<T>>();
-
 
   public ServiceWizardPageImpl(final ServiceSelectionComponent<T> serviceSelectionComponent, final String title, final String description) {
     this.setTitle(title);
@@ -57,9 +56,9 @@ public class ServiceWizardPageImpl<T extends GridService> extends WizardPageImpl
 
     final ListGrid listGrid = serviceSelectionComponent.get();
     listGrid.setWidth100();
-    this.getCanvas().addMember(listGrid);    
+    this.getCanvas().addMember(listGrid);
   }
-  
+
   public ServiceWizardPageImpl(final ServiceSelectionComponent<T> serviceSelectionComponent) {
     this(serviceSelectionComponent, "Service", "Select a service for this action");
   }
