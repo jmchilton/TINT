@@ -11,10 +11,12 @@ import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.client.services.GridService;
 import edu.umn.msi.tropix.client.services.QueueGridService;
+import edu.umn.msi.tropix.jobs.activities.WorkflowVerificationUtils;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CommonMetadataProvider;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateFolderDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateProteomicsRunDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription;
+import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
 import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 import edu.umn.msi.tropix.models.utils.StockFileExtensionI;
 import edu.umn.msi.tropix.webgui.client.components.UploadComponentFactory.FileSource;
@@ -60,6 +62,18 @@ public class PeakListWorkflowBuilderTest extends BaseWorkflowBuilderTest<PeakLis
     verifyCreatesSinglePeakList();
     assertCreatesFileOfType(StockFileExtensionEnum.THERMO_RAW);
     assertDoesntCreateFolder();
+    checkJobDescriptions();
+  }
+
+  @Test(groups = "unit")
+  public void testSingleRawExtractExisting() {
+    setSourceType(ProteomicsRunSource.THERMO);
+    fileSources.add(TestFileSources.testExistingWithName("mrr.RAW"));
+    buildAndVerify();
+    verifyCreatesSinglePeakList();
+    assertDoesntCreateFolder();
+    Assert.assertFalse(createsFileWithType(StockFileExtensionEnum.THERMO_RAW));
+    checkJobDescriptions();
   }
 
   @Test(groups = "unit")
@@ -77,6 +91,18 @@ public class PeakListWorkflowBuilderTest extends BaseWorkflowBuilderTest<PeakLis
     verifyCreatesSinglePeakList();
     assertCreatesFileOfType(StockFileExtensionEnum.MASCOT_GENERIC_FORMAT);
     assertDoesntCreateFolder();
+    checkJobDescriptions();
+  }
+
+  @Test(groups = "unit")
+  public void testSingleMgfExisting() {
+    setSourceType(ProteomicsRunSource.MGF);
+    fileSources.add(TestFileSources.testExistingWithName("mrr.mgf"));
+    buildAndVerify();
+    verifyCreatesSinglePeakList();
+    assertDoesntCreateFolder();
+    Assert.assertFalse(createsFileWithType(StockFileExtensionEnum.MASCOT_GENERIC_FORMAT));
+    checkJobDescriptions();
   }
 
   @Test(groups = "unit")
@@ -93,6 +119,18 @@ public class PeakListWorkflowBuilderTest extends BaseWorkflowBuilderTest<PeakLis
     buildAndVerify();
     verifyCreatesSinglePeakList();
     assertDoesntCreateFolder();
+    checkJobDescriptions();
+  }
+
+  @Test(groups = "unit")
+  public void testSingleMzxmlExisting() {
+    setSourceType(ProteomicsRunSource.MZXML);
+    fileSources.add(TestFileSources.testExistingWithName("mrr.mzxml"));
+    buildAndVerify();
+    verifyCreatesSinglePeakList();
+    assertDoesntCreateFolder();
+    Assert.assertFalse(createsFileWithType(StockFileExtensionEnum.MZXML));
+    checkJobDescriptions();
   }
 
   @Test(groups = "unit")
@@ -101,6 +139,17 @@ public class PeakListWorkflowBuilderTest extends BaseWorkflowBuilderTest<PeakLis
     setMzxml();
     buildAndVerify();
     assertCreatesFolder();
+  }
+
+  protected void buildAndVerify() {
+    super.buildAndVerify();
+  }
+
+  private void checkJobDescriptions() {
+    final JobDescription jobDescription = getDescriptionOfType(CreateProteomicsRunDescription.class).getJobDescription();
+    assert jobDescription != null;
+    WorkflowVerificationUtils.assertHasJobDescription(jobDescription, getDescriptionsOfType(CreateTropixFileDescription.class));
+    WorkflowVerificationUtils.assertHasJobDescription(jobDescription, getDescriptionsOfType(CreateProteomicsRunDescription.class));
   }
 
   private void batch() {
@@ -142,13 +191,17 @@ public class PeakListWorkflowBuilderTest extends BaseWorkflowBuilderTest<PeakLis
   }
 
   private void assertCreatesFileOfType(final StockFileExtensionI extension) {
+    Assert.assertTrue(createsFileWithType(extension));
+  }
+
+  private boolean createsFileWithType(final StockFileExtensionI extension) {
     boolean foundType = false;
     for(final CreateTropixFileDescription fileDescription : getDescriptionsOfType(CreateTropixFileDescription.class)) {
       if(extension.getExtension().equals(fileDescription.getExtension())) {
         foundType = true;
       }
     }
-    Assert.assertTrue(foundType);
+    return foundType;
   }
 
   private void setSourceType(final ProteomicsRunSource sourceType) {

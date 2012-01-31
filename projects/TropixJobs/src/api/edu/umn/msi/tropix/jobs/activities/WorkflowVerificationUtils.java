@@ -7,6 +7,7 @@ import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDependency;
 import edu.umn.msi.tropix.jobs.activities.descriptions.ActivityDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.Consumes;
+import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
 
 public class WorkflowVerificationUtils {
   private static final ReflectionHelper REFLECTION_HELPER = ReflectionHelpers.getInstance();
@@ -28,12 +29,12 @@ public class WorkflowVerificationUtils {
         if(hasSetter) {
           final Method setMethod;
           if(ActivityDependency.specifiesConsumesIndex(dependency)) {
-            setMethod= REFLECTION_HELPER.getMethod(activityDescription.getClass(),
+            setMethod = REFLECTION_HELPER.getMethod(activityDescription.getClass(),
                 setMethodName,
                 getMethod.getReturnType(),
-                int.class);            
+                int.class);
           } else {
-            setMethod= REFLECTION_HELPER.getMethod(activityDescription.getClass(),
+            setMethod = REFLECTION_HELPER.getMethod(activityDescription.getClass(),
                 setMethodName,
                 getMethod.getReturnType());
           }
@@ -81,6 +82,16 @@ public class WorkflowVerificationUtils {
 
   public static void assertJobDescriptionCopied(final ActivityDescription from, final ActivityDescription to) {
     assert from.getJobDescription() == to.getJobDescription();
+  }
+
+  public static void assertJobDescriptionsCopied(final ActivityDescription from, final Iterable<? extends ActivityDescription> toDescriptions) {
+    assertHasJobDescription(from.getJobDescription(), toDescriptions);
+  }
+
+  public static void assertHasJobDescription(final JobDescription jobDescription, final Iterable<? extends ActivityDescription> toDescriptions) {
+    for(final ActivityDescription to : toDescriptions) {
+      assert jobDescription == to.getJobDescription();
+    }
   }
 
 }

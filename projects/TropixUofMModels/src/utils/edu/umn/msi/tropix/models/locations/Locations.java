@@ -33,6 +33,10 @@ public class Locations {
   public static final String MY_GROUP_FOLDERS_ID = "-7";
   public static final String MY_GROUP_SHARED_FOLDERS_ID = "-8";
 
+  public static boolean isMyHomeFolderItem(final Location location) {
+    return location.getRoot() == location.getRoot() && location instanceof TropixObjectLocation;
+  }
+
   public static boolean isMyGroupSharedFoldersItem(final Location treeItem) {
     return MY_GROUP_SHARED_FOLDERS_ID.equals(treeItem.getId());
   }
@@ -59,8 +63,8 @@ public class Locations {
 
   public static boolean isRootLocationAFolder(final Location rootLocation) {
     return isMySharedFoldersItem(rootLocation) ||
-           isMyGroupFoldersItem(rootLocation) ||
-           isMyGroupSharedFoldersItem(rootLocation);
+        isMyGroupFoldersItem(rootLocation) ||
+        isMyGroupSharedFoldersItem(rootLocation);
   }
 
   public static boolean isRootASharedRootMetaLocation(final Location location) {

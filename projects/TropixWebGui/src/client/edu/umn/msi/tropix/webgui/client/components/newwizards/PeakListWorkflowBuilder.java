@@ -10,6 +10,7 @@ import edu.umn.msi.tropix.jobs.activities.descriptions.CommonMetadataProvider;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateFolderDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateProteomicsRunDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.CreateTropixFileDescription;
+import edu.umn.msi.tropix.jobs.activities.descriptions.FileSourceHolder;
 import edu.umn.msi.tropix.jobs.activities.descriptions.JobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.PollJobDescription;
 import edu.umn.msi.tropix.jobs.activities.descriptions.SubmitProteomicsConvertDescription;
@@ -63,7 +64,7 @@ public class PeakListWorkflowBuilder extends WorkflowBuilder {
       add(createFolderDescription);
     }
 
-    for(FileSource fileSource : fileSources) {
+    for(final FileSource fileSource : fileSources) {
       String calculatedName = commonMetadataSupplier.getName();
       if(batch && type == ProteomicsRunSource.THERMO) {
         calculatedName = Utils.stripRawExtension(fileSource.getName());
@@ -73,7 +74,22 @@ public class PeakListWorkflowBuilder extends WorkflowBuilder {
       final JobDescription jobDescription = new JobDescription();
       jobDescription.setName(componentConstants.runWizardJobDescriptionName() + calculatedName);
 
-      final UploadFileDescription uploadDescription = ActivityDescriptions.createUploadFileDescription(jobDescription, fileSource.getId());
+      final FileSourceHolder fileSourceHolder;
+      final boolean setSource = type != ProteomicsRunSource.MZXML;
+      if(fileSource.isUpload()) {
+        final UploadFileDescription uploadDescription = ActivityDescriptions.createUploadFileDescription(jobDescription, fileSource.getId());
+        final CreateTropixFileDescription createSourceFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
+        add(uploadDescription);
+        add(createSourceFileDescription);
+        fileSourceHolder = new FileSourceHolder(createSourceFileDescription);
+        if(type == ProteomicsRunSource.THERMO) {
+          createSourceFileDescription.setExtension(StockFileExtensionEnum.THERMO_RAW.getExtension());
+        } else if(type == ProteomicsRunSource.MGF) {
+          createSourceFileDescription.setExtension(StockFileExtensionEnum.MASCOT_GENERIC_FORMAT.getExtension());
+        }
+      } else {
+        fileSourceHolder = new FileSourceHolder(fileSource.getId());
+      }
 
       final CreateProteomicsRunDescription createProteomicsRunDescription = new CreateProteomicsRunDescription();
       createProteomicsRunDescription.setJobDescription(jobDescription);
@@ -87,56 +103,56 @@ public class PeakListWorkflowBuilder extends WorkflowBuilder {
 
       if(type == ProteomicsRunSource.THERMO) {
         final String serviceAddress = thermoServicesSelectionPage.getGridService().getServiceAddress();
-        final CreateTropixFileDescription createRawFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
-        createRawFileDescription.setExtension(StockFileExtensionEnum.THERMO_RAW.getExtension());
-
-        final SubmitThermofinniganRunJobDescription submitDescription = ActivityDescriptions.createSubmitThermo(createRawFileDescription,
+        final SubmitThermofinniganRunJobDescription submitDescription = ActivityDescriptions.createSubmitThermo(fileSourceHolder,
             serviceAddress, calculatedName);
+        submitDescription.setJobDescription(jobDescription);
         final PollJobDescription pollJobDescription = ActivityDescriptions.buildPollDescription(submitDescription);
         final CreateTropixFileDescription createMzxmlDescription = ActivityDescriptions.buildCreateResultFile(pollJobDescription);
 
         createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createMzxmlDescription).produces("objectId")
             .consumes("mzxmlFileId").build());
-        createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createRawFileDescription).produces("objectId")
-            .consumes("sourceId").build());
 
-        add(createRawFileDescription);
         add(submitDescription);
         add(pollJobDescription);
         add(createMzxmlDescription);
       } else if(type == ProteomicsRunSource.MGF) {
-        final CreateTropixFileDescription createSourceFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
-        createSourceFileDescription.setExtension(StockFileExtensionEnum.MASCOT_GENERIC_FORMAT.getExtension());
-
+        final String serviceAddress = proteomicsConvertServicesSelectionPage.getGridService().getServiceAddress();
         final SubmitProteomicsConvertDescription submitDescription = ActivityDescriptions.createSubmitProteomicsConvert(
-            createSourceFileDescription, proteomicsConvertServicesSelectionPage.getGridService().getServiceAddress(), calculatedName);
+            fileSourceHolder, serviceAddress, calculatedName);
         submitDescription.setInputName(calculatedName);
+        submitDescription.setJobDescription(jobDescription);
         final PollJobDescription pollJobDescription = ActivityDescriptions.buildPollDescription(submitDescription);
-
         final CreateTropixFileDescription createMzxmlDescription = ActivityDescriptions.buildCreateResultFile(pollJobDescription);
-
         createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createMzxmlDescription).produces("objectId")
             .consumes("mzxmlFileId").build());
-        createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createSourceFileDescription).produces("objectId")
-            .consumes("sourceId").build());
 
-        add(createSourceFileDescription);
         add(submitDescription);
         add(pollJobDescription);
         add(createMzxmlDescription);
       } else if(type == ProteomicsRunSource.MZXML) {
-        final CreateTropixFileDescription createMzxmlFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
-        createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createMzxmlFileDescription).produces("objectId")
-            .consumes("mzxmlFileId").build());
-        add(createMzxmlFileDescription);
+        if(fileSourceHolder.hasExistingId()) {
+          createProteomicsRunDescription.setMzxmlFileId(fileSourceHolder.getTropixFileObjectId());
+        } else {
+          final CreateTropixFileDescription createSourceDescription = fileSourceHolder.getCreateTropixFileDescription();
+          createProteomicsRunDescription.addDependency(ActivityDependency.Builder.on(createSourceDescription).produces("objectId")
+              .consumes("mzxmlFileId").build());
+        }
       }
-
-      add(uploadDescription);
-      add(createProteomicsRunDescription);
+      if(setSource) {
+        if(fileSourceHolder.hasExistingId()) {
+          createProteomicsRunDescription.setSourceId(fileSourceHolder.getTropixFileObjectId());
+        } else {
+          final CreateTropixFileDescription createSourceDescription = fileSourceHolder.getCreateTropixFileDescription();
+          final ActivityDependency dependency = ActivityDependency.Builder.on(createSourceDescription).produces("objectId").consumes("sourceId")
+              .build();
+          createProteomicsRunDescription.addDependency(dependency);
+        }
+      }
       final CommitObjectDescription commitDescription = ActivityDescriptions.createCommitDescription(createProteomicsRunDescription);
+
+      add(createProteomicsRunDescription);
       add(commitDescription);
     }
 
   }
-
 }
