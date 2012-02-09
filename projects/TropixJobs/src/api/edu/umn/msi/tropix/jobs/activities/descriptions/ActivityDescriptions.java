@@ -48,30 +48,50 @@ public class ActivityDescriptions {
     return commitDescription;
   }
 
-  public static SubmitProteomicsConvertDescription createSubmitProteomicsConvert(final CreateTropixFileDescription createSourceFileDescription,
-      final String serviceUrl, final String name) {
+  public static SubmitProteomicsConvertDescription createSubmitProteomicsConvert(final FileSourceHolder fileSourceHolder,
+      final String serviceUrl,
+      final String name) {
     final SubmitProteomicsConvertDescription submitDescription = new SubmitProteomicsConvertDescription();
-    submitDescription.setJobDescription(createSourceFileDescription.getJobDescription());
     submitDescription.setServiceUrl(serviceUrl);
     submitDescription.setInputName(name);
     submitDescription.setInputFormat("MGF");
     submitDescription.setOutputFormat("MzXML");
-    submitDescription.addDependency(ActivityDependency.Builder.on(createSourceFileDescription).produces("objectId").consumes("inputFileId").build());
+    if(fileSourceHolder.hasExistingId()) {
+      submitDescription.setInputFileId(fileSourceHolder.getTropixFileObjectId());
+    } else {
+      final CreateTropixFileDescription createSourceFileDescription = fileSourceHolder.getCreateTropixFileDescription();
+      submitDescription.setJobDescription(createSourceFileDescription.getJobDescription());
+      submitDescription
+          .addDependency(ActivityDependency.Builder.on(createSourceFileDescription).produces("objectId").consumes("inputFileId").build());
+    }
     return submitDescription;
   }
 
   public static SubmitThermofinniganRunJobDescription createSubmitThermo(final CreateTropixFileDescription createRawFileDescription,
-      final String serviceUrl, final String rawFileBaseName) {
+      final String serviceUrl,
+      final String rawFileBaseName) {
+    return createSubmitThermo(new FileSourceHolder(createRawFileDescription), serviceUrl, rawFileBaseName);
+  }
+
+  public static SubmitThermofinniganRunJobDescription createSubmitThermo(final FileSourceHolder fileSourceHolder,
+      final String serviceUrl,
+      final String rawFileBaseName) {
     final SubmitThermofinniganRunJobDescription submitDescription = new SubmitThermofinniganRunJobDescription();
-    submitDescription.setJobDescription(createRawFileDescription.getJobDescription());
     submitDescription.setServiceUrl(serviceUrl);
     submitDescription.setRawFileBaseName(rawFileBaseName);
-    submitDescription.addDependency(ActivityDependency.Builder.on(createRawFileDescription).produces("objectId").consumes("rawFileId").build());
+    if(fileSourceHolder.hasExistingId()) {
+      submitDescription.setRawFileId(fileSourceHolder.getTropixFileObjectId());
+    } else {
+      final CreateTropixFileDescription createRawFileDescription = fileSourceHolder.getCreateTropixFileDescription();
+      submitDescription.setJobDescription(createRawFileDescription.getJobDescription());
+      submitDescription.addDependency(ActivityDependency.Builder.on(createRawFileDescription).produces("objectId").consumes("rawFileId").build());
+    }
     return submitDescription;
   }
-  
+
   public static SubmitThermofinniganRunJobDescription createSubmitThermo(final CreateProteomicsRunDescription run,
-      final String serviceUrl, final String rawFileBaseName) {
+      final String serviceUrl,
+      final String rawFileBaseName) {
     final SubmitThermofinniganRunJobDescription submitDescription = new SubmitThermofinniganRunJobDescription();
     submitDescription.setJobDescription(run.getJobDescription());
     submitDescription.setServiceUrl(serviceUrl);
@@ -79,8 +99,6 @@ public class ActivityDescriptions {
     submitDescription.setRawFileId(run.getSourceId());
     return submitDescription;
   }
-  
-  
 
   public static SubmitScaffoldAnalysisDescription createSubmitScaffold(final CreateScaffoldDriverDescription createDriver,
       final CreateTropixFileDescription createDriverFile, final String serviceUrl) {

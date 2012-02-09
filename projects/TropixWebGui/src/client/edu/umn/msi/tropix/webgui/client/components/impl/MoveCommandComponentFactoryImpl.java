@@ -39,6 +39,7 @@ import com.smartgwt.client.widgets.tree.TreeGrid;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.VirtualFolder;
 import edu.umn.msi.tropix.models.locations.Location;
+import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.locations.Locations;
 import edu.umn.msi.tropix.models.locations.TropixObjectLocation;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
@@ -108,7 +109,12 @@ public class MoveCommandComponentFactoryImpl implements DescribableLocationComma
       final TropixObjectTreeItemExpander expander = TropixObjectTreeItemExpanders.get(new TropixObjectType[] {TropixObjectTypeEnum.VIRTUAL_FOLDER,
           TropixObjectTypeEnum.FOLDER});
       final TreeItem moveRoot = locationFactory.getTropixObjectTreeItem(null, tropixObjectRootItem.getContext(), tropixObjectRoot, expander);
-      treeOptions.setInitialItems(Arrays.asList(moveRoot));
+      if(Locations.isMyHomeFolderItem(moveRoot)) {
+        treeOptions.setInitialItems(Arrays.asList(moveRoot, locationFactory.getMyGroupFoldersItem(expander)));
+      } else {
+        treeOptions.setInitialItems(Arrays.asList(moveRoot));
+      }
+      treeOptions.setSelectionPredicate(LocationPredicates.getIsTropixObjectTreeItemPredicate());
       final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
       okButton.setDisabled(this.selectedTreeItem == null);
       treeComponent.addSelectionListener(new Listener<TreeItem>() {

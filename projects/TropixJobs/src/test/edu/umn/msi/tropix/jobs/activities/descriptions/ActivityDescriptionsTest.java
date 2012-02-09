@@ -56,7 +56,8 @@ public class ActivityDescriptionsTest {
   public void testSubmitProteomicsConvert() {
     final CreateTropixFileDescription sourceDescription = new CreateTropixFileDescription();
     sourceDescription.setJobDescription(new JobDescription());
-    final SubmitProteomicsConvertDescription submitDescription = ActivityDescriptions.createSubmitProteomicsConvert(sourceDescription, "http://moo",
+    final SubmitProteomicsConvertDescription submitDescription = ActivityDescriptions.createSubmitProteomicsConvert(new FileSourceHolder(
+        sourceDescription), "http://moo",
         "foo");
     WorkflowVerificationUtils.assertJobDescriptionCopied(sourceDescription, submitDescription);
     assert submitDescription.getInputName().equals("foo");

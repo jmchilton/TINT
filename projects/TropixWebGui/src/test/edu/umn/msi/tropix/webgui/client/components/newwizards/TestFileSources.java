@@ -10,4 +10,8 @@ public class TestFileSources {
     return new FileSource(UUID.randomUUID().toString(), name, true);
   }
 
+  public static FileSource testExistingWithName(String name) {
+    return new FileSource(UUID.randomUUID().toString(), name, false);
+  }
+
 }
