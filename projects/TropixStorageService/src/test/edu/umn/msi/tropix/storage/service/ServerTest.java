@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import org.apache.commons.httpclient.HttpException;
 
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
@@ -21,11 +20,11 @@ public class ServerTest extends FreshConfigTest {
   @Inject 
   private StorageServiceFactory storageServiceFactory;
     
-  private boolean secure = false;
+  private boolean secure = true;
 
   @Override
   protected void initializeConfigDir(final ConfigDirBuilder builder) {
-    builder.createSubConfigDir("storage").addDeployProperty("storage.service.enable", "true");
+    builder.createSubConfigDir("storage").addDeployProperty("storage.service.enable", "true").addDeployProperty("storage.service.secure", Boolean.toString(secure));
   }
   
   @Test

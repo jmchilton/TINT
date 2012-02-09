@@ -1,11 +1,11 @@
 class tint_metadata {
-  include tint_config
   include tint_metadata::params
 
   file { "$tint_metadata::params::tint_metadata_config_dir":
     owner => $tint_config::params::web_user,
     mode => '700',
     ensure => 'directory',
+    require => Class["tint_config"]
   }
 
   mysql::createuser { 'create_tint_user':

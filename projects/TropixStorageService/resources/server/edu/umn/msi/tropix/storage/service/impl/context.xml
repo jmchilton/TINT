@@ -31,6 +31,7 @@
         <prop key="storage.service.https.port">8743</prop>
         <prop key="storage.service.http.port">8780</prop>
         <prop key="storage.service.host">localhost</prop>
+        <prop key="storage.service.key.password">password</prop>
         <prop key="storage.service.keymanager.password">password</prop>
         <prop key="storage.service.keymanager.file"></prop>
         <prop key="storage.service.trustmanager.password">password</prop>

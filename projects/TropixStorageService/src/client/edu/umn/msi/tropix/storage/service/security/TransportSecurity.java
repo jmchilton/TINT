@@ -40,6 +40,7 @@ public class TransportSecurity {
     final String configuredKeyStoreFile = getConfigurePath(inputTruststoreFile, configDirectory, defaultFileName);
     final String keyStoreFile;
     if(new File(configuredKeyStoreFile).exists()) {
+      LOG.info(String.format("Using keystore from file: %s", configuredKeyStoreFile));
       keyStoreFile = configuredKeyStoreFile;
     } else {
       keyStoreFile = writeTestKeyStore(configuredKeyStoreFile, testKeyStore);
@@ -58,7 +59,7 @@ public class TransportSecurity {
 
   private static String getConfigurePath(final String inputTruststoreFile, final String configDirectory, final String defaultFileName) {
     String truststoreFile;
-    if(!StringUtils.hasText(inputTruststoreFile)) {
+    if(StringUtils.hasText(inputTruststoreFile) && ! inputTruststoreFile.startsWith("$")) {
       truststoreFile = inputTruststoreFile;
     } else {
       truststoreFile = new File(configDirectory, defaultFileName).getAbsolutePath();

@@ -22,7 +22,7 @@
   <httpj:engine-factory>
    <httpj:engine port="${storage.service.https.port}">
     <httpj:tlsServerParameters>
-      <sec:keyManagers keyPassword="password">
+      <sec:keyManagers keyPassword="${storage.service.key.password}">
            <sec:keyStore type="JKS" 
 			 password="${storage.service.keymanager.password}" 
 			 file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getServiceKeyManager('${storage.service.keymanager.file}', '${tropix.storage.config.dir}')}" />

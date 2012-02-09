@@ -49,6 +49,7 @@ class tint_ssh_server {
 class tint_storage_server {
   include tint_base
   include tint_metadata
+  include tint_storage
 
   tomcat::deployment { 'tint-storage' :
     path => '/tint/projects/TropixStorageService/build/wars/tint-storage.war'

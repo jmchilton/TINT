@@ -28,7 +28,7 @@
               </sec:keyManagers>
            <sec:trustManagers>
               <sec:keyStore type="JKS" password="${storage.client.trustmanager.password}"
-                  file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getTrustManager('${storage.client.keymanager.file}', '${tropix.storageclient.config.dir}')}"/>
+                  file="#{T(edu.umn.msi.tropix.storage.service.security.TransportSecurity).getTrustManager('${storage.client.trustmanager.file}', '${tropix.storageclient.config.dir}')}"/>
            </sec:trustManagers>
 	</http:tlsClientParameters>
   </http:conduit>
