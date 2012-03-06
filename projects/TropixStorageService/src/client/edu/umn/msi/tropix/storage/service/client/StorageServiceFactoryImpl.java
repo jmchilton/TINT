@@ -13,6 +13,7 @@ public class StorageServiceFactoryImpl implements StorageServiceFactory {
   }
   
   public StorageService get(final String address) {
+    
     return JAXRSClientFactory.create(address, StorageService.class);
   }
 

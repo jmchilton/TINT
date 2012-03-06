@@ -21,10 +21,7 @@ Vagrant::Config.run do |config|
     puppet.manifest_file  = "site.pp"
   end
 
-  #config.vm.customize do |vm|
-  #  vm.memory_size = 512
-  #  vm.name = "My Project VM"
-  #end
+  config.vm.customize ["modifyvm", :id, "--memory", "2048"]
 
   config.vm.define :webapp do |webapp|
     webapp.vm.host_name = "webapp"
