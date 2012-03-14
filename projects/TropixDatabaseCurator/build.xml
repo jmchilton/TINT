@@ -57,7 +57,7 @@
   </target> 
 
   <target name="javadoc" depends="prepare">
-    <dojavadoc />
+    <dojavadoc confs="api,impl" />
   </target>
   
   <target name="test" description="Runs test cases" depends="compile">
@@ -78,6 +78,6 @@
 
   <target name="all" depends="jar" />
   
-  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  <target name="dist" depends="publish, test, findbugs, checkstyle, javadoc" />
 
 </project>
