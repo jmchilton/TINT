@@ -59,7 +59,7 @@ public class TransportSecurity {
 
   private static String getConfigurePath(final String inputTruststoreFile, final String configDirectory, final String defaultFileName) {
     String truststoreFile;
-    if(StringUtils.hasText(inputTruststoreFile) && ! inputTruststoreFile.startsWith("$")) {
+    if(StringUtils.hasText(inputTruststoreFile) && !inputTruststoreFile.startsWith("$")) {
       truststoreFile = inputTruststoreFile;
     } else {
       truststoreFile = new File(configDirectory, defaultFileName).getAbsolutePath();

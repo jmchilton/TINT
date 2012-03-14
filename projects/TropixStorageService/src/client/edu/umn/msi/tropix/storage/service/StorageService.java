@@ -5,7 +5,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.apache.cxf.feature.Features;
+
 @Path("/storage/")
+@Features(features = "org.apache.cxf.feature.LoggingFeature") 
 public interface StorageService {
   @GET
   @Path("/user/{userIdentity}/data/{dataId}/")

@@ -1,11 +1,8 @@
 package edu.umn.msi.tropix.storage.service;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import javax.inject.Inject;
-
-import org.apache.commons.httpclient.HttpException;
 
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.Test;
@@ -14,7 +11,7 @@ import edu.umn.msi.tropix.common.test.ConfigDirBuilder;
 import edu.umn.msi.tropix.common.test.FreshConfigTest;
 import edu.umn.msi.tropix.storage.service.client.StorageServiceFactory;
 
-@ContextConfiguration(locations = "testContext.xml")
+@ContextConfiguration(locations = "testClientContext.xml")
 public class ServerTest extends FreshConfigTest {
   
   @Inject 
@@ -24,8 +21,23 @@ public class ServerTest extends FreshConfigTest {
 
   @Override
   protected void initializeConfigDir(final ConfigDirBuilder builder) {
-    builder.createSubConfigDir("storage").addDeployProperty("storage.service.enable", "true").addDeployProperty("storage.service.secure", Boolean.toString(secure));
+    builder.createSubConfigDir("storage").addDeployProperty("storage.service.enable", "false").addDeployProperty("storage.service.secure", Boolean.toString(secure));
   }
+    
+  @Test
+  public void cleanTest() {
+    final String address;
+    if(secure) {
+      address = "https://33.33.33.11:8743/";
+    } else {
+      address = "http://localhost:8780/";
+    }
+
+    StorageService testI = storageServiceFactory.get(address);
+    final String dataId = UUID.randomUUID().toString();
+    testI.getData("User", dataId);
+  }
+  /*
   
   @Test
   public void test() throws InterruptedException, HttpException, IOException {
@@ -36,41 +48,28 @@ public class ServerTest extends FreshConfigTest {
     //Bus bus = bf.createBus(busFile.toString());
     //BusFactory.setDefaultBus(cxf);
 
-    /*
-    JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
-    sf.setResourceClasses(StorageServiceImpl.class);
-    sf.setResourceProvider(StorageServiceImpl.class,
-        new SingletonResourceProvider(new StorageServiceImpl()));
-    if(secure) {
-      sf.setAddress("https://localhost:8743/");
-    } else {
-      sf.setAddress("http://localhost:8780/");
-    }
-    sf.create();
-    */
     //setupProtocol();
     //httpCall();
 
     
     // If Basic Authentication required could use:                                                                                  
-    /*                                                                                                                              
-    String authorizationHeader = "Basic "                                                                                           
-       + org.apache.cxf.common.util.Base64Utility.encode("username:password".getBytes());                                           
-    httpget.addRequestHeader("Authorization", authorizationHeader);                                                                 
-    */
-    /*
-    System.out.println("Sending HTTPS GET request to query customer info");
-    HttpClient httpclient = new HttpClient();
-    GetMethod httpget = new GetMethod("https://localhost:9000/storage/data/123");
-    httpget.addRequestHeader("Accept" , "text/xml");
+                                                                                                                                  
+    //String authorizationHeader = "Basic "                                                                                           
+    //   + org.apache.cxf.common.util.Base64Utility.encode("username:password".getBytes());                                           
+    //httpget.addRequestHeader("Authorization", authorizationHeader);                                                                 
+    
+    //System.out.println("Sending HTTPS GET request to query customer info");
+    //HttpClient httpclient = new HttpClient();
+    //GetMethod httpget = new GetMethod("https://localhost:9000/storage/data/123");
+    //httpget.addRequestHeader("Accept" , "text/xml");
 
-    try {
-        httpclient.executeMethod(httpget);
-        System.out.println(httpget.getResponseBodyAsString());
-    } finally {
-        httpget.releaseConnection();
-    }
-    */
+    //try {
+    //    httpclient.executeMethod(httpget);
+    //    System.out.println(httpget.getResponseBodyAsString());
+    //} finally {
+    //    httpget.releaseConnection();
+    //}
+    
 
     
 
@@ -86,7 +85,7 @@ public class ServerTest extends FreshConfigTest {
   private void proxyClientCall() {
     final String address;
     if(secure) {
-      address = "https://localhost:8743/";
+      address = "https://33.33.33.11:8743/";
     } else {
       address = "http://localhost:8780/";
     }
@@ -105,5 +104,5 @@ public class ServerTest extends FreshConfigTest {
     final String dataId = UUID.randomUUID().toString();
     testI.getData("User", dataId);    
   }
-    
+    */
 }
