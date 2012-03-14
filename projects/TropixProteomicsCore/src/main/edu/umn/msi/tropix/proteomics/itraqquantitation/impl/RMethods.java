@@ -64,6 +64,7 @@ class RMethods {
     final double xBar = RUtils.weightedMean(x, w);
     final double xStd = Math.sqrt(RUtils.weightedVariance(x, w));
     final double z = xBar / xStd;
+    // System.out.println(z);
     return RUtils.pnorm(-1 * Math.abs(z)) * 2;
   }
 
