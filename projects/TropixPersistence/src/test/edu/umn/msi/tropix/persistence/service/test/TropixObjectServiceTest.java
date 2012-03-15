@@ -59,6 +59,14 @@ public class TropixObjectServiceTest extends ServiceTest {
   private String sampleId;
 
   @Test
+  public void modifiersCanModifyPermissionsOnRootSharedFolders() {
+    final User user1 = super.createTempUser();
+    final VirtualFolder folder = super.createTempRootVirtualFolder();
+    getTropixObjectDao().addVirtualPermissionUser(folder.getId(), "write", user1.getCagridId());
+    assert tropixObjectService.canModifySharing(user1.getCagridId(), folder.getId());
+  }
+  
+  @Test
   public void commit() {
     final User user1 = createTempUser();
     final TropixObject o1 = saveNewUncommitted(new TropixObject(), user1);

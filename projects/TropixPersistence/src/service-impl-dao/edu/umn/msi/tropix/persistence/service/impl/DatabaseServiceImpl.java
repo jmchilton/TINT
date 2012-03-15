@@ -25,6 +25,8 @@ package edu.umn.msi.tropix.persistence.service.impl;
 import javax.annotation.ManagedBean;
 import javax.inject.Named;
 
+import org.springframework.util.StringUtils;
+
 import com.google.common.base.Preconditions;
 
 import edu.umn.msi.tropix.models.Database;
@@ -44,21 +46,24 @@ class DatabaseServiceImpl extends ServiceBase implements DatabaseService {
     final String databaseName = database.getName();
     final String format = database.getType();
     final FileType fileType;
+    final String databaseFileName;
     if(format.equals("FASTA")) {
       fileType = getFileType(StockFileExtensionEnum.FASTA);
-      databaseFile.setName(getMessageSource().getMessage(MessageConstants.DATABASE_FILE_NAME, databaseName, fileType.getExtension()));
-
+      databaseFileName = getMessageSource().getMessage(MessageConstants.DATABASE_FILE_NAME, databaseName, fileType.getExtension());
     } else if(format.equals("FASTQ")) {
       fileType = getFileType(StockFileExtensionEnum.FASTQ);
-      databaseFile.setName(getMessageSource().getMessage(MessageConstants.DATABASE_FILE_NAME, databaseName, fileType.getExtension()));
+      databaseFileName = getMessageSource().getMessage(MessageConstants.DATABASE_FILE_NAME, databaseName, fileType.getExtension());
     } else if(format.equals("RAW")) {
       fileType = getFileType(StockFileExtensionEnum.TEXT);
-      databaseFile.setName(getMessageSource().getMessage(MessageConstants.DATABASE_FILE_NAME, databaseName, fileType.getExtension()));
+      databaseFileName = getMessageSource().getMessage(MessageConstants.DATABASE_FILE_NAME, databaseName, fileType.getExtension());
     } else {
       throw new IllegalArgumentException("Invalid database format found " + format);
     }
-    databaseFile.setFileType(fileType);
-    databaseFile.setDescription(getMessageSource().getMessage(MessageConstants.DATABASE_FILE_DESCRIPTION, databaseName));
+    if(!StringUtils.hasText(databaseFile.getName())) {
+      databaseFile.setName(databaseFileName);
+      databaseFile.setFileType(fileType);
+      databaseFile.setDescription(getMessageSource().getMessage(MessageConstants.DATABASE_FILE_DESCRIPTION, databaseName));      
+    }
     updateObject(databaseFile);
     saveNewObjectToDestination(database, userGridId, destinationId);
     updateObjectWithParent(databaseFile, userGridId, database.getId());

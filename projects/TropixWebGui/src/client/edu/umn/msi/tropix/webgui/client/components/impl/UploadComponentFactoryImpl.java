@@ -137,12 +137,14 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
       treeOptions.setInitialItems(locationFactory.getTropixObjectSourceRootItems(null));
       treeOptions.setShowPredicate(LocationPredicates.getTropixFileTreeItemPredicate(extension, true));
       treeOptions.setSelectionPredicate(LocationPredicates.getTropixFileTreeItemPredicate(extension, false));
-      final TreeComponent treeComponent = treeComponentFactory.get(treeOptions);
+      treeComponent = treeComponentFactory.get(treeOptions);
       treeComponent.addSelectionListener(new Listener<TreeItem>() {
         public void onEvent(final TreeItem location) {
         }
       });
       final TreeGrid treeGrid = treeComponent.get();
+      treeGrid.setWidth100();
+      treeGrid.setHeight100();
       super.setWidget(treeGrid);
     }
     
