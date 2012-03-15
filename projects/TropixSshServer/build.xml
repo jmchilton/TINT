@@ -102,6 +102,6 @@
 
   <target name="all" depends="jar" />
   
-  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc, dist-scripts" />
+  <target name="dist" depends="publish, war, test-coverage, findbugs, checkstyle, javadoc, dist-scripts" />
 
 </project>

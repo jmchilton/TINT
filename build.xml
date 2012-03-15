@@ -203,6 +203,7 @@
       <fileset dir="${projects.dir}/TropixStorageService/build/wars" includes="**/*" />
       <fileset dir="${projects.dir}/TropixStorageCaGridService/build/wars" includes="**/*" />
       <fileset dir="${projects.dir}/TIPsServices/build/wars" includes="**/*" />
+      <fileset dir="${projects.dir}/TropixSshServer/build/wars" includes="**/*" />
       <fileset dir="${projects.dir}/TropixWebGui/build/wars" includes="**/*" />
     </copy>
   </target>
