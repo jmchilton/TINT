@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.common.io.FileUtils;
@@ -29,8 +31,8 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.IOUtils;
 import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser;
-import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser.MzxmlInfo;
+import edu.umn.msi.tropix.proteomics.conversion.Scan;
 
 class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
@@ -49,7 +51,8 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
         final int number = mzxmlScan.getNumber();
         final short charge = mzxmlScan.getPrecursorCharge();
         final double[] peaks = mzxmlScan.getPeaks();
-        scanMap.put(new ScanIndex(mzxmlScan.getParentName(), number, charge), ITraqScanSummary.fromPeaks(number, number, charge, options.getITraqLabels(), peaks));
+        scanMap.put(new ScanIndex(mzxmlScan.getParentName(), number, charge),
+            ITraqScanSummary.fromPeaks(number, number, charge, options.getITraqLabels(), peaks));
       }
     } finally {
       IO_UTILS.closeQuietly(inputStream);
@@ -79,26 +82,35 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
 
     return iTraqMatcher.match(scaffoldEntries, new ScanFunctionImpl(scansMap));
   }
-  
+
   private final class ScanFunctionImpl implements Function<ScanIndex, ITraqScanSummary> {
     private final Map<ScanIndex, ITraqScanSummary> scansMap;
-    
+
     private ScanFunctionImpl(final Map<ScanIndex, ITraqScanSummary> scansMap) {
       this.scansMap = scansMap;
     }
-    
+
+    private List<ScanIndex> getPotentialMatches(final ScanIndex scanIndex) {
+      final List<ScanIndex> matches = Lists.newArrayList();
+      for(final Map.Entry<ScanIndex, ITraqScanSummary> entry : scansMap.entrySet()) {
+        if(scanIndex.numberAndChargeMatch(entry.getKey())) {
+          matches.add(scanIndex);
+        }
+      }
+      return matches;
+    }
+
     public ITraqScanSummary apply(final ScanIndex scanIndex) {
       ITraqScanSummary summary = scansMap.get(scanIndex);
       // Try a little harder if an exact match cannot be found...
       if(summary == null) {
-        for(final Map.Entry<ScanIndex, ITraqScanSummary> entry : scansMap.entrySet()) {
-          if(scanIndex.numberAndChargeMatch(entry.getKey())) {
-            if(summary == null) {
-              summary = entry.getValue();
-            } else {
-              throw new IllegalStateException("Ambigious match for scan " + scanIndex + " possible matches include " + entry.getKey());
-            }
-          }
+        final List<ScanIndex> potentialMatches = getPotentialMatches(scanIndex);
+        if(potentialMatches.size() > 1) {
+          final String ambiguousMatches = Iterables.toString(potentialMatches);
+          final String errorMessage = String.format("Ambigious match for scan %s possible matches include %s ", scanIndex, ambiguousMatches);
+          throw new IllegalStateException(errorMessage);
+        } else if(!potentialMatches.isEmpty()) {
+          summary = scansMap.get(potentialMatches.get(0));
         }
       }
       if(summary == null) {
@@ -106,7 +118,7 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
       }
       return summary;
     }
-    
+
   }
 
   public void setScaffoldReportParser(final ScaffoldReportParser scaffoldReportParser) {

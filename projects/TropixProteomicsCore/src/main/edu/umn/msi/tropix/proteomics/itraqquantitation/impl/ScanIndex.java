@@ -78,5 +78,4 @@ class ScanIndex {
     return scanIndex.number == number && (scanIndex.charge == 0 || scanIndex.charge == charge);
   }
 
-
 }

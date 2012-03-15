@@ -29,6 +29,17 @@ public class RTest {
    */
   private static final double[] W1 = new double[] {0.0, 1.4, 2.5, 1.1, 10.4};
 
+  /*
+   * X2 <- c(-0.9077215752574194, -0.9301292475839781, -1.1046720066600906, -0.9502751597899053, -0.8576219468077187)
+   */
+  private static final double[] X2 = new double[] {-0.9077215752574194, -0.9301292475839781, -1.1046720066600906, -0.9502751597899053,
+      -0.8576219468077187};
+
+  /*
+   * W2 <- c(67.8338630858479, 64.81555932904749, 70.09974167681071, 65.6280264580252, 55.86693398817972)
+   */
+  private static final double[] W2 = new double[] {67.8338630858479, 64.81555932904749, 70.09974167681071, 65.6280264580252, 55.86693398817972};
+
   private static final double EPSILON = 0.00000000001;
 
   private void almostEqual(final double x1, final double x2) {
@@ -72,6 +83,19 @@ public class RTest {
     almostEqual(RUtils.pnorm(1.8), 0.964069680887074);
   }
 
+  /**
+   * > pnorm(-11.33527) * 2 [1] 8.776103e-30
+   */
+  @Test(groups = "unit")
+  public void negPNorm() {
+    double z = -11.335272799893302;
+    double negZ = -1 * Math.abs(-11.335272799893302);
+    // System.out.println(RUtils.pnorm(-5.551115123125783E-16));
+    System.out.println(negZ);
+    System.out.println(RUtils.pnorm(-9));
+    // System.out.println(RUtils.pnorm(negZ) * 2);
+  }
+
   @Test(groups = "unit")
   public void pValue() {
     /*
@@ -102,6 +126,14 @@ public class RTest {
      * > getWeightedPvalue(X1, W1) [1] 6.10884633954227e-05
      */
     almostEqual(RMethods.getWeightedPValue(X1, W1), 6.10884633954227e-05);
+  }
+
+  @Test(groups = "unit")
+  public void testNegativeWeightedPValue() {
+    /*
+     * getWeightedPvalue(X2, W2) [1] 8.775822e-30
+     */
+    almostEqual(RMethods.getWeightedPValue(X2, W2), 8.775822e-30);
   }
 
 }

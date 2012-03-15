@@ -3,8 +3,8 @@
   <test name="Unit">
     <groups>
       <run>
-	<include name="unit" />
-	<include name="spring" />
+	      <include name="unit" />
+        <include name="spring" />
       </run>
     </groups>
     <packages>

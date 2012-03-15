@@ -17,6 +17,8 @@
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.primitives.Doubles;
 
 class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
 
@@ -96,6 +98,11 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
       if(iRatio.length > 2) {
         pValue = RMethods.getWeightedPValue(iRatio, weights);
       }
+      if(pValue < 0) {
+        final String ratioStr = Iterables.toString(Doubles.asList(iRatio));
+        final String weightsStr = Iterables.toString(Doubles.asList(weights));
+        System.out.println(String.format("Negative p-value found for ratios %s and weights %s.", ratioStr, weightsStr));
+      }
 
       ratios[proteinNum] = iRatioW;
       pValues[proteinNum] = pValue;
@@ -105,5 +112,4 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
 
     return new Ratios(ratios, pValues);
   }
-
 }

@@ -495,7 +495,7 @@
         <attribute name="name" />
         <attribute name="cagridproj" default="${build.cagrid.dir}/@{name}" />
         <attribute name="scratch" default="${build.dir}/war-scratch/@{name}" />
-        <attribute name="types" default="insecure,secure" />
+        <attribute name="types" default="insecure" />
         <attribute name="dest" default="${wars.dir}" />
         <attribute name="globus" default="@{scratch}/ws-core" />
         <attribute name="tomcat" default="@{scratch}/tomcat" />
