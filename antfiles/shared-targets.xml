@@ -543,12 +543,12 @@
               <if>
                 <equals arg1="@{type}" arg2="insecure" />
                 <then>
-                  <zip zipfile="@{dest}/@{type}/@{name}-${project.version}.war" basedir="@{tomcat}/webapps/wsrf" />
+                  <zip zipfile="@{dest}/@{type}/tint-@{name}-${project.version}.war" basedir="@{tomcat}/webapps/wsrf" />
                   <!-- If it is some sort of secure war, cog-jglobus will be common/lib and must
                        be excludes or a bizzare class cast exception occurs. -->
                 </then>
                 <else>
-                  <zip zipfile="@{dest}/@{type}/@{name}-${project.vesrion}.war" basedir="@{tomcat}/webapps/wsrf" excludes="**/cog-jglobus*.jar" />
+                  <zip zipfile="@{dest}/@{type}/tint-@{name}-${project.vesrion}.war" basedir="@{tomcat}/webapps/wsrf" excludes="**/cog-jglobus*.jar" />
                 </else>
               </if>
             </sequential>
