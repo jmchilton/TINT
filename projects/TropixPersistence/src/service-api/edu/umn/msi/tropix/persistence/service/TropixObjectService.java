@@ -91,16 +91,16 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   void removePermissionForUser(@UserId String ownerId, @Owns String objectId, String userId, PermissionType permissionType);
 
   @PersistenceMethod
-  void addVirtualPermissionForUser(@UserId String ownerId, @Owns String objectId, @AutoUser String userId, PermissionType type);
+  void addVirtualPermissionForUser(@UserId String ownerId, @Modifies String objectId, @AutoUser String userId, PermissionType type);
 
   @PersistenceMethod
-  void addVirtualPermissionForGroup(@UserId String userId, @Owns String objectId, String groupId, PermissionType type);
+  void addVirtualPermissionForGroup(@UserId String userId, @Modifies String objectId, String groupId, PermissionType type);
 
   @PersistenceMethod
-  void removeVirtualPermissionForUser(@UserId String ownerId, @Owns String objectId, String userId, PermissionType type);
+  void removeVirtualPermissionForUser(@UserId String ownerId, @Modifies String objectId, String userId, PermissionType type);
 
   @PersistenceMethod
-  void removeVirtualPermissionForGroup(@UserId String userId, @Owns String objectId, String groupId, PermissionType type);
+  void removeVirtualPermissionForGroup(@UserId String userId, @Modifies String objectId, String groupId, PermissionType type);
 
   @PersistenceMethod
   void addToSharedFolder(@UserId String gridId, @Owns String objectId, @Modifies String virtualFolderId, boolean recursive);

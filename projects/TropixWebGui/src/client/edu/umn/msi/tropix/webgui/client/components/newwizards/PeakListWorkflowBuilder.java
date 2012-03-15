@@ -81,12 +81,12 @@ public class PeakListWorkflowBuilder extends WorkflowBuilder {
         final CreateTropixFileDescription createSourceFileDescription = ActivityDescriptions.createFileFromUpload(uploadDescription, false);
         add(uploadDescription);
         add(createSourceFileDescription);
-        fileSourceHolder = new FileSourceHolder(createSourceFileDescription);
         if(type == ProteomicsRunSource.THERMO) {
           createSourceFileDescription.setExtension(StockFileExtensionEnum.THERMO_RAW.getExtension());
         } else if(type == ProteomicsRunSource.MGF) {
           createSourceFileDescription.setExtension(StockFileExtensionEnum.MASCOT_GENERIC_FORMAT.getExtension());
         }
+        fileSourceHolder = new FileSourceHolder(createSourceFileDescription);
       } else {
         fileSourceHolder = new FileSourceHolder(fileSource.getId());
       }

@@ -35,6 +35,9 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
@@ -64,6 +67,7 @@ import edu.umn.msi.tropix.persistence.service.permission.PermissionType;
 @ManagedBean
 @Named("tropixObjectService")
 class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService {
+  private static final Log LOG = LogFactory.getLog(TropixObjectServiceImpl.class);
   private final FileTypeDao fileTypeDao;
 
   @Inject
@@ -801,7 +805,27 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
   }
 
   public boolean canModifySharing(final String gridId, final String objectId) {
-    return getTropixObjectDao().isAnOwner(gridId, objectId);
+    final TropixObject object = getTropixObjectDao().loadTropixObject(objectId);
+    boolean isRootSharedFolder;
+    if(!(object instanceof VirtualFolder)) {
+      isRootSharedFolder = false;
+    } else {
+      final VirtualFolder virtualFolder = (VirtualFolder) object;
+      Boolean root = virtualFolder.getRoot();
+      if(root != null && root.booleanValue()) {
+        isRootSharedFolder =  true;
+      } else {
+        isRootSharedFolder = false;
+      }
+    }
+    boolean canModifySharing;
+    if(isRootSharedFolder) {
+      canModifySharing = getSecurityProvider().canModify(objectId, gridId);
+      LOG.debug("Checking if canModifySharing for root virtual folder with objectId " + objectId + " " + canModifySharing);
+    } else {
+      canModifySharing = getTropixObjectDao().isAnOwner(gridId, objectId);
+    }
+    return canModifySharing;
   }
 
   public TropixFile loadFileWithFileId(final String gridId, final String fileId) {

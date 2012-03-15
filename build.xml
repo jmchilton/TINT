@@ -192,6 +192,10 @@
     <for-each-project-target target="publish" />
   </target>
 
+  <target name="core-wars" depends="publish">
+    <for-each-project-target list="TropixMessaging,TropixStorageService,TropixWebGui" target="war" />
+  </target>
+
   <target name="_dist-wars">
     <mkdir dir="${artifacts.dir}/wars" />
     <copy toDir="${artifacts.dir}/wars">

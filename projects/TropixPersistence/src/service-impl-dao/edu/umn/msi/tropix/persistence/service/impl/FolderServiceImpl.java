@@ -81,7 +81,7 @@ class FolderServiceImpl extends ServiceBase implements FolderService {
 
       public TropixObjectContext<VirtualFolder> apply(final VirtualFolder input) {
         final Collection<String> objectRoles = objectsRoles.get(input.getId());
-        final TropixObjectUserAuthorities context = new TropixObjectUserAuthorities(objectRoles.contains("write"), objectRoles.contains("owns"));
+        final TropixObjectUserAuthorities context = new TropixObjectUserAuthorities(objectRoles.contains("write"), objectRoles.contains("write"));
         return new TropixObjectContext<VirtualFolder>(context, input);
       }
 
