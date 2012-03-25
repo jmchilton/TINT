@@ -13,7 +13,7 @@
   <import file="${shared-targets.file}" />
 
   <property name="gwt.entrypoint.class" value="edu.umn.msi.tropix.webgui.TropixGui" />
-  <property name="war.location" value="${wars.dir}/${deploy.path}.war" />
+  <property name="war.location" value="${wars.dir}/${deploy.path}-${project.version}.war" />
 
   <target name="defineClasspaths" depends="prepare">
     <!-- GWT Compiler doesn't respect ivy.resolved.artifacts.path, so explictly place GWT sources on classpath -->
@@ -259,6 +259,6 @@
 
   <target name="all" depends="jar" />
 
-  <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
+  <target name="dist" depends="publish, war, test-coverage, findbugs, checkstyle, javadoc" />
 
 </project>

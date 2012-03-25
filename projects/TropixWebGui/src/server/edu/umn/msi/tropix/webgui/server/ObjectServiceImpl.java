@@ -57,7 +57,7 @@ import edu.umn.msi.tropix.webgui.services.object.Permission;
 
 @ManagedBean
 public class ObjectServiceImpl implements ObjectService {
-  private static Log log = LogFactory.getLog(ObjectServiceImpl.class);
+  private static Log LOG = LogFactory.getLog(ObjectServiceImpl.class);
   private Function<PermissionReport, Permission> permissionFunction;
   private TropixObjectService tropixObjectService;
   private UserSession userSession;
@@ -70,9 +70,10 @@ public class ObjectServiceImpl implements ObjectService {
   public TropixObjectUserAuthorities getObjectContext(final String objectId) {
     final boolean modifiable = tropixObjectService.canModify(userSession.getGridId(), objectId);
     final boolean canModifySharing = tropixObjectService.canModifySharing(userSession.getGridId(), objectId);
+    LOG.trace(String.format("In getObject context for objectId - modifiable %b modifySharing %b", objectId, modifiable, canModifySharing));
     return new TropixObjectUserAuthorities(modifiable, canModifySharing);
   }
-
+    
   private List<TropixObject> sanitizeObjects(final TropixObject[] objects) {
     final ArrayList<TropixObject> sanitizedObjects = new ArrayList<TropixObject>(objects.length);
     for(final TropixObject object : objects) {
@@ -93,7 +94,7 @@ public class ObjectServiceImpl implements ObjectService {
     try {
       object = this.tropixObjectService.load(this.userSession.getGridId(), objectId);
     } catch(final RuntimeException e) {
-      log.trace("Refresh failed, this could be perfectly normal", e);
+      LOG.trace("Refresh failed, this could be perfectly normal", e);
     }
     return this.beanSanitizer.sanitize(object);
   }
@@ -219,7 +220,7 @@ public class ObjectServiceImpl implements ObjectService {
         this.tropixObjectService.addToSharedFolder(userSession.getGridId(), objectId, folderId, recursive);
       }
     } catch(final RuntimeException e) {
-      ExceptionUtils.logQuietly(ObjectServiceImpl.log, e);
+      ExceptionUtils.logQuietly(ObjectServiceImpl.LOG, e);
       lastException = e;
     }
     if(lastException != null) {
