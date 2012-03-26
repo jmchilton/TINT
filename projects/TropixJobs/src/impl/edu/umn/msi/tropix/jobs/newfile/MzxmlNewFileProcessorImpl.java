@@ -15,7 +15,7 @@ import edu.umn.msi.tropix.models.utils.StockFileExtensionEnum;
 
 @ManagedBean
 @ForExtension(edu.umn.msi.tropix.models.utils.StockFileExtensionEnum.MZXML)
-public class MzxmlNewFileProcessorImpl {
+public class MzxmlNewFileProcessorImpl implements NewFileProcessor {
   private final ActivityClient activityClient;
 
   @Inject
