@@ -1,0 +1,27 @@
+<tool id="centroid_ms1" name="Centroid MS1" version="0.1.0">
+  <description></description>
+
+  <command interpreter="bash">
+    centroid_ms1_wrapper.sh
+    ${input}
+    ${output_centroided}
+  </command>
+
+  <inputs>
+    <param format="RAW" name="input" type="data" label="Profile RAW File"/>
+  </inputs>
+  <outputs>
+    <data format="mzXML" name="output_centroided" label="${input.name} (Centroided)" />
+  </outputs>
+
+  <requirements>
+    <requirement type="binary">msconvert</requirement>    
+  </requirements>
+
+  <help>
+  </help>
+  
+  <tests>
+  </tests>
+  
+</tool>

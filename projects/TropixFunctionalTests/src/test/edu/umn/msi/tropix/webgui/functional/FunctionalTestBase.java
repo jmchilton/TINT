@@ -23,6 +23,23 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputContexts;
 
 public class FunctionalTestBase {
+  private static enum TintInstance {
+    PRODUCTION("https://tropix.msi.umn.edu/"),
+    STAGING("http://128.101.191.217:8080/tint/"),
+    LOCAL("http://127.0.0.1:8181/war/");
+
+    private final String baseUrl;
+
+    private TintInstance(final String baseUrl) {
+      this.baseUrl = baseUrl;
+    }
+
+    String getBaseUrl() {
+      return baseUrl;
+    }
+  }
+
+  private TintInstance instance = TintInstance.STAGING;
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private static final long DEFAULT_WAIT_TIME = 5000; // Five seconds
@@ -30,12 +47,11 @@ public class FunctionalTestBase {
   private File downloadDirectory;
   private List<File> tempFiles = Lists.newArrayList();
 
-
   protected File getTempFile(final String suffix) {
     final File tempFile = FILE_UTILS.createTempFile("tpxtest", suffix);
     return tempFile;
   }
-  
+
   protected File getTempFieWithContents(final String suffix, @WillClose final InputStream stream) {
     try {
       final File tempFile = getTempFile(suffix);
@@ -45,12 +61,11 @@ public class FunctionalTestBase {
       IO_UTILS.closeQuietly(stream);
     }
   }
-  
-  
+
   protected File getDownloadDirectory() {
     return downloadDirectory;
   }
-  
+
   protected Selenium getSelenium() {
     return selenium;
   }
@@ -82,7 +97,7 @@ public class FunctionalTestBase {
   @BeforeClass(groups = "functional")
   public void setUp() throws Exception {
     downloadDirectory = FILE_UTILS.createTempDirectory();
-    
+
     final FirefoxProfile profile = new FirefoxProfile();
     // profile.setPreference("browser.download.useDownloadDir", false);
     // profile.setPreference("browser.download.useDownloadDir", "true");
@@ -94,28 +109,28 @@ public class FunctionalTestBase {
     profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/x-zip,application/zip");
     final FirefoxDriver driver = new FirefoxDriver(profile);
 
-    String baseUrl = "http://127.0.0.1:8181/war/";
+    String baseUrl = instance.getBaseUrl();
     selenium = new WebDriverBackedSelenium(driver, baseUrl);
     // selenium = new DefaultSelenium("localhost", 4444, "*firefox", baseUrl);
     selenium.addLocationStrategy("scLocator", "return inWindow.isc.AutoTest.getElement(locator);");
     // selenium.setExtensionJs("user-extensions.js");
     // selenium.start();
   }
-  
+
   private File getDownloadFile() {
     return downloadDirectory.listFiles()[0];
   }
-  
+
   protected void sleep(final long time) {
     try {
       Thread.sleep(time);
     } catch(InterruptedException ie) {
       throw new RuntimeException(ie);
-    }    
+    }
   }
-  
+
   protected File waitForDownload(final String fileName) {
-    
+
     final File downloadFile = new File(downloadDirectory, fileName);
     while(!downloadFile.exists()) {
       sleep(100);
@@ -133,7 +148,7 @@ public class FunctionalTestBase {
     }
     return downloadFile;
   }
-  
+
   protected void waitFor(final Supplier<String> locator) {
     waitForElementPresent(locator.get());
   }
@@ -155,7 +170,7 @@ public class FunctionalTestBase {
       }
     }
   }
-  
+
   protected void click(final Supplier<String> locatorSupplier) {
     click(locatorSupplier.get());
   }
@@ -205,9 +220,16 @@ public class FunctionalTestBase {
     typeKeys(locator, "Test");
   }
 
+  protected void waitForWizardNext(final String wizardId) {
+    waitForElementPresent(wizardNextButtonSelector(wizardId));
+  }
+
   protected void wizardNext(final String wizardId) {
-    final String selector = String.format("scLocator=//Button[ID=\"Wizard_%s_Button_Next\"]/", wizardId);
-    click(selector);
+    click(wizardNextButtonSelector(wizardId));
+  }
+
+  private String wizardNextButtonSelector(final String wizardId) {
+    return String.format("scLocator=//Button[ID=\"Wizard_%s_Button_Next\"]/", wizardId);
   }
 
   protected void wizardFinish(final String wizardId) {
@@ -219,9 +241,14 @@ public class FunctionalTestBase {
         uploadComponentId);
     waitForElementPresent(uploadComponentTypeLocator);
     click(uploadComponentTypeLocator);
-    click(String
+    final String traditionalUploadSelector = String
         .format(
-            "scLocator=//DynamicForm[ID=\"UploadComponentType_%s\"]/item[name=uploadType]/pickList/body/row[uploadType=Traditional]/col[fieldName=uploadType]",
-            uploadComponentId));
+            "scLocator=//DynamicForm[ID=\"UploadComponentType_%s\"]/item[name=uploadType]/pickList/body/row[uploadType=Traditional Upload]/col[fieldName=uploadType]",
+            uploadComponentId);
+    if(getSelenium().isElementPresent(traditionalUploadSelector)) {
+      click(traditionalUploadSelector);
+    } else {
+
+    }
   }
 }
