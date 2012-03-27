@@ -1,0 +1,29 @@
+<tool id="split_decision_tree_raw" name="Split Decision Tree RAW File" version="0.1.0">
+  <description></description>
+
+  <command interpreter="bash">
+    split_decision_tree_raw.sh 
+    ${input}
+    ${output_cid}
+    ${output_etd} 
+  </command>
+
+  <inputs>
+    <param format="RAW" name="input" type="data" label="CID|ETD Decision Tree RAW File"/>
+  </inputs>
+  <outputs>
+    <data format="mzXML" name="output_cid" label="${input.name} (CID)" />
+    <data format="mzXML" name="output_etd" label="${input.name} (ETD)" />
+  </outputs>
+
+  <requirements>
+    <requirement type="binary">msconvert</requirement>    
+  </requirements>
+
+  <help>
+  </help>
+  
+  <tests>
+  </tests>
+  
+</tool>
