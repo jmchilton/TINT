@@ -22,6 +22,8 @@
 
 package edu.umn.msi.tropix.grid.io.transfer.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cagrid.transfer.context.stubs.types.TransferServiceContextReference;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -39,11 +41,12 @@ import edu.umn.msi.tropix.transfer.types.NamedTransferResource;
 import edu.umn.msi.tropix.transfer.types.TransferResource;
 
 class TransferResourceContextFactoryImpl implements TransferResourceContextFactory {
+  private static final Log LOG = LogFactory.getLog(TransferResourceContextFactoryImpl.class);
   private final TransferContextFactory<Credential> transferContextFactory;
   private final HttpTransferClient httpTransferClient;
 
   TransferResourceContextFactoryImpl() {
-    this(new TransferContextFactoryImpl(), HttpTransferClients.getInstance());
+    this(new TransferContextFactoryImpl(), HttpTransferClients.getInstrumentableInstance());
   }
   
   @VisibleForTesting
@@ -60,6 +63,7 @@ class TransferResourceContextFactoryImpl implements TransferResourceContextFacto
     } else if(resource instanceof HttpTransferResource) {
       final HttpTransferResource httpTransferResource = (HttpTransferResource) resource;
       final String url = httpTransferResource.getUrl();
+      LOG.trace("Preparing input context for transfer URL " + url);
       return httpTransferClient.getInputContext(url);
     } else if(resource instanceof NamedTransferResource) {
       final TransferResource delegateTransferResource = ((NamedTransferResource) resource).getDelegateTransferResource();
@@ -77,6 +81,7 @@ class TransferResourceContextFactoryImpl implements TransferResourceContextFacto
     } else if(resource instanceof HttpTransferResource) {
       final HttpTransferResource httpTransferResource = (HttpTransferResource) resource;
       final String url = httpTransferResource.getUrl();
+      LOG.trace("Preparing output context for transfer URL " + url);
       return httpTransferClient.getOutputContext(url);
     } else if(resource instanceof NamedTransferResource){
       final TransferResource delegateTransferResource = ((NamedTransferResource) resource).getDelegateTransferResource();

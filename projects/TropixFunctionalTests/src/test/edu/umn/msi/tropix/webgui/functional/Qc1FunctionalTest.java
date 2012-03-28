@@ -69,21 +69,21 @@ public class Qc1FunctionalTest extends FunctionalTestBase {
     wizardNext();
         
     selectTreeItem("DB_SELECT_0", Lists.newArrayList("My Home", "QC", "Test1", DateUtils.format(date, DateUtils.ISO8601_DATETIME_PATTERN), "HUMAN"));
-    super.sleep(250);
+    super.sleep(1000);
     wizardNext();
-    super.sleep(350);
+    super.sleep(1000);
     wizardNext();
-    super.sleep(350);
+    super.sleep(1000);
     wizardNext();
-    super.sleep(350);
+    super.sleep(1000);
     wizardNext();
-    super.sleep(350);
+    super.sleep(1000);
     wizardNext();
-    super.sleep(350);
+    super.sleep(1000);
     wizardNext();
-    super.sleep(350);
+    super.sleep(1000);
     wizardFinish();
-    super.sleep(15000);
+    //super.sleep(15000);
   }
     
 }
