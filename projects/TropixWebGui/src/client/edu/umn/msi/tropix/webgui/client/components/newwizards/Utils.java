@@ -36,10 +36,12 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItemExpanders;
+import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 
 class Utils {
   private static final Predicate<Location> DATABASE_PREDICATE = LocationPredicates.getTropixObjectTreeItemTypePredicate(TropixObjectTypeEnum.DATABASE, false);
-
+  static int databaseTreeCount = 0;
+  
   static TreeComponent getDatabaseTreeComponent(final LocationFactory locationFactory, final TreeComponentFactory treeComponentFactory, final Collection<TreeItem> locations) {
     final TropixObjectType[] dbTypes = new TropixObjectType[] {TropixObjectTypeEnum.FOLDER, TropixObjectTypeEnum.VIRTUAL_FOLDER, TropixObjectTypeEnum.DATABASE};
     final TreeOptions databaseTreeOptions = new TreeOptions();
@@ -47,7 +49,7 @@ class Utils {
     databaseTreeOptions.setShowPredicate(LocationPredicates.showDatabaseTypePredicate("FASTA"));
     databaseTreeOptions.setSelectionPredicate(LocationPredicates.selectDatabaseTypePredicate("FASTA"));
     databaseTreeOptions.expandAndSelectValidItem(locations);
-
+    databaseTreeOptions.setTreeId(DomConstants.buildConstant(DomConstants.DATABASE_SELECTION_TREE, databaseTreeCount++));
     final TreeComponent databaseTree = treeComponentFactory.get(databaseTreeOptions);    
     return databaseTree;
   }

@@ -35,18 +35,21 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import edu.umn.msi.tropix.client.services.GridService;
 import edu.umn.msi.tropix.webgui.client.AsyncCallbackImpl;
 import edu.umn.msi.tropix.webgui.client.components.ServiceSelectionComponent;
+import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandSelectionChangedHandlerImpl;
 import edu.umn.msi.tropix.webgui.client.widgets.ClientListGrid;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 import edu.umn.msi.tropix.webgui.services.gridservices.GetGridServices;
 
 public class ServiceSelectionComponentImpl<T extends GridService> extends SelectionComponentBaseImpl<T, ListGrid> implements ServiceSelectionComponent<T> {
+  private static int componentCount;
   private String servicesType;
   // Ugly hack to account for the fact that calling grid.selectRecord(record)
   // and then
   // calling grid.getSelectedRecord() seems to return null.
   private ListGridRecord initialRecord = null;
-
+  private final int componentNumber;
+  
   public void setServicesType(final String servicesType) {
     this.servicesType = servicesType;
   }
@@ -56,7 +59,10 @@ public class ServiceSelectionComponentImpl<T extends GridService> extends Select
   }
 
   public ServiceSelectionComponentImpl() {
-    this.setWidget(new ClientListGrid("Host"));
+    this.componentNumber = componentCount++;
+    final ClientListGrid widget = new ClientListGrid("Host");
+    widget.setID(DomConstants.buildConstant(DomConstants.SERVICES_LIST, componentNumber));
+    this.setWidget(widget);
     this.get().setEmptyMessage("<i>Loading services...</i>");
     this.get().setFields(this.getFields());
     this.get().addSelectionChangedHandler(new CommandSelectionChangedHandlerImpl(new Command() {
@@ -74,7 +80,6 @@ public class ServiceSelectionComponentImpl<T extends GridService> extends Select
       }
     });
     contextMenu.addItem(reloadItem);
-    // TODO: Fix this menu and add it back
     get().setContextMenu(contextMenu);
 
   }

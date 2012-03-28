@@ -945,7 +945,7 @@ package]]></replacetoken>
       <delete dir="${build.dir}/test-tropix-config-dir" />
       <mkdir dir="${build.dir}/test-tropix-config-dir" />
 
-      <cargo containerId="jetty7x" output="build/jetty.log" log="build/cargo.log" action="start" timeout="0">
+      <cargo containerId="jetty7x" output="build/jetty.log" log="build/cargo.log" action="start" timeout="210000">
 	<zipUrlInstaller
 	    installUrl="http://download.eclipse.org/jetty/7.2.2.v20101205/dist/jetty-distribution-7.2.2.v20101205.tar.gz"
 	    downloadDir="${shared.tools.dir}/cargo-downloads"

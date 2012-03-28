@@ -31,6 +31,7 @@ import com.smartgwt.client.widgets.layout.Layout;
 
 import edu.umn.msi.tropix.webgui.client.constants.ComponentConstants;
 import edu.umn.msi.tropix.webgui.client.constants.ConstantsInstances;
+import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.utils.Properties;
@@ -76,7 +77,7 @@ class ProteomicsRunSourceTypeWizardPageImpl extends WizardPageImpl<Canvas> imple
     final RadioGroupItem sourceRadioGroupItem = getSourceItem();
     final CheckboxItem batchItem = getBatchItem();
 
-    final Form form = new Form("ProteomicsRunSource", sourceRadioGroupItem, batchItem);
+    final Form form = new Form(DomConstants.PEAK_LIST_SOURCE, sourceRadioGroupItem, batchItem);
     form.setNumCols(2);
     final Layout layout = SmartUtils.getFullVLayout();
     layout.addMember(form);
