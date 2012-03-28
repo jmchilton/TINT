@@ -28,9 +28,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.springframework.web.servlet.mvc.Controller;
+
+import edu.umn.msi.tropix.common.logging.ExceptionUtils;
 
 /**
  * This is an implementation of Jetty's Handler interface that wraps a Spring Controller instance.
@@ -39,6 +43,7 @@ import org.springframework.web.servlet.mvc.Controller;
  * 
  */
 public class ControllerHandlerImpl extends AbstractHandler {
+  private static final Log LOG = LogFactory.getLog(ControllerHandlerImpl.class);
   private final Controller controller;
 
   public ControllerHandlerImpl(final Controller controller) {
@@ -49,8 +54,10 @@ public class ControllerHandlerImpl extends AbstractHandler {
     try {
       controller.handleRequest(request, response);
     } catch(final IOException e) {
+      ExceptionUtils.logQuietly(LOG, e, "IOException in transfer controller.");
       throw e;
     } catch(final Exception e) {
+      ExceptionUtils.logQuietly(LOG, e, "Generic exception in transfer controller.");
       throw new ServletException(e);
     }
   }

@@ -69,7 +69,7 @@ public class FunctionalTestBase {
   
   protected void waitForNextStepComplete() {
     progressRow++;
-    waitForElementPresent(String.format("//div[@eventproxy=\"ProgressListGrid\"]//tr[%d]//nobr[text()=\"Complete\"]", progressRow));
+    waitForElementPresent(String.format("//div[@eventproxy=\"ProgressListGrid\"]//tr[%d]//nobr[text()=\"Complete\"]", progressRow), 5* 60 * 1000);
   }
   
   protected void createFolder(final List<String> parents, final String name) {
@@ -101,6 +101,7 @@ public class FunctionalTestBase {
         //clickTreeItem("0", currentParents.get(currentParents.size()-1));
         //sleep(200);
       }
+      // FAILS: IF PREVIOUS WAS NOT EXPANDED
       clickTreeItem("0", folder);
       resetTreeSelection("0");
       currentParents.add(folder);
@@ -117,6 +118,7 @@ public class FunctionalTestBase {
 
   protected void clickTreeItem(final String treeId, final String text) {
     final String locator = String.format("//div[@eventproxy=\"TreeComponent_%s_body\"]//nobr[contains(text(), '%s')]", treeId, text);
+    sleep(20);
     waitForElementPresent(locator);
     getSelenium().doubleClick(locator);
     // reset selection    
