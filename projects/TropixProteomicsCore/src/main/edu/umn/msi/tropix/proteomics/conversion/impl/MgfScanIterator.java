@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
@@ -18,6 +19,7 @@ class MgfScanIterator extends ScanIterator {
   private final LineIterator lineIterator;
   private List<Short> defaultCharges;
   private String lastLine = "";
+  private Optional<String> defaultParentName = Optional.absent();
 
   MgfScanIterator(final InputStream inputStream) {
     lineIterator = IOUtils.lineIterator(new InputStreamReader(inputStream));
@@ -25,11 +27,13 @@ class MgfScanIterator extends ScanIterator {
       readNextLine();
       if(defaultCharges == null) {
         // See if this was default charges line
-        defaultCharges = MgfParseUtils.parseCharges(lastLine);        
+        defaultCharges = MgfParseUtils.parseCharges(lastLine);
+      } else if(!defaultParentName.isPresent()) {
+        defaultParentName = MgfParseUtils.parseDefaultParentName(lastLine);
       }
     }
   }
-  
+
   private boolean isHeaderLine() {
     return !(isStartOfScan() || outOfLines());
   }
@@ -52,7 +56,7 @@ class MgfScanIterator extends ScanIterator {
   private void readNextLine() {
     lastLine = lineIterator.nextLine().trim();
   }
-  
+
   private List<Scan> parseScanSection() {
     final List<String> scanSectionLines = readScanSectionLines();
     final List<Scan> scansToCache = extractScans(scanSectionLines);
@@ -82,5 +86,5 @@ class MgfScanIterator extends ScanIterator {
   private boolean isStartOfScan() {
     return START_IONS_PATTERN.matcher(lastLine).matches();
   }
-  
+
 }
