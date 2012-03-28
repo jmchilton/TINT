@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -26,6 +27,7 @@ class MgfScanExtracter {
   private static final Pattern PEAK_LINE_PATTERN = Pattern.compile("\\s*" + FLOATING_POINT_PATTERN + "\\s+" + FLOATING_POINT_PATTERN + "\\s*");
 
   private String titleStr = "run";
+  private Optional<String> defaultTitleStr = Optional.<String>absent();
   private float precursorMz = 0.0f;
   private float precursorIntensity = 0.0f;
   private int end = 0;
@@ -41,9 +43,16 @@ class MgfScanExtracter {
     this(scanSectionLines.iterator(), defaultCharges);
   }
 
-  MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges) {
+  MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges, final Optional<String> defaultParentName) {
     this.scanSectionLines = scanSectionLines;
     this.defaultCharges = defaultCharges;
+    if(defaultParentName.isPresent()) {
+      titleStr = defaultParentName.get();
+    }
+  }
+
+  MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges) {
+    this(scanSectionLines, defaultCharges, Optional.<String>absent());
   }
 
   List<Scan> extractScans() {
@@ -66,12 +75,11 @@ class MgfScanExtracter {
     buildPeaksArray();
     return buildScans();
   }
-  
+
   private void handleScansLine(final String line) {
     end = MgfParseUtils.parseScanEnd(line);
     start = MgfParseUtils.parseScanStart(line);
   }
-  
 
   private void handlePeaksLine(final String line) {
     peaksLines.append(line + " ");

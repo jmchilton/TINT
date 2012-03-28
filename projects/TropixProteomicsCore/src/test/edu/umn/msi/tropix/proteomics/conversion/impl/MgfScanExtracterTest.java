@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.apache.commons.io.LineIterator;
 import org.testng.annotations.Test;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
@@ -43,6 +44,21 @@ public class MgfScanExtracterTest {
     assert Math.abs(scan.getPrecursorMz() - 453.737461702821f) < 0.0001;
     assert scan.getParentFileName().equals("tgriffin_dejon039_8742_Apr19_H_BOC.raw") : scan.getParentFileName();
     assert scan.getNumber() == 14 : scan.getNumber();
+  }
+
+  @Test(groups = "unit")
+  public void testAbSciexMgf() {
+    final Iterator<String> mgfLines = getAbSciexLines();
+    final MgfScanExtracter extracter = new MgfScanExtracter(mgfLines, null, Optional.of("030911_fallo002_baldr001_10035_CvsW_4plx"));
+    final Scan scan = extracter.extractScans().iterator().next();
+    assert Math.abs(scan.getPrecursorMz() - 799.84222f) < 0.0001;
+    assert scan.getParentFileName().equals("030911_fallo002_baldr001_10035_CvsW_4plx") : scan.getParentFileName();
+    assert scan.getPrecursorCharge() == 1;
+    assert scan.getNumber() == 2720588 : scan.getNumber();
+  }
+
+  private Iterator<String> getAbSciexLines() {
+    return getResourceLines("ab_sciex_section.txt");
   }
 
   private Iterator<String> getMaxQuantLines() {
