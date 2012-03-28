@@ -81,6 +81,7 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions.SelectionType;
+import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 import edu.umn.msi.tropix.webgui.client.utils.FlashUtils;
 import edu.umn.msi.tropix.webgui.client.utils.JObject;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
@@ -115,7 +116,7 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
   }
 
   private static String getUniqueId() {
-    return "XYZuploadcomponentXYZ" + componentCount++;
+    return DomConstants.buildConstant(DomConstants.UPLOAD_COMPONENT, componentCount++);
   }
 
   private static Layout getParentCanvas(final UploadComponentOptions options) {
@@ -460,6 +461,13 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
         }
       });
       final Layout parent = getParentCanvas(options);
+      //final String parentPreix;
+      //if(isZip) {
+      //  parentPrefix = DomConstants.UPLOAD_PANEL_ZIP;
+      //} else {
+      //  parentPrefix = DomConstants.UPLOAD_PANEL_PLAIN;
+      //}
+      
       parent.setWidth100();
       if(debug) {
         parent.setBorder("1px solid pink");
@@ -501,6 +509,17 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
       // parent.setAlign(Alignment.CENTER);
       addFileUploadWidget();
       setWidget(parent);
+      parent.addDrawHandler(new DrawHandler() {
+
+        public void onDraw(DrawEvent event) {
+          if(zip) {
+            parent.getDOM().addClassName(DomConstants.UPLOAD_PANEL_ZIP);        
+          } else {
+            parent.getDOM().addClassName(DomConstants.UPLOAD_PANEL_PLAIN);  
+          }
+        }
+        
+      });
     }
 
     public void startUpload() {
@@ -561,6 +580,7 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
     private String currentType;
 
     MultiUploadComponentImpl(final UploadComponentOptions uploadOptions) {
+      wrapperLayout.setID(DomConstants.buildConstant(DomConstants.UPLOAD_WRAPPER_LAYOUT_PREFIX, uploadComponentNumber));
       setWidget(wrapperLayout);
       reset(uploadOptions);
     }
@@ -594,7 +614,7 @@ public class UploadComponentFactoryImpl implements UploadComponentFactory<Dynami
           update();
         }
       });
-      final Form form = new Form("UploadComponentType_" + uploadComponentNumber, typeItem);
+      final Form form = new Form(DomConstants.buildConstant(DomConstants.UPLOAD_COMPONENT_TYPE, uploadComponentNumber), typeItem);
       form.setPadding(0);
       form.setMargin(0);
       form.setCellSpacing(0);

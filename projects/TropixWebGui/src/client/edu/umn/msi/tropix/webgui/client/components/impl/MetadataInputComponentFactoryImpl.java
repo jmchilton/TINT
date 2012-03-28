@@ -49,15 +49,17 @@ import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeOptions;
 import edu.umn.msi.tropix.webgui.client.components.tree.TropixObjectTreeItem;
+import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.Form;
 import edu.umn.msi.tropix.webgui.client.widgets.SmartUtils;
 
 public class MetadataInputComponentFactoryImpl implements MetadataInputComponentFactory {
+  private static int componentCount = 0;;
   private final TreeComponentFactory treeComponentFactory;
   private final LocationFactory locationFactory;
-
+  
   @Inject
   public MetadataInputComponentFactoryImpl(final TreeComponentFactory treeComponentFactory, final LocationFactory locationFactory) {
     this.treeComponentFactory = treeComponentFactory;
@@ -68,7 +70,8 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
     return new MetadataInputComponentImpl(options);
   }
 
-  private class MetadataInputComponentImpl implements MetadataInputComponent {
+  private class MetadataInputComponentImpl implements MetadataInputComponent {  
+    private final int componentNumber;
     private final MetadataOptions.DestinationType destinationType;
     private final Listener<Boolean> isValidListener;
     private boolean isValid = false;
@@ -108,6 +111,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
     }
 
     MetadataInputComponentImpl(final MetadataOptions options) {
+      this.componentNumber = componentCount++;
       this.objectType = options.getObjectType();
       this.isValidListener = options.getIsValidListener();
       this.initialItems = options.getInitialItems();
@@ -130,6 +134,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
 
     public Canvas get() {
       final TreeOptions treeOptions = getDefaultTreeOptions();
+      treeOptions.setTreeId(DomConstants.buildConstant(DomConstants.METADATA_TREE_PREFIX, componentNumber));
       this.tree = treeComponentFactory.get(treeOptions);
       this.tree.addSelectionListener(new Listener<TreeItem>() {
         public void onEvent(final TreeItem treeItem) {
@@ -148,7 +153,7 @@ public class MetadataInputComponentFactoryImpl implements MetadataInputComponent
       item.setColSpan(2);
       item.setHeight("*");
 
-      final Form form = new Form();
+      final Form form = new Form(DomConstants.buildConstant(DomConstants.METADATA_INPUT_PREFIX, componentNumber));
       SmartUtils.setWidthAndHeight100(form);
       form.setNumCols(2);
 

@@ -21,6 +21,8 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.IOUtils;
 import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.io.InputContexts;
+import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
+import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 
 public class FunctionalTestBase {
   private static enum TintInstance {
@@ -46,6 +48,110 @@ public class FunctionalTestBase {
   private Selenium selenium;
   private File downloadDirectory;
   private List<File> tempFiles = Lists.newArrayList();
+  
+  class IdContext implements Supplier<String> {
+    protected int currentId = -1;
+    
+    public String get() {
+      return Integer.toString(currentId);
+    }
+    
+    public void next() {
+      currentId++;
+    }
+    
+  }
+  
+  protected IdContext wizardIdContext;
+  protected IdContext uploadIdContext;
+  protected IdContext metadataIdContext;
+  protected int progressRow = 0; 
+  
+  protected void waitForNextStepComplete() {
+    progressRow++;
+    waitForElementPresent(String.format("//div[@eventproxy=\"ProgressListGrid\"]//tr[%d]//nobr[text()=\"Complete\"]", progressRow));
+  }
+  
+  protected void createFolder(final List<String> parents, final String name) {
+    clickNewMenuOption("Folder");
+    wizardIdContext.next();
+    metadataIdContext.next();
+    specifyObjectNameAs(name);
+
+    final String treeId = DomConstants.buildConstant(DomConstants.METADATA_TREE_PREFIX, metadataIdContext.get());
+    selectTreeItem(treeId, parents);
+    sleep(2000);
+    wizardFinish();
+  }
+  
+  protected void selectTreeItem(final String treeId, final List<String> parents) {
+    for(final String parent : parents) {
+      clickTreeItem(treeId, parent);
+    }
+  }
+  
+  protected void createFolders(final String... folders) {
+    final List<String> currentParents = Lists.newArrayList("My Home");
+    clickTreeItem("0", "My Home");
+    for(final String folder : folders) {
+      sleep(200);
+      if(!hasTreeItem("0", folder)) {
+        createFolder(currentParents, folder);
+        //sleep(200);
+        //clickTreeItem("0", currentParents.get(currentParents.size()-1));
+        //sleep(200);
+      }
+      clickTreeItem("0", folder);
+      resetTreeSelection("0");
+      currentParents.add(folder);
+    }
+  }
+
+  protected boolean hasTreeItem(final String treeId, final String text) {
+    return isElementPresent(treeItemLocator(treeId, text));
+  }
+  
+  protected String treeItemLocator(final String treeId, final String text) {
+    return String.format("//div[@eventproxy=\"TreeComponent_%s_body\"]//nobr[contains(text(), '%s')]", treeId, text);
+  }
+
+  protected void clickTreeItem(final String treeId, final String text) {
+    final String locator = String.format("//div[@eventproxy=\"TreeComponent_%s_body\"]//nobr[contains(text(), '%s')]", treeId, text);
+    waitForElementPresent(locator);
+    getSelenium().doubleClick(locator);
+    // reset selection    
+  }
+  
+  protected void resetTreeSelection(final String treeId) {
+    final String homeLocator = String.format("//div[@eventproxy=\"TreeComponent_%s_body\"]//nobr[contains(text(), 'My Home')]", treeId);
+    getSelenium().click(homeLocator);
+  }
+
+  //div[@eventproxy="TreeComponent_4_body"]//nobr[contains(text() , 'Test')]
+  //div[@eventproxy="isc_WizardFactoryImpl_Wizard_2_body"]//nobr[not(contains(@style,'display:none')) and contains(text() , 'Test')]
+  // //div[@eventproxy="TreeComponent_DB_SELECT_0_body"]//nobr[contains(text(), 'Home')]
+  protected void uploadDatabase(final String name, final List<String> parents, final InputStream databaseStream) {
+    clickNewMenuOption("Sequence Database");
+    wizardIdContext.next();
+    metadataIdContext.next();
+    final String treeId = DomConstants.buildConstant(DomConstants.METADATA_TREE_PREFIX, metadataIdContext.get());
+
+    //waitForWizardNext();
+    specifyObjectNameAs(name);
+    selectTreeItem(treeId, parents);
+    
+    wizardNext();
+    final File tempFile = getTempFieWithContents(".fasta", ProteomicsTests.getResourceAsStream("HUMAN.fasta"));
+    wizardUpload(tempFile);
+    wizardFinish();
+  }
+
+  protected void wizardUpload(final File file) {
+    uploadIdContext.next();
+    changeToTraditionalUpload(uploadIdContext.get());
+    final String uploadLocatorTemplate = "//div[@class=\"UploadPanelPlain\" and not(contains(@style,'display:none'))]//input[@class=\"gwt-FileUpload\"]";     
+    typeKeys(String.format(uploadLocatorTemplate, uploadIdContext.get()), file.getAbsolutePath());
+  }
 
   protected File getTempFile(final String suffix) {
     final File tempFile = FILE_UTILS.createTempFile("tpxtest", suffix);
@@ -115,6 +221,10 @@ public class FunctionalTestBase {
     selenium.addLocationStrategy("scLocator", "return inWindow.isc.AutoTest.getElement(locator);");
     // selenium.setExtensionJs("user-extensions.js");
     // selenium.start();
+    
+    wizardIdContext = new IdContext();
+    uploadIdContext = new IdContext();
+    metadataIdContext = new IdContext();
   }
 
   private File getDownloadFile() {
@@ -174,6 +284,11 @@ public class FunctionalTestBase {
   protected void click(final Supplier<String> locatorSupplier) {
     click(locatorSupplier.get());
   }
+  
+  protected void waitForAndClick(final String locator) {
+    waitForElementPresent(locator);
+    click(locator);
+  }
 
   protected void click(final String locator) {
     selenium.click(locator);
@@ -215,13 +330,21 @@ public class FunctionalTestBase {
   }
 
   protected void specifyObjectNameAs(final String name) {
-    final String locator = "document.forms[1].elements[0]";
+    final String locator = "//input[@name=\"Name\"]";
     waitForElementPresent(locator);
-    typeKeys(locator, "Test");
+    typeKeys(locator, name);
+  }
+  
+  protected void waitForWizardNext() {
+    waitForWizardNext(wizardIdContext.get());
   }
 
   protected void waitForWizardNext(final String wizardId) {
     waitForElementPresent(wizardNextButtonSelector(wizardId));
+  }
+  
+  protected void wizardNext() {
+    wizardNext(wizardIdContext.get());
   }
 
   protected void wizardNext(final String wizardId) {
@@ -230,6 +353,10 @@ public class FunctionalTestBase {
 
   private String wizardNextButtonSelector(final String wizardId) {
     return String.format("scLocator=//Button[ID=\"Wizard_%s_Button_Next\"]/", wizardId);
+  }
+  
+  protected void wizardFinish() {
+    wizardFinish(wizardIdContext.get());
   }
 
   protected void wizardFinish(final String wizardId) {
@@ -241,14 +368,24 @@ public class FunctionalTestBase {
         uploadComponentId);
     waitForElementPresent(uploadComponentTypeLocator);
     click(uploadComponentTypeLocator);
-    final String traditionalUploadSelector = String
-        .format(
-            "scLocator=//DynamicForm[ID=\"UploadComponentType_%s\"]/item[name=uploadType]/pickList/body/row[uploadType=Traditional Upload]/col[fieldName=uploadType]",
-            uploadComponentId);
-    if(getSelenium().isElementPresent(traditionalUploadSelector)) {
+    final String traditionalUploadLabel = "Traditional Upload";
+    final String traditionalUploadSelector = uploadSelector(uploadComponentId, traditionalUploadLabel);
+    if(isElementPresent(traditionalUploadSelector)) {
       click(traditionalUploadSelector);
     } else {
-
+      click(uploadSelector(uploadComponentId, "Traditional Upload (select individual files)"));
     }
+  }
+
+  protected boolean isElementPresent(final String locator) {
+    return getSelenium().isElementPresent(locator);
+  }
+  
+  private String uploadSelector(final String uploadComponentId, final String traditionalUploadLabel) {
+    final String traditionalUploadSelector = String
+        .format(
+            "scLocator=//DynamicForm[ID=\"UploadComponentType_%s\"]/item[name=uploadType]/pickList/body/row[uploadType=%s]/col[fieldName=uploadType]",
+            uploadComponentId, traditionalUploadLabel);
+    return traditionalUploadSelector;
   }
 }
