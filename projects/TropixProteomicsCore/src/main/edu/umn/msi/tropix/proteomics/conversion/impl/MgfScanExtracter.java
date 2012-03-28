@@ -46,9 +46,7 @@ class MgfScanExtracter {
   MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges, final Optional<String> defaultParentName) {
     this.scanSectionLines = scanSectionLines;
     this.defaultCharges = defaultCharges;
-    if(defaultParentName.isPresent()) {
-      titleStr = defaultParentName.get();
-    }
+    this.defaultTitleStr = defaultParentName;
   }
 
   MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges) {
@@ -97,6 +95,12 @@ class MgfScanExtracter {
       if(end == 0) {
         end = dtaSummary.getEnd();
       }
+    } else if(MgfParseUtils.isAbSciexTitle(titleStr)) {
+      if(end != 0) {
+        throw new IllegalStateException("AB SCIEX title found as well as scan number");
+      }
+      this.end = MgfParseUtils.getAbSciexScanNumber(titleStr);
+      this.titleStr = defaultTitleStr.get();
     } else {
       if(end == 0) {
         final Pattern scanNumberPattern = Pattern.compile(".*finn[ei]ganscannumber:\\s+(\\d+).*", Pattern.CASE_INSENSITIVE);

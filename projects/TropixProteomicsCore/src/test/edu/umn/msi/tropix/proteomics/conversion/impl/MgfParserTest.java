@@ -28,6 +28,15 @@ import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
 public class MgfParserTest {
 
   @Test(groups = "unit")
+  public void testAbSciexMgf() {
+    final InputStream inputStream = MgfParserTest.class.getResourceAsStream("absciex.mgf");
+    final Iterator<Scan> scanIter = new MgfParser().parserMgf(inputStream);
+    scanIter.next();
+    scanIter.next();
+    assert !scanIter.hasNext();
+  }
+  
+  @Test(groups = "unit")
   public void testMrrConvertedByTpp() {
     final InputStream inputStream = ProteomicsTests.getResourceAsStream("readw.mgf-shortened");
     final Iterator<Scan> scanIter = new MgfParser().parserMgf(inputStream);
