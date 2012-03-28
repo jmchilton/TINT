@@ -14,13 +14,25 @@ import com.google.common.collect.Lists;
 class MgfParseUtils {
   private static final Pattern CHARGE_PATTERN = Pattern.compile("[cC][hH][aA][rR][gG][eE]=.*");
   private static final Pattern COM_PATTERN = Pattern.compile("[cC][oO][mM]=.*");
-  private static final Pattern SPOT_SET_PATTERN = Pattern.compile(".*Spot Set: \\w+\\\\(\\w+) .*");
-
+  private static final Pattern SPOT_SET_PATTERN = Pattern.compile(".*Spot Set: \\w+\\\\(\\w+).*");
+  private static final Pattern AB_SCIEX_TITLE_PATTERN = Pattern.compile(".*Label:.*Peak_List_Id: (\\d+).*"); 
+  
+  static boolean isAbSciexTitle(final String line) {
+    return AB_SCIEX_TITLE_PATTERN.matcher(line).matches();
+  }
+  
+  static int getAbSciexScanNumber(final String line) {
+    final Matcher abSciexMatcher = AB_SCIEX_TITLE_PATTERN.matcher(line);
+    Preconditions.checkArgument(abSciexMatcher.matches());
+    return Integer.parseInt(abSciexMatcher.group(1));
+  }
+  
   static Optional<String> parseDefaultParentName(final String line) {
     Optional<String> parentName = Optional.absent();
     if(COM_PATTERN.matcher(line).matches()) {
       final Matcher spotSetMatcher = SPOT_SET_PATTERN.matcher(line);
       if(spotSetMatcher.matches()) {
+        
         parentName = Optional.of(spotSetMatcher.group(1));
       }
     }

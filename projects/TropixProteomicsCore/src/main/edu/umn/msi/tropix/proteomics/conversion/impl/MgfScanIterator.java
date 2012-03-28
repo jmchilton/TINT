@@ -28,7 +28,8 @@ class MgfScanIterator extends ScanIterator {
       if(defaultCharges == null) {
         // See if this was default charges line
         defaultCharges = MgfParseUtils.parseCharges(lastLine);
-      } else if(!defaultParentName.isPresent()) {
+      } 
+      if(!defaultParentName.isPresent()) {
         defaultParentName = MgfParseUtils.parseDefaultParentName(lastLine);
       }
     }
@@ -64,7 +65,7 @@ class MgfScanIterator extends ScanIterator {
   }
 
   private List<Scan> extractScans(final List<String> scanSectionLines) {
-    return new MgfScanExtracter(scanSectionLines, defaultCharges).extractScans();
+    return new MgfScanExtracter(scanSectionLines.iterator(), defaultCharges, defaultParentName).extractScans();
   }
 
   private List<String> readScanSectionLines() {
