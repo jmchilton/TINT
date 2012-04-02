@@ -25,7 +25,15 @@ import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
 import edu.umn.msi.tropix.webgui.client.constants.DomConstants;
 
 public class FunctionalTestBase {
-  private static enum TintInstance {
+  private final TintInstance instance;
+  private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
+  private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
+  private static final long DEFAULT_WAIT_TIME = 5000; // Five seconds
+  private Selenium selenium;
+  private File downloadDirectory;
+  private List<File> tempFiles = Lists.newArrayList();
+
+  protected static enum TintInstance {
     PRODUCTION("https://tropix.msi.umn.edu/"),
     STAGING("http://128.101.191.217:8080/tint/"),
     LOCAL("http://127.0.0.1:8181/war/");
@@ -40,14 +48,15 @@ public class FunctionalTestBase {
       return baseUrl;
     }
   }
+  
+  public FunctionalTestBase() {
+    this.instance = TintInstance.LOCAL;
+  }
+  
+  public FunctionalTestBase(final TintInstance instance) {
+    this.instance = instance;
+  }
 
-  private TintInstance instance = TintInstance.STAGING;
-  private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
-  private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
-  private static final long DEFAULT_WAIT_TIME = 5000; // Five seconds
-  private Selenium selenium;
-  private File downloadDirectory;
-  private List<File> tempFiles = Lists.newArrayList();
   
   class IdContext implements Supplier<String> {
     protected int currentId = -1;
@@ -82,29 +91,34 @@ public class FunctionalTestBase {
     selectTreeItem(treeId, parents);
     sleep(2000);
     wizardFinish();
+    waitForNextStepComplete();
   }
   
   protected void selectTreeItem(final String treeId, final List<String> parents) {
     for(final String parent : parents) {
-      clickTreeItem(treeId, parent);
+      ensureOpen(treeId, parent);
     }
   }
   
   protected void createFolders(final String... folders) {
     final List<String> currentParents = Lists.newArrayList("My Home");
-    clickTreeItem("0", "My Home");
+    ensureOpen("0", "My Home");
     for(final String folder : folders) {
-      sleep(200);
       if(!hasTreeItem("0", folder)) {
         createFolder(currentParents, folder);
-        //sleep(200);
-        //clickTreeItem("0", currentParents.get(currentParents.size()-1));
-        //sleep(200);
       }
-      // FAILS: IF PREVIOUS WAS NOT EXPANDED
-      clickTreeItem("0", folder);
+      
+      ensureOpen("0", folder);
       resetTreeSelection("0");
       currentParents.add(folder);
+    }
+  }
+  
+  protected void ensureOpen(final String treeId, final String text) {
+    int tries = 0;
+    while(!treeOpened(treeId, text) && tries++ < 3) {
+      clickTreeItem(treeId, text);      
+      tryWaitForElementPresent(treeOpenedLocator(treeId, text), 500L);
     }
   }
 
@@ -114,6 +128,16 @@ public class FunctionalTestBase {
   
   protected String treeItemLocator(final String treeId, final String text) {
     return String.format("//div[@eventproxy=\"TreeComponent_%s_body\"]//nobr[contains(text(), '%s')]", treeId, text);
+  }
+  
+  protected boolean treeOpened(final String treeId, final String text) {
+    final String locator = treeOpenedLocator(treeId, text);
+    boolean treeOpened = isElementPresent(locator);
+    return treeOpened;
+  }
+
+  protected String treeOpenedLocator(final String treeId, final String text) {
+    return String.format("//div[@eventproxy=\"TreeComponent_%s_body\"]//nobr[contains(text(), '%s')]/../..//img[contains(@src, 'opened')]", treeId, text);
   }
 
   protected void clickTreeItem(final String treeId, final String text) {
@@ -199,7 +223,8 @@ public class FunctionalTestBase {
   protected void clickNewMenuOption(final String title) {
     expandFileMenu();
     clickFileSubMenu("New...");
-    click(String.format("scLocator=//Menu[ID=\"isc_Menu_3\"]/body/row[title=%s]/col[fieldName=title||1]", title));
+    final String locator = String.format("scLocator=//Menu[ID=\"isc_Menu_3\"]/body/row[title=%s]/col[fieldName=title||1]", title);
+    waitForAndClick(locator);
   }
 
   @BeforeClass(groups = "functional")
@@ -270,17 +295,30 @@ public class FunctionalTestBase {
   }
 
   protected void waitForElementPresent(final String locator, final long timeout) {
+    boolean found = tryWaitForElementPresent(locator, timeout);
+    if(!found) {
+      assert false : String.format("Timeout while waiting for presence of element with locator [%s]", locator);
+    }
+  }
+  
+  protected boolean tryWaitForElementPresent(final String locator, final long timeout) {
     final long now = System.currentTimeMillis();
-    while(!selenium.isElementPresent(locator)) {
+    boolean found = false;
+    while(true) {
+      if(selenium.isElementPresent(locator)) {
+        found = true;
+        break;
+      }
       if(System.currentTimeMillis() - now > timeout) {
-        assert false : String.format("Timeout while waiting for presence of element with locator [%s]", locator);
+        break;
       }
       try {
-        Thread.sleep(300L);
+        Thread.sleep(100L);
       } catch(InterruptedException e) {
         assert false : String.format("Interruption encountered while waiting for presence of element with locator [%s]", locator);
       }
     }
+    return found;
   }
 
   protected void click(final Supplier<String> locatorSupplier) {
@@ -306,12 +344,18 @@ public class FunctionalTestBase {
   }
 
   protected void expandFileMenu() {
-    click("scLocator=//ToolStripMen uButton[ID=\"isc_ToolStripMenuButton_0\"]/");
+    waitForAndClick("scLocator=//ToolStripMenuButton[ID=\"isc_ToolStripMenuButton_0\"]/");
   }
 
   protected void clickFileSubMenu(final String subMenuName) {
-    click(String.format("scLocator=//Menu[ID=\"isc_MainToolStripComponentImpl_TitledMenu_1\"]/body/row[title=%s]/col[fieldName=title||1]",
-        subMenuName));
+    final String locator = String.format("scLocator=//Menu[ID=\"isc_MainToolStripComponentImpl_TitledMenu_1\"]/body/row[title=%s]/col[fieldName=title||1]",
+        subMenuName);
+    waitForAndClick(locator);
+  }
+  
+  protected void clickListGridText(final String text) {
+    final String locator = String.format("//nobr[text()=\"%s\"]", text);
+    waitForAndClick(locator);
   }
 
   protected void typeKeys(final String locator, final String text) {

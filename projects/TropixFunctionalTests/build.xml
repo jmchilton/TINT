@@ -16,7 +16,7 @@
       <pathelement path="${java.class.path}"/>
       <path refid="ivy.path" />
       <path refid="source.classpath" />
-      <path refid="ext.globus.classpath" />
+<!--      <path refid="ext.globus.classpath" /> -->
     </path>
     <path id="test.classpath">
       <pathelement path="${build.test.classes.dir}" /> 
@@ -62,6 +62,15 @@
 
   <target name="checkstyle" description="Runs checkstyle on java source files" depends="prepare">
     <runcheckstyle />
+  </target>
+
+  <target name="qc" description="Runs QC" depends="compile">
+    <java classname="edu.umn.msi.tropix.webgui.functional.QcRunner" 
+          classpathref="test.classpath"
+          fork="true"
+          failonerror="true"
+          maxmemory="256m">
+    </java>
   </target>
 
   <target name="all" depends="jar" />
