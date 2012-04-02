@@ -69,9 +69,9 @@ public class HttpTransferControllerImpl implements Controller {
     final String uploadKey = request.getParameter(ServerConstants.KEY_PARAMETER_NAME);
     LOG.info("Key is " + uploadKey);
     try {
-      response.setStatus(HttpServletResponse.SC_OK);
-      response.flushBuffer();
       fileKeyResolver.handleUpload(uploadKey, request.getInputStream());
+      response.flushBuffer();
+      response.setStatus(HttpServletResponse.SC_OK);
     } catch(final Exception e) {
       throw new ServletException(e);
     }

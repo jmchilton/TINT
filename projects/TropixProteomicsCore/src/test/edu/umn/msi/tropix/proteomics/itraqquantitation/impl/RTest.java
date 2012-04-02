@@ -92,7 +92,7 @@ public class RTest {
     double negZ = -1 * Math.abs(-11.335272799893302);
     // System.out.println(RUtils.pnorm(-5.551115123125783E-16));
     System.out.println(negZ);
-    System.out.println(RUtils.pnorm(-9));
+    System.out.println(RUtils.pnorm(-7));
     // System.out.println(RUtils.pnorm(negZ) * 2);
   }
 
