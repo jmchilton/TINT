@@ -42,4 +42,6 @@ interface WeightedRatiosCalculator {
 
   Ratios computeRatioOfRatios(final ReportSummary reportSummary, final Function<Double, Double> weightFunction);
 
+  Ratios computeRatios(ITraqLabel numLabel, ITraqLabel denLabel, ReportSummary summary, Function<Double, Double> weightFunction, boolean normalized);
+
 }
