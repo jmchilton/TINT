@@ -85,46 +85,53 @@ class QuantifierImpl implements Quantifier {
         continue;
       }
       for(final ITraqRatio iTraqRatio : iTraqRatios) {
-        final ITraqLabel numLabel = iTraqRatio.getNumerator();
-        final ITraqLabel denLabel = iTraqRatio.getDenominator();
+        for(final boolean normalized : new boolean[] {false, true}) {
+          final ITraqLabel numLabel = iTraqRatio.getNumerator();
+          final ITraqLabel denLabel = iTraqRatio.getDenominator();
 
-        final Ratios ratios = weightedRatiosCalculator.computeRatios(numLabel, denLabel, summary, weightFunction);
-        final double[] weightedRatios = ratios.getRatios();
-        final double[] pValues = ratios.getPValues();
-        int i = 0;
-        for(final Protein protein : results.getProtein()) {
-          final Ratio ratio = new Ratio();
-          ratio.setNumeratorLabel(numLabel.getLabel());
-          ratio.setDenominatorLabel(denLabel.getLabel());
-          ratio.setMethod(methodName);
-          ratio.setRatio(weightedRatios[i]);
-          final double pValue = pValues[i];
-          if(pValue <= 1.0) {
-            ratio.setPValue(pValue);
+          final Ratios ratios = weightedRatiosCalculator.computeRatios(numLabel, denLabel, summary, weightFunction, normalized);
+          final double[] weightedRatios = ratios.getRatios();
+          final double[] pValues = ratios.getPValues();
+          int i = 0;
+          for(final Protein protein : results.getProtein()) {
+            final Ratio ratio = new Ratio();
+            ratio.setNumeratorLabel(numLabel.getLabel());
+            ratio.setDenominatorLabel(denLabel.getLabel());
+            if(!normalized) {
+              ratio.setMethod(methodName);
+            } else {
+              ratio.setMethod(methodName + " (normalized)");
+            }
+            ratio.setRatio(weightedRatios[i]);
+            final double pValue = pValues[i];
+            if(pValue <= 1.0) {
+              ratio.setPValue(pValue);
+            }
+            protein.getRatio().add(ratio);
+            i++;
           }
-          protein.getRatio().add(ratio);
-          i++;
         }
       }
-      final Ratios ratios = weightedRatiosCalculator.computeRatioOfRatios(summary, weightFunction);
-      final double[] weightedRatios = ratios.getRatios();
-      final double[] pValues = ratios.getPValues();
-      int i = 0;
-      for(final Protein protein : results.getProtein()) {
-        final Ratio ratio = new Ratio();
-        ratio.setNumeratorLabel("(i116:i117)");
-        ratio.setDenominatorLabel("(i114:i115)");
-        ratio.setMethod(methodName);
-        ratio.setRatio(weightedRatios[i]);
-        final double pValue = pValues[i];
-        if(pValue <= 1.0) {
-          ratio.setPValue(pValue);
-        }
-        protein.getRatio().add(ratio);
-        i++;
-      }
+      /*
+       * final Ratios ratios = weightedRatiosCalculator.computeRatioOfRatios(summary, weightFunction);
+       * final double[] weightedRatios = ratios.getRatios();
+       * final double[] pValues = ratios.getPValues();
+       * int i = 0;
+       * for(final Protein protein : results.getProtein()) {
+       * final Ratio ratio = new Ratio();
+       * ratio.setNumeratorLabel("(i116:i117)");
+       * ratio.setDenominatorLabel("(i114:i115)");
+       * ratio.setMethod(methodName);
+       * ratio.setRatio(weightedRatios[i]);
+       * final double pValue = pValues[i];
+       * if(pValue <= 1.0) {
+       * ratio.setPValue(pValue);
+       * }
+       * protein.getRatio().add(ratio);
+       * i++;
+       * }
+       */
     }
     return results;
   }
-
 }

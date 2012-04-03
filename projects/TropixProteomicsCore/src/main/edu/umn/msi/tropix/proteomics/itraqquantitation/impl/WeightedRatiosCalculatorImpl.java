@@ -70,7 +70,7 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
   }
 
   public Ratios computeRatios(final ITraqLabel numLabel, final ITraqLabel denLabel, final ReportSummary reportSummary,
-      final Function<Double, Double> weightFunction) {
+      final Function<Double, Double> weightFunction, final boolean normalized) {
     final double[] ratios = new double[reportSummary.getNumProteins()], pValues = new double[reportSummary.getNumProteins()];
     int proteinNum = 0;
     for(final String protein : reportSummary.getProteins()) {
@@ -92,12 +92,20 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
         iRatio[i] = Math.log(num[i] / den[i]);
       }
 
+      if(normalized) {
+        final double median = RUtils.median(iRatio);
+        for(int i = 0; i < iRatio.length; i++) {
+          iRatio[i] = iRatio[i] / median;
+        }
+      }
+
       final double iRatioW1 = RUtils.weightedMean(iRatio, weights);
       final double iRatioW = Math.exp(iRatioW1);
       double pValue = 2.0;
       if(iRatio.length > 2) {
         pValue = RMethods.getWeightedPValue(iRatio, weights);
       }
+
       if(pValue < 0) {
         final String ratioStr = Iterables.toString(Doubles.asList(iRatio));
         final String weightsStr = Iterables.toString(Doubles.asList(weights));
@@ -111,5 +119,9 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
     }
 
     return new Ratios(ratios, pValues);
+  }
+
+  public Ratios computeRatios(ITraqLabel numLabel, ITraqLabel denLabel, ReportSummary summary, Function<Double, Double> weightFunction) {
+    return computeRatios(numLabel, denLabel, summary, weightFunction, false);
   }
 }
