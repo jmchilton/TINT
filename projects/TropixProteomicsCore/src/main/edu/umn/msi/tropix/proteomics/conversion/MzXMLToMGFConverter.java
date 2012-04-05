@@ -18,8 +18,12 @@ package edu.umn.msi.tropix.proteomics.conversion;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.annotation.WillNotClose;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 public interface MzXMLToMGFConverter {
   public static class MgfConversionOptions {
@@ -28,6 +32,7 @@ public interface MzXMLToMGFConverter {
     };
 
     private MgfStyle mgfStyle = MgfStyle.DEFAULT;
+    private List<Function<Scan, Scan>> scanTransformers = Lists.newArrayList();
 
     public MgfStyle getMgfStyle() {
       return mgfStyle;
@@ -36,6 +41,15 @@ public interface MzXMLToMGFConverter {
     public void setMgfStyle(final MgfStyle mgfStyle) {
       this.mgfStyle = mgfStyle;
     }
+
+    public void addScanTransformer(final Function<Scan, Scan> scanTransformer) {
+      this.scanTransformers.add(scanTransformer);
+    }
+
+    public List<Function<Scan, Scan>> getScanTransformers() {
+      return scanTransformers;
+    }
+
   }
 
   void mzxmlToMGF(InputStream mzxmlInputStream, @WillNotClose OutputStream mgfStream, MgfConversionOptions options);

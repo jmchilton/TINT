@@ -27,7 +27,6 @@ import com.google.gwt.user.client.Command;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-
 public class DialogActionController {
   private final ActionMediator actionMediator;
 
@@ -49,6 +48,12 @@ public class DialogActionController {
   public void setBulkMgfProteinPilotDownloadWindowComponentSupplier(
       @Named("bulkMgfProteinPilotDownload") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("bulkMgfProteinPilotDownload", windowComponentSupplier);
+  }
+
+  @Inject
+  public void setBulkMgfProteinPilotITraqDownloadWindowComponentSupplier(
+      @Named("bulkMgfProteinPilotITraqDownload") final Supplier<? extends Command> windowComponentSupplier) {
+    registerListener("bulkMgfProteinPilotITraqDownload", windowComponentSupplier);
   }
 
   @Inject

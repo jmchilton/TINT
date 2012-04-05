@@ -8,6 +8,9 @@ import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.common.base.Functions;
+import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
+
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.files.MockPersistentModelStorageDataFactoryImpl;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
@@ -22,8 +25,7 @@ public class MgfDownloadHelperImplTest extends BaseGwtServiceTest {
   private MzXMLToMGFConverter mzxmlToMgfConverter;
   private MgfDownloadHelperImpl helper;
   private String objectId;
-  
-  
+
   @BeforeMethod(groups = "unit")
   public void init() {
     super.init();
@@ -33,27 +35,30 @@ public class MgfDownloadHelperImplTest extends BaseGwtServiceTest {
     objectId = UUID.randomUUID().toString();
     helper = new MgfDownloadHelperImpl(getUserSession(), tropixObjectService, storageDataFactory, mzxmlToMgfConverter);
   }
-  
+
   private String expectObjectId() {
     return EasyMock.eq(objectId);
   }
-  
+
   @Test(groups = "unit")
   public void testWrite() {
+
     final ModelStorageData data = storageDataFactory.getStorageData("service", super.getUserSession().getProxy());
     data.getUploadContext().put("hello world input".getBytes());
     EasyMock.expect(tropixObjectService.getAssociation(expectUserId(), expectObjectId(), EasyMock.eq("mzxml"))).andReturn(data.getTropixFile());
-    //final ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
-    //data.getDownloadContext().get(new File("/home/john/test"));
-    //assert new String(outputStream2.toByteArray()).equals("hello world input");
+    // final ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
+    // data.getDownloadContext().get(new File("/home/john/test"));
+    // assert new String(outputStream2.toByteArray()).equals("hello world input");
     final ByteArrayInputStream inputStream = new ByteArrayInputStream("hello world2".getBytes());
-    mzxmlToMgfConverter.mzxmlToMGF(EasyMockUtils.inputStreamWithContents("hello world input".getBytes()), EasyMockUtils.copy(inputStream), EasyMock.isA(MgfConversionOptions.class));
-    
+    mzxmlToMgfConverter.mzxmlToMGF(EasyMockUtils.inputStreamWithContents("hello world input".getBytes()), EasyMockUtils.copy(inputStream),
+        EasyMock.isA(MgfConversionOptions.class));
+
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     EasyMock.replay(tropixObjectService, mzxmlToMgfConverter);
-    helper.writeMgf(objectId, "DEFAULT", outputStream);
+    helper.writeMgf(objectId, Functions.<String, String>forMap(ImmutableMap.<String, String>builder().put("mgfStyle", "DEFAULT").build(), null),
+        outputStream);
     assert new String(outputStream.toByteArray()).equals("hello world2");
     EasyMock.verify(tropixObjectService, mzxmlToMgfConverter);
   }
-  
+
 }

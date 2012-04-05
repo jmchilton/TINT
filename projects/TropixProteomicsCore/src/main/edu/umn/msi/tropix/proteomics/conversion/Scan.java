@@ -28,7 +28,7 @@ public class Scan implements Cloneable {
   private final int msLevel;
   private final int number;
   private int alt = 0;
-  private final double[] peaks;
+  private double[] peaks;
   private String parentFileName;
   private String parentName;
   private boolean parentFileNameExplicit;
@@ -40,11 +40,11 @@ public class Scan implements Cloneable {
   public boolean isPrecursorIntensitySet() {
     return precursorIntensity > 0.0;
   }
-  
+
   public boolean isPrecursorMzSet() {
     return precursorMz > 0.0;
   }
-  
+
   public Scan(final int msLevel, final int number, final double[] peaks) {
     this.msLevel = msLevel;
     this.number = number;
@@ -55,11 +55,11 @@ public class Scan implements Cloneable {
     try {
       final Scan clonedScan = (Scan) super.clone();
       return clonedScan;
-    } catch (CloneNotSupportedException e) {
+    } catch(CloneNotSupportedException e) {
       throw new IllegalStateException(e);
     }
   }
-  
+
   public double[] getPeaks() {
     return peaks;
   }
@@ -82,6 +82,10 @@ public class Scan implements Cloneable {
     return precursorMz;
   }
 
+  public void setPeaks(final double[] peaks) {
+    this.peaks = peaks;
+  }
+
   public void setPrecursorMz(final float precursorMz) {
     this.precursorMz = precursorMz;
   }
@@ -100,7 +104,7 @@ public class Scan implements Cloneable {
   /**
    * 
    * @return true if parent file name was explicitly defined in source file, false
-   * if it was inferred. 
+   *         if it was inferred.
    */
   public boolean isParentFileNameExplicit() {
     return parentFileNameExplicit;
@@ -110,7 +114,6 @@ public class Scan implements Cloneable {
     this.parentFileNameExplicit = parentFileNameExplicit;
   }
 
-  
   public int getMsLevel() {
     return msLevel;
   }
@@ -158,9 +161,9 @@ public class Scan implements Cloneable {
   public String getParentName() {
     return parentName;
   }
-  
+
   public String toString() {
     return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);
   }
-  
+
 }

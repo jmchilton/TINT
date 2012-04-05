@@ -41,8 +41,7 @@ class MgfDownloadHandlerImpl implements FileDownloadHandler {
 
   public void processDownloadRequest(final OutputStream stream, final Function<String, String> accessor) {
     final String runId = accessor.apply("id");
-    final String style = accessor.apply("mgfStyle");
-    mgfDownloadHelper.writeMgf(runId, style, stream);
+    mgfDownloadHelper.writeMgf(runId, accessor, stream);
   }
 
 }

@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import org.springframework.util.StringUtils;
 
+import com.google.common.base.Function;
+
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.IOUtils;
@@ -19,6 +21,7 @@ import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.proteomics.conversion.MzXMLToMGFConverter;
 import edu.umn.msi.tropix.proteomics.conversion.MzXMLToMGFConverter.MgfConversionOptions;
 import edu.umn.msi.tropix.proteomics.conversion.MzXMLToMGFConverter.MgfConversionOptions.MgfStyle;
+import edu.umn.msi.tropix.proteomics.conversion.ScanTransformers;
 import edu.umn.msi.tropix.storage.client.StorageData;
 import edu.umn.msi.tropix.webgui.server.security.UserSession;
 
@@ -39,8 +42,9 @@ public class MgfDownloadHelperImpl implements MgfDownloadHelper {
     this.storageDataFactory = storageDataFactory;
     this.mzxmlToMgfConverter = mzxmlToMgfConverter;
   }
-  
-  public void writeMgf(final TropixFile mzxmlTropixFile, final String style, final OutputStream outputStream) {
+
+  public void writeMgf(final TropixFile mzxmlTropixFile, final Function<String, String> accessor, final OutputStream outputStream) {
+    final String style = accessor.apply("mgfStyle");
     final StorageData storageData = storageDataFactory.getStorageData(mzxmlTropixFile, userSession.getProxy());
     final File mzxmlFile = FILE_UTILS.createTempFile("tpx", "mzxml");
     InputStream mzxmlInputStream = null;
@@ -51,21 +55,25 @@ public class MgfDownloadHelperImpl implements MgfDownloadHelper {
       if(StringUtils.hasText(style)) {
         options.setMgfStyle(MgfStyle.valueOf(style));
       }
+      final String filterITraq = accessor.apply("filterITraq");
+      if("true".equals(filterITraq)) {
+        options.addScanTransformer(ScanTransformers.getITraqFilter());
+      }
       mzxmlToMgfConverter.mzxmlToMGF(mzxmlInputStream, outputStream, options);
     } finally {
       IO_UTILS.closeQuietly(mzxmlInputStream);
       FILE_UTILS.deleteQuietly(mzxmlFile);
     }
   }
-  
+
   public TropixFile getMzXMLTropixFile(final String objectId) {
     final String userId = userSession.getGridId();
     return (TropixFile) tropixObjectService.getAssociation(userId, objectId, "mzxml");
   }
 
-  public void writeMgf(final String objectId, final String style, final OutputStream outputStream) {
+  public void writeMgf(final String objectId, final Function<String, String> accessor, final OutputStream outputStream) {
     final TropixFile file = getMzXMLTropixFile(objectId);
-    writeMgf(file, style, outputStream);
+    writeMgf(file, accessor, outputStream);
   }
-  
+
 }
