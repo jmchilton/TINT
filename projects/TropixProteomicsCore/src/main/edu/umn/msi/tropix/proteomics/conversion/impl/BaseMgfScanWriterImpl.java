@@ -2,6 +2,9 @@ package edu.umn.msi.tropix.proteomics.conversion.impl;
 
 import java.io.OutputStream;
 import java.util.Formatter;
+import java.util.List;
+
+import com.google.common.base.Function;
 
 import edu.umn.msi.tropix.proteomics.conversion.MzXMLToMGFConverter.MgfConversionOptions;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
@@ -10,14 +13,20 @@ abstract class BaseMgfScanWriterImpl implements MgfScanWriter {
   private final OutputStream outputStream;
   private final MgfConversionOptions options;
   private final Formatter formatter;
+  private final List<Function<Scan, Scan>> scanTransformers;
 
   protected BaseMgfScanWriterImpl(final OutputStream outputStream, final MgfConversionOptions options) {
     this.outputStream = outputStream;
     this.options = options;
     formatter = new Formatter(outputStream);
+    this.scanTransformers = options.getScanTransformers();
   }
 
-  public void writeScan(final Scan scan) {
+  public void writeScan(final Scan inputScan) {
+    Scan scan = inputScan;
+    for(final Function<Scan, Scan> scanTransformer : scanTransformers) {
+      scan = scanTransformer.apply(scan);
+    }
     final int msLevel = scan.getMsLevel();
     if(msLevel != 2) {
       return;
