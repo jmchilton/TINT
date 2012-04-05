@@ -32,13 +32,16 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
   private final TreeComponentFactory treeComponentFactory;
   private final LocationFactory locationFactory;
   private final String mgfStyle;
+  private final boolean filterITraq;
 
   protected BulkMgfDownloadComponentSupplierImpl(final TreeComponentFactory treeComponentFactory,
       final LocationFactory locationFactory,
-      final String mgfStyle) {
+      final String mgfStyle,
+      final boolean filterITraq) {
     this.treeComponentFactory = treeComponentFactory;
     this.locationFactory = locationFactory;
     this.mgfStyle = mgfStyle;
+    this.filterITraq = filterITraq;
   }
 
   private class BulkMgfDownloadComponentImpl extends WindowComponentImpl<Window> implements ValidationListener {
@@ -51,6 +54,7 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
         final Iterable<String> idIterable = ModelUtils.getIds(getResult());
         smartDownloadFormPanel.setFilename(ConstantsInstances.COMPONENT_INSTANCE.bulkMgfDownloadName());
         smartDownloadFormPanel.setParameter("mgfStyle", mgfStyle);
+        smartDownloadFormPanel.setParameter("filterITraq", Boolean.toString(filterITraq));
         final String ids = StringUtils.join(idIterable);
         smartDownloadFormPanel.setId(ids);
         smartDownloadFormPanel.execute();
@@ -60,7 +64,7 @@ public class BulkMgfDownloadComponentSupplierImpl implements Supplier<WindowComp
     // private SelectItem mgfStyleItem;
 
     BulkMgfDownloadComponentImpl() {
-      smartDownloadFormPanel = new GWTDownloadFormPanel("mgfStyle");
+      smartDownloadFormPanel = new GWTDownloadFormPanel("mgfStyle", "filterITraq");
       smartDownloadFormPanel.setType("bulkMgf");
       downloadButton = SmartUtils.getButton(ConstantsInstances.COMPONENT_INSTANCE.bulkMgfDownload(), Resources.DOWNLOAD);
       downloadButton.setID("BulkMgfDownload_Button_Download");

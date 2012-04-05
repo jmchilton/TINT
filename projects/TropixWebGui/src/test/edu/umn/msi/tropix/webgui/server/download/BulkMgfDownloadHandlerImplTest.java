@@ -10,6 +10,7 @@ import org.easymock.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 
@@ -39,6 +40,7 @@ public class BulkMgfDownloadHandlerImplTest extends BaseGwtServiceTest {
   public void testDownload() {
     final Map<String, String> args =
         ImmutableMap.<String, String>builder().put("mgfStyle", "DEFAULT").put("id", "123,456").build();
+    final Function<String, String> argFunction = Functions.forMap(args);
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     final TropixFile file1 = new TropixFile();
     file1.setName("file1.mzxml");
@@ -46,10 +48,10 @@ public class BulkMgfDownloadHandlerImplTest extends BaseGwtServiceTest {
     file2.setName("file2.mzxml");
     EasyMock.expect(mgfDownloadHelper.getMzXMLTropixFile("123")).andReturn(file1);
     EasyMock.expect(mgfDownloadHelper.getMzXMLTropixFile("456")).andReturn(file2);
-    mgfDownloadHelper.writeMgf(EasyMock.same(file1), EasyMock.eq("DEFAULT"), EasyMockUtils.copy(new ByteArrayInputStream("f1c".getBytes())));
-    mgfDownloadHelper.writeMgf(EasyMock.same(file2), EasyMock.eq("DEFAULT"), EasyMockUtils.copy(new ByteArrayInputStream("f2c".getBytes())));
+    mgfDownloadHelper.writeMgf(EasyMock.same(file1), EasyMock.eq(argFunction), EasyMockUtils.copy(new ByteArrayInputStream("f1c".getBytes())));
+    mgfDownloadHelper.writeMgf(EasyMock.same(file2), EasyMock.eq(argFunction), EasyMockUtils.copy(new ByteArrayInputStream("f2c".getBytes())));
     EasyMock.replay(mgfDownloadHelper);
-    new BulkMgfDownloadHanderImpl(mgfDownloadHelper).processDownloadRequest(outputStream, Functions.forMap(args));
+    new BulkMgfDownloadHanderImpl(mgfDownloadHelper).processDownloadRequest(outputStream, argFunction);
     EasyMock.verify(mgfDownloadHelper);
     verifyZipFile(outputStream.toByteArray());
   }

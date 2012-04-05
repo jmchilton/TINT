@@ -410,6 +410,12 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
         final MenuItem bulkMgfProteinPilotDownloadItem = getDialogMenuItem("Download Peak Lists for ProteinPilot", "bulkMgfProteinPilotDownload",
             Resources.SAVE);
         exportMenuBuilder.addMenuItem(bulkMgfProteinPilotDownloadItem);
+
+        final MenuItem bulkMgfProteinPilotITraqDownloadItem = getDialogMenuItem("Download Peak Lists for ProteinPilot (ITraq Filtered)",
+            "bulkMgfProteinPilotITraqDownload",
+            Resources.SAVE);
+        exportMenuBuilder.addMenuItem(bulkMgfProteinPilotITraqDownloadItem);
+
       }
 
       final MenuItem gridFtpItem = getDialogMenuItem("Export via GridFTP", "gridFtpExport", Resources.SAVE);

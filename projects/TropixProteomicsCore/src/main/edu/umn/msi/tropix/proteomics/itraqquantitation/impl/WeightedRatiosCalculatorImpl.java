@@ -92,6 +92,9 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
         iRatio[i] = Math.log(num[i] / den[i]);
       }
 
+      final String logRatioStr = Iterables.toString(Doubles.asList(iRatio));
+      System.out.println(logRatioStr);
+
       if(normalized) {
         final double median = RUtils.median(iRatio);
         for(int i = 0; i < iRatio.length; i++) {

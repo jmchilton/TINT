@@ -91,7 +91,8 @@ import edu.umn.msi.tropix.webgui.services.object.SearchResult;
  */
 public class ComponentsModule extends AbstractGinModule {
 
-  protected <T extends Command> void bindDescribableLocationCommandComponentFactory(final String name, final Class<? extends DescribableLocationCommandComponentFactory<T>> clazz) {
+  protected <T extends Command> void bindDescribableLocationCommandComponentFactory(final String name,
+      final Class<? extends DescribableLocationCommandComponentFactory<T>> clazz) {
     bind(clazz).in(Singleton.class);
     bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
     }).annotatedWith(Names.named(name)).to(clazz);
@@ -99,7 +100,6 @@ public class ComponentsModule extends AbstractGinModule {
     }).annotatedWith(Names.named(name)).to(clazz);
   }
 
-  
   /**
    * Specifies actual bindings.
    */
@@ -204,6 +204,9 @@ public class ComponentsModule extends AbstractGinModule {
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("bulkMgfProteinPilotDownload")).to(BulkMgfProteinPilotDownloadComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("bulkMgfProteinPilotITraqDownload")).to(BulkMgfProteinPilotITraqDownloadComponentSupplierImpl.class)
+        .in(Singleton.class);
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("bulkMgfMascotDownload")).to(BulkMgfMascotDownloadComponentSupplierImpl.class).in(Singleton.class);
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("bulkDownload")).to(BulkDownloadComponentSupplierImpl.class).in(Singleton.class);
@@ -215,15 +218,15 @@ public class ComponentsModule extends AbstractGinModule {
     bindDescribableLocationCommandComponentFactory("rename", RenameCommandComponentFactoryImpl.class);
     bindDescribableLocationCommandComponentFactory("delete", DeleteCommandComponentFactoryImpl.class);
     /*
-    bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
-    }).annotatedWith(Names.named("changeDescription")).to(ChangeDescriptionCommandComponentFactoryImpl.class).in(Singleton.class);
-    bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
-    }).annotatedWith(Names.named("move")).to(MoveCommandComponentFactoryImpl.class).in(Singleton.class);
-    bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
-    }).annotatedWith(Names.named("rename")).to(RenameCommandComponentFactoryImpl.class).in(Singleton.class);
-    bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
-    }).annotatedWith(Names.named("delete")).to(DeleteCommandComponentFactoryImpl.class).in(Singleton.class);
-    */
+     * bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
+     * }).annotatedWith(Names.named("changeDescription")).to(ChangeDescriptionCommandComponentFactoryImpl.class).in(Singleton.class);
+     * bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
+     * }).annotatedWith(Names.named("move")).to(MoveCommandComponentFactoryImpl.class).in(Singleton.class);
+     * bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
+     * }).annotatedWith(Names.named("rename")).to(RenameCommandComponentFactoryImpl.class).in(Singleton.class);
+     * bind(new TypeLiteral<LocationCommandComponentFactory<? extends Command>>() {
+     * }).annotatedWith(Names.named("delete")).to(DeleteCommandComponentFactoryImpl.class).in(Singleton.class);
+     */
 
     bind(UploadComponentFactoryImpl.class).in(Singleton.class);
     bind(new TypeLiteral<ComponentFactory<UploadComponentOptions, ? extends UploadComponent>>() {

@@ -5,12 +5,12 @@ import com.google.inject.Inject;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
 
-public class BulkMgfMascotDownloadComponentSupplierImpl extends BulkMgfDownloadComponentSupplierImpl {
+public class BulkMgfProteinPilotITraqDownloadComponentSupplierImpl extends BulkMgfDownloadComponentSupplierImpl {
 
   @Inject
-  public BulkMgfMascotDownloadComponentSupplierImpl(final TreeComponentFactory treeComponentFactory,
+  public BulkMgfProteinPilotITraqDownloadComponentSupplierImpl(final TreeComponentFactory treeComponentFactory,
       final LocationFactory locationFactory) {
-    super(treeComponentFactory, locationFactory, "DEFAULT", false);
+    super(treeComponentFactory, locationFactory, "PROTEIN_PILOT", true);
   }
 
 }

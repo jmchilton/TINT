@@ -28,7 +28,7 @@ public class BulkMgfDownloadHanderImpl implements FileDownloadHandler {
 
   public void processDownloadRequest(final OutputStream stream, final Function<String, String> accessor) {
     final String runIdsString = accessor.apply("id");
-    final String style = accessor.apply("mgfStyle");
+    // final String style = accessor.apply("mgfStyle");
     final Iterable<String> runIds = Lists.newArrayList(runIdsString.split("\\s*,\\s*"));
     final ZipOutputStream zipOutputStream = new ZipOutputStream(stream);
     ZipEntry zipEntry;
@@ -39,7 +39,7 @@ public class BulkMgfDownloadHanderImpl implements FileDownloadHandler {
         final String mgfName = FilenameUtils.getBaseName(file.getName()) + StockFileExtensionEnum.MASCOT_GENERIC_FORMAT.getExtension();
         zipEntry = new ZipEntry(mgfName);
         zipOutputStream.putNextEntry(zipEntry);
-        mgfDownloadHelper.writeMgf(file, style, zipOutputStream);
+        mgfDownloadHelper.writeMgf(file, accessor, zipOutputStream);
         zipOutputStream.closeEntry();
       }
       zipOutputStream.finish();
