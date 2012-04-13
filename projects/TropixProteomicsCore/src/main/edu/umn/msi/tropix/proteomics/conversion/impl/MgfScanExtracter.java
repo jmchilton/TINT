@@ -37,6 +37,7 @@ class MgfScanExtracter {
   private final Iterator<String> scanSectionLines;
   private List<Short> defaultCharges;
   private double[] peaksArray;
+  private boolean guessChargeState = false;
   private StringBuilder peaksLines;
 
   MgfScanExtracter(final List<String> scanSectionLines, final List<Short> defaultCharges) {
@@ -101,6 +102,11 @@ class MgfScanExtracter {
       }
       this.end = MgfParseUtils.getAbSciexScanNumber(titleStr);
       this.titleStr = defaultTitleStr.get();
+    } else if(MgfParseUtils.isReadw4MascotTitle(titleStr)) {
+      this.end = MgfParseUtils.getReadw4MascotScanNumber(titleStr);
+      this.titleStr = defaultTitleStr.get();
+      // These files usually don't specify a charge state, so we need to guess.
+      this.guessChargeState = true;
     } else {
       if(end == 0) {
         final Pattern scanNumberPattern = Pattern.compile(".*finn[ei]ganscannumber:\\s+(\\d+).*", Pattern.CASE_INSENSITIVE);
@@ -183,9 +189,20 @@ class MgfScanExtracter {
       scansToCache.add(templateScan);
     } else {
       if(charges == null) {
-        Preconditions.checkState(defaultCharges != null, "MGF scan did not contain a CHARGE line, and no default was specified in file");
-        charges = defaultCharges;
+        if(defaultCharges == null && !guessChargeState) {
+          throw new IllegalStateException("MGF scan did not contain a CHARGE line, and no default was specified in file");
+        } else if(defaultCharges == null){
+          boolean isPlus1Charge = ConversionUtils.isPlus1ChargeState(templateScan.getPeaks(), templateScan.getPrecursorMz());
+          if(isPlus1Charge) {
+            this.charges = Lists.<Short>newArrayList((short) 1);
+          } else {
+            this.charges = Lists.<Short>newArrayList((short) 2, (short) 3);            
+          }
+        } else {
+          charges = defaultCharges;          
+        }
       }
+      
       for(final Short charge : charges) {
         final Scan newScan = templateScan.clone();
         newScan.setPrecursorCharge(charge);
