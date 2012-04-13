@@ -15,10 +15,21 @@ class MgfParseUtils {
   private static final Pattern CHARGE_PATTERN = Pattern.compile("[cC][hH][aA][rR][gG][eE]=.*");
   private static final Pattern COM_PATTERN = Pattern.compile("[cC][oO][mM]=.*");
   private static final Pattern SPOT_SET_PATTERN = Pattern.compile(".*Spot Set: \\w+\\\\(\\w+).*");
-  private static final Pattern AB_SCIEX_TITLE_PATTERN = Pattern.compile(".*Label:.*Peak_List_Id: (\\d+).*"); 
+  private static final Pattern AB_SCIEX_TITLE_PATTERN = Pattern.compile(".*Label:.*Peak_List_Id: (\\d+).*");
+  private static final Pattern READW_4_MASCOT_TITLE_PATTERN = Pattern.compile("Scan:(\\d+) .*");
   
   static boolean isAbSciexTitle(final String line) {
     return AB_SCIEX_TITLE_PATTERN.matcher(line).matches();
+  }
+  
+  static boolean isReadw4MascotTitle(final String line) {
+    return READW_4_MASCOT_TITLE_PATTERN.matcher(line).matches();
+  }
+  
+  static int getReadw4MascotScanNumber(final String line) {
+    final Matcher matcher = READW_4_MASCOT_TITLE_PATTERN.matcher(line);
+    Preconditions.checkState(matcher.matches());
+    return Integer.parseInt(matcher.group(1));
   }
   
   static int getAbSciexScanNumber(final String line) {
