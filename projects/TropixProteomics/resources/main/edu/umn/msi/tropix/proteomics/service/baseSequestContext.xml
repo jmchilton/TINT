@@ -23,6 +23,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
       <map>
         <entry key="sequest.staging.type" value="system" />
         <entry key="sequest.execution.type" value="system" />
+        <entry key="sequest.max.jobs.processing" value="5" />
         <entry key="sequest.allowed.drops" value="0" />
         <entry key="sequest.output.type" value="STANDARD_OUTPUT" />   
       </map>
@@ -59,6 +60,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
       </bean>
     </property>
     <property name="credentialedStagingDirectoryFactory" ref="${sequest.staging.type}CredentialedStagingDirectoryFactory" />
+    <property name="maxConcurrentProcessingJobs" value="${sequest.max.jobs.processing}" />
     <property name="executionType" value="${sequest.execution.type}" />        
   </bean>
   

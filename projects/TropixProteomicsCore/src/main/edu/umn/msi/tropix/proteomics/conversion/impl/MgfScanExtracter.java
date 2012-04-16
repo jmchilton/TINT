@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils;
@@ -104,7 +103,7 @@ class MgfScanExtracter {
       this.titleStr = defaultTitleStr.get();
     } else if(MgfParseUtils.isReadw4MascotTitle(titleStr)) {
       this.end = MgfParseUtils.getReadw4MascotScanNumber(titleStr);
-      this.titleStr = defaultTitleStr.get();
+      // this.titleStr = defaultTitleStr.get();
       // These files usually don't specify a charge state, so we need to guess.
       this.guessChargeState = true;
     } else {
@@ -191,18 +190,18 @@ class MgfScanExtracter {
       if(charges == null) {
         if(defaultCharges == null && !guessChargeState) {
           throw new IllegalStateException("MGF scan did not contain a CHARGE line, and no default was specified in file");
-        } else if(defaultCharges == null){
+        } else if(defaultCharges == null) {
           boolean isPlus1Charge = ConversionUtils.isPlus1ChargeState(templateScan.getPeaks(), templateScan.getPrecursorMz());
           if(isPlus1Charge) {
             this.charges = Lists.<Short>newArrayList((short) 1);
           } else {
-            this.charges = Lists.<Short>newArrayList((short) 2, (short) 3);            
+            this.charges = Lists.<Short>newArrayList((short) 2, (short) 3);
           }
         } else {
-          charges = defaultCharges;          
+          charges = defaultCharges;
         }
       }
-      
+
       for(final Short charge : charges) {
         final Scan newScan = templateScan.clone();
         newScan.setPrecursorCharge(charge);

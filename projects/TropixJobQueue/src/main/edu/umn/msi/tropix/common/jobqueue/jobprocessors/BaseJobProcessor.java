@@ -16,6 +16,8 @@
 
 package edu.umn.msi.tropix.common.jobqueue.jobprocessors;
 
+import java.util.concurrent.Semaphore;
+
 import edu.umn.msi.tropix.common.io.StagingDirectory;
 import edu.umn.msi.tropix.common.jobqueue.FileJobProcessor;
 import edu.umn.msi.tropix.common.jobqueue.InitializableJobProcessor;
@@ -28,5 +30,7 @@ public interface BaseJobProcessor<T extends JobDescription> extends Initializabl
   void setUseStaging(boolean useStaging);
 
   void setDisposableResourceTracker(DisposableResourceTracker disposableResourceTracker);
+
+  void setProcessingSemaphore(final Semaphore semaphore);
 
 }

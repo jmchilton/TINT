@@ -17,6 +17,7 @@
 package edu.umn.msi.tropix.common.jobqueue.jobprocessors;
 
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +35,7 @@ public class BaseJobProcessorImpl<T extends JobDescription> implements BaseJobPr
   private DisposableResourceTracker resourceTracker = null;
   private T jobDescription;
   private StagingDirectory stagingDirectory;
+  private Semaphore processingSemaphore = new Semaphore(10000);
 
   public BaseJobProcessorImpl() {
     super();
@@ -92,7 +94,16 @@ public class BaseJobProcessorImpl<T extends JobDescription> implements BaseJobPr
 
   public final T preprocess() {
     // stagingDirectory.setup() is called in BaseExecutableJobProcessorFactoryImpl...
-    doPreprocessing();
+    try {
+      processingSemaphore.acquire();
+    } catch(InterruptedException e) {
+      throw new RuntimeException("Failed to acquire preprocessing semaphore", e);
+    }
+    try {
+      doPreprocessing();
+    } finally {
+      processingSemaphore.release();
+    }
     return jobDescription;
   }
 
@@ -110,6 +121,10 @@ public class BaseJobProcessorImpl<T extends JobDescription> implements BaseJobPr
 
   protected void setJobDescription(final T jobDescription) {
     this.jobDescription = jobDescription;
+  }
+
+  public void setProcessingSemaphore(final Semaphore semaphore) {
+    this.processingSemaphore = semaphore;
   }
 
   protected T getJobDescription() {

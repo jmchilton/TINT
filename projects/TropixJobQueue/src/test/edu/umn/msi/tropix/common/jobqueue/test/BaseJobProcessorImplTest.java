@@ -24,6 +24,8 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 
 import org.globus.exec.generated.JobDescriptionType;
 import org.testng.annotations.Test;
@@ -87,6 +89,51 @@ public class BaseJobProcessorImplTest {
     verify(stagingDirectory);
   }
 
+  class WaitingProcessorImpl extends BaseExecutableJobProcessorImpl implements Runnable {
+    private CountDownLatch latch = new CountDownLatch(1);
+    private boolean preprocessCalled = false;
+
+    @Override
+    public void doPreprocessing() {
+      preprocessCalled = true;
+      try {
+        latch.await();
+      } catch(InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      System.out.println("MOOOO");
+    }
+
+    public void run() {
+      preprocess();
+    }
+
+  }
+
+  @Test(groups = "unit", timeOut = 1000, invocationCount = 20)
+  public void testProcessingSemaphore() throws InterruptedException {
+    WaitingProcessorImpl processor1 = new WaitingProcessorImpl(), processor2 = new WaitingProcessorImpl();
+    final StagingDirectory stagingDirectory = createMock(StagingDirectory.class);
+    processor1.setStagingDirectory(stagingDirectory);
+    processor2.setStagingDirectory(stagingDirectory);
+    final Semaphore semaphore = new Semaphore(1);
+    processor1.setProcessingSemaphore(semaphore);
+    processor2.setProcessingSemaphore(semaphore);
+    replay(stagingDirectory);
+    final Thread t1 = new Thread(processor1), t2 = new Thread(processor2);
+    t1.start();
+    while(!processor1.preprocessCalled) {
+      Thread.sleep(1);
+    }
+    Thread.sleep(5);
+    t2.start();
+    assert !processor2.preprocessCalled;
+    processor1.latch.countDown();
+    while(!processor2.preprocessCalled) {
+      Thread.sleep(1);
+    }
+  }
+
   @Test(groups = "unit")
   public void setupStaging() {
     // By default staging is used
@@ -138,7 +185,6 @@ public class BaseJobProcessorImplTest {
         saveParameter("hello", "world");
       }
     }
-    
 
     final BaseExecutableJobProcessorImpl processor = new ParameterProcessor();
     // Calling preprocess sets a parameter...
@@ -166,7 +212,7 @@ public class BaseJobProcessorImplTest {
         super.wasCompletedNormally();
       }
     }
-    
+
     final ExceptionProcessor processor = new ExceptionProcessor();
     processor.expectException();
   }
