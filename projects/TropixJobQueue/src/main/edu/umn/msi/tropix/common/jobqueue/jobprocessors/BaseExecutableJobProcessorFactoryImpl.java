@@ -16,12 +16,17 @@
 
 package edu.umn.msi.tropix.common.jobqueue.jobprocessors;
 
+import java.util.concurrent.Semaphore;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.globus.exec.generated.JobDescriptionType;
 import org.globus.gsi.GlobusCredential;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.StringUtils;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 
 import edu.umn.msi.tropix.common.io.Directories;
 import edu.umn.msi.tropix.common.io.StagingDirectory;
@@ -32,14 +37,26 @@ import edu.umn.msi.tropix.common.jobqueue.description.ExecutableJobDescription;
 import edu.umn.msi.tropix.common.jobqueue.utils.JobDescriptionUtils;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 
-public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecutableJobProcessor> extends BaseJobProcessorFactoryImpl<T> implements RecoverableJobProcessorFactory<ExecutableJobDescription> {
+public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecutableJobProcessor> extends BaseJobProcessorFactoryImpl<T> implements
+    RecoverableJobProcessorFactory<ExecutableJobDescription> {
+  private static final Log LOG = LogFactory.getLog(BaseExecutableJobProcessorFactoryImpl.class);
   public static final String DEFAULT_STANDARD_OUT_FILE_NAME = "STANDARD_OUT";
-  public static final String DEFAULT_STANDARD_ERROR_FILE_NAME = "STANDARD_ERROR"; 
+  public static final String DEFAULT_STANDARD_ERROR_FILE_NAME = "STANDARD_ERROR";
   private boolean useStaging = true;
   private String applicationPath;
   private String workingDirectory;
   private String executionType;
   private boolean requireGlobusCredential = false;
+  private Optional<Semaphore> processingSemaphore = Optional.absent();
+
+  public void setMaxConcurrentProcessingJobs(final String maxConcurrentProcessingJobs) {
+    if(StringUtils.hasText(maxConcurrentProcessingJobs) && !maxConcurrentProcessingJobs.startsWith("$")) {
+      final int maxConcurrentProcessingJobsInt = Integer.parseInt(maxConcurrentProcessingJobs);
+      LOG.info("Constructing job processing semaphore allowing " + maxConcurrentProcessingJobsInt + " concurrent jobs to preprocess.");
+      final Semaphore semaphore = new Semaphore(maxConcurrentProcessingJobsInt);
+      this.processingSemaphore = Optional.of(semaphore);
+    }
+  }
 
   /**
    * This method is responsible for returning fresh new jobs ready to be preprocessed.
@@ -47,7 +64,7 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
   public final T create(final JobProcessorConfiguration config) {
     final T instance = createAndInitialize();
     final StagingDirectory stagingDirectory = getAndSetupStagingDirectory(config);
-    
+
     if(requireGlobusCredential) {
       final Credential credential = config.getCredential();
       Preconditions.checkState(credential != null, "Valid globus credential required, but no credential found.");
@@ -63,12 +80,12 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
     JobDescriptionUtils.setStagingDirectory(jobDescription, stagingDirectory.getAbsolutePath());
     JobDescriptionUtils.setExecutionType(jobDescription, executionType);
     JobDescriptionUtils.setProxy(jobDescription, config.getCredential());
-    
+
     // Repeatedly having issues where programs are blocking presumably because they cannot write to standard out,
     // so I am adding defaults for standard out and standard error. Individual JobProcessor can override these.
     jobDescription.setStdout(Directories.buildAbsolutePath(stagingDirectory, DEFAULT_STANDARD_OUT_FILE_NAME));
-    jobDescription.setStderr(Directories.buildAbsolutePath(stagingDirectory, DEFAULT_STANDARD_ERROR_FILE_NAME));    
-    
+    jobDescription.setStderr(Directories.buildAbsolutePath(stagingDirectory, DEFAULT_STANDARD_ERROR_FILE_NAME));
+
     jobDescription.setDirectory(workingDirectory);
     jobDescription.setExecutable(applicationPath);
 
@@ -86,11 +103,15 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
     final T instance = create();
     instance.setUseStaging(useStaging);
     initializeDisposableResourceTracker(instance);
+    if(processingSemaphore.isPresent()) {
+      instance.setProcessingSemaphore(processingSemaphore.get());
+    }
     return instance;
   }
 
   /**
-   * This method is responsible for returning instances of the JobProcessor that are recreated from previously staged jobs. Jobs returned from this methods should not be preprocessed.
+   * This method is responsible for returning instances of the JobProcessor that are recreated from previously staged jobs. Jobs returned from this
+   * methods should not be preprocessed.
    */
   public final T recover(final ExecutableJobDescription jobDescription) {
     final T instance = createAndInitialize();
@@ -118,7 +139,7 @@ public abstract class BaseExecutableJobProcessorFactoryImpl<T extends BaseExecut
   public void setExecutionType(final String executionType) {
     this.executionType = executionType;
   }
-  
+
   public void setRequireGlobusCredential(final boolean requireGlobusCredential) {
     this.requireGlobusCredential = requireGlobusCredential;
   }

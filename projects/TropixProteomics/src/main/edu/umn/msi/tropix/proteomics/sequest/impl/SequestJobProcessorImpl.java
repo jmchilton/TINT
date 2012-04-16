@@ -82,7 +82,7 @@ public class SequestJobProcessorImpl extends IdentificationJobProcessorImpl<Sequ
       }
     }
   }
-  
+
   private String getSequestDatabaseName() {
     return SequestUtils.sanitizeDatabaseName(super.getDatabaseName());
   }
@@ -94,14 +94,17 @@ public class SequestJobProcessorImpl extends IdentificationJobProcessorImpl<Sequ
 
     LOG.debug("About to translate sequest parameters");
     final SequestParameters inputParameters = getParameters();
-    
-    final String paramFileContents = parameterTranslator.getSequestParameters(getParameters(), Directories.buildAbsolutePath(getStagingDirectory(), getSequestDatabaseName()));
+
+    final String paramFileContents = parameterTranslator.getSequestParameters(getParameters(),
+        Directories.buildAbsolutePath(getStagingDirectory(), getSequestDatabaseName()));
     LOG.debug("About to write sequest parameters to param file ");
     getStagingDirectory().getOutputContext(PARAMS_PATH).put(paramFileContents.getBytes());
 
     writeDTACollection();
     initializeOutputTracker();
-    getJobDescription().getJobDescriptionType().setArgument(new String[] {"-P" + Directories.buildAbsolutePath(getStagingDirectory(), PARAMS_PATH), "-R" + Directories.buildAbsolutePath(getStagingDirectory(), FILES_PATH)});
+    getJobDescription().getJobDescriptionType().setArgument(
+        new String[] {"-P" + Directories.buildAbsolutePath(getStagingDirectory(), PARAMS_PATH),
+            "-R" + Directories.buildAbsolutePath(getStagingDirectory(), FILES_PATH)});
   }
 
   @Override
@@ -161,7 +164,8 @@ public class SequestJobProcessorImpl extends IdentificationJobProcessorImpl<Sequ
       final DTAList dtaList = mzxmlToDtaConverter.mzxmlToDTA(mzxmlStream, null);
       LOG.debug("writing dta files");
       final Iterable<String> resources = dtaListWriter.writeFiles(getStagingDirectory(), dtaList);
-      getStagingDirectory().getOutputContext(FILES_PATH).put((Joiner.on(System.getProperty("line.separator")).join(resources) + System.getProperty("line.separator")).getBytes());
+      getStagingDirectory().getOutputContext(FILES_PATH).put(
+          (Joiner.on(System.getProperty("line.separator")).join(resources) + System.getProperty("line.separator")).getBytes());
     } finally {
       fileUtils.deleteQuietly(mzxmlFile);
       IO_UTILS.closeQuietly(mzxmlStream);
