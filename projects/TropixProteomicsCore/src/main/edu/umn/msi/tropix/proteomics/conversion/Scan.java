@@ -16,15 +16,22 @@
 
 package edu.umn.msi.tropix.proteomics.conversion;
 
+import java.util.Iterator;
+
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils.DtaNameSummary;
+import edu.umn.msi.tropix.proteomics.conversion.Scan.Peak;
 
 // TODO: Construct Scan objects using the builder pattern
-public class Scan implements Cloneable {
+public class Scan implements Cloneable, Iterable<Peak> {
   private short precursorCharge = 0;
   private float precursorIntensity = 0.0f;
   private float precursorMz = 0.0f;
+  private float rt = 0.0f;
   private final int msLevel;
   private final int number;
   private int alt = 0;
@@ -38,11 +45,19 @@ public class Scan implements Cloneable {
   }
 
   public boolean isPrecursorIntensitySet() {
-    return precursorIntensity > 0.0;
+    return precursorIntensity > 0.0f;
   }
 
   public boolean isPrecursorMzSet() {
-    return precursorMz > 0.0;
+    return precursorMz > 0.0f;
+  }
+
+  public boolean isRtSet() {
+    return rt > 0.0f;
+  }
+
+  public float getRt() {
+    return rt;
   }
 
   public Scan(final int msLevel, final int number, final double[] peaks) {
@@ -62,6 +77,18 @@ public class Scan implements Cloneable {
 
   public double[] getPeaks() {
     return peaks;
+  }
+
+  public Iterator<Peak> iterator() {
+    return getPeakObjects().iterator();
+  }
+
+  public ImmutableList<Peak> getPeakObjects() {
+    final ImmutableList.Builder<Peak> peakListBuilder = ImmutableList.builder();
+    for(int i = 0; i < peaks.length; i += 2) {
+      peakListBuilder.add(buildPeak(peaks[i], peaks[i + 1]));
+    }
+    return peakListBuilder.build();
   }
 
   /**
@@ -136,6 +163,10 @@ public class Scan implements Cloneable {
     this.alt = alt;
   }
 
+  public void setRt(final float rt) {
+    this.rt = rt;
+  }
+
   public void setParentFileName(final String parentFilePath) {
     this.parentFileName = FilenameUtils.getName(parentFilePath);
     if(DtaNameUtils.isDtaName(parentFileName)) {
@@ -164,6 +195,55 @@ public class Scan implements Cloneable {
 
   public String toString() {
     return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);
+  }
+
+  public Optional<Peak> mostIntensePeak(final double fromMz, final double toMz) {
+    Peak mostIntensePeakFound = null;
+    for(final Peak peak : this) {
+      if(peak.onMzRange(fromMz, toMz)) {
+        if(mostIntensePeakFound == null || peak.moreIntense(mostIntensePeakFound)) {
+          mostIntensePeakFound = peak;
+        }
+      }
+    }
+    return Optional.fromNullable(mostIntensePeakFound);
+  }
+
+  private Peak buildPeak(final double mz, final double intensity) {
+    return new Peak(mz, intensity, this);
+  }
+
+  public static class Peak implements Cloneable {
+    private final double intensity;
+    private final double mz;
+    private final Scan scan;
+
+    public Peak(final double mz, final double intensity, Scan scan) {
+      this.intensity = intensity;
+      this.mz = mz;
+      this.scan = scan;
+    }
+
+    public boolean onMzRange(final double fromMz, final double toMz) {
+      return fromMz <= mz && toMz >= mz;
+    }
+
+    public double getIntensity() {
+      return intensity;
+    }
+
+    public double getMz() {
+      return mz;
+    }
+
+    public Scan getScan() {
+      return scan;
+    }
+
+    public boolean moreIntense(final Peak other) {
+      return this.intensity > other.intensity;
+    }
+
   }
 
 }
