@@ -138,7 +138,7 @@ public class TropixObjectDaoTest extends DaoTest {
     makeFile(id1);
     assert objectDao.loadTropixFileWithFileId(id1) == null;
   }
-  
+
   @Test
   public void testFileExists() {
     final String id1 = newObject();
@@ -150,9 +150,35 @@ public class TropixObjectDaoTest extends DaoTest {
   public void testFileExistsFalse() {
     final String id1 = newObject();
     final String fileId = makeFile(id1);
+    // Using object id instead of file id returns false
     assert !objectDao.fileExists(id1);
   }
-  
+
+  @Test
+  public void testFilesExistAndCanReadAll() {
+    final UserInfo user1 = newUserIdentity();
+    final String fileId1 = makeFileForOwner(user1.id);
+    final String fileId2 = makeFileForOwner(user1.id);
+    assert objectDao.filesExistAndCanReadAll(new String[] {fileId1, fileId2}, user1.identity);
+  }
+
+  @Test
+  public void testFilesExistAndCanReadAllNoPerms() {
+    final UserInfo user1 = newUserIdentity(), user2 = newUserIdentity();
+    final String fileId1 = makeFileForOwner(user1.id);
+    final String fileId2 = makeFileForOwner(user1.id);
+    assert !objectDao.filesExistAndCanReadAll(new String[] {fileId1, fileId2}, user2.identity);
+  }
+
+  @Test
+  public void testFilesExistAndCanReadAllSomePerms() {
+    final UserInfo user1 = newUserIdentity(), user2 = newUserIdentity();
+    final String fileId1 = makeFileForOwner(user1.id);
+    final String fileId2 = makeFileForOwner(user1.id);
+    final String fileId3 = makeFileForOwner(user2.id);
+    assert !objectDao.filesExistAndCanReadAll(new String[] {fileId1, fileId2, fileId3}, user1.identity);
+  }
+
   @Test
   public void testGetFilesObjectId() {
     final String id1 = newObject();
@@ -160,7 +186,6 @@ public class TropixObjectDaoTest extends DaoTest {
     assert objectDao.getFilesObjectId(fileId).equals(id1);
   }
 
-  
   @Test
   public void getAssociation() {
     final String fileId = newObject(), runId = newObject();
@@ -508,12 +533,17 @@ public class TropixObjectDaoTest extends DaoTest {
   @Test
   public void getOwnerId() {
     final String userId = newUser();
-    final String roleId = newDirectPermissionForUser(userId);
-    final String id1 = newObjectWithPermission(roleId);
+    final String id1 = newObjectWithOwner(userId);
 
     flush();
     final String ownerId = objectDao.getOwnerId(id1);
     assert ownerId.equals(userId) : ownerId;
+  }
+
+  private String newObjectWithOwner(final String userId) {
+    final String roleId = newDirectPermissionForUser(userId);
+    final String id1 = newObjectWithPermission(roleId);
+    return id1;
   }
 
   @Test
@@ -546,7 +576,7 @@ public class TropixObjectDaoTest extends DaoTest {
     final Collection<Folder> groupFolders = this.objectDao.getGroupFolders(userId);
     assert Iterables.getOnlyElement(groupFolders).getId().equals(objectId);
   }
-  
+
   @Test
   public void testGetRoleForObjectsUserOwner() {
     final String userId = newUser();
@@ -556,7 +586,7 @@ public class TropixObjectDaoTest extends DaoTest {
     final Multimap<String, String> roleMap = objectDao.getRoles(userId, Lists.newArrayList(id1));
     roleMap.get(id1).contains("owner");
   }
-  
+
   @Test
   public void testGetRoleForObjectsUserMultiple() {
     final String userId = newUser();
@@ -580,7 +610,7 @@ public class TropixObjectDaoTest extends DaoTest {
     flush();
     final Multimap<String, String> roleMap = objectDao.getRoles(userId, Lists.newArrayList(id1));
     roleMap.get(id1).containsAll(Lists.newArrayList("read", "write"));
-    
+
   }
 
   @Test
@@ -733,6 +763,11 @@ public class TropixObjectDaoTest extends DaoTest {
     return fileId;
   }
 
+  public String makeFileForOwner(final String userId) {
+    final String objectId = newObjectWithOwner(userId);
+    return makeFile(objectId);
+  }
+
   public String newFolderInFolder(final String parentId) {
     final String objectId = newObjectInFolder(parentId);
     makeFolder(objectId);
@@ -758,7 +793,7 @@ public class TropixObjectDaoTest extends DaoTest {
     addGroupPermission(roleId, groupId);
     return roleId;
   }
-  
+
   private String newDirectPermissionForUser(final String userId, final String role) {
     final String roleId = newDirectPermission(role);
     addUserPermission(roleId, userId);
@@ -768,11 +803,11 @@ public class TropixObjectDaoTest extends DaoTest {
   private String newDirectPermissionForUser(final String userId) {
     return newDirectPermissionForUser(userId, "owner");
   }
-  
+
   private String newDirectPermission(final String role) {
     final String roleId = newPermission(role);
     makeDirectPermission(roleId);
-    return roleId;    
+    return roleId;
   }
 
   public String newObjectWithPermission(final String permissionId) {
@@ -800,6 +835,18 @@ public class TropixObjectDaoTest extends DaoTest {
     String query = "INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userId + "','" + userId + "')";
     execute(query);
     return userId;
+  }
+
+  private class UserInfo {
+    String identity = newId();
+    String id = newId();
+  }
+
+  private UserInfo newUserIdentity() {
+    final UserInfo userInfo = new UserInfo();
+    final String query = "INSERT INTO USER(ID,CAGRID_ID) VALUES ('" + userInfo.id + "','" + userInfo.identity + "')";
+    execute(query);
+    return userInfo;
   }
 
   private void makeDirectPermission(final String permissionId) {

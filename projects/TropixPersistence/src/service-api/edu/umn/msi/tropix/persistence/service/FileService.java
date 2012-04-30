@@ -35,7 +35,7 @@ public interface FileService {
 
   @PersistenceMethod
   boolean canReadAll(@UserId String callerIdentity, String[] fileIds);
-  
+
   @PersistenceMethod
   boolean canDeleteFile(@UserId String userId, String fileId);
 
@@ -69,5 +69,6 @@ public interface FileService {
 
   boolean filesExist(String[] fileIds);
 
+  boolean filesExistAndCanReadAll(String[] fileIds, final String userId);
 
 }

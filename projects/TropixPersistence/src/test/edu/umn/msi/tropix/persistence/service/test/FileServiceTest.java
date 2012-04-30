@@ -46,13 +46,13 @@ public class FileServiceTest extends ServiceTest {
     fileService.recordLength(fileId, 2312341);
     assert fileService.loadPhysicalFile(fileId).getSize() == 2312341;
   }
-  
+
   private TropixFile saveFile(final User owner) {
     final String id = newId(), fileId = newId();
     final TropixFile file = new TropixFile();
     file.setId(id);
     file.setFileId(fileId);
-
+    file.setCommitted(true);
     saveNewTropixObject(file, owner);
     return file;
   }
@@ -71,7 +71,7 @@ public class FileServiceTest extends ServiceTest {
     getTropixObjectDao().addRole(file.getId(), "read", otherUser);
     assert fileService.canReadFile(otherUser.getCagridId(), fileId);
   }
-  
+
   @Test(dataProviderClass = TestNGDataProviders.class, dataProvider = "bool1")
   public void canReadAll(final boolean canRead) {
     final List<String> fileIds = Lists.newArrayList();
@@ -84,15 +84,24 @@ public class FileServiceTest extends ServiceTest {
 
     assert canRead == fileService.canReadAll(owner.getCagridId(), Iterables.toArray(fileIds, String.class));
   }
-  
-  
+
   @Test
-  public void filesExist() {    
+  public void filesExist() {
     final User owner = createTempUser();
     final TropixFile file = saveFile(owner), file2 = saveFile(owner);
-    
+
     assert fileService.filesExist(new String[] {file.getFileId(), file2.getFileId()});
-    assert !fileService.filesExist(new String[] {file.getFileId(), file2.getFileId(), UUID.randomUUID().toString()});        
+    assert !fileService.filesExist(new String[] {file.getFileId(), file2.getFileId(), UUID.randomUUID().toString()});
+  }
+
+  @Test
+  public void filesExistAndCanReadAll() {
+    final User owner = createTempUser();
+    final TropixFile file = saveFile(owner), file2 = saveFile(owner);
+    System.out.println(file.getFileId());
+    assert fileService.filesExistAndCanReadAll(new String[] {file.getFileId(), file2.getFileId()}, owner.getCagridId());
+    assert !fileService
+        .filesExistAndCanReadAll(new String[] {file.getFileId(), file2.getFileId(), UUID.randomUUID().toString()}, owner.getCagridId());
   }
 
   @Test

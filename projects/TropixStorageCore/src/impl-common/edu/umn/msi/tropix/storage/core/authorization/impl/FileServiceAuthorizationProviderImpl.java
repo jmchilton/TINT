@@ -57,8 +57,8 @@ public class FileServiceAuthorizationProviderImpl implements AuthorizationProvid
   }
 
   public Boolean canDownloadAll(String[] ids, String callerIdentity) {
-    if(fileService.filesExist(ids)) {
-      return fileService.canReadAll(callerIdentity, ids);
+    if(fileService.filesExistAndCanReadAll(ids, callerIdentity)) {
+      return true;
     } else {
       for(final String id : ids) {
         if(fileService.fileExists(id) && !fileService.canReadFile(callerIdentity, id)) {
@@ -66,7 +66,7 @@ public class FileServiceAuthorizationProviderImpl implements AuthorizationProvid
         }
       }
       return null;
-    } 
+    }
   }
 
 }
