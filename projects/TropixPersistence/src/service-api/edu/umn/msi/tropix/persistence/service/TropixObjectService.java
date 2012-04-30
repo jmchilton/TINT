@@ -108,8 +108,8 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   @PersistenceMethod
   void removeFromSharedFolder(@UserId String gridId, @Modifies String virtualFolderId, String objectId);
 
-  @PersistenceMethod
-  void deleteVirtualFolder(@UserId String cagridId, @Modifies String id);
+  // @PersistenceMethod
+  // void deleteVirtualFolder(@UserId String cagridId, @Modifies String id);
 
   @PersistenceMethod
   VirtualFolder getRoot(@UserId String gridId, @Reads String virtualFolderId);
