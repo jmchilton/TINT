@@ -688,7 +688,12 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
   }
 
   public void removeFromSharedFolder(final String gridId, final String virtualFolderId, final String objectId) {
-    removeFromSharedFolder(virtualFolderId, objectId);
+    if(getTropixObjectDao().loadTropixObject(objectId) instanceof VirtualFolder) {
+      // Actually go ahead and delete the virtual folder if we are removing a virtual folder from its parent.
+      deleteVirtualFolder(gridId, objectId);
+    } else {
+      removeFromSharedFolder(virtualFolderId, objectId);
+    }
   }
 
   public void addToSharedFolder(final String gridId, final String inputObjectId, final String inputFolderId, final boolean recursive) {
@@ -772,7 +777,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     return isRoot != null && isRoot;
   }
 
-  public void deleteVirtualFolder(final String cagridId, final String id) {
+  private void deleteVirtualFolder(final String cagridId, final String id) {
     final VirtualFolder object = loadSharedFolder(id);
     if(isRoot(object)) {
       throw new RuntimeException("Cannot delete a root virtual folder");

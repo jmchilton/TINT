@@ -65,7 +65,7 @@ public class TropixObjectServiceTest extends ServiceTest {
     getTropixObjectDao().addVirtualPermissionUser(folder.getId(), "write", user1.getCagridId());
     assert tropixObjectService.canModifySharing(user1.getCagridId(), folder.getId());
   }
-  
+
   @Test
   public void commit() {
     final User user1 = createTempUser();
@@ -149,13 +149,13 @@ public class TropixObjectServiceTest extends ServiceTest {
     assert tropixObjectService.loadFileWithFileId(user2.getCagridId(), id1).getId().equals(file1.getId());
   }
 
-  @Test(expectedExceptions = RuntimeException.class)
-  public void deleteVirtualFolderOnRoot() {
-    final VirtualFolder root = createTempRootVirtualFolder();
-    final User user1 = createTempUser();
-    getTropixObjectDao().setOwner(root.getId(), user1);
-    tropixObjectService.deleteVirtualFolder(user1.getCagridId(), root.getId());
-  }
+  // @Test(expectedExceptions = RuntimeException.class)
+  // public void deleteVirtualFolderOnRoot() {
+  // final VirtualFolder root = createTempRootVirtualFolder();
+  // final User user1 = createTempUser();
+  // getTropixObjectDao().setOwner(root.getId(), user1);
+  // tropixObjectService.deleteVirtualFolder(user1.getCagridId(), root.getId());
+  // }
 
   @Test
   public void removeVirtualFolder() {
@@ -226,13 +226,13 @@ public class TropixObjectServiceTest extends ServiceTest {
     getTropixObjectDao().addToVirtualFolder(root.getId(), sub1.getId());
     getTropixObjectDao().addToVirtualFolder(sub1.getId(), sub2.getId());
 
-    tropixObjectService.deleteVirtualFolder(user1.getCagridId(), sub2.getId());
+    tropixObjectService.removeFromSharedFolder(user1.getCagridId(), root.getId(), sub2.getId());
     assert sub2.getDeletedTime() != null;
 
     sub2.setDeletedTime(null);
     getTropixObjectDao().saveOrUpdateTropixObject(sub2);
 
-    tropixObjectService.deleteVirtualFolder(user1.getCagridId(), sub1.getId());
+    tropixObjectService.removeFromSharedFolder(user1.getCagridId(), root.getId(), sub1.getId());
     assert sub1.getDeletedTime() != null;
     assert sub2.getDeletedTime() != null;
   }
@@ -266,9 +266,9 @@ public class TropixObjectServiceTest extends ServiceTest {
     getTropixObjectDao().copyVirtualPermissions(sub2.getId(), object.getId());
 
     assert securityProvider.canRead(object.getId(), user2.getCagridId());
-    tropixObjectService.deleteVirtualFolder(user1.getCagridId(), sub2.getId());
+    tropixObjectService.removeFromSharedFolder(user1.getCagridId(), root.getId(), sub2.getId());
     assert securityProvider.canRead(object.getId(), user2.getCagridId());
-    tropixObjectService.deleteVirtualFolder(user1.getCagridId(), sub1.getId());
+    tropixObjectService.removeFromSharedFolder(user1.getCagridId(), root.getId(), sub1.getId());
     assert !securityProvider.canRead(object.getId(), user2.getCagridId());
   }
 
