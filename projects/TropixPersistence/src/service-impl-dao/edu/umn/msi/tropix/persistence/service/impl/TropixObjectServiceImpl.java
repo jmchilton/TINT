@@ -687,20 +687,6 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     });
   }
 
-  private void removeFromSharedFolder(final String virtualFolderId, final String objectId) {
-    getTropixObjectDao().removeFromVirtualFolder(virtualFolderId, objectId);
-    removeVirtualPermissionIfNessecary(virtualFolderId, objectId);
-  }
-
-  private void removeVirtualPermissionIfNessecary(final String virtualFolderId, final String objectId) {
-    final long count = getTropixObjectDao().virtualHierarchyCount(objectId, getTropixObjectDao().getRootVirtualFolderId(virtualFolderId));
-    // Only drop the inherited virtual permissions if this is the last occurrence of objectId
-    // in this virtual hierarchy.
-    if(count == 0) {
-      TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new DropVirtualPermissions(virtualFolderId));
-    }
-  }
-
   public void removeFromSharedFolder(final String gridId, final String virtualFolderId, final String objectId) {
     removeFromSharedFolder(virtualFolderId, objectId);
   }
@@ -807,6 +793,20 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
         }
       }
     });
+  }
+
+  private void removeFromSharedFolder(final String virtualFolderId, final String objectId) {
+    getTropixObjectDao().removeFromVirtualFolder(virtualFolderId, objectId);
+    removeVirtualPermissionIfNessecary(virtualFolderId, objectId);
+  }
+
+  private void removeVirtualPermissionIfNessecary(final String virtualFolderId, final String objectId) {
+    final long count = getTropixObjectDao().virtualHierarchyCount(objectId, getTropixObjectDao().getRootVirtualFolderId(virtualFolderId));
+    // Only drop the inherited virtual permissions if this is the last occurrence of objectId
+    // in this virtual hierarchy.
+    if(count == 0) {
+      TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new DropVirtualPermissions(virtualFolderId));
+    }
   }
 
   public VirtualFolder getRoot(final String gridId, final String virtualFolderId) {
