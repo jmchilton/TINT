@@ -160,4 +160,6 @@ public interface TropixObjectDao {
 
   Set<String> getFilesObjectIds(final Set<String> fileIds);
 
+  boolean filesExistAndCanReadAll(String[] fileIds, String userId);
+
 }

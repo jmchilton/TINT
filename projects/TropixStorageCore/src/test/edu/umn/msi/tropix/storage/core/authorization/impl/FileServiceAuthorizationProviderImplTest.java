@@ -54,22 +54,22 @@ public class FileServiceAuthorizationProviderImplTest {
   public void fileServiceOneDoesntExist() {
     expectIdExists(id);
     expectIdDoesntExist(id2);
-    EasyMock.expect(fileService.filesExist(EasyMock.aryEq(new String[]{id, id2}))).andReturn(false);
+
+    EasyMock.expect(fileService.filesExistAndCanReadAll(EasyMock.aryEq(new String[] {id, id2}), EasyMock.eq(caller))).andReturn(false);
+    // EasyMock.expect(fileService.filesExist(EasyMock.aryEq(new String[]{id, id2}))).andReturn(false);
     EasyMock.expect(fileService.canReadFile(caller, id)).andStubReturn(true);
     replay();
-    assert equalBooleans(null, provider.canDownloadAll(new String[]{id, id2}, caller));
-    verify();    
+    assert equalBooleans(null, provider.canDownloadAll(new String[] {id, id2}, caller));
+    verify();
   }
 
   @Test(groups = "unit")
   public void fileServiceCanDownloadAll() {
-    for(final Boolean answer : ANSWERS) {
-      EasyMock.expect(fileService.filesExist(EasyMock.aryEq(new String[] {id, id2}))).andStubReturn(true);
-      EasyMock.expect(fileService.canReadAll(EasyMock.eq(caller), EasyMock.aryEq(new String[] {id, id2}))).andStubReturn(answer);
-      replay();
-      assert equalBooleans(answer, provider.canDownloadAll(new String[]{id, id2}, caller));
-      verify();
-    }
+    EasyMock.expect(fileService.filesExistAndCanReadAll(EasyMock.aryEq(new String[] {id, id2}), EasyMock.eq(caller))).andStubReturn(true);
+    // EasyMock.expect(fileService.canReadAll(EasyMock.eq(caller), EasyMock.aryEq(new String[] {id, id2}))).andStubReturn(answer);
+    replay();
+    assert equalBooleans(true, provider.canDownloadAll(new String[] {id, id2}, caller));
+    verify();
   }
 
   @Test(groups = "unit")
@@ -93,7 +93,7 @@ public class FileServiceAuthorizationProviderImplTest {
   }
 
   private void expectIdDoesntExist(final String id) {
-    EasyMock.expect(fileService.fileExists(id)).andReturn(false);    
+    EasyMock.expect(fileService.fileExists(id)).andReturn(false);
   }
 
   private void expectIdDoesntExist() {
