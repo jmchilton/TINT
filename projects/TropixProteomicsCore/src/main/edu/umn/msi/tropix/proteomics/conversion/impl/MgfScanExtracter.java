@@ -29,6 +29,7 @@ class MgfScanExtracter {
   private Optional<String> defaultTitleStr = Optional.<String>absent();
   private float precursorMz = 0.0f;
   private float precursorIntensity = 0.0f;
+  private Float rt = null;
   private int end = 0;
   private int start = 0;
   private List<Short> charges = null;
@@ -103,6 +104,7 @@ class MgfScanExtracter {
       this.titleStr = defaultTitleStr.get();
     } else if(MgfParseUtils.isReadw4MascotTitle(titleStr)) {
       this.end = MgfParseUtils.getReadw4MascotScanNumber(titleStr);
+      this.rt = MgfParseUtils.getReadw4MascotRt(titleStr);
       // this.titleStr = defaultTitleStr.get();
       // These files usually don't specify a charge state, so we need to guess.
       this.guessChargeState = true;
@@ -182,6 +184,9 @@ class MgfScanExtracter {
     templateScan.setPrecursorMz(precursorMz);
     templateScan.setPrecursorIntensity(precursorIntensity);
     templateScan.setParentFileName(titleStr);
+    if(rt != null) {
+      templateScan.setRt(rt.floatValue());
+    }
 
     final List<Scan> scansToCache = Lists.newArrayList();
     if(charges == null && templateScan.isPrecursorChargeSet()) {

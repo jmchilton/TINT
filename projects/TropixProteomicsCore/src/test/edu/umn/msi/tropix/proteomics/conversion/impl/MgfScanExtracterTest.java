@@ -24,18 +24,19 @@ public class MgfScanExtracterTest {
     assert Math.abs(scan.getPrecursorMz() - 408.31064f) < 0.0001;
     assert scan.getNumber() == 5 : scan.getNumber();
   }
-  
+
   @Test(groups = "unit")
   public void testReadw4MascotTitle() {
     final Scan scan = getOnlyScan(getReadw4MascotLines());
     assert scan.getNumber() == 67 : scan.getNumber();
     assert Math.abs(scan.getPrecursorMz() - 461.8420f) < 0.0001;
     assert scan.getPrecursorCharge() == (short) 1;
+    assert scan.getRt() == (float) 0.012 : scan.getRt();
   }
-  
+
   private Scan getOnlyScan(final Iterator<String> mgfSectionLines) {
     final MgfScanExtracter extracter = new MgfScanExtracter(mgfSectionLines, null, Optional.of("030911_fallo002_baldr001_10035_CvsW_4plx"));
-    final Scan scan = Iterables.getOnlyElement(extracter.extractScans()); 
+    final Scan scan = Iterables.getOnlyElement(extracter.extractScans());
     return scan;
   }
 
@@ -67,6 +68,7 @@ public class MgfScanExtracterTest {
     assert scan.getParentFileName().equals("030911_fallo002_baldr001_10035_CvsW_4plx") : scan.getParentFileName();
     assert scan.getPrecursorCharge() == 1;
     assert scan.getNumber() == 2720588 : scan.getNumber();
+
   }
 
   private Iterator<String> getAbSciexLines() {
@@ -81,7 +83,7 @@ public class MgfScanExtracterTest {
     final String resourceName = "msm_scan_section.txt";
     return getResourceLines(resourceName);
   }
-  
+
   private Iterator<String> getReadw4MascotLines() {
     return getResourceLines("readw4mascot_section.txt");
   }
