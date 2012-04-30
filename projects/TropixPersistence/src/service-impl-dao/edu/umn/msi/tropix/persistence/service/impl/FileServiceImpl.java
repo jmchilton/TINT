@@ -66,7 +66,7 @@ class FileServiceImpl extends ServiceBase implements FileService {
     final String objectId = getTropixObjectDao().getFilesObjectId(fileId);
     return getSecurityProvider().canRead(objectId, userId);
   }
-  
+
   public boolean canWriteFile(final String userId, final String fileId) {
     final TropixFile file = getTropixObjectDao().loadTropixFileWithFileId(fileId);
     return file == null || getSecurityProvider().canModify(file.getId(), userId);
@@ -196,13 +196,16 @@ class FileServiceImpl extends ServiceBase implements FileService {
 
   public boolean canReadAll(final String callerIdentity, final String[] fileIds) {
     final Set<String> ids = getTropixObjectDao().getFilesObjectIds(Sets.newHashSet(fileIds));
-    //final List<String> ids = Lists.newArrayListWithExpectedSize(fileIds.length);
-    //for(final String fileId : fileIds) {
-    //  final String objectId = getTropixObjectDao().getFilesObjectId(fileId);
-    //  ids.add(objectId);
-    //}
+    // final List<String> ids = Lists.newArrayListWithExpectedSize(fileIds.length);
+    // for(final String fileId : fileIds) {
+    // final String objectId = getTropixObjectDao().getFilesObjectId(fileId);
+    // ids.add(objectId);
+    // }
     return getSecurityProvider().canReadAll(ids, callerIdentity);
   }
 
+  public boolean filesExistAndCanReadAll(final String[] fileIds, final String callerIdentity) {
+    return getTropixObjectDao().filesExistAndCanReadAll(fileIds, callerIdentity);
+  }
 
 }

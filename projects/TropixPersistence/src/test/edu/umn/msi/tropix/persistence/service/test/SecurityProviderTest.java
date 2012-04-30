@@ -260,7 +260,7 @@ public class SecurityProviderTest extends ServiceTest {
     assert !securityProvider.canRead(object.getId(), "23423");
     assert !securityProvider.canModify(object.getId(), newUser.getCagridId() + "2345");
   }
-  
+
   @Test
   public void testCanReadAll() {
     final List<String> objectIds = Lists.newArrayList();
@@ -269,9 +269,9 @@ public class SecurityProviderTest extends ServiceTest {
       final TropixObject object = saveNewTropixObject(new TropixObject(), newUser);
       objectIds.add(object.getId());
     }
-    assert securityProvider.canReadAll(objectIds, newUser.getCagridId());    
+    assert securityProvider.canReadAll(objectIds, newUser.getCagridId());
   }
-  
+
   @Test
   public void testCannotReadAll() {
     final List<String> objectIds = Lists.newArrayList();
@@ -280,9 +280,24 @@ public class SecurityProviderTest extends ServiceTest {
       final TropixObject object = saveNewTropixObject(new TropixObject(), newUser);
       objectIds.add(object.getId());
     }
+    assert securityProvider.canReadAll(objectIds, newUser.getCagridId());
     final TropixObject otherObject = saveNewTropixObject(new TropixObject());
-    objectIds.add(otherObject.getId());    
-    assert !securityProvider.canReadAll(objectIds, newUser.getCagridId());    
+    objectIds.add(otherObject.getId());
+    assert !securityProvider.canReadAll(objectIds, newUser.getCagridId());
+  }
+
+  @Test
+  public void testCannotReadAllAllParent() {
+    final List<String> objectIds = Lists.newArrayList();
+    final User newUser = createTempUser();
+    for(int i = 0; i < 120; i++) {
+      final TropixObject object = saveToParent(new TropixObject(), newUser.getHomeFolder(), newUser);
+      objectIds.add(object.getId());
+    }
+    assert securityProvider.canReadAll(objectIds, newUser.getCagridId());
+    final TropixObject otherObject = saveNewTropixObject(new TropixObject());
+    objectIds.add(otherObject.getId());
+    assert !securityProvider.canReadAll(objectIds, newUser.getCagridId());
   }
 
 }

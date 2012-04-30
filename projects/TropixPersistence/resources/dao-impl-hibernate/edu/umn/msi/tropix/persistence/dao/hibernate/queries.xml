@@ -131,6 +131,36 @@
          (:requireParent is false or (o.parentFolder is not null))       
     order by o.creationTime desc
   ]]></query>  
+  <query name="parentFolderId"><![CDATA[
+    select o.parentFolder.id
+    from TropixObject o
+    where
+      o.id = :objectId
+  ]]></query>
+  <query name="filesExistAndCanReadAll">
+    select count(distinct f.id)
+    from TropixFile f
+           join f.permissions r
+           left join r.users u
+           left join r.groups g
+           left join g.users gu
+    where 
+        f.fileId in :fileIds
+      and
+        (u.cagridId = :userId or gu.cagridId = :userId)
+      and
+        f.deletedTime is null
+      and
+        f.committed is true
+  </query>
+  <query name="allHaveParentId"><![CDATA[
+    select count(*)
+    from TropixObject o
+    where
+        o.id in :objectIds
+      and
+        o.parentFolder.id = :parentId
+  ]]></query>
   <query name="quickSearch"><![CDATA[
     select distinct o
     from Permission r

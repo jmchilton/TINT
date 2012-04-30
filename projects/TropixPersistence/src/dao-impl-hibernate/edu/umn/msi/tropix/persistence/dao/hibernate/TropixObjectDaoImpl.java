@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.persistence.dao.hibernate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -702,6 +703,21 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     @SuppressWarnings("unchecked")
     final Collection<Provider> roles = query.list();
     return roles;
+  }
+
+  public boolean filesExistAndCanReadAll(String[] fileIds, String callerIdentity) {
+    boolean allReadable = true;
+    for(final List<String> fileIdsPartition : partition(Arrays.asList(fileIds))) {
+      final Query query = getSession().getNamedQuery("filesExistAndCanReadAll");
+      query.setParameter("userId", callerIdentity);
+      query.setParameterList("fileIds", fileIdsPartition);
+      final Long partitionReadableCount = (Long) query.uniqueResult();
+      allReadable = partitionReadableCount >= fileIdsPartition.size();
+      if(!allReadable) {
+        break;
+      }
+    }
+    return allReadable;
   }
 
 }

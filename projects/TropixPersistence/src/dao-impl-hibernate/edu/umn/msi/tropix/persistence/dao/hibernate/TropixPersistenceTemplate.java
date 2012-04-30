@@ -24,9 +24,12 @@ package edu.umn.msi.tropix.persistence.dao.hibernate;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.orm.hibernate3.HibernateTemplate;
+
+import com.google.common.collect.Iterables;
 
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
@@ -70,6 +73,11 @@ public class TropixPersistenceTemplate extends HibernateTemplate {
       attemptToSetId(object);
     }
     super.saveOrUpdateAll(entities);
+  }
+
+  // break into pieces because of potential limitations with number of expressions allowed by db/hibernate.
+  protected Iterable<List<String>> partition(final Iterable<String> ids) {
+    return Iterables.partition(ids, 200);
   }
 
 }

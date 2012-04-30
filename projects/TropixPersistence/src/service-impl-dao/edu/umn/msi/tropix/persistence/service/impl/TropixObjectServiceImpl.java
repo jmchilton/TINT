@@ -25,6 +25,7 @@ package edu.umn.msi.tropix.persistence.service.impl;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -233,7 +234,15 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     VirtualFolder virtualFolder = inputVirtualFolder;
     while(!virtualFolder.getRoot()) {
       pathBuilder.insert(0, " > " + virtualFolder.getName());
-      virtualFolder = virtualFolder.getParentVirtualFolders().iterator().next();
+      final Iterator<VirtualFolder> iterator = virtualFolder.getParentVirtualFolders().iterator();
+      if(!iterator.hasNext()) {
+        // This shouldn't happen, but the logs make it look like it has.
+        LOG.warn(String.format("Found non-root virtual folder without parent with id %s and name %s", virtualFolder.getId(), virtualFolder.getName()));
+        pathBuilder.insert(0, "<insconsistent tree> >");
+        break;
+      } else {
+        virtualFolder = iterator.next();
+      }
     }
     pathBuilder.insert(0, virtualFolder.getName());
     return pathBuilder.toString();
@@ -678,20 +687,6 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     });
   }
 
-  private void removeFromSharedFolder(final String virtualFolderId, final String objectId) {
-    getTropixObjectDao().removeFromVirtualFolder(virtualFolderId, objectId);
-    removeVirtualPermissionIfNessecary(virtualFolderId, objectId);
-  }
-
-  private void removeVirtualPermissionIfNessecary(final String virtualFolderId, final String objectId) {
-    final long count = getTropixObjectDao().virtualHierarchyCount(objectId, getTropixObjectDao().getRootVirtualFolderId(virtualFolderId));
-    // Only drop the inherited virtual permissions if this is the last occurrence of objectId
-    // in this virtual hierarchy.
-    if(count == 0) {
-      TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new DropVirtualPermissions(virtualFolderId));
-    }
-  }
-
   public void removeFromSharedFolder(final String gridId, final String virtualFolderId, final String objectId) {
     removeFromSharedFolder(virtualFolderId, objectId);
   }
@@ -800,6 +795,20 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     });
   }
 
+  private void removeFromSharedFolder(final String virtualFolderId, final String objectId) {
+    getTropixObjectDao().removeFromVirtualFolder(virtualFolderId, objectId);
+    removeVirtualPermissionIfNessecary(virtualFolderId, objectId);
+  }
+
+  private void removeVirtualPermissionIfNessecary(final String virtualFolderId, final String objectId) {
+    final long count = getTropixObjectDao().virtualHierarchyCount(objectId, getTropixObjectDao().getRootVirtualFolderId(virtualFolderId));
+    // Only drop the inherited virtual permissions if this is the last occurrence of objectId
+    // in this virtual hierarchy.
+    if(count == 0) {
+      TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new DropVirtualPermissions(virtualFolderId));
+    }
+  }
+
   public VirtualFolder getRoot(final String gridId, final String virtualFolderId) {
     return getTropixObjectDao().loadTropixObject(getTropixObjectDao().getRootVirtualFolderId(virtualFolderId), VirtualFolder.class);
   }
@@ -813,7 +822,7 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
       final VirtualFolder virtualFolder = (VirtualFolder) object;
       Boolean root = virtualFolder.getRoot();
       if(root != null && root.booleanValue()) {
-        isRootSharedFolder =  true;
+        isRootSharedFolder = true;
       } else {
         isRootSharedFolder = false;
       }
