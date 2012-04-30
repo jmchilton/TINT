@@ -30,9 +30,9 @@ tools/ - External tools used in the build and deploy process of Tropix.
   ws-core.zip - Contains a clean distribution of Globus core with the appropriate caGrid patches.
     This is used in the TIPServices subproject to build war files.
 
-Building "Tropix" - 
+Building "TINT" - 
 
-Building Tropix requires that a valid Java 5+ JDK and Ant 1.7+ be installed and properly configured.
+Building TINT requires that a valid Java 5+ JDK and Ant 1.7+ be installed and properly configured.
 
 A Java 5+ JDK can be obtained from the following URL: http://java.sun.com/javase/downloads/index.jsp.
 
