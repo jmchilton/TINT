@@ -66,7 +66,7 @@ Before building any war deployments, the whole project should be
 compiled. This can done by running the publish ant task from the
 directory containing this file.
 
-The war file for the Tropix web gui can then be created by executing
+The war file for the TINT web gui can then be created by executing
 the war task from the project `projects/TropixWebGui`. This file will 
 be placed at `projects/TropixWebGui/build/tropix.war`.
 
