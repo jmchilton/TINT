@@ -133,6 +133,8 @@
     <compileconfs />
   </target>
 
+  
+
   <target name="jar" description="Builds a jar file" depends="compile-java">
     <jarconfs />
   </target>
@@ -160,4 +162,11 @@
 
   <target name="dist" depends="publish, test-coverage, findbugs, checkstyle, javadoc" />
   
+  <target name="summarize" depends="jar">
+    <java classname="edu.umn.msi.tropix.proteomics.test.ITraqScanSummarizer"
+    classpathref="test.classpath">
+    </java>
+  </target>
+
+
 </project>

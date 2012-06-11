@@ -271,7 +271,7 @@
     <attribute name="name" />
     <sequential>
       <war destfile="${wars.dir}/@{name}-${project.version}.war" basedir="${build.war.dir}">
-	<lib dir="${build.lib.dir}" />
+        <lib dir="${build.lib.dir}" />
       </war>
     </sequential>
   </macrodef>
@@ -281,22 +281,26 @@
     <attribute name="includewscore" default="false" />
     <sequential>
       <copy todir="${build.war.dir}">
-	<fileset dir="${shared.war.template.dir}" includes="**/*" />
+        <fileset dir="${shared.war.template.dir}" includes="**/*" />
       </copy>
       <copy todir="${build.lib.dir}" flatten="true" >
-	<fileset refid="ivy.@{webinfconf}.fileset" />
-	<fileset dir="${jars.dir}" includes="**/*.jar" />
+        <fileset refid="ivy.@{webinfconf}.fileset" />
+        <fileset dir="${jars.dir}" includes="**/*.jar" />
       </copy>
       <if>
-	<equals arg1="@{includewscore}" arg2="true" />
-	<then>
-	  <copy todir="${build.lib.dir}" flatten="true" >
-	    <fileset dir="${ext.globus.dir}/lib" includes="**/*.jar" />
-	  </copy>
-	</then>
+        <equals arg1="@{includewscore}" arg2="true" />
+        <then>
+          <copy todir="${build.lib.dir}" flatten="true" >
+            <fileset dir="${ext.globus.dir}/lib">
+              <include name="**/*.jar" />
+              <exclude name="**/*commons-lang*jar" />
+            </fileset>
+          </copy>
+          <echo message="Mooo?" />
+        </then>
       </if>
       <copy todir="${build.webinf.dir}" flatten="false">
-	<fileset dir="${resources.dir}/@{webinfconf}/WEB-INF" />
+        <fileset dir="${resources.dir}/@{webinfconf}/WEB-INF" />
       </copy>
     </sequential>
   </macrodef>

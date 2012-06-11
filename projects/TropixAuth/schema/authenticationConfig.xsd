@@ -36,9 +36,9 @@
   <xs:complexType name="CaGrid">
     <xs:complexContent>
       <xs:extension base="AuthenticationSource">
-	<xs:attribute name="dorianServiceUrl" type="xs:string" use="required" />
-	<xs:attribute name="authenticationServiceUrl" type="xs:string" use="optional" />
-	<xs:attribute name="delegationPathLength" type="xs:int" use="optional" />
+        <xs:attribute name="dorianServiceUrl" type="xs:string" use="required" />
+        <xs:attribute name="authenticationServiceUrl" type="xs:string" use="optional" />
+        <xs:attribute name="delegationPathLength" type="xs:int" use="optional" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -46,10 +46,10 @@
   <xs:complexType name="Ldap">
     <xs:complexContent>
       <xs:extension base="AuthenticationSource">
-	<xs:attribute name="searchBase" type="xs:string" use="required" />
-	<xs:attribute name="host" type="xs:string" use="required" />
-	<xs:attribute name="userIdLabel" type="xs:string" use="required" />
-	<xs:attribute name="truststore" type="xs:string" use="optional" />
+        <xs:attribute name="searchBase" type="xs:string" use="required" />
+        <xs:attribute name="host" type="xs:string" use="required" />
+        <xs:attribute name="userIdLabel" type="xs:string" use="required" />
+        <xs:attribute name="truststore" type="xs:string" use="optional" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

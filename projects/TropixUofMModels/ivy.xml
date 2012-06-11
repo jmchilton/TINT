@@ -31,7 +31,9 @@
   <dependencies>
     <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}" conf="default->master" />
     <dependency org="cacore" name="client" rev="4.0" conf="core->client-core">
+      <exclude name="commons-lang" />
     </dependency>
+    <dependency org="commons-lang" name="commons-lang" rev="2.2" />
     <dependency org="castor" name="castor" rev="0.9.9">
       <artifact name="castor" />
     </dependency>
