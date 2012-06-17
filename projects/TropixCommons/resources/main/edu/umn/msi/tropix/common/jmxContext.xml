@@ -10,6 +10,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+  <bean class="edu.umn.msi.tropix.common.spring.MapPropertyPlaceholderConfigurer">
+    <property name="properties">
+      <map>
+        <entry key="jmx.server.domain" value="" />
+      </map>
+    </property>
+  </bean>    
+
   <bean id="mBeanExporter" class="org.springframework.jmx.export.MBeanExporter">
     <property name="registrationBehaviorName" value="REGISTRATION_IGNORE_EXISTING"/>        
     <property name="autodetect" value="true"/>
@@ -19,12 +27,13 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     
   <bean id="jmxAttributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
 
-  <bean id="mBeanInfoAssembler" class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+  <bean id="mBeanInfoAssembler" class="edu.umn.msi.tropix.common.spring.TropixMetadataMBeanInfoAssembler">
     <property name="attributeSource" ref="jmxAttributeSource"/>
   </bean>
 
-  <bean id="namingStrategy" class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+  <bean id="namingStrategy" class="edu.umn.msi.tropix.common.spring.TropixMetadataNamingStrategy">
     <property name="attributeSource" ref="jmxAttributeSource" />
+    <property name="defaultDomain" value="${jmx.server.domain}" />
   </bean>
 
 </beans>
