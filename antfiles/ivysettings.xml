@@ -16,9 +16,9 @@
       <ibiblio name="java.net2" root="http://download.java.net/maven/2/" m2compatible="true" />
 
       <url name="tropix-repository">
-        <ivy pattern="http://tropix.msi.umn.edu/ivy/[organisation]/[module]/ivy-[revision].xml"/>
-        <artifact pattern="http://tropix.msi.umn.edu/ivy/[organisation]/[module]/[revision]/[artifact].[ext]"/>
-        <artifact pattern="http://tropix.msi.umn.edu/ivy/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+        <ivy pattern="http://appdev-puppet.msi.umn.edu:8010/artifactory/tropix-local/[organisation]/[module]/ivy-[revision].xml"/>
+        <artifact pattern="http://appdev-puppet.msi.umn.edu:8010/artifactory/tropix-local/[organisation]/[module]/[revision]/[artifact].[ext]"/>
+        <artifact pattern="http://appdev-puppet.msi.umn.edu:8010/artifactory/tropix-local/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
       </url>
       
       <url name="cagrid-repository">
