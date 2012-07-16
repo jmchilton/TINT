@@ -17,9 +17,12 @@
 package edu.umn.msi.tropix.proteomics.conversion.impl;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Map;
 
 import javax.annotation.WillNotClose;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.codec.binary.Base64;
@@ -32,6 +35,15 @@ import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 
 public class MzxmlParserImpl implements MzxmlParser {
+
+  private static DatatypeFactory xmlDatatypeFactory = null;
+  static {
+    try {
+      xmlDatatypeFactory = DatatypeFactory.newInstance();
+    } catch(DatatypeConfigurationException e) {
+      e.printStackTrace();
+    }
+  }
 
   private static class ScanIterator extends UnmodifiableIterator<Scan> {
     private final XMLStreamReader reader;
@@ -52,6 +64,11 @@ public class MzxmlParserImpl implements MzxmlParser {
       foundStart = false;
       final int number = Integer.parseInt(XMLStreamReaderUtils.getAttributeValue(reader, "num"));
       final int level = Integer.parseInt(XMLStreamReaderUtils.getAttributeValue(reader, "msLevel"));
+      final String retentionTimeStr = XMLStreamReaderUtils.getAttributeValue(reader, "retentionTime");
+      long retentionTime = -1;
+      if(StringUtils.hasText(retentionTimeStr) && xmlDatatypeFactory != null) {
+        retentionTime = xmlDatatypeFactory.newDuration(retentionTimeStr).getTimeInMillis(new Date());
+      }
       float precursorMz = 0.0f;
       float precursorIntensity = 0.0f;
       short precursorCharge = 0;
@@ -80,28 +97,31 @@ public class MzxmlParserImpl implements MzxmlParser {
         }
       } while(!XMLStreamReaderUtils.isStartOfElement(reader, "peaks"));
       final boolean is64Bit = "64".equals(XMLStreamReaderUtils.getAttributeValue(reader, "precision"));
-      
-      //XMLStreamReaderUtils.next(reader);
-      //XMLStreamReaderUtils.next(reader);
-      
+
+      // XMLStreamReaderUtils.next(reader);
+      // XMLStreamReaderUtils.next(reader);
+
       double[] peaks = new double[0];
-      //if(reader.hasText()) {
-      //if(reader.getEleme)
+      // if(reader.hasText()) {
+      // if(reader.getEleme)
       byte[] peaksBytes;
       peaksBytes = XMLStreamReaderUtils.getElementText(reader).getBytes();
       final byte[] decodedBytes = Base64.decodeBase64(peaksBytes);
       peaks = ConversionUtils.extractDoubles(decodedBytes, is64Bit);
-      //}
+      // }
       XMLStreamReaderUtils.next(reader);
       final Scan scan = new Scan(level, number, peaks);
       scan.setPrecursorMz(precursorMz);
       scan.setPrecursorIntensity(precursorIntensity);
+      if(retentionTime != -1) {
+        scan.setRt(retentionTime);
+      }
       if(precursorCharge != 0) {
         scan.setPrecursorCharge(precursorCharge);
       }
       scan.setParentFileName(parentFileName);
       scan.setParentFileNameExplicit(explicitParentFileName);
-      
+
       return scan;
     }
 

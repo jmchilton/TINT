@@ -17,6 +17,7 @@
 package edu.umn.msi.tropix.common.jobqueue.jobprocessors;
 
 import org.globus.exec.generated.JobDescriptionType;
+import org.springframework.util.StringUtils;
 
 import edu.umn.msi.tropix.common.jobqueue.description.ExecutableJobDescription;
 import edu.umn.msi.tropix.common.jobqueue.description.ExecutableJobDescriptions;
@@ -34,6 +35,15 @@ public class BaseExecutableJobProcessorImpl extends BaseJobProcessorImpl<Executa
 
   public void setJobDescription(final JobDescriptionType jobDescriptionType) {
     setJobDescription(ExecutableJobDescriptions.forJobDescriptionType(jobDescriptionType));
+  }
+
+  public ExecutableJobDescription preprocess() {
+    final ExecutableJobDescription jobDescription = super.preprocess();
+    final JobDescriptionType jobDescriptionType = jobDescription.getJobDescriptionType();
+    if(!StringUtils.hasText(jobDescriptionType.getDirectory())) {
+      jobDescriptionType.setDirectory(getStagingDirectory().getAbsolutePath());
+    }
+    return jobDescription;
   }
 
 }

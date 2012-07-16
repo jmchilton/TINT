@@ -13,8 +13,12 @@ public class ProteinPilotScanWriterImpl extends BaseMgfScanWriterImpl {
 
   @Override
   protected void writeTitle(final Scan scan, final short precursorCharge) {
-    final String title = String.format("File: %s, Sample: Sample001 (sample number 1), Elution: 2.11 min, Period: 1, Cycle(s): %d (Experiment 1)",
-        scan.getParentFileName(), scan.getNumber());
+    String elutionStr = "";
+    if(scan.isRtSet()) {
+      elutionStr = String.format("Elution: %.2f min, ", scan.getRt() / (60.0 * 1000));
+    }
+    final String title = String.format("File: %s, Sample: Sample001 (sample number 1), %sPeriod: 1, Cycle(s): %d (Experiment 1)",
+        scan.getParentFileName(), elutionStr, scan.getNumber());
     writeTitle(title);
   }
 

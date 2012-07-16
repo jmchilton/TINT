@@ -31,7 +31,7 @@ public class Scan implements Cloneable, Iterable<Peak> {
   private short precursorCharge = 0;
   private float precursorIntensity = 0.0f;
   private float precursorMz = 0.0f;
-  private float rt = 0.0f;
+  private long rt = -1L;
   private final int msLevel;
   private final int number;
   private int alt = 0;
@@ -53,10 +53,10 @@ public class Scan implements Cloneable, Iterable<Peak> {
   }
 
   public boolean isRtSet() {
-    return rt > 0.0f;
+    return rt != -1L;
   }
 
-  public float getRt() {
+  public long getRt() {
     return rt;
   }
 
@@ -163,7 +163,13 @@ public class Scan implements Cloneable, Iterable<Peak> {
     this.alt = alt;
   }
 
-  public void setRt(final float rt) {
+  /**
+   * Set retention time for this scan.
+   * 
+   * @param rt
+   *          target retention time (in milliseconds)
+   */
+  public void setRt(final long rt) {
     this.rt = rt;
   }
 

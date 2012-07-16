@@ -22,7 +22,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <property name="properties">
       <map>
         <entry key="xtandem.staging.type" value="system" />
-        <entry key="xtandem.execution.type" value="system" />   
+        <entry key="xtandem.execution.type" value="system" />
+        <entry key="xtandem.defaults.path" value="" />   
       </map>
     </property>
   </bean>
@@ -64,6 +65,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
     <property name="parameterTranslator">
       <bean class="edu.umn.msi.tropix.proteomics.xtandem.XTandemBeanParameterTranslator">
         <property name="message" value="*" />
+        <property name="defaultsPath" value="${xtandem.defaults.path}" />
       </bean>
     </property>
     <property name="xslPath">

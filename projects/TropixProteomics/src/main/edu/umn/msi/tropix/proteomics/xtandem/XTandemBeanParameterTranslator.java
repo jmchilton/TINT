@@ -16,6 +16,8 @@
 
 package edu.umn.msi.tropix.proteomics.xtandem;
 
+import org.springframework.util.StringUtils;
+
 import edu.umn.msi.tropix.models.xtandem.XTandemParameters;
 import edu.umn.msi.tropix.proteomics.BiomlWriter;
 
@@ -149,7 +151,9 @@ public class XTandemBeanParameterTranslator implements XTandemParameterTranslato
   }
 
   public void setDefaultsPath(final String defaultsPath) {
-    this.defaultsPath = defaultsPath;
+    if(StringUtils.hasText(defaultsPath) && !defaultsPath.startsWith("$")) {
+      this.defaultsPath = defaultsPath;
+    }
   }
 
 }

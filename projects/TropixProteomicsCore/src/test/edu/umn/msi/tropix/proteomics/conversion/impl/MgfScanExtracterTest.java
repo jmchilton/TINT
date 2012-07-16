@@ -31,7 +31,8 @@ public class MgfScanExtracterTest {
     assert scan.getNumber() == 67 : scan.getNumber();
     assert Math.abs(scan.getPrecursorMz() - 461.8420f) < 0.0001;
     assert scan.getPrecursorCharge() == (short) 1;
-    assert scan.getRt() == (float) 0.012 : scan.getRt();
+    // 0.012 minutes => 0.720 seconds => 720 milliseconds
+    assert scan.getRt() == 720L : scan.getRt();
   }
 
   private Scan getOnlyScan(final Iterator<String> mgfSectionLines) {

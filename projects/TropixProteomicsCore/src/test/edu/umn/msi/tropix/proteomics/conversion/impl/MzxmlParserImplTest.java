@@ -21,25 +21,30 @@ import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser.MzxmlInfo;
+import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
 
 public class MzxmlParserImplTest {
 
-  private Iterator<Scan> getScans(final String resourceName) {
-    final MzxmlParserImpl parser = new MzxmlParserImpl();
-    final MzxmlInfo info = parser.parse(ProteomicsTests.getResourceAsStream(resourceName));
-    return info.iterator();
-  }
-  
   @Test(groups = "unit")
   public void bigScanNotTruncated() {
-    final Iterator<Scan> scanIterator = getScans("bigscan.mzxml");
-    final Scan firstScan = scanIterator.next();
-    assert firstScan.getPeaks().length == 5000;
+    assert getFirstScan("bigscan.mzxml").getPeaks().length == 5000;
+  }
+
+  @Test(groups = "unit")
+  public void testParseRetentionTime() {
+    Assert.assertEquals(getFirstScan("bigscan.mzxml").getRt(), 300058L);
+  }
+
+  @Test(groups = "unit")
+  public void testOkWhenNoRetentionTime() {
+    final Scan scan = getFirstScan("parentPerScan.mzxml");
+    System.out.println(scan.getRt());
+    Assert.assertFalse(scan.isRtSet());
   }
 
   @Test(groups = "unit")
@@ -128,4 +133,17 @@ public class MzxmlParserImplTest {
     final Scan secondScan = scanIterator.next();
     assert secondScan.getMsLevel() == 2;
   }
+
+  private Iterator<Scan> getScans(final String resourceName) {
+    final MzxmlParserImpl parser = new MzxmlParserImpl();
+    final MzxmlInfo info = parser.parse(ProteomicsTests.getResourceAsStream(resourceName));
+    return info.iterator();
+  }
+
+  private Scan getFirstScan(final String resourceName) {
+    final Iterator<Scan> scanIterator = getScans(resourceName);
+    final Scan firstScan = scanIterator.next();
+    return firstScan;
+  }
+
 }

@@ -92,7 +92,7 @@ public class BaseJobProcessorImpl<T extends JobDescription> implements BaseJobPr
     }
   }
 
-  public final T preprocess() {
+  public T preprocess() {
     // stagingDirectory.setup() is called in BaseExecutableJobProcessorFactoryImpl...
     try {
       processingSemaphore.acquire();

@@ -543,7 +543,13 @@
             <sequential>
               <mkdir dir="@{dest}/@{type}" />
               <copy tofile="@{tomcat}/webapps/wsrf/WEB-INF/classes/log4j.properties" file="${shared.tools.dir}/cagrid-log4j.properties" overwrite="true" />
+              <copy tofile="@{tomcat}/webapps/wsrf/WEB-INF/classes/commons-logging.properties" file="${shared.tools.dir}/cagrid-commons-logging.properties" overwrite="true" />
               <copy tofile="@{tomcat}/webapps/wsrf/WEB-INF/web.xml" file="${shared.tools.dir}/web-@{type}.xml" overwrite="true" />
+              <replace dir="@{tomcat}/webapps/wsrf/WEB-INF">
+                <include name="web.xml" />
+                <replacetoken>WEBAPP_TOKEN</replacetoken>
+                <replacevalue>@{name}</replacevalue>
+              </replace>
               <if>
                 <equals arg1="@{type}" arg2="insecure" />
                 <then>
