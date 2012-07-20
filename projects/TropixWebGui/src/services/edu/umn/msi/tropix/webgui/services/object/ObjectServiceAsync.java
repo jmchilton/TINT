@@ -95,4 +95,8 @@ public interface ObjectServiceAsync {
 
   void hideGroupSharedFolder(String groupId, String id, AsyncCallback<Void> callback);
 
+  void cloneAsGroupSharedFolder(String folderId, String groupId, List<String> userIds, List<String> groupIds, AsyncCallback<Void> callback);
+
+  void cloneAsSharedFolder(String folderId, List<String> userIds, List<String> groupIds, AsyncCallback<Void> callback);
+
 }

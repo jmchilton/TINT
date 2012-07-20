@@ -73,7 +73,7 @@ public class ObjectServiceImpl implements ObjectService {
     LOG.trace(String.format("In getObject context for objectId - modifiable %b modifySharing %b", objectId, modifiable, canModifySharing));
     return new TropixObjectUserAuthorities(modifiable, canModifySharing);
   }
-    
+
   private List<TropixObject> sanitizeObjects(final TropixObject[] objects) {
     final ArrayList<TropixObject> sanitizedObjects = new ArrayList<TropixObject>(objects.length);
     for(final TropixObject object : objects) {
@@ -157,6 +157,23 @@ public class ObjectServiceImpl implements ObjectService {
   public List<Permission> getPermissions(final String objectId) {
     final PermissionReport[] reports = this.tropixObjectService.getPermissionReports(userSession.getGridId(), objectId);
     return Lists.newLinkedList(Iterables.transform(Arrays.asList(reports), permissionFunction));
+  }
+
+  @ServiceMethod
+  public void cloneAsSharedFolder(final String folderId, final List<String> userIds, final List<String> groupIds) {
+    this.tropixObjectService.cloneAsSharedFolder(this.userSession.getGridId(),
+        folderId,
+        Iterables.toArray(userIds, String.class),
+        Iterables.toArray(groupIds, String.class));
+  }
+
+  @ServiceMethod
+  public void cloneAsGroupSharedFolder(final String folderId, final String groupId, final List<String> userIds, final List<String> groupIds) {
+    this.tropixObjectService.cloneAsGroupSharedFolder(this.userSession.getGridId(),
+        groupId,
+        folderId,
+        Iterables.toArray(userIds, String.class),
+        Iterables.toArray(groupIds, String.class));
   }
 
   @ServiceMethod

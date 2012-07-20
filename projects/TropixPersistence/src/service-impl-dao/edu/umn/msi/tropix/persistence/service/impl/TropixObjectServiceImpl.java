@@ -696,12 +696,20 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     }
   }
 
-  public void addToSharedFolder(final String gridId, final String inputObjectId, final String inputFolderId, final boolean recursive) {
+  public void addContentsToSharedFolder(final String folderId, final String inputFolderId) {
+    final Folder folder = getTropixObjectDao().loadTropixObject(folderId, Folder.class);
+    final Iterable<String> ids = ModelUtils.getIds(folder.getContents());
+    addToSharedFolder(ids, inputFolderId, true);
+  }
+
+  public void addToSharedFolder(final Iterable<String> inputObjectIds, final String inputFolderId, final boolean recursive) {
     final Stack<String> objectIds = new Stack<String>();
     final Stack<String> virtualFolderIds = new Stack<String>();
 
-    objectIds.add(inputObjectId);
-    virtualFolderIds.add(inputFolderId);
+    for(final String inputObjectId : inputObjectIds) {
+      objectIds.add(inputObjectId);
+      virtualFolderIds.add(inputFolderId);
+    }
 
     while(!objectIds.isEmpty()) {
       final String objectId = objectIds.pop();
@@ -723,13 +731,10 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
         }
       }
     }
-    /*
-     * final TropixObject object = getTropixObjectDao().loadTropixObject(objectId);
-     * if(!(object instanceof Folder)) {
-     * getTropixObjectDao().addToVirtualFolder(folderId, objectId);
-     * TreeUtils.applyPermissionChange(getTropixObjectDao().loadTropixObject(objectId), new CopyVirtualPermissions(folderId));
-     * }
-     */
+  }
+
+  public void addToSharedFolder(final String gridId, final String inputObjectId, final String inputFolderId, final boolean recursive) {
+    addToSharedFolder(Lists.newArrayList(inputObjectId), inputFolderId, recursive);
   }
 
   private static final Function<VirtualEntry, Iterable<VirtualEntry>> VIRTUAL_ENTRIES = new Function<VirtualEntry, Iterable<VirtualEntry>>() {
@@ -910,6 +915,30 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
       throw new IllegalArgumentException(String.format("Unknown root location name %s", rootLocationName));
     }
     return object;
+  }
+
+  public void cloneAsSharedFolder(String userGridId, String folderId, String[] userIds, String[] groupIds) {
+    final VirtualFolder cloneTemplate = createVirtualCloneTemplate(folderId);
+    final VirtualFolder clone = super.createVirtualFolder(userGridId, null, cloneTemplate);
+    cloneContents(folderId, clone.getId());
+  }
+
+  public void cloneAsGroupSharedFolder(String userGridId, String groupId, String folderId, String[] userIds, String[] groupIds) {
+    final VirtualFolder cloneTemplate = createVirtualCloneTemplate(folderId);
+    final VirtualFolder clone = super.createGroupVirtualFolder(userGridId, groupId, cloneTemplate);
+    cloneContents(folderId, clone.getId());
+  }
+
+  private void cloneContents(String folderId, String id) {
+    addContentsToSharedFolder(folderId, id);
+  }
+
+  private VirtualFolder createVirtualCloneTemplate(final String folderId) {
+    final Folder toClone = super.getTropixObjectDao().loadTropixObject(folderId, Folder.class);
+    final VirtualFolder cloneTemplate = new VirtualFolder();
+    cloneTemplate.setName(toClone.getName());
+    cloneTemplate.setDescription(toClone.getDescription());
+    return cloneTemplate;
   }
 
 }

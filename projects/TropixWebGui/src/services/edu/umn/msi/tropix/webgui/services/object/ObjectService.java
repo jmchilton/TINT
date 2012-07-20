@@ -106,4 +106,8 @@ public interface ObjectService extends RemoteService {
   void hideGroupSharedFolder(String groupId, String id);
 
   void addGroupSharedFolder(String groupId, String folderId);
+
+  void cloneAsSharedFolder(String folderId, List<String> userIds, List<String> groupIds);
+
+  void cloneAsGroupSharedFolder(String folderId, String groupId, List<String> userIds, List<String> groupIds);
 }

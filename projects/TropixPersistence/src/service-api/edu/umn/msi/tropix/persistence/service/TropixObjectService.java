@@ -106,6 +106,12 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   void addToSharedFolder(@UserId String gridId, @Owns String objectId, @Modifies String virtualFolderId, boolean recursive);
 
   @PersistenceMethod
+  void cloneAsSharedFolder(@UserId String gridID, @Owns String folderId, final String[] userIds, final String[] groupIds);
+
+  @PersistenceMethod
+  void cloneAsGroupSharedFolder(@UserId String gridID, @MemberOf final String groupId, @Owns String folderId, final String[] userIds, final String[] groupIds);
+
+  @PersistenceMethod
   void removeFromSharedFolder(@UserId String gridId, @Modifies String virtualFolderId, String objectId);
 
   // @PersistenceMethod

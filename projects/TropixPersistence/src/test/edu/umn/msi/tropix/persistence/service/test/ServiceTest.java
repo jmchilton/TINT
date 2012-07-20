@@ -121,6 +121,12 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return folder;
   }
 
+  protected Folder newFolderWithName(final String name) {
+    final Folder folder = newFolder();
+    folder.setName(name);
+    return folder;
+  }
+
   protected User createTempUser(final Group group) {
     final User user = new User();
     if(group == null) {

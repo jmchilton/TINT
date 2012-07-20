@@ -27,8 +27,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import junit.framework.Assert;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.Iterables;
 
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.Folder;
@@ -205,6 +209,41 @@ public class TropixObjectServiceTest extends ServiceTest {
     assert !root.getContents().contains(rootObject);
     assert !child1.getContents().contains(childObject);
 
+  }
+
+  @Test
+  public void cloneAsSharedFolder() {
+    final User user1 = createTempUser();
+
+    final Folder folder = saveNewCommitted(newFolderWithName("test1"), user1);
+    getTropixObjectDao().addToFolder(user1.getHomeFolder().getId(), folder.getId());
+    final TropixObject object = saveNewCommitted(new TropixObject(), user1);
+    getTropixObjectDao().addToFolder(folder.getId(), object.getId());
+
+    tropixObjectService.cloneAsSharedFolder(user1.getCagridId(), folder.getId(), null, null);
+
+    final VirtualFolder createdFolder = Iterables.getOnlyElement(user1.getSharedFolders());
+    Assert.assertEquals("test1", createdFolder.getName());
+
+    Assert.assertTrue(createdFolder.getContents().contains(object));
+  }
+
+  @Test
+  public void cloneAsGroupSharedFolder() {
+    final User user1 = createTempUser();
+    final Group group = createTempGroup(user1);
+    final Collection<VirtualFolder> sharedFolders = group.getSharedFolders();
+    assert sharedFolders == null || sharedFolders.isEmpty();
+
+    final Folder folder = saveNewCommitted(newFolderWithName("test1"), user1);
+    getTropixObjectDao().addToFolder(user1.getHomeFolder().getId(), folder.getId());
+    final TropixObject object = saveNewCommitted(new TropixObject(), user1);
+    getTropixObjectDao().addToFolder(folder.getId(), object.getId());
+
+    tropixObjectService.cloneAsGroupSharedFolder(user1.getCagridId(), group.getId(), folder.getId(), null, null);
+
+    final VirtualFolder createdFolder = Iterables.getOnlyElement(group.getSharedFolders());
+    Assert.assertTrue(createdFolder.getContents().contains(object));
   }
 
   @Test

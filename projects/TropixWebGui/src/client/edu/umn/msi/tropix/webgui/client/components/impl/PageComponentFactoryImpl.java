@@ -105,6 +105,7 @@ import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandClickHandlerImpl;
 import edu.umn.msi.tropix.webgui.client.smart.handlers.CommandDoubleClickHandlerImpl;
 import edu.umn.msi.tropix.webgui.client.utils.FileSizeUtils;
 import edu.umn.msi.tropix.webgui.client.utils.Listener;
+import edu.umn.msi.tropix.webgui.client.utils.Lists;
 import edu.umn.msi.tropix.webgui.client.utils.Maps;
 import edu.umn.msi.tropix.webgui.client.utils.StringUtils;
 import edu.umn.msi.tropix.webgui.client.widgets.Buttons;
@@ -276,6 +277,10 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
             actionMediator.handleEvent(LocationActionEventImpl.forItems("newItemFolder", Arrays.<TreeItem>asList(tropixObjectTreeItem)));
           }
         });
+        this.addOperation("Clone As Shared Folder", getCloneAsSharedFolderCommand(folder));
+        if(session.getPrimaryGroup() != null) {
+          this.addOperation("Clone As Group Shared Folder", getCloneAsGroupSharedFolderCommand(folder));
+        }
       }
     }
 
@@ -428,6 +433,33 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
             }
           });
           component.execute();
+        }
+      };
+    }
+
+    private Command getCloneAsSharedFolderCommand(final Folder folder) {
+      return new Command() {
+        public void execute() {
+          ObjectService.Util.getInstance().cloneAsSharedFolder(folder.getId(), Lists.<String>newArrayList(), Lists.<String>newArrayList(),
+              new AsyncCallbackImpl<Void>() {
+                public void handleSuccess() {
+                  SC.say("Shared Folder Created");
+                }
+              });
+        }
+      };
+    }
+
+    private Command getCloneAsGroupSharedFolderCommand(final Folder folder) {
+      return new Command() {
+        public void execute() {
+          ObjectService.Util.getInstance().cloneAsGroupSharedFolder(folder.getId(), session.getPrimaryGroup().getId(), Lists.<String>newArrayList(),
+              Lists.<String>newArrayList(),
+              new AsyncCallbackImpl<Void>() {
+                public void handleSuccess() {
+                  SC.say("Shared Folder Created");
+                }
+              });
         }
       };
     }
