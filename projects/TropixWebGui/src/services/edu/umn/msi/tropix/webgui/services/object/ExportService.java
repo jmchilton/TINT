@@ -30,46 +30,51 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import edu.umn.msi.tropix.client.galaxy.GalaxyExportOptions;
+
 @RemoteServiceRelativePath("ExportService.rpc")
 @GWTRequestMapping("/webgui/ExportService.rpc")
 public interface ExportService extends RemoteService {
-  
+
   public static class Util {
     public static ExportServiceAsync getInstance() {
       return (ExportServiceAsync) GWT.create(ExportService.class);
     }
   }
-  
+
   public static class GridFtpServerOptions implements Serializable {
     private String hostname;
     private int port;
     private String path;
-    
+
     public String getHostname() {
       return hostname;
     }
-    
+
     public void setHostname(final String hostname) {
       this.hostname = hostname;
     }
-    
+
     public int getPort() {
       return port;
     }
-    
+
     public void setPort(final int port) {
       this.port = port;
     }
-    
+
     public String getPath() {
       return path;
     }
-    
+
     public void setPath(final String path) {
       this.path = path;
     }
-        
+
   }
-  
-  void export(final String[] ids, final GridFtpServerOptions gridFtpOptions);  
+
+  void export(String[] ids, GridFtpServerOptions gridFtpOptions);
+
+  void exportGalaxy(GalaxyExportOptions galaxyExportOptions);
+
 }

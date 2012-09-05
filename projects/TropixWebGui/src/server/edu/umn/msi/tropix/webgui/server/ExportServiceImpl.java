@@ -29,6 +29,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.umn.msi.tropix.client.galaxy.GalaxyExportOptions;
+import edu.umn.msi.tropix.client.galaxy.GalaxyExporter;
 import edu.umn.msi.tropix.files.PersistentModelStorageDataFactory;
 import edu.umn.msi.tropix.grid.credentials.Credential;
 import edu.umn.msi.tropix.grid.gridftp.GridFtpClient;
@@ -48,24 +50,28 @@ public class ExportServiceImpl implements ExportService {
   private final UserSession userSession;
   private final PersistentModelStorageDataFactory storageDataFactory;
   private final GridFtpFactory gridFtpFactory;
-  
+  private final GalaxyExporter galaxyExporter;
+
   @Inject
-  public ExportServiceImpl(final FileService fileService, final UserSession userSession, final PersistentModelStorageDataFactory storageDataFactory, final GridFtpFactory gridFtpFactory) {
+  public ExportServiceImpl(final FileService fileService, final UserSession userSession, final PersistentModelStorageDataFactory storageDataFactory,
+      final GridFtpFactory gridFtpFactory,
+      final GalaxyExporter galaxyExporter) {
     this.fileService = fileService;
     this.userSession = userSession;
     this.storageDataFactory = storageDataFactory;
     this.gridFtpFactory = gridFtpFactory;
+    this.galaxyExporter = galaxyExporter;
   }
 
   @ServiceMethod()
-  public void export(final String[] ids, final GridFtpServerOptions gridFtpOptions) {    
+  public void export(final String[] ids, final GridFtpServerOptions gridFtpOptions) {
     final TropixFile[] tropixFiles = fileService.getFiles(userSession.getGridId(), ids);
     final String host = gridFtpOptions.getHostname();
     final int port = gridFtpOptions.getPort();
     final Credential credential = userSession.getProxy();
     LOG.info("GridFTP request to host and port " + host + " " + port);
     final GridFtpClient gridFtpClient = gridFtpFactory.getClient(host, port, credential);
-    
+
     final String path = FilenameUtils.normalizeNoEndSeparator(gridFtpOptions.getPath());
     try {
       LOG.debug("Attempting to create path " + path);
@@ -77,8 +83,12 @@ public class ExportServiceImpl implements ExportService {
       final StorageData data = storageDataFactory.getStorageData(tropixFile, credential);
       final String name = FilenameUtils.getBaseName(tropixFile.getName());
       LOG.debug("Attempting to transfer file wit id " + tropixFile.getFileId() + " and name " + name);
-      data.getDownloadContext().get(GridFtpClientUtils.getOutputContext(gridFtpClient, path + "/" +  name));
+      data.getDownloadContext().get(GridFtpClientUtils.getOutputContext(gridFtpClient, path + "/" + name));
     }
   }
 
+  @ServiceMethod()
+  public void exportGalaxy(GalaxyExportOptions galaxyExportOptions) {
+    galaxyExporter.uploadFiles(userSession.getGridId(), galaxyExportOptions);
+  }
 }

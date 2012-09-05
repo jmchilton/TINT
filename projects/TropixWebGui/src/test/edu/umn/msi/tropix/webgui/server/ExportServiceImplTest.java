@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
+import edu.umn.msi.tropix.client.galaxy.GalaxyExporter;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.common.test.TestNGDataProviders;
 import edu.umn.msi.tropix.files.MockPersistentModelStorageDataFactoryImpl;
@@ -45,8 +46,9 @@ public class ExportServiceImplTest extends BaseGwtServiceTest {
     final FileService fileService = EasyMock.createMock(FileService.class);
     final MockPersistentModelStorageDataFactoryImpl storageFactory = new MockPersistentModelStorageDataFactoryImpl();
     final GridFtpFactory gridFtpFactory = EasyMock.createMock(GridFtpFactory.class);
-    
-    final ExportServiceImpl service = new ExportServiceImpl(fileService, getUserSession(), storageFactory, gridFtpFactory);
+
+    final ExportServiceImpl service = new ExportServiceImpl(fileService, getUserSession(), storageFactory, gridFtpFactory,
+        EasyMock.createMock(GalaxyExporter.class));
     final GridFtpServerOptions options = new GridFtpServerOptions();
     options.setHostname("elmo.msi.umn.edu");
     options.setPort(2811);
@@ -54,7 +56,7 @@ public class ExportServiceImplTest extends BaseGwtServiceTest {
     final String inputPath = path + (endingSep ? "/" : "");
     options.setPath(inputPath);
     final String[] ids = new String[] {"id1", "id2"};
-    
+
     final TropixFile file1 = new TropixFile(), file2 = new TropixFile();
     file1.setId(UUID.randomUUID().toString());
     file2.setId(UUID.randomUUID().toString());
@@ -68,7 +70,7 @@ public class ExportServiceImplTest extends BaseGwtServiceTest {
     EasyMock.expectLastCall().andReturn(new TropixFile[] {file1, file2});
     storageFactory.register(file1);
     storageFactory.register(file2);
-    
+
     storageFactory.getPersistedStorageData(file1.getId(), getUserSession().getProxy()).getUploadContext().put("contents1".getBytes());
     storageFactory.getPersistedStorageData(file2.getId(), getUserSession().getProxy()).getUploadContext().put("contents2".getBytes());
 
@@ -82,12 +84,12 @@ public class ExportServiceImplTest extends BaseGwtServiceTest {
     final ByteArrayOutputStream contents1 = new ByteArrayOutputStream();
     final ByteArrayOutputStream contents2 = new ByteArrayOutputStream();
     gridFtpClient.put(EasyMock.eq(path + "/name1"), EasyMockUtils.copy(contents1));
-    gridFtpClient.put(EasyMock.eq(path + "/name2"), EasyMockUtils.copy(contents2));    
+    gridFtpClient.put(EasyMock.eq(path + "/name2"), EasyMockUtils.copy(contents2));
     EasyMock.replay(fileService, gridFtpFactory, gridFtpClient);
     service.export(ids, options);
-    EasyMock.verify(fileService, gridFtpFactory, gridFtpClient);        
+    EasyMock.verify(fileService, gridFtpFactory, gridFtpClient);
     assert new String(contents1.toByteArray()).equals("contents1");
     assert new String(contents2.toByteArray()).equals("contents2");
   }
-  
+
 }

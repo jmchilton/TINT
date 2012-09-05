@@ -55,15 +55,6 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
 
   public HasStreamInputContext getFile(final String id) {
     File file = getRawFile(id);
-    // <HACK for if file has yet to be copied over by transfer service context reference>
-    // int i = 0;
-    // while(i++ < 30 && !file.exists()) {
-    // try {
-    // Thread.sleep(1000);
-    // } catch(InterruptedException e) {
-    // throw new InterruptedRuntimeException(e);
-    // }
-    // }
     return new FileContext(file);
   }
 
@@ -78,14 +69,13 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
   public long getDateModified(String id) {
     return getRawFile(id).lastModified();
   }
-  
+
   public FileMetadata getFileMetadata(String id) {
     File rawFile = getRawFile(id);
     final long dateModified = rawFile.lastModified();
     final long length = rawFile.length();
     return new FileMetadata(dateModified, length);
   }
-
 
   public long putFile(final String id, final InputStream tempFile) {
     final OutputStream outputStream = prepareFileForUpload(id);
@@ -115,8 +105,7 @@ public class FileFunctionAccessProviderImpl implements AccessProvider {
 
   public boolean setDateModified(String id, long dateModified) {
     final File file = getRawFile(id);
-    return file.setLastModified(dateModified);    
+    return file.setLastModified(dateModified);
   }
-
 
 }

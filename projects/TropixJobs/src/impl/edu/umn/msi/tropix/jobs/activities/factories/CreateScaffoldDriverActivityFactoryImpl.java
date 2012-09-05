@@ -204,6 +204,7 @@ class CreateScaffoldDriverActivityFactoryImpl implements ActivityFactory<CreateS
         scaffoldExport.setPath("output.sf3");
       }
       scaffoldExport.setThresholds("thresh");
+      scaffoldExport.setExperimentDisplayType("Number of Assigned Spectra");
 
       scaffoldExperiment.getExport().add(scaffoldExport);
 

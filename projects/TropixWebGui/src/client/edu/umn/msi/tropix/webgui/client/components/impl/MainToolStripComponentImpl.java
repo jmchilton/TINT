@@ -421,6 +421,9 @@ public class MainToolStripComponentImpl implements MainToolStripComponent, Liste
       final MenuItem gridFtpItem = getDialogMenuItem("Export via GridFTP", "gridFtpExport", Resources.SAVE);
       exportMenuBuilder.addMenuItem(gridFtpItem);
 
+      final MenuItem galaxyItem = getDialogMenuItem("Export to Galaxy", "galaxyExport", Resources.SAVE);
+      exportMenuBuilder.addMenuItem(galaxyItem);
+
       final MenuItem exportItem = new MenuItem("Export");
       exportItem.setSubmenu(exportMenuBuilder.buildMenu(DomConstants.EXPORT_MENU_ID, null));
       menuBuilder.addMenuItem(exportItem);

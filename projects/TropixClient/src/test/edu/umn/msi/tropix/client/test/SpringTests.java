@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
 import org.springframework.test.context.ContextConfiguration;
@@ -40,6 +41,8 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 
 import edu.umn.msi.tropix.client.directory.GridUser;
+import edu.umn.msi.tropix.client.galaxy.GalaxyExportOptions;
+import edu.umn.msi.tropix.client.galaxy.GalaxyExporter;
 import edu.umn.msi.tropix.client.metadata.MetadataResolver;
 import edu.umn.msi.tropix.client.search.TropixSearchClient;
 import edu.umn.msi.tropix.client.services.GridService;
@@ -55,9 +58,16 @@ public class SpringTests extends AbstractTestNGSpringContextTests {
   @Resource
   private Supplier<Multimap<String, Person>> ldapPersonSupplier;
 
+  @Inject
+  private GalaxyExporter galaxyExporter;
+
   @SuppressWarnings({"unchecked", "unused"})
   @Test
   public void load() throws RemoteException {
+
+    final GalaxyExportOptions exportOptions = new GalaxyExportOptions();
+    exportOptions.setName("NewTestn");
+    galaxyExporter.uploadFiles("moocow", exportOptions);
 
     // edu.umn.msi.tropix.labs.catalog.impl.LocalCatalogInstanceImpl catalog = new edu.umn.msi.tropix.labs.catalog.impl.LocalCatalogInstanceImpl();
     // catalog.setHost("http://appdev1.msi.umn.edu:8080/");
@@ -72,10 +82,9 @@ public class SpringTests extends AbstractTestNGSpringContextTests {
       System.out.println(person.getCagridIdentity());
     }
     System.out.println("/Persons" + count);
-    //if(true)
-    //  throw new RuntimeException();
+    // if(true)
+    // throw new RuntimeException();
 
-    
     Supplier<Iterable<QueueGridService>> bowtieServiceSupplier = (Supplier<Iterable<QueueGridService>>) applicationContext
         .getBean("rawExtractGridServiceSupplier");
     for(QueueGridService service : bowtieServiceSupplier.get()) {

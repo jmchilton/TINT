@@ -24,6 +24,7 @@ package edu.umn.msi.tropix.persistence.service.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.ManagedBean;
@@ -208,4 +209,16 @@ class FileServiceImpl extends ServiceBase implements FileService {
     return getTropixObjectDao().filesExistAndCanReadAll(fileIds, callerIdentity);
   }
 
+  public List<TropixFile> loadTropixFilesForFileIds(final String userId, final String[] fileIds) {
+    if(!filesExistAndCanReadAll(fileIds, userId)) {
+      throw new RuntimeException("Cannot read one or more requested files.");
+    }
+    // /final Set<String> objectIds = getTropixObjectDao().getFilesObjectIds(Sets.newHashSet(fileIds));
+    final List<TropixFile> tropixFiles = Lists.newArrayList();
+    for(final String fileId : fileIds) {
+      final TropixFile object = getTropixObjectDao().loadTropixFileWithFileId(fileId);
+      tropixFiles.add(object);
+    }
+    return tropixFiles;
+  }
 }

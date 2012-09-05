@@ -23,6 +23,7 @@
     <dependency org="msi.umn.edu" name="tropix-commons" conf="default->default;test->test" rev="${ivy.project.version}" />
     <dependency org="com.sun.xml" name="sjsxp" rev="1.0.1" />
     <dependency org="org.hibernate" name="hibernate-tools" rev="${hibernate.tools.version}" conf="default->master" />
+    <dependency org="com.beust" name="jcommander" rev="1.27" />
   </dependencies>
 
 </ivy-module> 

@@ -10,4 +10,7 @@
 <source path="request">
   <include name="RequestBean.java" />
 </source>
+<source path="galaxy">
+  <include name="GalaxyExportOptions.java" />
+</source>
 </module>

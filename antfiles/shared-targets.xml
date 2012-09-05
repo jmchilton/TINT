@@ -941,7 +941,7 @@ package]]></replacetoken>
       </java>
       <copy file="${script.template.file}" toFile="${build.scripts.dir}/@{script}" />
       <replace file="${build.scripts.dir}/@{script}" token="@JAR_NAME@" value="@{script}.jar" />
-      <chmod file="${build.scripts.dir}/@{script}" perm="u+x" />
+      <chmod file="${build.scripts.dir}/@{script}" perm="a+x" />
       <jar destfile="${build.scripts.dir}/@{script}.jar" manifest="${build.scripts.scratch.dir}/@{classname}-manifest" />
     </sequential>
   </macrodef>
@@ -977,9 +977,11 @@ package]]></replacetoken>
 
   <macrodef name="zip-scripts">
     <attribute name="prefix" />
+    <attribute name="executables" />
     <sequential>
       <zip destfile="${build.dir}/@{prefix}.zip">
-	<zipfileset dir="${build.scripts.dir}" prefix="@{prefix}" />
+        <zipfileset dir="${build.scripts.dir}" prefix="@{prefix}" includes="@{executables}" filemode="755" />
+        <zipfileset dir="${build.scripts.dir}" prefix="@{prefix}" excludes="@{executables}" />
       </zip>
     </sequential>
   </macrodef>

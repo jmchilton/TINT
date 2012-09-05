@@ -24,10 +24,13 @@ package edu.umn.msi.tropix.webgui.services.object;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.umn.msi.tropix.client.galaxy.GalaxyExportOptions;
 import edu.umn.msi.tropix.webgui.services.object.ExportService.GridFtpServerOptions;
 
 public interface ExportServiceAsync {
 
   void export(String[] ids, GridFtpServerOptions gridFtpOptions, AsyncCallback<Void> callback);
+
+  void exportGalaxy(GalaxyExportOptions galaxyExportOptions, AsyncCallback<Void> callback);
 
 }

@@ -73,6 +73,11 @@ public class DialogActionController {
   }
 
   @Inject
+  public void setGalaxyExportWindowComponentSupplier(@Named("galaxyExport") final Supplier<? extends Command> windowComponentSupplier) {
+    registerListener("galaxyExport", windowComponentSupplier);
+  }
+
+  @Inject
   public void setManageFileTypesWindowComponentSupplier(@Named("manageFileTypes") final Supplier<? extends Command> windowComponentSupplier) {
     registerListener("manageFileTypes", windowComponentSupplier);
   }

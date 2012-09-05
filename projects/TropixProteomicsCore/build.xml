@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="TropixProteomics" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" >
+<project name="TropixProteomicsCore" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" >
   <description>
   </description>
 
@@ -147,14 +147,17 @@
   
   <target name="compile-scripts_">
     <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.LtqIQuantGui" script="LTQ-iQuant" />
+    <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.ITraqScanSummarizer" script="ITraqScanSummarizer" />
     <copy tofile="${build.scripts.dir}/README.txt">
       <fileset file="${basedir}/ltqiquant-README.txt" />
     </copy> 
   </target>
 
-  <target name="dist-scripts" depends="compile-scripts">
-    <zip-scripts prefix="LTQ-iQuant" />
+  <target name="_dist-scripts">
+    <zip-scripts prefix="tint-proteomics" executables="LTQ-iQuant,ITraqScanSummarizer"/>
   </target>
+
+  <target name="dist-scripts" depends="compile-scripts,_dist-scripts" />
 
   <target name="init" depends="gen" />
 

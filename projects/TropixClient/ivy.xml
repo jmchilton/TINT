@@ -49,5 +49,8 @@
       <exclude org="antlr" />
     </dependency>
 
+	<dependency rev="0.1-SNAPSHOT" org="com.github.jmchilton.blend4j" name="blend4j">
+	</dependency>
+
   </dependencies>  
 </ivy-module> 

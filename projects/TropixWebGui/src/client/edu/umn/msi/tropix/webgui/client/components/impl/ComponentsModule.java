@@ -213,6 +213,9 @@ public class ComponentsModule extends AbstractGinModule {
     bind(new TypeLiteral<Supplier<? extends Command>>() {
     }).annotatedWith(Names.named("gridFtpExport")).to(GridFtpExportComponentSupplierImpl.class).in(Singleton.class);
 
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("galaxyExport")).to(GalaxyExportComponentSupplierImpl.class).in(Singleton.class);
+
     bindDescribableLocationCommandComponentFactory("changeDescription", ChangeDescriptionCommandComponentFactoryImpl.class);
     bindDescribableLocationCommandComponentFactory("move", MoveCommandComponentFactoryImpl.class);
     bindDescribableLocationCommandComponentFactory("rename", RenameCommandComponentFactoryImpl.class);

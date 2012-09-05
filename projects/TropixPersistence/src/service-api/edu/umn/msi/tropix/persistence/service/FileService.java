@@ -22,6 +22,8 @@
 
 package edu.umn.msi.tropix.persistence.service;
 
+import java.util.List;
+
 import edu.umn.msi.tropix.models.PhysicalFile;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.aop.PersistenceMethod;
@@ -44,6 +46,9 @@ public interface FileService {
 
   @PersistenceMethod
   TropixFile[] getFiles(@UserId String userId, @Reads String[] idsArray);
+
+  @PersistenceMethod
+  List<TropixFile> loadTropixFilesForFileIds(@UserId final String gridIdentity, final String[] fileIds);
 
   /**
    * Used by the storage service to record files length.
