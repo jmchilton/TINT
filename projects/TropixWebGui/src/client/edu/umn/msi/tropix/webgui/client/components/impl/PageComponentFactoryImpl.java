@@ -200,6 +200,7 @@ public class PageComponentFactoryImpl implements ComponentFactory<PageConfigurat
         initSharingSection(tropixObject);
       }
       this.initOperationsSection();
+      addAssociations(tropixObject, "Parent Folder", "parentFolder", false);
     }
 
     @Override

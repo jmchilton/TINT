@@ -18,7 +18,7 @@ public class GalaxyExporterImplTest {
     for(final Library library : client.getLibraries()) {
       System.out.println(library);
     }
-    GalaxyExporterImpl uploader = new GalaxyExporterImpl(Suppliers.ofInstance(galaxyInstance), null);
+    GalaxyExporterImpl uploader = new GalaxyExporterImpl(Suppliers.ofInstance(galaxyInstance), "@cow.com", null);
     final GalaxyExportOptions exportOptions = new GalaxyExportOptions();
     exportOptions.setName("ExportTest");
     exportOptions.getFileObjectIds().add("12345");

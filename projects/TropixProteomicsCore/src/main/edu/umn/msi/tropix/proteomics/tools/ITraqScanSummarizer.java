@@ -15,23 +15,23 @@ import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.IOUtils;
 import edu.umn.msi.tropix.common.io.IOUtilsFactory;
-import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.Scan.Peak;
 import edu.umn.msi.tropix.proteomics.conversion.impl.MgfParser;
-import edu.umn.msi.tropix.proteomics.conversion.impl.MzxmlParserImpl;
+import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParser;
+import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParserImpl;
 
 public class ITraqScanSummarizer {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
   private static MgfParser mgfParser = new MgfParser();
-  private static MzxmlParser mzxmlParser = new MzxmlParserImpl();
+  private static XmlPeakListParser mzxmlParser = new XmlPeakListParserImpl();
 
   public static class ITraqOptions {
     @Parameter(names = "--output", description = "output summary", required = false)
     private String output = null;
 
-    @Parameter(names = "--input_type", description = "input type (mzxml or mgf)")
+    @Parameter(names = "--input_type", description = "input type (mzxml, mzml, or mgf)")
     private String inputType = "mzxml";
 
     @Parameter(description = "<input>")
@@ -134,7 +134,7 @@ public class ITraqScanSummarizer {
         scanIterator = mgfParser.parserMgf(mzxmlStream);
       } else {
         // System.out.println("Parsing mzxml");
-        scanIterator = mzxmlParser.parse(mzxmlStream).iterator();
+        scanIterator = mzxmlParser.parse(mzxmlStream);
       }
       summarize(scanIterator, summaryWriter, summarizeOptions);
     } finally {
@@ -160,6 +160,7 @@ public class ITraqScanSummarizer {
       final Optional<Peak> peak = scan.mostIntensePeak(peakOptions.getLower(), peakOptions.getUpper());
       summarizePeak(peak, writer);
     }
+    appendValue(scan.getPrecursorIntensity(), writer);
     appendValue(scan.getPrecursorMz(), writer);
     appendValue(scan.getRt(), writer);
   }

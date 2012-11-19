@@ -84,7 +84,7 @@ public class ExportStagerImpl implements ExportStager {
   }
 
   private String getStoredFilePath(final String userId, final TropixFile tropixFile) {
-    final HasStreamInputContext context = storageManager.download(tropixFile.getFileId(), userId);
+    final HasStreamInputContext context = storageManager.download(tropixFile.getFileId(), userId, false);
     if(!(context instanceof FileContext)) {
       throw new UnsupportedOperationException(); // Not yet supported, could be easily...
     }

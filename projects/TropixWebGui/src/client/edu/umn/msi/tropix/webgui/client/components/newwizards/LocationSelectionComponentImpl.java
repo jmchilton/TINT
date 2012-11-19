@@ -22,6 +22,7 @@ import edu.umn.msi.tropix.models.locations.Location;
 import edu.umn.msi.tropix.models.locations.LocationPredicates;
 import edu.umn.msi.tropix.models.utils.TropixObjectType;
 import edu.umn.msi.tropix.models.utils.TropixObjectTypeEnum;
+import edu.umn.msi.tropix.webgui.client.components.MultiSelectionComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.LocationFactory;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponent;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeComponentFactory;
@@ -166,6 +167,10 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
     get().addMember(treeLayout);
   }
 
+  public MultiSelectionComponent<TreeItem, TreeGrid> getMultiSelectionComponent() {
+    return tree;
+  }
+
   private void initInputType(final Iterable<InputType> validInputTypes) {
     this.inputType = Iterables.size(validInputTypes) > 1 ? null : Iterables.getOnlyElement(validInputTypes);
     if(this.inputType == null) { // Attempt to infer from selection
@@ -173,7 +178,7 @@ public class LocationSelectionComponentImpl extends WidgetSupplierImpl<Layout> {
         if(validInputType == null) {
           throw new NullPointerException("Input type should not be null");
         }
-        if(initialTreeItems != null 
+        if(initialTreeItems != null
             && Iterables.any(this.initialTreeItems, validInputType.getSelectionPredicate())) {
           this.inputType = validInputType;
           break;

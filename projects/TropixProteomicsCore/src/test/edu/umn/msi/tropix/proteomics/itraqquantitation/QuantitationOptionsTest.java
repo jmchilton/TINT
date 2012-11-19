@@ -24,6 +24,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;
@@ -38,7 +40,7 @@ public class QuantitationOptionsTest {
     final QuantificationWeights weights = new QuantificationWeights();
 
     final QuantitationOptionsBuilder builder =
-        QuantitationOptions.forInput(Lists.newArrayList(mzxml), spectra);
+        QuantitationOptions.forInput(Lists.newArrayList(mzxml), new InputReport(spectra, ReportType.SCAFFOLD));
 
     final QuantitationOptions options =
         builder.is4Plex().withWeights(weights).withOutput(outputFile).get();
@@ -47,7 +49,7 @@ public class QuantitationOptionsTest {
     assert Iterables.elementsEqual(options.getInputMzxmlFiles(), Lists.newArrayList(mzxml));
     assert options.getOutputFile().equals(outputFile);
     assert options.getWeights() == weights;
-    assert options.getInputScaffoldReport().equals(spectra);
+    assert options.getInputReport().getReport().equals(spectra);
     assert options.toString().contains(outputFile.getName());
   }
 
@@ -56,7 +58,7 @@ public class QuantitationOptionsTest {
     final QuantificationTrainingOptions trainingOptions = new QuantificationTrainingOptions();
 
     final QuantitationTrainingOptions.QuantitationOptionsBuilder builder =
-        QuantitationTrainingOptions.forInput(Lists.newArrayList(mzxml), spectra);
+        QuantitationTrainingOptions.forInput(Lists.newArrayList(mzxml), new InputReport(spectra, ReportType.SCAFFOLD));
 
     final QuantitationTrainingOptions options =
         builder.is8Plex().withOutput(outputFile).withTrainingOptions(trainingOptions).get();
@@ -65,7 +67,7 @@ public class QuantitationOptionsTest {
     assert Iterables.elementsEqual(options.getInputMzxmlFiles(), Lists.newArrayList(mzxml));
     assert options.getOutputFile().equals(outputFile);
     assert options.getTrainingOptions() == trainingOptions;
-    assert options.getInputScaffoldReport().equals(spectra);
+    assert options.getInputScaffoldReport().getReport().equals(spectra);
     assert options.toString().contains(outputFile.getName());
   }
 

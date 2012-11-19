@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
+import edu.umn.msi.tropix.proteomics.conversion.impl.PeakListParser.PeakListParserOptions;
 
 class MgfScanIterator extends ScanIterator {
   private static final Pattern START_IONS_PATTERN = Pattern.compile("[bB][eE][gG][iI][nN] [iI][oO][nN][sS]");
@@ -20,15 +21,17 @@ class MgfScanIterator extends ScanIterator {
   private List<Short> defaultCharges;
   private String lastLine = "";
   private Optional<String> defaultParentName = Optional.absent();
+  private final PeakListParserOptions parserOptions;
 
-  MgfScanIterator(final InputStream inputStream) {
+  MgfScanIterator(final InputStream inputStream, PeakListParserOptions parserOptions) {
+    this.parserOptions = parserOptions;
     lineIterator = IOUtils.lineIterator(new InputStreamReader(inputStream));
     while(isHeaderLine()) {
       readNextLine();
       if(defaultCharges == null) {
         // See if this was default charges line
         defaultCharges = MgfParseUtils.parseCharges(lastLine);
-      } 
+      }
       if(!defaultParentName.isPresent()) {
         defaultParentName = MgfParseUtils.parseDefaultParentName(lastLine);
       }
@@ -65,7 +68,7 @@ class MgfScanIterator extends ScanIterator {
   }
 
   private List<Scan> extractScans(final List<String> scanSectionLines) {
-    return new MgfScanExtracter(scanSectionLines.iterator(), defaultCharges, defaultParentName).extractScans();
+    return new MgfScanExtracter(scanSectionLines.iterator(), defaultCharges, defaultParentName, parserOptions).extractScans();
   }
 
   private List<String> readScanSectionLines() {

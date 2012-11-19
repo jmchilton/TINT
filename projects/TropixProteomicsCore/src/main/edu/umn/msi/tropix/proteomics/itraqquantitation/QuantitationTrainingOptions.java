@@ -23,26 +23,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 
 public class QuantitationTrainingOptions {
   private final ImmutableList<File> inputMzxmlFiles;
-  private final File inputScaffoldReport;
+  private final InputReport inputReport;
   private final File outputFile;
   private final QuantificationType quantificationType;
   private final QuantificationTrainingOptions trainingOptions;
 
   public static final class QuantitationOptionsBuilder {
     private final ImmutableList<File> inputMzxmlFiles;
-    private final File inputScaffoldReport;
+    private final InputReport inputReport;
     private File outputFile = new File("quantification_output.csv");
     private QuantificationTrainingOptions trainingOptions;
     private QuantificationType quantificationType = QuantificationType.FOUR_PLEX;
 
-    private QuantitationOptionsBuilder(final Iterable<File> inputMzxmlFiles, final File inputScaffoldReport) {
+    private QuantitationOptionsBuilder(final Iterable<File> inputMzxmlFiles, final InputReport inputReport) {
       this.inputMzxmlFiles = ImmutableList.copyOf(inputMzxmlFiles);
-      this.inputScaffoldReport = inputScaffoldReport;
+      this.inputReport = inputReport;
     }
 
     public QuantitationOptionsBuilder withTrainingOptions(final QuantificationTrainingOptions trainingOptions) {
@@ -71,17 +72,18 @@ public class QuantitationTrainingOptions {
     }
 
     public QuantitationTrainingOptions get() {
-      return new QuantitationTrainingOptions(inputMzxmlFiles, inputScaffoldReport, outputFile, quantificationType, trainingOptions);
+      return new QuantitationTrainingOptions(inputMzxmlFiles, inputReport, outputFile, quantificationType, trainingOptions);
     }
   }
 
-  public static QuantitationOptionsBuilder forInput(final Iterable<File> inputMzxmlFiles, final File inputScaffoldReport) {
-    return new QuantitationOptionsBuilder(inputMzxmlFiles, inputScaffoldReport);
+  public static QuantitationOptionsBuilder forInput(final Iterable<File> inputMzxmlFiles, final InputReport inputReport) {
+    return new QuantitationOptionsBuilder(inputMzxmlFiles, inputReport);
   }
 
-  public QuantitationTrainingOptions(final ImmutableList<File> inputMzxmlFiles, final File inputScaffoldReport, final File outputFile, final QuantificationType quantificationType, final QuantificationTrainingOptions trainingOptions) {
+  public QuantitationTrainingOptions(final ImmutableList<File> inputMzxmlFiles, final InputReport inputScaffoldReport, final File outputFile,
+      final QuantificationType quantificationType, final QuantificationTrainingOptions trainingOptions) {
     this.inputMzxmlFiles = inputMzxmlFiles;
-    this.inputScaffoldReport = inputScaffoldReport;
+    this.inputReport = inputScaffoldReport;
     this.outputFile = outputFile;
     this.quantificationType = quantificationType;
     this.trainingOptions = trainingOptions;
@@ -91,8 +93,8 @@ public class QuantitationTrainingOptions {
     return inputMzxmlFiles;
   }
 
-  public File getInputScaffoldReport() {
-    return inputScaffoldReport;
+  public InputReport getInputScaffoldReport() {
+    return inputReport;
   }
 
   public File getOutputFile() {
@@ -108,7 +110,8 @@ public class QuantitationTrainingOptions {
   }
 
   public String toString() {
-    return "QuantitationTrainingOptions[mzxmlFiles" + Joiner.on(",").join(inputMzxmlFiles) + ",scaffoldFile=" + inputScaffoldReport + ", outputFile=" + outputFile + ", type=" + quantificationType.getValue() + ",weights=" + ToStringBuilder.reflectionToString(trainingOptions)
+    return "QuantitationTrainingOptions[mzxmlFiles" + Joiner.on(",").join(inputMzxmlFiles) + ",report=" + inputReport + ", outputFile="
+        + outputFile + ", type=" + quantificationType.getValue() + ",weights=" + ToStringBuilder.reflectionToString(trainingOptions)
         + "]";
   }
 

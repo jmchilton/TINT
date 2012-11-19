@@ -45,6 +45,8 @@ import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationTrainingOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.tools.ITraqQuantificationGuiHelpers.FileChooserButton;
@@ -52,7 +54,8 @@ import edu.umn.msi.tropix.proteomics.tools.ITraqQuantificationGuiHelpers.FileCho
 // TODO: Fix window size on type switch.
 public class ITraqQuantificationTrainingGui {
 
-  private static final Map<Integer, String> RATIO_LABEL_MAP = ImmutableMap.<Integer, String>builder().put(0, "i113").put(1, "i114").put(2, "i115").put(3, "i116").put(4, "i117").put(5, "i118").put(6, "i119").put(7, "i121").build();
+  private static final Map<Integer, String> RATIO_LABEL_MAP = ImmutableMap.<Integer, String>builder().put(0, "i113").put(1, "i114").put(2, "i115")
+      .put(3, "i116").put(4, "i117").put(5, "i118").put(6, "i119").put(7, "i121").build();
 
   public static final Runnable GUI_RUNNABLE = new Runnable() {
     private String type;
@@ -211,9 +214,11 @@ public class ITraqQuantificationTrainingGui {
           final File outputFile = Iterables.getOnlyElement(outputChooser.getFiles());
           final QuantificationType quantificationType = type.equals("4") ? QuantificationType.FOUR_PLEX : QuantificationType.EIGHT_PLEX;
 
-          final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
+          final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+              "edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
           @SuppressWarnings("unchecked")
-          final Closure<QuantitationTrainingOptions> trainingClosure = (Closure<QuantitationTrainingOptions>) context.getBean("quantitationTrainingClosure");
+          final Closure<QuantitationTrainingOptions> trainingClosure = (Closure<QuantitationTrainingOptions>) context
+              .getBean("quantitationTrainingClosure");
 
           final List<File> trainingScanFiles = scanFiles;
           final File trainingReportFile = reportFile;
@@ -236,7 +241,9 @@ public class ITraqQuantificationTrainingGui {
             trainingOptions.setI121Proportion(ratios[7]);
           }
           trainingOptions.setNumBins(numBins);
-          final QuantitationTrainingOptions options = QuantitationTrainingOptions.forInput(trainingScanFiles, trainingReportFile).withOutput(outputFile).withTrainingOptions(trainingOptions).ofType(quantificationType).get();
+          final QuantitationTrainingOptions options = QuantitationTrainingOptions
+              .forInput(trainingScanFiles, new InputReport(reportFile, ReportType.SCAFFOLD)).withOutput(outputFile)
+              .withTrainingOptions(trainingOptions).ofType(quantificationType).get();
           try {
             System.out.println("Executing quantiation with options " + options);
             trainingClosure.apply(options);

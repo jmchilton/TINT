@@ -27,6 +27,8 @@ import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 
 public class ITraqQuantification {
 
@@ -43,9 +45,11 @@ public class ITraqQuantification {
     final File scaffoldFile = new File(args[args.length - 2]);
     final File outFile = new File(args[args.length - 1]);
     // TODO: Take in type some how
-    final QuantitationOptions options = QuantitationOptions.forInput(mzxmlFiles, scaffoldFile).withOutput(outFile).is4Plex().get();
+    final QuantitationOptions options = QuantitationOptions.forInput(mzxmlFiles, new InputReport(scaffoldFile, ReportType.SCAFFOLD))
+        .withOutput(outFile).is4Plex().get();
 
-    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
+    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+        "edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
     @SuppressWarnings("unchecked")
     final Closure<QuantitationOptions> closure = (Closure<QuantitationOptions>) context.getBean("quantitationClosure");
     closure.apply(options);

@@ -19,6 +19,13 @@ package edu.umn.msi.tropix.proteomics.conversion;
 import java.io.InputStream;
 import java.util.Iterator;
 
+/**
+ * Deprecated: Use XmlPeakListParser instead.
+ * 
+ * @author John Chilton
+ * 
+ */
+@Deprecated
 public interface MzxmlParser {
 
   public static class MzxmlInfo implements Iterable<Scan> {

@@ -37,22 +37,27 @@ import edu.umn.msi.tropix.common.jobqueue.jobprocessors.DisposableResourceTracke
 import edu.umn.msi.tropix.proteomics.itraqquantitation.ITraqQuantitationJobProcessorFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationTrainingOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;
 
 @JobType("ITraqQuantitation")
-public class ITraqQuantitationJobProcessorFactoryImpl extends BaseJobProcessorFactoryImpl<ITraqQuantitationJobProcessorFactoryImpl.ITraqQuantitationJobProcessorImpl> implements ITraqQuantitationJobProcessorFactory {
+public class ITraqQuantitationJobProcessorFactoryImpl extends
+    BaseJobProcessorFactoryImpl<ITraqQuantitationJobProcessorFactoryImpl.ITraqQuantitationJobProcessorImpl> implements
+    ITraqQuantitationJobProcessorFactory {
   private Closure<QuantitationOptions> quantitationClosure;
   private Closure<QuantitationTrainingOptions> quantitationTrainingClosure;
 
-  public JobProcessor<InProcessJobDescription> createTraining(final JobProcessorConfiguration config, final Iterable<InputContext> mzxmlContexts, final InputContext dataContext, final QuantificationType quantificationType, final QuantificationTrainingOptions options) {
+  public JobProcessor<InProcessJobDescription> createTraining(final JobProcessorConfiguration config, final Iterable<InputContext> mzxmlContexts,
+      final InputContext dataContext, final QuantificationType quantificationType, final QuantificationTrainingOptions options) {
     final StagingDirectory stagingDirectory = getAndSetupStagingDirectory(config);
     final DisposableResourceTracker disposableResourceTracker = getDisposableResourceTrackerSupplier().get();
     return new ITraqQuantitationJobProcessorImpl(stagingDirectory, disposableResourceTracker, mzxmlContexts, dataContext, quantificationType, options);
   }
-  
-  public JobProcessor<InProcessJobDescription> create(final JobProcessorConfiguration config, final Iterable<InputContext> mzxmlContexts, final InputContext dataContext, final QuantificationType quantificationType, @Nullable final QuantificationWeights weights) {
+
+  public JobProcessor<InProcessJobDescription> create(final JobProcessorConfiguration config, final Iterable<InputContext> mzxmlContexts,
+      final InputContext dataContext, final QuantificationType quantificationType, @Nullable final QuantificationWeights weights) {
     final StagingDirectory stagingDirectory = getAndSetupStagingDirectory(config);
     final DisposableResourceTracker disposableResourceTracker = getDisposableResourceTrackerSupplier().get();
     return new ITraqQuantitationJobProcessorImpl(stagingDirectory, disposableResourceTracker, mzxmlContexts, dataContext, quantificationType, weights);
@@ -66,8 +71,10 @@ public class ITraqQuantitationJobProcessorFactoryImpl extends BaseJobProcessorFa
     private final QuantificationWeights weights;
     @Nullable
     private final QuantificationTrainingOptions trainingOptions;
-    
-    ITraqQuantitationJobProcessorImpl(final StagingDirectory stagingDirectory, final DisposableResourceTracker disposableResourceTracker, final Iterable<InputContext> mzxmlContexts, final InputContext dataContext, final QuantificationType quantificationType, @Nullable final QuantificationWeights weights) {
+
+    ITraqQuantitationJobProcessorImpl(final StagingDirectory stagingDirectory, final DisposableResourceTracker disposableResourceTracker,
+        final Iterable<InputContext> mzxmlContexts, final InputContext dataContext, final QuantificationType quantificationType,
+        @Nullable final QuantificationWeights weights) {
       this.setStagingDirectory(stagingDirectory);
       this.setDisposableResourceTracker(disposableResourceTracker);
       this.mzxmlContexts = mzxmlContexts;
@@ -76,9 +83,10 @@ public class ITraqQuantitationJobProcessorFactoryImpl extends BaseJobProcessorFa
       this.weights = weights;
       this.trainingOptions = null;
     }
-    
 
-    ITraqQuantitationJobProcessorImpl(final StagingDirectory stagingDirectory, final DisposableResourceTracker disposableResourceTracker, final Iterable<InputContext> mzxmlContexts, final InputContext dataContext, final QuantificationType quantificationType, final QuantificationTrainingOptions options) {
+    ITraqQuantitationJobProcessorImpl(final StagingDirectory stagingDirectory, final DisposableResourceTracker disposableResourceTracker,
+        final Iterable<InputContext> mzxmlContexts, final InputContext dataContext, final QuantificationType quantificationType,
+        final QuantificationTrainingOptions options) {
       this.setStagingDirectory(stagingDirectory);
       this.setDisposableResourceTracker(disposableResourceTracker);
       this.mzxmlContexts = mzxmlContexts;
@@ -103,19 +111,23 @@ public class ITraqQuantitationJobProcessorFactoryImpl extends BaseJobProcessorFa
       File inputScaffoldReport = new File(baseDir, reportName);
       File outputFile = new File(baseDir, "output.xml");
       if(trainingOptions != null) {
-        final QuantitationTrainingOptions options = QuantitationTrainingOptions.forInput(inputMzxmlFiles, inputScaffoldReport).withOutput(outputFile).ofType(quantificationType).withTrainingOptions(trainingOptions).get();
+        final QuantitationTrainingOptions options = QuantitationTrainingOptions
+            .forInput(inputMzxmlFiles, new InputReport(inputScaffoldReport, ReportType.SCAFFOLD)).withOutput(outputFile)
+            .ofType(quantificationType).withTrainingOptions(trainingOptions).get();
         super.setJobDescription(new BaseInProcessJobDescriptionImpl("ITraqQuantitation") {
           public void execute() {
             quantitationTrainingClosure.apply(options);
           }
         });
       } else {
-        final QuantitationOptions options = QuantitationOptions.forInput(inputMzxmlFiles, inputScaffoldReport).withOutput(outputFile).ofType(quantificationType).withWeights(weights).get();
+        final QuantitationOptions options = QuantitationOptions
+            .forInput(inputMzxmlFiles, new InputReport(inputScaffoldReport, ReportType.SCAFFOLD)).withOutput(outputFile)
+            .ofType(quantificationType).withWeights(weights).get();
         super.setJobDescription(new BaseInProcessJobDescriptionImpl("ITraqQuantitation") {
           public void execute() {
             quantitationClosure.apply(options);
           }
-        });        
+        });
       }
     }
 
@@ -129,7 +141,7 @@ public class ITraqQuantitationJobProcessorFactoryImpl extends BaseJobProcessorFa
   public void setQuantitationClosure(final Closure<QuantitationOptions> quantitationClosure) {
     this.quantitationClosure = quantitationClosure;
   }
-               
+
   public void setQuantitationTrainingClosure(final Closure<QuantitationTrainingOptions> quantitationTrainingClosure) {
     this.quantitationTrainingClosure = quantitationTrainingClosure;
   }

@@ -40,6 +40,8 @@ import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtilsFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;
 import edu.umn.msi.tropix.proteomics.tools.ITraqQuantificationGuiHelpers.FileChooserButton;
@@ -135,9 +137,11 @@ public class ITraqQuantificationGui {
           final File reportFile = Iterables.getOnlyElement(xlsChooser.getFiles());
           final File outputFile = Iterables.getOnlyElement(outputChooser.getFiles());
           final QuantificationType quantificationType = type.equals("4") ? QuantificationType.FOUR_PLEX : QuantificationType.EIGHT_PLEX;
-          final QuantitationOptionsBuilder optionBuilder = QuantitationOptions.forInput(scanFiles, reportFile).withOutput(outputFile).ofType(quantificationType);
+          final QuantitationOptionsBuilder optionBuilder = QuantitationOptions
+              .forInput(scanFiles, new InputReport(reportFile, ReportType.SCAFFOLD)).withOutput(outputFile).ofType(quantificationType);
 
-          final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
+          final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+              "edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
           if(useTraining) {
             final File weightFile = Iterables.getOnlyElement(trainingChooser.getFiles());
             optionBuilder.withWeights(AxisSerializationUtilsFactory.getInstance().deserialize(weightFile, QuantificationWeights.class));

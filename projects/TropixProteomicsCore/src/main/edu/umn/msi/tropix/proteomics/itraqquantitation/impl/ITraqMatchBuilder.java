@@ -33,19 +33,21 @@ import com.google.common.collect.ImmutableList;
 interface ITraqMatchBuilder {
 
   @Immutable
-  public static class ITraqMatchBuilderOptions {    
-    @Nonnull private final ImmutableList<ITraqLabel> iTraqLabels;
-    
-    @Nonnull public ImmutableList<ITraqLabel> getITraqLabels() {
+  public static class ITraqMatchBuilderOptions {
+    @Nonnull
+    private final ImmutableList<ITraqLabel> iTraqLabels;
+
+    @Nonnull
+    public ImmutableList<ITraqLabel> getITraqLabels() {
       return iTraqLabels;
     }
 
     public ITraqMatchBuilderOptions(@Nonnull final Iterable<ITraqLabel> iTraqLabels) {
       this.iTraqLabels = ImmutableList.copyOf(iTraqLabels);
     }
-    
+
   }
-  
-  List<ITraqMatch> buildDataEntries(final Iterable<File> mzxmlInputs, final File scaffoldReport, final ITraqMatchBuilderOptions options);
+
+  List<ITraqMatch> buildDataEntries(final Iterable<File> mzxmlInputs, final InputReport scaffoldReport, final ITraqMatchBuilderOptions options);
 
 }

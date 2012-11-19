@@ -22,5 +22,5 @@ import java.util.List;
 import javax.annotation.WillClose;
 
 interface ScaffoldReportParser {
-  List<ScaffoldEntry> parse(@WillClose final Reader reader);
+  List<ReportEntry> parse(@WillClose final Reader reader);
 }

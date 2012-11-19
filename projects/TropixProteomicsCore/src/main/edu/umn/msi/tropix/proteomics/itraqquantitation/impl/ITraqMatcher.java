@@ -22,6 +22,6 @@ import com.google.common.base.Function;
 
 interface ITraqMatcher {
 
-  List<ITraqMatch> match(Iterable<ScaffoldEntry> scaffoldEntries, Function<ScanIndex, ITraqScanSummary> scanSummaries);
+  List<ITraqMatch> match(Iterable<ReportEntry> scaffoldEntries, Function<ScanIndex, ITraqScanSummary> scanSummaries);
 
 }

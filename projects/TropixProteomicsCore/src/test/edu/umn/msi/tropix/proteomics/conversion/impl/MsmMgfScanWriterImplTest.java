@@ -13,7 +13,7 @@ public class MsmMgfScanWriterImplTest extends BaseMgfScanWriterImplTest {
 
   @Test(groups = "unit")
   public void testConversion() {
-    final Scan scan = new Scan(2, 45, new double[] {1.0, 2.0});
+    final Scan scan = new Scan(2, 0, 45, new double[] {1.0, 2.0});
     scan.setParentFileName("foo.raw");
     scan.setPrecursorIntensity(1.4f);
     final String mgfScanContents = convertScan(scan);

@@ -22,6 +22,8 @@
 
 package edu.umn.msi.tropix.webgui.services.object;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.umn.msi.tropix.client.galaxy.GalaxyExportOptions;
@@ -32,5 +34,9 @@ public interface ExportServiceAsync {
   void export(String[] ids, GridFtpServerOptions gridFtpOptions, AsyncCallback<Void> callback);
 
   void exportGalaxy(GalaxyExportOptions galaxyExportOptions, AsyncCallback<Void> callback);
+
+  void exportRawGalaxy(GalaxyExportOptions galaxyExportOptions, List<String> peakListIds, AsyncCallback<Void> callback);
+
+  void exportMzXMLGalaxy(GalaxyExportOptions galaxyExportOptions, List<String> peakListIds, AsyncCallback<Void> callback);
 
 }

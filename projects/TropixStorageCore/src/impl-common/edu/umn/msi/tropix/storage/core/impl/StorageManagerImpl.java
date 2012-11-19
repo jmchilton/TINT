@@ -63,7 +63,11 @@ public class StorageManagerImpl implements StorageManager {
   }
 
   public HasStreamInputContext download(final String id, final String gridId) {
-    if(!authorizationProvider.canDownload(id, gridId)) {
+    return download(id, gridId, true);
+  }
+
+  public HasStreamInputContext download(final String id, final String gridId, final boolean checkAccess) {
+    if(checkAccess && !authorizationProvider.canDownload(id, gridId)) {
       throw new RuntimeException("User " + gridId + " cannot access file " + id);
     }
     return accessProvider.getFile(id);
@@ -76,14 +80,13 @@ public class StorageManagerImpl implements StorageManager {
   public long getLength(String id, String gridId) {
     return getFileMetadata(id, gridId).getLength();
   }
-  
+
   public boolean setDateModified(final String id, final String gridId, final long dateModified) {
     if(!authorizationProvider.canDownload(id, gridId)) {
       throw new RuntimeException("User " + gridId + " cannot access file " + id);
     }
     return accessProvider.setDateModified(gridId, dateModified);
   }
-
 
   public FileMetadata getFileMetadata(String id, String gridId) {
     if(!authorizationProvider.canDownload(id, gridId)) {
@@ -102,7 +105,7 @@ public class StorageManagerImpl implements StorageManager {
     }
     return fileMetadataList.build();
   }
-  
+
   public boolean exists(final String id) {
     return accessProvider.fileExists(id);
   }
@@ -175,6 +178,5 @@ public class StorageManagerImpl implements StorageManager {
   public void setFileService(final FileService fileService) {
     this.fileService = fileService;
   }
-
 
 }

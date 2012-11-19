@@ -147,14 +147,17 @@
   
   <target name="compile-scripts_">
     <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.LtqIQuantGui" script="LTQ-iQuant" />
+    <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.LtqIQuantCli" script="LTQ-iQuant-cli" />
     <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.ITraqScanSummarizer" script="ITraqScanSummarizer" />
+    <package-scripts classname="edu.umn.msi.tropix.proteomics.tools.MgfFormatter" script="MgfFormatter" />
+
     <copy tofile="${build.scripts.dir}/README.txt">
       <fileset file="${basedir}/ltqiquant-README.txt" />
     </copy> 
   </target>
 
   <target name="_dist-scripts">
-    <zip-scripts prefix="tint-proteomics" executables="LTQ-iQuant,ITraqScanSummarizer"/>
+    <zip-scripts prefix="tint-proteomics" executables="LTQ-iQuant,LTQ-iQuant-cli,ITraqScanSummarizer"/>
   </target>
 
   <target name="dist-scripts" depends="compile-scripts,_dist-scripts" />

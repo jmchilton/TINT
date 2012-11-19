@@ -6,6 +6,7 @@ import java.util.List;
 
 public class GalaxyExportOptions implements Serializable {
   private List<String> fileObjectIds = new ArrayList<String>();
+  private boolean makePrivate;
   private String name;
 
   public String getName() {
@@ -22,6 +23,14 @@ public class GalaxyExportOptions implements Serializable {
 
   public void setFileObjectIds(final List<String> fileObjectIds) {
     this.fileObjectIds = fileObjectIds;
+  }
+
+  public boolean isMakePrivate() {
+    return makePrivate;
+  }
+
+  public void setMakePrivate(final boolean makePrivate) {
+    this.makePrivate = makePrivate;
   }
 
 }

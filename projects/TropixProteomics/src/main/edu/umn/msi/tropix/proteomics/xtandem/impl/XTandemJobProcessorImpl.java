@@ -16,17 +16,31 @@
 
 package edu.umn.msi.tropix.proteomics.xtandem.impl;
 
+import java.io.File;
+
+import com.google.common.base.Supplier;
+
 import edu.umn.msi.tropix.common.io.Directories;
+import edu.umn.msi.tropix.common.io.FileUtils;
+import edu.umn.msi.tropix.common.io.FileUtilsFactory;
+import edu.umn.msi.tropix.common.io.IOUtils;
+import edu.umn.msi.tropix.common.io.IOUtilsFactory;
+import edu.umn.msi.tropix.common.io.TempFileSuppliers;
 import edu.umn.msi.tropix.models.xtandem.XTandemParameters;
 import edu.umn.msi.tropix.proteomics.bioml.Bioml;
 import edu.umn.msi.tropix.proteomics.bioml.Taxon;
+import edu.umn.msi.tropix.proteomics.conversion.impl.MzxmlUtils;
 import edu.umn.msi.tropix.proteomics.identification.IdentificationJobProcessorImpl;
+import edu.umn.msi.tropix.proteomics.sequest.impl.SequestUtils;
 import edu.umn.msi.tropix.proteomics.xml.BiomlUtility;
 import edu.umn.msi.tropix.proteomics.xtandem.XTandemParameterTranslator;
 
 public class XTandemJobProcessorImpl extends IdentificationJobProcessorImpl<XTandemParameters> {
   private static final String PARAM_PATH = "input.xml", OUTPUT_PATH = "output.xml", TAX_PATH = "taxonomy.xml";
   private static final String MZXML_PATH = "data.mzxml", DB_PATH = "db.fasta";
+  private static final Supplier<File> TEMP_FILE_SUPPLIER = TempFileSuppliers.getDefaultTempFileSupplier();
+  private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
+  private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
 
   private XTandemParameterTranslator xTandemParameterTranslator;
   private final BiomlUtility biomlUtility = new BiomlUtility();
@@ -41,7 +55,19 @@ public class XTandemJobProcessorImpl extends IdentificationJobProcessorImpl<XTan
 
   @Override
   public void doPreprocessing() {
-    super.getMzxml().get(getStagingDirectory().getOutputContext(MZXML_PATH));
+    File tempMzXMLFile = null;
+    final String name;
+    try {
+      tempMzXMLFile = TEMP_FILE_SUPPLIER.get();
+      writeMzXML(tempMzXMLFile);
+      final String nameGuess = MzxmlUtils.guessMzxmlName(tempMzXMLFile, "input");
+      name = SequestUtils.getSanitizedName(nameGuess, "mzxml", MZXML_PATH);
+      getStagingDirectory().getOutputContext(name).put(tempMzXMLFile);
+    } finally {
+      FILE_UTILS.deleteQuietly(tempMzXMLFile);
+    }
+    // super.getMzxml().get(getStagingDirectory().getOutputContext(MZXML_PATH));
+
     super.getDatabase().get(getStagingDirectory().getOutputContext(DB_PATH));
     final Bioml bioml = new Bioml();
     final Taxon taxon = new Taxon();
@@ -53,9 +79,10 @@ public class XTandemJobProcessorImpl extends IdentificationJobProcessorImpl<XTan
     bioml.getTaxon().add(taxon);
     biomlUtility.serialize(bioml, getStagingDirectory().getOutputContext(TAX_PATH));
     final String outputAbsPath = Directories.buildAbsolutePath(getStagingDirectory(), OUTPUT_PATH);
-    final String mzxmlAbsPath = Directories.buildAbsolutePath(getStagingDirectory(), MZXML_PATH);
+    final String mzxmlAbsPath = Directories.buildAbsolutePath(getStagingDirectory(), name);
     final String taxAbsPath = Directories.buildAbsolutePath(getStagingDirectory(), TAX_PATH);
-    final String xtandemParamContents = xTandemParameterTranslator.getXTandemParameters(super.getParameters(), outputAbsPath, mzxmlAbsPath, "unspecified", taxAbsPath, xslPath);
+    final String xtandemParamContents = xTandemParameterTranslator.getXTandemParameters(super.getParameters(), outputAbsPath, mzxmlAbsPath,
+        "unspecified", taxAbsPath, xslPath);
     getStagingDirectory().getOutputContext(PARAM_PATH).put(xtandemParamContents.getBytes());
     getJobDescription().getJobDescriptionType().setArgument(new String[] {Directories.buildAbsolutePath(getStagingDirectory(), PARAM_PATH)});
   }

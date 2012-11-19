@@ -29,7 +29,7 @@ public class DtaNameUtils {
     private final int start, end;
     private final short charge;
 
-    private DtaNameSummary(final String basename, final int start, final int end, final short charge) {
+    public DtaNameSummary(final String basename, final int start, final int end, final short charge) {
       this.basename = basename;
       this.start = start;
       this.end = end;

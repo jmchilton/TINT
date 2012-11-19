@@ -61,7 +61,15 @@ public class XMLStreamReaderUtils {
   }
 
   public static boolean isStartOfElement(final XMLStreamReader reader, final String name) {
-    return reader.getEventType() == XMLStreamReader.START_ELEMENT && reader.getName().getLocalPart().equals(name);
+    return isStartElement(reader) && reader.getName().getLocalPart().equals(name);
+  }
+
+  public static boolean isStartElement(final XMLStreamReader reader) {
+    return reader.getEventType() == XMLStreamReader.START_ELEMENT;
+  }
+
+  public static boolean isEndOfElement(final XMLStreamReader reader, final String name) {
+    return reader.getEventType() == XMLStreamReader.END_ELEMENT && reader.getName().getLocalPart().equals(name);
   }
 
   public static String getNextText(final XMLStreamReader reader) {
@@ -70,7 +78,7 @@ public class XMLStreamReaderUtils {
     }
     return reader.getText();
   }
-  
+
   public static String getElementText(final XMLStreamReader reader) {
     try {
       return reader.getElementText();

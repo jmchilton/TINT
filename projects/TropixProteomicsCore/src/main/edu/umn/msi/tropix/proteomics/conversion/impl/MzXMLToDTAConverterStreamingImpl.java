@@ -84,7 +84,7 @@ public class MzXMLToDTAConverterStreamingImpl implements MzXMLToDTAConverter {
           // System.out.println("Skipping empty peaks");
           continue;
         }
-        final float precursorMzValue = scan.getPrecursorMz();
+        final double precursorMzValue = scan.getPrecursorMz();
         final short chargeState = scan.getPrecursorCharge();
         final short[] precursorCharges = ConversionUtils.getPrecusorCharges(chargeState, precursorMzValue, doubles);
 

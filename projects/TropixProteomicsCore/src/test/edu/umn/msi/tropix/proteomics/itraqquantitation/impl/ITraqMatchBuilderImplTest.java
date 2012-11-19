@@ -18,7 +18,6 @@ package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.StringWriter;
 import java.util.List;
 
 import org.easymock.Capture;
@@ -26,14 +25,15 @@ import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
-import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
-import edu.umn.msi.tropix.proteomics.conversion.MzxmlParser.MzxmlInfo;
+import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParser;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 
 public class ITraqMatchBuilderImplTest {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
@@ -42,12 +42,12 @@ public class ITraqMatchBuilderImplTest {
   public void builder() {
     final ITraqMatchBuilderImpl builder = new ITraqMatchBuilderImpl();
     final ITraqMatcher iTraqMatcher = EasyMock.createMock(ITraqMatcher.class);
-    final ScaffoldReportParser scaffoldReportParser = EasyMock.createMock(ScaffoldReportParser.class);
-    final MzxmlParser mzxmlParser = EasyMock.createMock(MzxmlParser.class);
+    final ReportParser scaffoldReportParser = EasyMock.createMock(ReportParser.class);
+    final XmlPeakListParser peakListParser = EasyMock.createMock(XmlPeakListParser.class);
 
     builder.setItraqMatcher(iTraqMatcher);
-    builder.setMzxmlParser(mzxmlParser);
-    builder.setScaffoldReportParser(scaffoldReportParser);
+    builder.setXmlPeakListParser(peakListParser);
+    builder.setReportParser(scaffoldReportParser);
 
     File mzxml1 = null, mzxml2 = null, scaffold = null;
     try {
@@ -58,29 +58,33 @@ public class ITraqMatchBuilderImplTest {
       FILE_UTILS.writeStringToFile(mzxml2, "Moo Cow2");
       FILE_UTILS.writeStringToFile(scaffold, "Scaffold Report");
 
-      final StringWriter writer = new StringWriter();
-      final List<ScaffoldEntry> scaffoldEntries = Lists.newArrayList();
-      EasyMock.expect(scaffoldReportParser.parse(EasyMockUtils.copy(writer))).andReturn(scaffoldEntries);
+      // final StringWriter writer = new StringWriter();
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      final List<ReportEntry> scaffoldEntries = Lists.newArrayList();
+      EasyMock.expect(scaffoldReportParser.parse(EasyMockUtils.copy(outputStream), EasyMock.eq(ReportType.SCAFFOLD))).andReturn(
+          scaffoldEntries);
 
-      final Scan scan1 = new Scan(2, 100, new double[] {1.0, 1.0});
+      final Scan scan1 = new Scan(2, 0, 100, new double[] {1.0, 1.0});
       scan1.setPrecursorCharge((short) 2);
       scan1.setParentFileName("moo.RAW");
-      final Scan scan2 = new Scan(2, 1004, new double[] {1.0, 1.0});
+      final Scan scan2 = new Scan(2, 1, 1004, new double[] {1.0, 1.0});
       scan2.setPrecursorCharge((short) 2);
       scan2.setParentFileName("cow.RAW");
 
       final ByteArrayOutputStream mzxmlStream1 = new ByteArrayOutputStream(), mzxmlStream2 = new ByteArrayOutputStream();
-      EasyMock.expect(mzxmlParser.parse(EasyMockUtils.copy(mzxmlStream1))).andReturn(new MzxmlInfo(Lists.<Scan>newArrayList(scan1).iterator()));
-      EasyMock.expect(mzxmlParser.parse(EasyMockUtils.copy(mzxmlStream2))).andReturn(new MzxmlInfo(Lists.<Scan>newArrayList(scan2).iterator()));
+      EasyMock.expect(peakListParser.parse(EasyMockUtils.copy(mzxmlStream1))).andReturn(ImmutableList.<Scan>builder().add(scan1).build().iterator());
+      EasyMock.expect(peakListParser.parse(EasyMockUtils.copy(mzxmlStream2))).andReturn(ImmutableList.<Scan>builder().add(scan2).build().iterator());
 
       final Capture<Function<ScanIndex, ITraqScanSummary>> scanSummariesCapture = EasyMockUtils.newCapture();
 
       final List<ITraqMatch> matches = Lists.newArrayList();
       EasyMock.expect(iTraqMatcher.match(EasyMock.same(scaffoldEntries), EasyMock.capture(scanSummariesCapture))).andReturn(matches);
 
-      EasyMock.replay(iTraqMatcher, mzxmlParser, scaffoldReportParser);
-      assert matches == builder.buildDataEntries(Lists.newArrayList(mzxml1, mzxml2), scaffold, new ITraqMatchBuilder.ITraqMatchBuilderOptions(ITraqLabels.get4PlexLabels()));
-      EasyMockUtils.verifyAndReset(iTraqMatcher, mzxmlParser, scaffoldReportParser);
+      EasyMock.replay(iTraqMatcher, peakListParser, scaffoldReportParser);
+      assert matches == builder.buildDataEntries(Lists.newArrayList(mzxml1, mzxml2), new InputReport(scaffold, ReportType.SCAFFOLD),
+          new ITraqMatchBuilder.ITraqMatchBuilderOptions(
+              ITraqLabels.get4PlexLabels()));
+      EasyMockUtils.verifyAndReset(iTraqMatcher, peakListParser, scaffoldReportParser);
 
       final Function<ScanIndex, ITraqScanSummary> scanSummaries = scanSummariesCapture.getValue();
       assert null != scanSummaries.apply(new ScanIndex("moo", 100, (short) 2));
@@ -92,7 +96,7 @@ public class ITraqMatchBuilderImplTest {
         e = ie;
       }
       assert e != null;
-      assert writer.toString().equals("Scaffold Report");
+      assert new String(outputStream.toByteArray()).equals("Scaffold Report");
 
     } finally {
       FILE_UTILS.deleteQuietly(mzxml1);
@@ -101,5 +105,4 @@ public class ITraqMatchBuilderImplTest {
     }
 
   }
-
 }

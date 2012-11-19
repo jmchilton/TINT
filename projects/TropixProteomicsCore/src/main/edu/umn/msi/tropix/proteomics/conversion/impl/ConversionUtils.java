@@ -22,6 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -29,13 +31,15 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.WillClose;
 
+import net.sourceforge.sashimi.mzxml.v3_0.MsRun;
+import net.sourceforge.sashimi.mzxml.v3_0.Scan;
+import net.sourceforge.sashimi.mzxml.v3_0.Scan.Peaks;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.base.Preconditions;
 
-import net.sourceforge.sashimi.mzxml.v3_0.MsRun;
-import net.sourceforge.sashimi.mzxml.v3_0.Scan;
-import net.sourceforge.sashimi.mzxml.v3_0.Scan.Peaks;
 import edu.umn.msi.tropix.common.io.FloatingPointDataInputStream;
 import edu.umn.msi.tropix.common.io.FloatingPointDataOutputStream;
 import edu.umn.msi.tropix.common.io.IOUtils;
@@ -54,7 +58,7 @@ public class ConversionUtils {
     final String cleanedBaseName = baseName.replaceAll("[^\\w]", "_");
     return cleanedBaseName + extension;
   }
-  
+
   private static MessageDigest getMessageDigestInstance(final String algorithm) {
     try {
       final MessageDigest md = MessageDigest.getInstance(algorithm);
@@ -63,15 +67,15 @@ public class ConversionUtils {
       throw new IllegalStateException(e);
     }
   }
-  
+
   public static boolean isEmptyPeaks(final double[] peaks) {
     return peaks == null || peaks.length < 2 || (peaks.length == 2 && peaks[0] == 0.0 && peaks[1] == 0.0);
   }
-  
+
   public static byte[] getDigest(final byte[] message, final String algorithm) {
     return getDigest(new ByteArrayInputStream(message), algorithm);
   }
-  
+
   public static byte[] getDigest(@WillClose final InputStream inputStream, final String algorithm) {
     try {
       final MessageDigest md = getMessageDigestInstance(algorithm);
@@ -86,7 +90,7 @@ public class ConversionUtils {
     }
   }
 
-  public static short[] getPrecusorCharges(final short recordedChargeState, final float precursorMzValue, final double[] peaks) {
+  public static short[] getPrecusorCharges(final short recordedChargeState, final double precursorMzValue, final double[] peaks) {
     short[] precursorCharges;
     if(recordedChargeState != 0) {
       precursorCharges = new short[] {recordedChargeState};
@@ -98,13 +102,12 @@ public class ConversionUtils {
     return precursorCharges;
   }
 
-
   /**
    * Code from TPP which Jimmy Eng gave us permission to redistribute with a new license.
    * 
    */
-  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="FE", justification="sumTotal > 0.0 is checked before division so result will never be NaN")
-  public static boolean isPlus1ChargeState(final double[] doubles, final float precursorMz) {
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "FE", justification = "sumTotal > 0.0 is checked before division so result will never be NaN")
+  public static boolean isPlus1ChargeState(final double[] doubles, final double precursorMz) {
     double sumBelow = 0.0, sumTotal = 0.0;
     boolean isPlus1ChargeState = true;
     for(int i = 0; i < doubles.length / 2; i++) {
@@ -132,6 +135,39 @@ public class ConversionUtils {
     checkArgument(peaksList != null && peaksList.size() > 0, "Scan doesn't appear to contain peaks.");
     final Peaks peaks = peaksList.get(0);
     return extractDoubles(peaks.getValue(), peaks.getPrecision().equals(BigInteger.valueOf(64)));
+  }
+
+  public static double[] extractDoublesFromBase64(final String base64, final boolean is64Bit) {
+    return extractDoublesFromBase64(base64, is64Bit, false);
+  }
+
+  public static double[] extractDoublesFromBase64(final String base64, final boolean is64Bit, final boolean littleEndian) {
+    final byte[] decodedBytes = Base64.decodeBase64(base64.getBytes());
+    final double[] doubles;
+    if(littleEndian) {
+      doubles = extractDoublesLittleEndian(decodedBytes, is64Bit);
+    } else {
+      doubles = ConversionUtils.extractDoubles(decodedBytes, is64Bit);
+    }
+    return doubles;
+  }
+
+  public static double[] extractDoublesLittleEndian(final byte[] bytes, final boolean is64Bit) {
+    double[] doubles;
+    ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    if(is64Bit) {
+      doubles = new double[bytes.length / 8];
+      for(int i = 0; i < doubles.length; i++) {
+        doubles[i] = byteBuffer.getDouble();
+      }
+    } else {
+      doubles = new double[bytes.length / 4];
+      for(int i = 0; i < doubles.length; i++) {
+        doubles[i] = byteBuffer.getFloat();
+      }
+    }
+    return doubles;
   }
 
   public static double[] extractDoubles(final byte[] bytes, final boolean is64Bit) {
@@ -196,7 +232,7 @@ public class ConversionUtils {
     final byte[] digest = getSHA1Bytes(message);
     return digestToString(digest);
   }
-  
+
   private static String digestToString(final byte[] digest) {
     return new String(HexUtils.encode(digest));
   }
@@ -205,7 +241,7 @@ public class ConversionUtils {
     final byte[] digest = getDigest(inputStream, "SHA");
     return digestToString(digest);
   }
-  
+
   /**
    * @param message
    *          String to SHA1 encode
@@ -220,8 +256,7 @@ public class ConversionUtils {
   private static byte[] getSHA1Bytes(final byte[] message) {
     return getDigest(message, "SHA");
   }
-  
-  
+
   public static byte[] doubles2bytes(final double[] doubles) {
     final ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream(doubles.length * 8);
     final FloatingPointDataOutputStream stream = new FloatingPointDataOutputStream(byteOutputStream);

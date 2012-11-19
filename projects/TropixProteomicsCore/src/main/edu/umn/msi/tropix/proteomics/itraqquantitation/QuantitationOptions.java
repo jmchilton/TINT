@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;
 
@@ -31,7 +32,7 @@ public final class QuantitationOptions {
   @Nonnull
   private final ImmutableList<File> inputMzxmlFiles;
   @Nonnull
-  private final File inputScaffoldReport;
+  private final InputReport inputScaffoldReport;
   @Nonnull
   private final File outputFile;
   @Nonnull
@@ -41,12 +42,12 @@ public final class QuantitationOptions {
 
   public static final class QuantitationOptionsBuilder {
     private final ImmutableList<File> inputMzxmlFiles;
-    private final File inputScaffoldReport;
+    private final InputReport inputScaffoldReport;
     private QuantificationWeights weights = null;
     private File outputFile = new File("quantification_output.csv");
     private QuantificationType quantificationType = QuantificationType.FOUR_PLEX;
 
-    private QuantitationOptionsBuilder(final Iterable<File> inputMzxmlFiles, final File inputScaffoldReport) {
+    private QuantitationOptionsBuilder(final Iterable<File> inputMzxmlFiles, final InputReport inputScaffoldReport) {
       this.inputMzxmlFiles = ImmutableList.copyOf(inputMzxmlFiles);
       this.inputScaffoldReport = inputScaffoldReport;
     }
@@ -81,7 +82,8 @@ public final class QuantitationOptions {
     }
   }
 
-  public QuantitationOptions(final ImmutableList<File> inputMzxmlFiles, final File inputScaffoldReport, final File outputFile, final QuantificationType quantificationType, final QuantificationWeights weights) {
+  public QuantitationOptions(final ImmutableList<File> inputMzxmlFiles, final InputReport inputScaffoldReport, final File outputFile,
+      final QuantificationType quantificationType, final QuantificationWeights weights) {
     this.inputMzxmlFiles = inputMzxmlFiles;
     this.inputScaffoldReport = inputScaffoldReport;
     this.outputFile = outputFile;
@@ -89,7 +91,7 @@ public final class QuantitationOptions {
     this.weights = weights;
   }
 
-  public static QuantitationOptionsBuilder forInput(final Iterable<File> inputMzxmlFiles, final File inputScaffoldReport) {
+  public static QuantitationOptionsBuilder forInput(final Iterable<File> inputMzxmlFiles, final InputReport inputScaffoldReport) {
     return new QuantitationOptionsBuilder(inputMzxmlFiles, inputScaffoldReport);
   }
 
@@ -97,7 +99,7 @@ public final class QuantitationOptions {
     return inputMzxmlFiles;
   }
 
-  public File getInputScaffoldReport() {
+  public InputReport getInputReport() {
     return inputScaffoldReport;
   }
 
@@ -114,7 +116,8 @@ public final class QuantitationOptions {
   }
 
   public String toString() {
-    return "QuantitationOptions[mzxmlFiles" + Joiner.on(",").join(inputMzxmlFiles) + ",scaffoldFile=" + inputScaffoldReport + ", outputFile=" + outputFile + ", type=" + quantificationType.getValue() + ",weights=" + weights + "]";
+    return "QuantitationOptions[mzxmlFiles" + Joiner.on(",").join(inputMzxmlFiles) + ",scaffoldFile=" + inputScaffoldReport + ", outputFile="
+        + outputFile + ", type=" + quantificationType.getValue() + ",weights=" + weights + "]";
   }
 
 }

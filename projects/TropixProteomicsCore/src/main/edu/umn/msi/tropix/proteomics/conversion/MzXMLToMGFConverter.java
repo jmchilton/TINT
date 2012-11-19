@@ -28,7 +28,7 @@ import com.google.common.collect.Lists;
 public interface MzXMLToMGFConverter {
   public static class MgfConversionOptions {
     public static enum MgfStyle {
-      DEFAULT, MSM, PROTEIN_PILOT
+      DEFAULT, MSM, PROTEIN_PILOT, MS2PREPROC
     };
 
     private MgfStyle mgfStyle = MgfStyle.DEFAULT;

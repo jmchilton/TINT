@@ -36,6 +36,7 @@ import edu.umn.msi.tropix.grid.gridftp.GridFtpClient;
 import edu.umn.msi.tropix.grid.gridftp.GridFtpFactory;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.persistence.service.FileService;
+import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.webgui.services.object.ExportService.GridFtpServerOptions;
 
 public class ExportServiceImplTest extends BaseGwtServiceTest {
@@ -48,7 +49,7 @@ public class ExportServiceImplTest extends BaseGwtServiceTest {
     final GridFtpFactory gridFtpFactory = EasyMock.createMock(GridFtpFactory.class);
 
     final ExportServiceImpl service = new ExportServiceImpl(fileService, getUserSession(), storageFactory, gridFtpFactory,
-        EasyMock.createMock(GalaxyExporter.class));
+        EasyMock.createMock(GalaxyExporter.class), EasyMock.createMock(TropixObjectService.class));
     final GridFtpServerOptions options = new GridFtpServerOptions();
     options.setHostname("elmo.msi.umn.edu");
     options.setPort(2811);

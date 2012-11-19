@@ -79,6 +79,9 @@ import edu.umn.msi.tropix.webgui.client.components.galaxy.EditGalaxyToolXmlWindo
 import edu.umn.msi.tropix.webgui.client.components.galaxy.GalaxyActionComponentFactoryImpl;
 import edu.umn.msi.tropix.webgui.client.components.galaxy.GalaxyActionEvent;
 import edu.umn.msi.tropix.webgui.client.components.galaxy.ManageGalaxyToolsWindowComponentSupplierImpl;
+import edu.umn.msi.tropix.webgui.client.components.impl.GalaxyExportComponentSupplierImpl.GalaxyFileExportComponentSupplierImpl;
+import edu.umn.msi.tropix.webgui.client.components.impl.GalaxyExportComponentSupplierImpl.GalaxyPeakListExportComponentSupplierImpl;
+import edu.umn.msi.tropix.webgui.client.components.impl.GalaxyExportComponentSupplierImpl.GalaxyRawExportComponentSupplierImpl;
 import edu.umn.msi.tropix.webgui.client.components.tree.TreeItem;
 import edu.umn.msi.tropix.webgui.services.object.SearchResult;
 
@@ -214,7 +217,11 @@ public class ComponentsModule extends AbstractGinModule {
     }).annotatedWith(Names.named("gridFtpExport")).to(GridFtpExportComponentSupplierImpl.class).in(Singleton.class);
 
     bind(new TypeLiteral<Supplier<? extends Command>>() {
-    }).annotatedWith(Names.named("galaxyExport")).to(GalaxyExportComponentSupplierImpl.class).in(Singleton.class);
+    }).annotatedWith(Names.named("galaxyExport")).to(GalaxyFileExportComponentSupplierImpl.class).in(Singleton.class);
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("galaxyRawExport")).to(GalaxyRawExportComponentSupplierImpl.class).in(Singleton.class);
+    bind(new TypeLiteral<Supplier<? extends Command>>() {
+    }).annotatedWith(Names.named("galaxyPeakListExport")).to(GalaxyPeakListExportComponentSupplierImpl.class).in(Singleton.class);
 
     bindDescribableLocationCommandComponentFactory("changeDescription", ChangeDescriptionCommandComponentFactoryImpl.class);
     bindDescribableLocationCommandComponentFactory("move", MoveCommandComponentFactoryImpl.class);

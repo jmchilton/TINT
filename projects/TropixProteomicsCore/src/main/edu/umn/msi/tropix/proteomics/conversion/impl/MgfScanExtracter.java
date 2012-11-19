@@ -15,7 +15,9 @@ import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils;
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils.DtaNameSummary;
+import edu.umn.msi.tropix.proteomics.conversion.MultiChargeScan;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
+import edu.umn.msi.tropix.proteomics.conversion.impl.PeakListParser.PeakListParserOptions;
 
 class MgfScanExtracter {
   private static final Log LOG = LogFactory.getLog(MgfScanExtracter.class);
@@ -25,10 +27,12 @@ class MgfScanExtracter {
   private static final String FLOATING_POINT_PATTERN = "(?:(?:[\\+\\-]?\\d+\\.?\\d*)|(?:[\\+\\-]?\\d*\\.\\d+))";
   private static final Pattern PEAK_LINE_PATTERN = Pattern.compile("\\s*" + FLOATING_POINT_PATTERN + "\\s+" + FLOATING_POINT_PATTERN + "\\s*");
 
+  private final PeakListParserOptions options;
+  private int index;
   private String titleStr = "run";
   private Optional<String> defaultTitleStr = Optional.<String>absent();
-  private float precursorMz = 0.0f;
-  private float precursorIntensity = 0.0f;
+  private double precursorMz = 0.0f;
+  private double precursorIntensity = 0.0f;
   private Long rt = null;
   private int end = 0;
   private int start = 0;
@@ -44,14 +48,16 @@ class MgfScanExtracter {
     this(scanSectionLines.iterator(), defaultCharges);
   }
 
-  MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges, final Optional<String> defaultParentName) {
+  MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges, final Optional<String> defaultParentName,
+      final PeakListParserOptions parserOptions) {
     this.scanSectionLines = scanSectionLines;
     this.defaultCharges = defaultCharges;
     this.defaultTitleStr = defaultParentName;
+    this.options = parserOptions;
   }
 
   MgfScanExtracter(final Iterator<String> scanSectionLines, final List<Short> defaultCharges) {
-    this(scanSectionLines, defaultCharges, Optional.<String>absent());
+    this(scanSectionLines, defaultCharges, Optional.<String>absent(), new PeakListParserOptions());
   }
 
   List<Scan> extractScans() {
@@ -165,9 +171,9 @@ class MgfScanExtracter {
   private void handlePepMassLine(final String line) {
     final String pepStr = line.substring("PEPMASS=".length()).trim();
     final Scanner pepScanner = new Scanner(pepStr);
-    precursorMz = pepScanner.nextFloat();
+    precursorMz = pepScanner.nextDouble();
     if(pepScanner.hasNextFloat()) {
-      precursorIntensity = pepScanner.nextFloat();
+      precursorIntensity = pepScanner.nextDouble();
     }
   }
 
@@ -180,7 +186,7 @@ class MgfScanExtracter {
   }
 
   private List<Scan> buildScans() {
-    final Scan templateScan = new Scan(2, end, peaksArray);
+    final Scan templateScan = new Scan(2, index++, end, peaksArray);
     if(start != 0) {
       templateScan.setAlt(start);
     }
@@ -209,11 +215,15 @@ class MgfScanExtracter {
           charges = defaultCharges;
         }
       }
-
-      for(final Short charge : charges) {
-        final Scan newScan = templateScan.clone();
-        newScan.setPrecursorCharge(charge);
-        scansToCache.add(newScan);
+      if(charges.size() == 1 || options.isSplitChargeStates()) {
+        for(final Short charge : charges) {
+          final Scan newScan = templateScan.clone();
+          newScan.setPrecursorCharge(charge);
+          scansToCache.add(newScan);
+        }
+      } else {
+        final MultiChargeScan multiScan = new MultiChargeScan(templateScan, charges);
+        scansToCache.add(multiScan);
       }
     }
     return scansToCache;

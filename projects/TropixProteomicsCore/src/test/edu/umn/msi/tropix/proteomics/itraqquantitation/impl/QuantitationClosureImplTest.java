@@ -20,8 +20,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import org.easymock.IArgumentMatcher;
 import org.easymock.EasyMock;
+import org.easymock.IArgumentMatcher;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -37,6 +37,7 @@ import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRatio;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.RatioLabel;
 
@@ -44,6 +45,7 @@ public class QuantitationClosureImplTest {
   private QuantitationClosureImpl closure;
   private MockObjectCollection mockObjects;
   private ITraqMatchBuilder matcher;
+  private InputReport inputReport;
   private Quantifier quantifier;
 
   private final Iterable<File> inputMzxmlFiles = Lists.newArrayList(new File("test.mzxml"));
@@ -65,7 +67,9 @@ public class QuantitationClosureImplTest {
     closure.setQuantifier(quantifier);
     outputFile = FileUtilsFactory.getInstance().createTempFile("moo", ".xml");
 
-    optionsBuilder = QuantitationOptions.forInput(inputMzxmlFiles, inputScaffoldFile).withOutput(outputFile);
+    inputReport = new InputReport(inputScaffoldFile, ReportType.SCAFFOLD);
+    optionsBuilder = QuantitationOptions.forInput(inputMzxmlFiles, inputReport).withOutput(
+        outputFile);
     mockObjects = MockObjectCollection.fromObjects(matcher, quantifier);
   }
 
@@ -78,7 +82,7 @@ public class QuantitationClosureImplTest {
   public void apply4plexNoTraining() {
     final QuantitationOptions options = optionsBuilder.is4Plex().get();
 
-    matcher.buildDataEntries(EasyMockUtils.<File, Collection<File>>hasSameUniqueElements(inputMzxmlFiles), EasyMock.eq(inputScaffoldFile),
+    matcher.buildDataEntries(EasyMockUtils.<File, Collection<File>>hasSameUniqueElements(inputMzxmlFiles), EasyMock.eq(inputReport),
         matches(ITraqLabels.get4PlexLabels()));
     EasyMock.expectLastCall().andReturn(inputMatches);
 

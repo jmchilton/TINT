@@ -61,7 +61,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
     final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels.get8PlexLabels();
     
     LOG.info("Building data entries for quantitation analysis");
-    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(), new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels));
+    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputReport(), new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels));
 
     Function<Double, Double> trainingFunction = null;
     if(options.getWeights() != null) {

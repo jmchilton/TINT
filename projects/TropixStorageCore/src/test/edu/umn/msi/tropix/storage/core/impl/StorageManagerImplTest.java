@@ -104,7 +104,6 @@ public class StorageManagerImplTest {
   private void expectCanDownload() {
     EasyMock.expect(authorizationProvider.canDownload(fileId, gridId)).andReturn(true);
   }
-  
 
   @Test(groups = "unit")
   public void canDownload() throws RemoteException {
@@ -173,7 +172,7 @@ public class StorageManagerImplTest {
     mockObjects.replay();
     service.getDateModified(fileId, gridId);
   }
-  
+
   @Test(groups = "unit", expectedExceptions = RuntimeException.class)
   public void getMetadatasException() throws RemoteException {
     EasyMock.expect(authorizationProvider.canDownloadAll(EasyMock.aryEq(new String[] {fileId, fileId2}), EasyMock.eq(gridId))).andReturn(false);
@@ -191,7 +190,7 @@ public class StorageManagerImplTest {
     assert metadatas.get(0).getLength() == 12L;
     assert metadatas.get(1).getLength() == 11L;
   }
-  
+
   @Test(groups = "unit")
   public void dateModified() throws RemoteException {
     expectCanDownload();
@@ -215,6 +214,15 @@ public class StorageManagerImplTest {
     EasyMock.expect(accessProvider.getFile(fileId)).andReturn(file);
     mockObjects.replay();
     assert file.equals(service.download(fileId, gridId));
+    mockObjects.verifyAndReset();
+  }
+
+  @Test(groups = "unit")
+  public void downloadSkipCheck() throws RemoteException {
+    final HasStreamInputContext file = EasyMock.createMock(HasStreamInputContext.class);
+    EasyMock.expect(accessProvider.getFile(fileId)).andReturn(file);
+    mockObjects.replay();
+    assert file.equals(service.download(fileId, gridId, false));
     mockObjects.verifyAndReset();
   }
 

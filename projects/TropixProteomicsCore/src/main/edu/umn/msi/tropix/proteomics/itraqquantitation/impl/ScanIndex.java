@@ -19,16 +19,27 @@ package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.inject.internal.Iterables;
+
 @Immutable
 class ScanIndex {
   private final String name;
   private final int number;
   private final short charge;
+  private final ImmutableSet<String> alternativeNames;
 
   ScanIndex(final String name, final int number, final short charge) {
+    this(name, number, charge, Lists.<String>newArrayList(name));
+  }
+
+  ScanIndex(final String name, final int number, final short charge, Iterable<String> alternativeNames) {
     this.name = name;
     this.number = number;
     this.charge = charge;
+    this.alternativeNames = ImmutableSet.copyOf(alternativeNames);
   }
 
   @Override
@@ -69,13 +80,30 @@ class ScanIndex {
     return true;
   }
 
+  public String getName() {
+    return name;
+  }
+
   @Override
   public String toString() {
-    return "ScanIndex [charge=" + charge + ", name=" + name + ", number=" + number + "]";
+    String altNameStr = "";
+    if(alternativeNames.size() > 1) {
+      altNameStr = ", alternativeNames=" + Iterables.toString(alternativeNames);
+    }
+    return "ScanIndex [charge=" + charge + ", name=" + name + ", number=" + number + altNameStr + "]";
   }
 
   public boolean numberAndChargeMatch(@Nonnull final ScanIndex scanIndex) {
     return scanIndex.number == number && (scanIndex.charge == 0 || scanIndex.charge == charge);
+  }
+
+  public boolean numberChargeAndAlternativeNameMatch(@Nonnull final ScanIndex scanIndex) {
+    boolean match = false;
+    if(numberAndChargeMatch(scanIndex)) {
+      match = !Sets.intersection(alternativeNames, scanIndex.alternativeNames).isEmpty();
+      // System.out.println("IN HERE!!!" + match);
+    }
+    return match;
   }
 
 }

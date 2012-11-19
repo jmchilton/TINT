@@ -4,6 +4,4 @@ jar=@JAR_NAME@
 
 app_dir=`dirname "$0"`
 
-cd "$app_dir"
-
-java -jar $jar $*
+java -jar "$app_dir/$jar" $*

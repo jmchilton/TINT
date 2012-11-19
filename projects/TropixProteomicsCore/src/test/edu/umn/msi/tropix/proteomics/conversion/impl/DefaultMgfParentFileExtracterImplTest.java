@@ -14,10 +14,9 @@ public class DefaultMgfParentFileExtracterImplTest extends TempDirectoryTest {
   @Test(groups = "unit")
   public void testSha1AlwaysNull() {
     final MgfParentFileExtracter strategy = new DefaultMgfParentFileExtracterImpl();
-    assert null == strategy.getParentFileSha1ForScan(new Scan(0, 0, null));    
+    assert null == strategy.getParentFileSha1ForScan(new Scan(0, 0, 0, null));
   }
 
-  
   @Test(groups = "unit")
   public void testSha1() {
     writeToFile("test.mgf", "moo");
@@ -31,6 +30,5 @@ public class DefaultMgfParentFileExtracterImplTest extends TempDirectoryTest {
     assert parentFile.getSha1().equals(ConversionUtilsTest.MOO_SHA1) : parentFile.getSha1();
     assert parentFile.getSourceFileName().equals("test.mgf");
   }
-  
-  
+
 }

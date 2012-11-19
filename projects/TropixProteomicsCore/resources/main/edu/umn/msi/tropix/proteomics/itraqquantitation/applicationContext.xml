@@ -9,12 +9,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
   <context:annotation-config/> 
 
       <bean id="iTraqMatchBuilder" class="edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilderImpl">
-        <property name="mzxmlParser">
-          <bean class="edu.umn.msi.tropix.proteomics.conversion.impl.MzxmlParserImpl" />
-        </property>
-        <property name="scaffoldReportParser">
-          <bean class="edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ScaffoldReportParserImpl" />
-        </property>
         <property name="itraqMatcher">
           <bean class="edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatcherImpl" />
         </property>

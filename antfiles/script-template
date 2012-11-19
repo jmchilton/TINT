@@ -1,9 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 jar=@JAR_NAME@
 
-app_dir=`dirname "$0"`
+# http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
+SOURCE="${BASH_SOURCE[0]}"
+app_dir="$( dirname "$SOURCE" )"
+while [ -h "$SOURCE" ]
+do
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+  app_dir="$( cd -P "$( dirname "$SOURCE"  )" && pwd )"
+done
+app_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-cd "$app_dir"
-
-java -jar $jar $*
+java -jar "$app_dir/$jar" "$@"

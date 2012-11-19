@@ -41,7 +41,7 @@ public class SearchResult implements Serializable {
     this.context = context;
     this.owner = owner;
   }
-  
+
   public TropixObjectUserAuthorities getTropixObjectContext() {
     return context;
   }

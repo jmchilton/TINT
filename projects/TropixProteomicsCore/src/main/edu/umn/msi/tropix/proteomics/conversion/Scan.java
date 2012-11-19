@@ -28,10 +28,15 @@ import edu.umn.msi.tropix.proteomics.conversion.Scan.Peak;
 
 // TODO: Construct Scan objects using the builder pattern
 public class Scan implements Cloneable, Iterable<Peak> {
-  private short precursorCharge = 0;
-  private float precursorIntensity = 0.0f;
-  private float precursorMz = 0.0f;
+  public static double DEFAULT_PRECURSOR_MZ = 0.0d;
+  public static double DEFAULT_PRECURSOR_INTENSITY = 0.0d;
+  public static short DEFAULT_PRECURSOR_CHARGE = 0;
+
+  private short precursorCharge = DEFAULT_PRECURSOR_CHARGE;
+  private double precursorIntensity = DEFAULT_PRECURSOR_INTENSITY;
+  private double precursorMz = DEFAULT_PRECURSOR_MZ;
   private long rt = -1L;
+  private final int index;
   private final int msLevel;
   private final int number;
   private int alt = 0;
@@ -39,6 +44,21 @@ public class Scan implements Cloneable, Iterable<Peak> {
   private String parentFileName;
   private String parentName;
   private boolean parentFileNameExplicit;
+
+  public Scan(final Scan other) {
+    this.precursorCharge = other.precursorCharge;
+    this.precursorIntensity = other.precursorIntensity;
+    this.precursorMz = other.precursorMz;
+    this.rt = other.rt;
+    this.index = other.index;
+    this.msLevel = other.msLevel;
+    this.number = other.number;
+    this.alt = other.alt;
+    this.peaks = other.peaks;
+    this.parentFileName = other.parentFileName;
+    this.parentName = other.parentName;
+    this.parentFileNameExplicit = other.parentFileNameExplicit;
+  }
 
   public boolean isPrecursorChargeSet() {
     return precursorCharge != 0;
@@ -60,10 +80,27 @@ public class Scan implements Cloneable, Iterable<Peak> {
     return rt;
   }
 
-  public Scan(final int msLevel, final int number, final double[] peaks) {
+  public Scan(final int msLevel, final int index, final int number, final double[] peaks) {
     this.msLevel = msLevel;
+    this.index = index;
     this.number = number;
     this.peaks = peaks;
+  }
+
+  private static double[] mergeMzAndIntensities(final double[] mzs, final double[] intensities) {
+    if(mzs.length != intensities.length) {
+      throw new IllegalArgumentException("m/z and intensity array lengths do not match");
+    }
+    final double[] peaks = new double[mzs.length * 2];
+    for(int i = 0; i < mzs.length; i++) {
+      peaks[i * 2] = mzs[i];
+      peaks[i * 2 + 1] = intensities[i];
+    }
+    return peaks;
+  }
+
+  public Scan(final int msLevel, final int index, final int number, final double[] mzs, final double[] intensities) {
+    this(msLevel, index, number, mergeMzAndIntensities(mzs, intensities));
   }
 
   public Scan clone() {
@@ -105,7 +142,7 @@ public class Scan implements Cloneable, Iterable<Peak> {
   /**
    * @return The precursorMz of this scan, or 0 if it is unknown.
    */
-  public float getPrecursorMz() {
+  public double getPrecursorMz() {
     return precursorMz;
   }
 
@@ -113,18 +150,18 @@ public class Scan implements Cloneable, Iterable<Peak> {
     this.peaks = peaks;
   }
 
-  public void setPrecursorMz(final float precursorMz) {
+  public void setPrecursorMz(final double precursorMz) {
     this.precursorMz = precursorMz;
   }
 
   /**
    * @return The precursorIntensity of this scan, or 0 if it is unknown.
    */
-  public float getPrecursorIntensity() {
+  public double getPrecursorIntensity() {
     return precursorIntensity;
   }
 
-  public void setPrecursorIntensity(final float precursorIntensity) {
+  public void setPrecursorIntensity(final double precursorIntensity) {
     this.precursorIntensity = precursorIntensity;
   }
 
@@ -250,6 +287,10 @@ public class Scan implements Cloneable, Iterable<Peak> {
       return this.intensity > other.intensity;
     }
 
+  }
+
+  public int getIndex() {
+    return index;
   }
 
 }

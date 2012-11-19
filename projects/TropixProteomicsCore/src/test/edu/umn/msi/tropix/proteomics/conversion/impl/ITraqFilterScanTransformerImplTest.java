@@ -34,7 +34,7 @@ public class ITraqFilterScanTransformerImplTest {
   }
 
   public double[] transformPeaks(final double[] peaks) {
-    final Scan scan = new Scan(1, 1, peaks);
+    final Scan scan = new Scan(1, 0, 1, peaks);
     ITraqFilterScanTransformerImpl transformer = new ITraqFilterScanTransformerImpl();
     final Scan transformedScan = transformer.apply(scan);
     return transformedScan.getPeaks();

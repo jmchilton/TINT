@@ -22,12 +22,16 @@
 
 package edu.umn.msi.tropix.webgui.server;
 
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.client.galaxy.GalaxyExportOptions;
 import edu.umn.msi.tropix.client.galaxy.GalaxyExporter;
@@ -37,7 +41,9 @@ import edu.umn.msi.tropix.grid.gridftp.GridFtpClient;
 import edu.umn.msi.tropix.grid.gridftp.GridFtpClientUtils;
 import edu.umn.msi.tropix.grid.gridftp.GridFtpFactory;
 import edu.umn.msi.tropix.models.TropixFile;
+import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.persistence.service.FileService;
+import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.client.StorageData;
 import edu.umn.msi.tropix.webgui.server.aop.ServiceMethod;
 import edu.umn.msi.tropix.webgui.server.security.UserSession;
@@ -51,16 +57,19 @@ public class ExportServiceImpl implements ExportService {
   private final PersistentModelStorageDataFactory storageDataFactory;
   private final GridFtpFactory gridFtpFactory;
   private final GalaxyExporter galaxyExporter;
+  private final TropixObjectService tropixObjectService;
 
   @Inject
   public ExportServiceImpl(final FileService fileService, final UserSession userSession, final PersistentModelStorageDataFactory storageDataFactory,
       final GridFtpFactory gridFtpFactory,
-      final GalaxyExporter galaxyExporter) {
+      final GalaxyExporter galaxyExporter,
+      final TropixObjectService tropixObjectService) {
     this.fileService = fileService;
     this.userSession = userSession;
     this.storageDataFactory = storageDataFactory;
     this.gridFtpFactory = gridFtpFactory;
     this.galaxyExporter = galaxyExporter;
+    this.tropixObjectService = tropixObjectService;
   }
 
   @ServiceMethod()
@@ -90,5 +99,26 @@ public class ExportServiceImpl implements ExportService {
   @ServiceMethod()
   public void exportGalaxy(GalaxyExportOptions galaxyExportOptions) {
     galaxyExporter.uploadFiles(userSession.getGridId(), galaxyExportOptions);
+  }
+
+  @ServiceMethod()
+  public void exportRawGalaxy(GalaxyExportOptions galaxyExportOptions, List<String> peakListIds) {
+    galaxyExporter.uploadFiles(userSession.getGridId(), populateAssociations(galaxyExportOptions, peakListIds, "source"));
+  }
+
+  @ServiceMethod()
+  public void exportMzXMLGalaxy(GalaxyExportOptions galaxyExportOptions, List<String> peakListIds) {
+    galaxyExporter.uploadFiles(userSession.getGridId(), populateAssociations(galaxyExportOptions, peakListIds, "mzxml"));
+  }
+
+  private GalaxyExportOptions populateAssociations(final GalaxyExportOptions galaxyExportOptions,
+      final List<String> objectIds,
+      final String associationName) {
+    galaxyExportOptions.setFileObjectIds(Lists.<String>newArrayList());
+    for(final String objectId : objectIds) {
+      TropixObject fileObject = tropixObjectService.getAssociation(userSession.getGridId(), objectId, associationName);
+      galaxyExportOptions.getFileObjectIds().add(fileObject.getId());
+    }
+    return galaxyExportOptions;
   }
 }

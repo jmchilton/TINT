@@ -60,17 +60,17 @@ public class MzXmlStreamWriterUtils {
 
   public static void addPrecursor(final XMLStreamWriter xmlStreamWriter, final Scan scan) {
     final short precursorCharge = scan.getPrecursorCharge();
-    final float precursorMz = scan.getPrecursorMz();
-    final float precursorIntensity = scan.getPrecursorIntensity();
+    final double precursorMz = scan.getPrecursorMz();
+    final double precursorIntensity = scan.getPrecursorIntensity();
 
     if(precursorMz != 0.0) {
       writeStartElement(xmlStreamWriter, "precursorMz");
       // Potentially writing out a precursorIntensity of 0.0 indicating we have no value
-      writeAttribute(xmlStreamWriter, "precursorIntensity", Float.toString(precursorIntensity));
+      writeAttribute(xmlStreamWriter, "precursorIntensity", Double.toString(precursorIntensity));
       if(precursorCharge > 0) {
         writeAttribute(xmlStreamWriter, "precursorCharge", Short.toString(precursorCharge));
       }
-      writeCharacters(xmlStreamWriter, Float.toString(precursorMz));
+      writeCharacters(xmlStreamWriter, Double.toString(precursorMz));
       writeEndElement(xmlStreamWriter); // close <precursorMz>
     }
 

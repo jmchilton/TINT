@@ -35,12 +35,12 @@ public interface StorageManager {
     void onUpload(InputStream inputStream);
 
   }
-  
+
   static class FileMetadata {
     private final long dateModified;
-    
+
     private final long length;
-    
+
     public FileMetadata(final long dateModified, final long length) {
       this.dateModified = dateModified;
       this.length = length;
@@ -53,7 +53,7 @@ public interface StorageManager {
     public long getLength() {
       return length;
     }
-    
+
   }
 
   @Deprecated
@@ -65,10 +65,13 @@ public interface StorageManager {
   long getLength(final String id, final String gridId);
 
   FileMetadata getFileMetadata(final String id, final String gridId);
-  
+
   List<FileMetadata> getFileMetadata(final List<String> ids, final String gridId);
-  
+
   HasStreamInputContext download(String id, String gridId);
+
+  // Allow batch pre-checking to avoid extra database hits
+  HasStreamInputContext download(final String id, final String gridId, final boolean checkAccess);
 
   UploadCallback upload(String id, String gridId);
 

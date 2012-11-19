@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/mnt/galaxyData/tmp/job_working_directory/000/192/peptide_prophet_output.pep.xsl"?>
+<msms_pipeline_analysis xmlns="http://regis-web.systemsbiology.net/pepXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" date="2012-09-07T19:19:02" summary_xml="/mnt/galaxyData/files/000/dataset_240.dat" xsi:schemaLocation="http://regis-web.systemsbiology.net/pepXML /opt/galaxy/tools/transproteomic_pipeline/4.6.0-occupy/schema/pepXML_v117.xsd">
+<analysis_summary analysis="asapratio" time="2012-09-07T20:08:03">
+<asapratio_summary version="3.0 (TPP v4.6 OCCUPY rev 0, Build 201208252050 (linux))" author="Xiaojun Li" elution="0" labeled_residues="C" area_flag="0" static_quant="N"/>
+<parameter name="wavelet" value="False"/>
+<parameter name="mzBound" value="0.5000"/>
+</analysis_summary>
+<analysis_summary analysis="peptideprophet" time="2012-09-07T19:19:03">
+<peptideprophet_summary version="PeptideProphet  (TPP v4.6 OCCUPY rev 0, Build 201208252050 (linux))" author="AKeller@ISB" min_prob="0.05" options=" NOICAT DECOYPROBS DECOYPROBS " est_tot_num_correct="38.0">
+<inputfile name="/mnt/galaxyData/tmp/job_working_directory/000/201/dataset_200.dat"/>
+<roc_error_data charge="all">
+<roc_data_point min_prob="0.9999" sensitivity="0.0000" error="0" num_corr="0" num_incorr="0"/>
+<roc_data_point min_prob="0.0000" sensitivity="1.0000" error="0.9748" num_corr="38" num_incorr="1472"/>
+<error_point error="0.0000" min_prob="0.9979" num_corr="2" num_incorr="0"/>
+<error_point error="0.1000" min_prob="0.4307" num_corr="31" num_incorr="5"/>
+</roc_error_data>
+<roc_error_data charge="2" charge_est_correct="30.3">
+<roc_data_point min_prob="0.9999" sensitivity="0.0000" error="0" num_corr="0" num_incorr="0"/>
+<roc_data_point min_prob="0.0000" sensitivity="1.0000" error="0.9762" num_corr="30" num_incorr="1247"/>
+<error_point error="0.0000" min_prob="0.9979" num_corr="2" num_incorr="0"/>
+<error_point error="0.1000" min_prob="0.4900" num_corr="25" num_incorr="3"/>
+</roc_error_data>
+<roc_error_data charge="3" charge_est_correct="7.7">
+<roc_data_point min_prob="0.9999" sensitivity="0.0000" error="0" num_corr="0" num_incorr="0"/>
+<roc_data_point min_prob="0.0000" sensitivity="1.0000" error="0.9670" num_corr="8" num_incorr="225"/>
+<error_point error="0.0000" min_prob="0.9896" num_corr="2" num_incorr="0"/>
+<error_point error="0.1000" min_prob="0.2658" num_corr="7" num_incorr="2"/>
+</roc_error_data>
+<distribution_point fvalue="-4.90" obs_1_distr="0" model_1_pos_distr="0.00" model_1_neg_distr="0.00" obs_2_distr="0" model_2_pos_distr="0.00" model_2_neg_distr="0.00" obs_3_distr="0" model_3_pos_distr="0.00" model_3_neg_distr="0.00" obs_4_distr="0" model_4_pos_distr="0.00" model_4_neg_distr="0.00" obs_5_distr="0" model_5_pos_distr="0.00" model_5_neg_distr="0.00" obs_6_distr="0" model_6_pos_distr="0.00" model_6_neg_distr="0.00" obs_7_distr="0" model_7_pos_distr="0.00" model_7_neg_distr="0.00"/>
+<distribution_point fvalue="-4.70" obs_1_distr="0" model_1_pos_distr="0.00" model_1_neg_distr="0.00" obs_2_distr="0" model_2_pos_distr="0.00" model_2_neg_distr="0.00" obs_3_distr="0" model_3_pos_distr="0.00" model_3_neg_distr="0.00" obs_4_distr="0" model_4_pos_distr="0.00" model_4_neg_distr="0.00" obs_5_distr="0" model_5_pos_distr="0.00" model_5_neg_distr="0.00" obs_6_distr="0" model_6_pos_distr="0.00" model_6_neg_distr="0.00" obs_7_distr="0" model_7_pos_distr="0.00" model_7_neg_distr="0.00"/>
+<distribution_point fvalue="9.90" obs_1_distr="0" model_1_pos_distr="0.00" model_1_neg_distr="0.00" obs_2_distr="0" model_2_pos_distr="0.06" model_2_neg_distr="0.00" obs_3_distr="0" model_3_pos_distr="0.00" model_3_neg_distr="0.00" obs_4_distr="0" model_4_pos_distr="0.00" model_4_neg_distr="0.00" obs_5_distr="0" model_5_pos_distr="0.00" model_5_neg_distr="0.00" obs_6_distr="0" model_6_pos_distr="0.00" model_6_neg_distr="0.00" obs_7_distr="0" model_7_pos_distr="0.00" model_7_neg_distr="0.00"/>
+<mixture_model precursor_ion_charge="1" comments="using training data negative distributions" prior_probability="0.000" est_tot_correct="0.0" tot_num_spectra="0" num_iterations="21">
+<mixturemodel_distribution name="X! Tandem (k-score) discrim score [fval]	negmean: 0.05">
+<posmodel_distribution type="gaussian">
+<parameter name="mean" value="1.87"/>
+<parameter name="stdev" value="1.15"/>
+</posmodel_distribution>
+<negmodel_distribution type="evd">
+<parameter name="mean" value="-0.24"/>
+<parameter name="stdev" value="0.96"/>
+<parameter name="mu" value="-0.67"/>
+<parameter name="beta" value="0.75"/>
+</negmodel_distribution>
+</mixturemodel_distribution>
+<mixturemodel_distribution name="no. tolerable trypsin term. [ntt]">
+<posmodel_distribution>
+<parameter name="ntt=0" value="0.333"/>
+<parameter name="ntt=1" value="0.333"/>
+<parameter name="ntt=2" value="0.333"/>
+</posmodel_distribution>
+<negmodel_distribution>
+<parameter name="ntt=0" value="0.333"/>
+<parameter name="ntt=1" value="0.333"/>
+<parameter name="ntt=2" value="0.333"/>
+</negmodel_distribution>
+</mixturemodel_distribution>
+<mixturemodel_distribution name="no. missed enz. cleavages [nmc]">
+<posmodel_distribution>
+<parameter name="nmc=0" value="0.333"/>
+<parameter name="1&lt;=nmc&lt;=2" value="0.333"/>
+<parameter name="nmc&gt;=3" value="0.333"/>
+</posmodel_distribution>
+<negmodel_distribution>
+<parameter name="nmc=0" value="0.333"/>
+<parameter name="1&lt;=nmc&lt;=2" value="0.333"/>
+<parameter name="nmc&gt;=3" value="0.333"/>
+</negmodel_distribution>
+</mixturemodel_distribution>
+<mixturemodel_distribution name="accurate mass diff [massd] (offset: 0.000000)">
+<posmodel_distribution>
+<parameter name="massd=-5.000000" value="0.090909091"/>
+<parameter name="massd=-4.000000" value="0.090909091"/>
+<parameter name="massd=-3.000000" value="0.090909091"/>
+<parameter name="massd=-2.000000" value="0.090909091"/>
+<parameter name="massd=-1.000000" value="0.090909091"/>
+<parameter name="massd=0.000000" value="0.090909091"/>
+<parameter name="massd=1.000000" value="0.090909091"/>
+<parameter name="massd=2.000000" value="0.090909091"/>
+<parameter name="massd=3.000000" value="0.090909091"/>
+<parameter name="massd=4.000000" value="0.090909091"/>
+<parameter name="massd=5.000000" value="0.090909091"/>
+</posmodel_distribution>
+<negmodel_distribution>
+<parameter name="massd=-5.000000" value="0.090909091"/>
+<parameter name="massd=-4.000000" value="0.090909091"/>
+<parameter name="massd=-3.000000" value="0.090909091"/>
+<parameter name="massd=-2.000000" value="0.090909091"/>
+<parameter name="massd=-1.000000" value="0.090909091"/>
+<parameter name="massd=0.000000" value="0.090909091"/>
+<parameter name="massd=1.000000" value="0.090909091"/>
+<parameter name="massd=2.000000" value="0.090909091"/>
+<parameter name="massd=3.000000" value="0.090909091"/>
+<parameter name="massd=4.000000" value="0.090909091"/>
+<parameter name="massd=5.000000" value="0.090909091"/>
+</negmodel_distribution>
+</mixturemodel_distribution>
+</mixture_model>
+</peptideprophet_summary>
+</analysis_summary>
+<analysis_summary analysis="database_refresh" time="2012-09-07T19:19:03"/>
+<analysis_summary analysis="interact" time="2012-09-07T19:19:02">
+<interact_summary filename="/mnt/galaxyData/files/000/dataset_240.dat" directory="/mnt/galaxyData/tmp/job_working_directory/000/192">
+<inputfile name="/mnt/galaxyData/files/000/dataset_202.dat"/>
+</interact_summary>
+</analysis_summary>
+<dataset_derivation generation_no="0"/>
+<msms_run_summary base_name="/mnt/galaxyData/tmp/job_working_directory/000/201/dataset_200.dat" search_engine="X! Tandem (k-score)" raw_data_type="raw" raw_data="mzML">
+<sample_enzyme name="trypsin">
+<specificity cut="KR" no_cut="P" sense="C"/>
+</sample_enzyme>
+<search_summary base_name="/mnt/galaxyData/files/000/dataset_200_tandem.tandem" search_engine="X! Tandem (k-score)" precursor_mass_type="monoisotopic" fragment_mass_type="monoisotopic" search_id="1">
+<search_database local_path="/mnt/galaxyData/files/000/dataset_199.dat" type="AA"/>
+<enzymatic_search_constraint enzyme="trypsin" max_num_internal_cleavages="2" min_number_termini="1"/>
+<aminoacid_modification aminoacid="C" massdiff="57.0215" mass="160.0306" variable="N"/>
+<aminoacid_modification aminoacid="C" massdiff="-17.0265" mass="143.0041" variable="Y" symbol="^"/>
+<!--X! Tandem n-terminal AA variable modification-->
+<aminoacid_modification aminoacid="E" massdiff="-18.0106" mass="111.0320" variable="Y" symbol="^"/>
+<!--X! Tandem n-terminal AA variable modification-->
+<aminoacid_modification aminoacid="Q" massdiff="-17.0265" mass="111.0321" variable="Y" symbol="^"/>
+<!--X! Tandem n-terminal AA variable modification-->
+<terminal_modification terminus="n" massdiff="42.0106" mass="43.0184" protein_terminus="N" variable="Y" symbol="^"/>
+<!--X! Tandem n-terminal AA variable modification-->
+<!-- Input parameters -->
+<parameter name="list path, default parameters" value="/opt/galaxy/tools/transproteomic_pipeline/default/bin/isb_default_input_kscore.xml"/>
+<parameter name="list path, taxonomy information" value="/mnt/galaxyData/files/000/dataset_200.taxonomy.xml"/>
+<parameter name="timing, refinement/spectrum (sec)" value="0.0000"/>
+</search_summary>
+<analysis_timestamp analysis="asapratio" time="2012-09-07T20:08:03" id="1">
+<asapratio_timestamp quant_label_masses="C[103.009,160.031]"/>
+</analysis_timestamp>
+<analysis_timestamp analysis="peptideprophet" time="2012-09-07T19:19:03" id="1"/>
+<analysis_timestamp analysis="database_refresh" time="2012-09-07T19:19:03" id="1">
+<database_refresh_timestamp database="/mnt/galaxyData/files/000/dataset_199.dat" min_num_enz_term="1"/>
+</analysis_timestamp>
+<spectrum_query spectrum="dataset_200.dat.01635.01635.2" start_scan="1635" end_scan="1635" precursor_neutral_mass="804.5025" assumed_charge="2" index="1">
+<search_result>
+<search_hit hit_rank="1" peptide="KVSSLSGK" peptide_prev_aa="R" peptide_next_aa="T" protein="ENSRNOP00000060519" protein_descr="pep:known chromosome:RGSC3.4:3:106413764:106474707:1 gene:ENSRNOG00000006378 transcript:ENSRNOT00000067865 gene_biotype:protein_coding transcript_biotype:protein_coding" num_tot_proteins="4" num_matched_ions="12" tot_num_ions="14" calc_neutral_pep_mass="804.4707" massdiff="0.032" num_tol_term="2" num_missed_cleavages="0" is_rejected="0">
+<alternative_protein protein="ENSRNOP00000008528" protein_descr="pep:known chromosome:RGSC3.4:3:106413764:106474707:1 gene:ENSRNOG00000006378 transcript:ENSRNOT00000008528 gene_biotype:protein_coding transcript_biotype:protein_coding" num_tol_term="2" peptide_prev_aa="R" peptide_next_aa="T"/>
+<alternative_protein protein="ENSRNOP00000061447" protein_descr="pep:known chromosome:RGSC3.4:3:106413764:106474707:1 gene:ENSRNOG00000006378 transcript:ENSRNOT00000064395 gene_biotype:protein_coding transcript_biotype:protein_coding" num_tol_term="2" peptide_prev_aa="R" peptide_next_aa="T"/>
+<alternative_protein protein="ENSRNOP00000060349" protein_descr="pep:known chromosome:RGSC3.4:3:106413764:106470823:1 gene:ENSRNOG00000006378 transcript:ENSRNOT00000064345 gene_biotype:protein_coding transcript_biotype:protein_coding" num_tol_term="2" peptide_prev_aa="R" peptide_next_aa="T"/>
+<search_score name="hyperscore" value="366"/>
+<search_score name="nextscore" value="348"/>
+<search_score name="bscore" value="1"/>
+<search_score name="yscore" value="1"/>
+<search_score name="cscore" value="0"/>
+<search_score name="zscore" value="0"/>
+<search_score name="ascore" value="0"/>
+<search_score name="xscore" value="0"/>
+<search_score name="expect" value="14"/>
+<analysis_result analysis="peptideprophet">
+<peptideprophet_result probability="0.0722" all_ntt_prob="(0.0005,0.0006,0.0722)">
+<search_score_summary>
+<parameter name="fval" value="0.8091"/>
+<parameter name="ntt" value="2"/>
+<parameter name="nmc" value="0"/>
+<parameter name="massd" value="0.032"/>
+</search_score_summary>
+</peptideprophet_result>
+</analysis_result>
+</search_hit>
+</search_result>
+</spectrum_query>
+</msms_run_summary>
+</msms_pipeline_analysis>

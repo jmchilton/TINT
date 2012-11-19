@@ -23,12 +23,12 @@ import com.google.common.collect.Lists;
 
 class ITraqMatcherImpl implements ITraqMatcher {
 
-  public List<ITraqMatch> match(final Iterable<ScaffoldEntry> scaffoldEntries, final Function<ScanIndex, ITraqScanSummary> scanSummaries) {
+  public List<ITraqMatch> match(final Iterable<ReportEntry> scaffoldEntries, final Function<ScanIndex, ITraqScanSummary> scanSummaries) {
     final List<ITraqMatch> iTraqMatchs = Lists.newLinkedList();
 
     // For each ScaffoldEntry find the matching Scan and if each of the iTraq intensities
     // is high enough add it to the result (dataEntries).
-    for(final ScaffoldEntry scaffoldEntry : scaffoldEntries) {
+    for(final ReportEntry scaffoldEntry : scaffoldEntries) {
       final String runId = scaffoldEntry.getSpectraId();
       final int scanNumber = scaffoldEntry.getScanNumber();
       final short scanCharge = scaffoldEntry.getScanCharge();

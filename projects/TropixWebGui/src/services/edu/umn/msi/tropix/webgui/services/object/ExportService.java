@@ -23,6 +23,7 @@
 package edu.umn.msi.tropix.webgui.services.object;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.gwtwidgets.server.spring.GWTRequestMapping;
 
@@ -76,5 +77,9 @@ public interface ExportService extends RemoteService {
   void export(String[] ids, GridFtpServerOptions gridFtpOptions);
 
   void exportGalaxy(GalaxyExportOptions galaxyExportOptions);
+
+  void exportRawGalaxy(GalaxyExportOptions galaxyExportOptions, List<String> peakListIds);
+
+  void exportMzXMLGalaxy(GalaxyExportOptions galaxyExportOptions, List<String> peakListIds);
 
 }

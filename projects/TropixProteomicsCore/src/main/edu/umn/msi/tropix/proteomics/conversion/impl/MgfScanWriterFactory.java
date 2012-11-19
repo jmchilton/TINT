@@ -20,6 +20,9 @@ public class MgfScanWriterFactory {
     case PROTEIN_PILOT:
       writer = new ProteinPilotScanWriterImpl(outputStream, options);
       break;
+    case MS2PREPROC:
+      writer = new Ms2PreprocMgfScanWriterImpl(outputStream, options);
+      break;
     default:
       writer = new DefaultMgfScanWriterImpl(outputStream, options);
       break;

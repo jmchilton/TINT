@@ -10,6 +10,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
+import edu.umn.msi.tropix.proteomics.conversion.impl.PeakListParser.PeakListParserOptions;
 
 public class MgfScanExtracterTest {
 
@@ -36,7 +37,8 @@ public class MgfScanExtracterTest {
   }
 
   private Scan getOnlyScan(final Iterator<String> mgfSectionLines) {
-    final MgfScanExtracter extracter = new MgfScanExtracter(mgfSectionLines, null, Optional.of("030911_fallo002_baldr001_10035_CvsW_4plx"));
+    final MgfScanExtracter extracter = new MgfScanExtracter(mgfSectionLines, null, Optional.of("030911_fallo002_baldr001_10035_CvsW_4plx"),
+        new PeakListParserOptions());
     final Scan scan = Iterables.getOnlyElement(extracter.extractScans());
     return scan;
   }
@@ -63,7 +65,8 @@ public class MgfScanExtracterTest {
   @Test(groups = "unit")
   public void testAbSciexMgf() {
     final Iterator<String> mgfLines = getAbSciexLines();
-    final MgfScanExtracter extracter = new MgfScanExtracter(mgfLines, null, Optional.of("030911_fallo002_baldr001_10035_CvsW_4plx"));
+    final MgfScanExtracter extracter = new MgfScanExtracter(mgfLines, null, Optional.of("030911_fallo002_baldr001_10035_CvsW_4plx"),
+        new PeakListParserOptions());
     final Scan scan = extracter.extractScans().iterator().next();
     assert Math.abs(scan.getPrecursorMz() - 799.84222f) < 0.0001;
     assert scan.getParentFileName().equals("030911_fallo002_baldr001_10035_CvsW_4plx") : scan.getParentFileName();

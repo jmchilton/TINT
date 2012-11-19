@@ -23,15 +23,18 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 
 public class QuantitationOptionsTest {
 
   @Test(groups = "unit")
   public void quantitationOptions() {
-    final QuantitationOptions options = QuantitationOptions.forInput(Lists.newArrayList(new File("moo")), new File("report")).withOutput(new File("output")).is4Plex().get();
+    final QuantitationOptions options = QuantitationOptions
+        .forInput(Lists.newArrayList(new File("moo")), new InputReport(new File("report"), ReportType.SCAFFOLD))
+        .withOutput(new File("output")).is4Plex().get();
     assert options.getOutputFile().equals(new File("output"));
-    assert options.getInputScaffoldReport().equals(new File("report"));
+    assert options.getInputReport().getReport().equals(new File("report"));
     assert options.getInputMzxmlFiles().size() == 1;
     assert options.getInputMzxmlFiles().get(0).equals(new File("moo"));
     assert options.getQuantificationType() == QuantificationType.FOUR_PLEX;
