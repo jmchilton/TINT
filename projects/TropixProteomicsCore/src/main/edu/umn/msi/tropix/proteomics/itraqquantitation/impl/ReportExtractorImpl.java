@@ -1,10 +1,11 @@
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils;
@@ -13,32 +14,25 @@ import edu.umn.msi.tropix.proteomics.report.PepXmlParserImpl;
 import edu.umn.msi.tropix.proteomics.report.SearchReportParser.SpectrumMatch;
 import edu.umn.msi.tropix.proteomics.report.SearchReportParser.SpectrumReport;
 
-public class ReportParserImpl implements ReportParser {
-  private final ScaffoldReportParser scaffoldReportParser;
-  private final PepXmlReportParser pepXmlParser;
+public class ReportExtractorImpl implements ReportExtractor {
+  private Map<ReportType, ReportParser> reportParsers = ImmutableMap.<ReportType, ReportParser>builder()
+      .put(ReportType.SCAFFOLD, new ScaffoldReportParserImpl())
+      .put(ReportType.PEPXML, new PepXmlReportParser()).build();
 
-  public ReportParserImpl() {
-    this(new ScaffoldReportParserImpl(), new PepXmlReportParser());
-  }
-
-  public ReportParserImpl(final ScaffoldReportParser scaffoldReportParser,
-      final PepXmlReportParser pepXmlReportParser) {
-    this.scaffoldReportParser = scaffoldReportParser;
-    this.pepXmlParser = pepXmlReportParser;
-  }
-
-  public List<ReportEntry> parse(final InputStream inputStream,
-      final ReportType reportType) {
-    if(reportType == ReportType.SCAFFOLD) {
-      return scaffoldReportParser.parse(new InputStreamReader(inputStream));
-    } else if(reportType == ReportType.PEPXML) {
-      return pepXmlParser.parse(inputStream);
+  public List<ReportEntry> parse(final InputStream inputStream, final ReportType reportType) {
+    final ReportParser parser = reportParsers.get(reportType);
+    if(parser != null) {
+      return parser.parse(inputStream);
     } else {
       throw new IllegalArgumentException("Unknown report type " + reportType);
     }
   }
 
-  private static class PepXmlReportParser {
+  static interface ReportParser {
+    List<ReportEntry> parse(InputStream inputStream);
+  }
+
+  private static class PepXmlReportParser implements ReportParser {
 
     private static class PepXmlReportEntry implements ReportEntry {
       private final String spectraId;

@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 
 public class QuantitationOptionsTest {

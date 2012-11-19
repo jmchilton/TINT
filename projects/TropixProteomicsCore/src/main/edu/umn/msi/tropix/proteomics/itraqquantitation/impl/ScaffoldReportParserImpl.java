@@ -16,6 +16,8 @@
 
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.LinkedList;
@@ -33,7 +35,7 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils;
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils.DtaNameSummary;
 
-class ScaffoldReportParserImpl implements ScaffoldReportParser {
+class ScaffoldReportParserImpl implements ReportExtractorImpl.ReportParser {
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
 
   private static double parsePercent(final String percent) {
@@ -56,7 +58,11 @@ class ScaffoldReportParserImpl implements ScaffoldReportParser {
     return dtaNameSummary;
   }
 
-  public List<ReportEntry> parse(@WillClose final Reader reader) {
+  public List<ReportEntry> parse(@WillClose final InputStream inputStream) {
+    return parse(new InputStreamReader(inputStream));
+  }
+
+  private List<ReportEntry> parse(@WillClose final Reader reader) {
     final LineNumberReader lineReader = new LineNumberReader(reader);
     try {
       final LinkedList<ReportEntry> scaffoldEntries = Lists.newLinkedList();

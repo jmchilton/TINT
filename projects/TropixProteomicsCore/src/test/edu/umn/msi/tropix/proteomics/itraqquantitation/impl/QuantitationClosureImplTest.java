@@ -37,7 +37,7 @@ import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRatio;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.RatioLabel;
 

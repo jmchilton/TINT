@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.report.PepXmlUtils;
 
 public class LtqIQuantCli {

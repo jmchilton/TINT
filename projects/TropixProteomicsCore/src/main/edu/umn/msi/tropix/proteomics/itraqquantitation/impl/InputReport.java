@@ -2,7 +2,7 @@ package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
 import java.io.File;
 
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 
 public class InputReport {
   private final File report;

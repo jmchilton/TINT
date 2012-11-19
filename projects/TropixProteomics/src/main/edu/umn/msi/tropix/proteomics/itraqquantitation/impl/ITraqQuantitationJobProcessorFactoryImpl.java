@@ -37,7 +37,7 @@ import edu.umn.msi.tropix.common.jobqueue.jobprocessors.DisposableResourceTracke
 import edu.umn.msi.tropix.proteomics.itraqquantitation.ITraqQuantitationJobProcessorFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationTrainingOptions;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;

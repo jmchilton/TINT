@@ -33,7 +33,7 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParser;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 
 public class ITraqMatchBuilderImplTest {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
@@ -42,7 +42,7 @@ public class ITraqMatchBuilderImplTest {
   public void builder() {
     final ITraqMatchBuilderImpl builder = new ITraqMatchBuilderImpl();
     final ITraqMatcher iTraqMatcher = EasyMock.createMock(ITraqMatcher.class);
-    final ReportParser scaffoldReportParser = EasyMock.createMock(ReportParser.class);
+    final ReportExtractor scaffoldReportParser = EasyMock.createMock(ReportExtractor.class);
     final XmlPeakListParser peakListParser = EasyMock.createMock(XmlPeakListParser.class);
 
     builder.setItraqMatcher(iTraqMatcher);

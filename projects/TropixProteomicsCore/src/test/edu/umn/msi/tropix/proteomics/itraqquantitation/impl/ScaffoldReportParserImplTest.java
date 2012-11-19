@@ -16,7 +16,6 @@
 
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
-import java.io.InputStreamReader;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -31,7 +30,7 @@ public class ScaffoldReportParserImplTest {
   @Test(groups = "unit")
   public void testScaffoldReportParse() {
     final ScaffoldReportParserImpl parser = new ScaffoldReportParserImpl();
-    final List<ReportEntry> entries = parser.parse(new InputStreamReader(ProteomicsTests.getResourceAsStream("test_report.xls")));
+    final List<ReportEntry> entries = parser.parse(ProteomicsTests.getResourceAsStream("test_report.xls"));
     final ReportEntry entry1 = entries.get(0);
     assert entry1.getProteinAccession().equals("YPL237W");
     assert entry1.getProteinProbability() == Double.parseDouble("77.90");

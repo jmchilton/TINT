@@ -38,12 +38,12 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParser;
 import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParserImpl;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportParser.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 
 class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
   private static final FileUtils FILE_UTILS = FileUtilsFactory.getInstance();
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
-  private ReportParser reportParser = new ReportParserImpl();
+  private ReportExtractor reportParser = new ReportExtractorImpl();
   private XmlPeakListParser peakListParser = new XmlPeakListParserImpl();
   private ITraqMatcher iTraqMatcher;
 
@@ -159,7 +159,7 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
     }
   }
 
-  public void setReportParser(final ReportParser reportParser) {
+  public void setReportParser(final ReportExtractor reportParser) {
     this.reportParser = reportParser;
   }
 
