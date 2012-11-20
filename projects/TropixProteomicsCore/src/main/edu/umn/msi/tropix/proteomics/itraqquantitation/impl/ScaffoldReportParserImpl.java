@@ -35,7 +35,7 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils;
 import edu.umn.msi.tropix.proteomics.conversion.DtaNameUtils.DtaNameSummary;
 
-class ScaffoldReportParserImpl implements ReportExtractorImpl.ReportParser {
+public class ScaffoldReportParserImpl implements ReportExtractorImpl.ReportParser {
   private static final IOUtils IO_UTILS = IOUtilsFactory.getInstance();
 
   private static double parsePercent(final String percent) {

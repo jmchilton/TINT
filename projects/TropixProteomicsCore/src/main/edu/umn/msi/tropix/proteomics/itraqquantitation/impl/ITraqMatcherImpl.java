@@ -29,7 +29,12 @@ class ITraqMatcherImpl implements ITraqMatcher {
     // For each ScaffoldEntry find the matching Scan and if each of the iTraq intensities
     // is high enough add it to the result (dataEntries).
     for(final ReportEntry scaffoldEntry : scaffoldEntries) {
-      final String runId = scaffoldEntry.getSpectraId();
+      final String runId;
+      if(scaffoldEntry instanceof NamedReportEntry) {
+        runId = ((NamedReportEntry) scaffoldEntry).getSpectraId();
+      } else {
+        throw new RuntimeException("Unknown report entry type " + scaffoldEntry);
+      }
       final int scanNumber = scaffoldEntry.getScanNumber();
       final short scanCharge = scaffoldEntry.getScanCharge();
       final ITraqScanSummary scan = scanSummaries.apply(new ScanIndex(runId, scanNumber, scanCharge));

@@ -89,7 +89,6 @@ class QuantifierImpl implements Quantifier {
           final ITraqLabel numLabel = iTraqRatio.getNumerator();
           final ITraqLabel denLabel = iTraqRatio.getDenominator();
 
-          System.out.println("----------");
           final Ratios ratios = weightedRatiosCalculator.computeRatios(numLabel, denLabel, summary, weightFunction, normalized);
           final double[] weightedRatios = ratios.getRatios();
           final double[] pValues = ratios.getPValues();
@@ -103,7 +102,6 @@ class QuantifierImpl implements Quantifier {
             } else {
               ratio.setMethod(methodName + " (normalized)");
             }
-            System.out.println("---------- END " + ratio.getMethod());
             ratio.setRatio(weightedRatios[i]);
             final double pValue = pValues[i];
             if(pValue <= 1.0) {

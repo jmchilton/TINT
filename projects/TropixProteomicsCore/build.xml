@@ -162,6 +162,17 @@
 
   <target name="dist-scripts" depends="compile-scripts,_dist-scripts" />
 
+  <target name="deploy-scripts" depends="dist-scripts">
+    <pom id="tint-proteomics-scripts" file="scripts-pom.xml" />
+    <deploy>
+      <remoteRepository url="${artifactory.url}">
+        <authentication username="${artifactory.user}" password="${artifactory.password}" />
+      </remoteRepository>
+      <pom refid="tint-proteomics-scripts" />
+      <attach file="${build.dir}/tint-proteomics.zip" type="zip" />
+    </deploy>
+  </target>
+
   <target name="init" depends="gen" />
 
   <target name="all" depends="jar" />

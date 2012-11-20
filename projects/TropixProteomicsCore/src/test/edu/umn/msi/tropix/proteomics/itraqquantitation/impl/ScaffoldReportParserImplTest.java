@@ -31,7 +31,7 @@ public class ScaffoldReportParserImplTest {
   public void testScaffoldReportParse() {
     final ScaffoldReportParserImpl parser = new ScaffoldReportParserImpl();
     final List<ReportEntry> entries = parser.parse(ProteomicsTests.getResourceAsStream("test_report.xls"));
-    final ReportEntry entry1 = entries.get(0);
+    final NamedReportEntry entry1 = (NamedReportEntry) entries.get(0);
     assert entry1.getProteinAccession().equals("YPL237W");
     assert entry1.getProteinProbability() == Double.parseDouble("77.90");
     assert entry1.getPeptideSequence().equals("sVSADAEAEkEPTDDIAEALGELSLk");

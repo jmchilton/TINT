@@ -97,6 +97,46 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
     return iTraqMatcher.match(scaffoldEntries, new ScanFunctionImpl(scansMap));
   }
 
+  interface ScanIndexMatcher {
+    boolean match(final ScanIndex query, final ScanIndex target);
+  }
+
+  static class AlternativeNameExactScanIndexMatcher implements ScanIndexMatcher {
+
+    public boolean match(ScanIndex query, ScanIndex target) {
+      return query.numberChargeAndAlternativeNameMatch(target);
+    }
+
+  }
+
+  private static final ScanIndexMatcher ALTERNATIVE_NAME_MATCHER = new AlternativeNameExactScanIndexMatcher();
+
+  static class NameAndScanNumberMatcher implements ScanIndexMatcher {
+
+    public boolean match(ScanIndex query, ScanIndex target) {
+      return query.numberAndNameMatch(target);
+    }
+
+  }
+
+  private static final ScanIndexMatcher NAME_AND_SCAN_NUMBER_MATCHER = new NameAndScanNumberMatcher();
+
+  static class NumberAndChargeMatcher implements ScanIndexMatcher {
+
+    public boolean match(ScanIndex query, ScanIndex target) {
+      return query.numberAndChargeMatch(target);
+    }
+
+  }
+
+  private static final ScanIndexMatcher NUMBER_AND_CHARGE_MATCHER = new NumberAndChargeMatcher();
+
+  private static final ScanIndexMatcher[] MATCHING_ALGORITHMS = new ScanIndexMatcher[] {
+      ALTERNATIVE_NAME_MATCHER,
+      NAME_AND_SCAN_NUMBER_MATCHER,
+      NUMBER_AND_CHARGE_MATCHER
+  };
+
   private final class ScanFunctionImpl implements Function<ScanIndex, ITraqScanSummary> {
     private final Map<ScanIndex, ITraqScanSummary> scansMap;
 
@@ -104,44 +144,35 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
       this.scansMap = scansMap;
     }
 
-    private List<ScanIndex> getAlternativeMatches(final ScanIndex scanIndex) {
+    private List<ScanIndex> getMatches(final ScanIndex scanIndex, ScanIndexMatcher matcher) {
       final List<ScanIndex> matches = Lists.newArrayList();
       for(final Map.Entry<ScanIndex, ITraqScanSummary> entry : scansMap.entrySet()) {
-        if(scanIndex.numberChargeAndAlternativeNameMatch(entry.getKey())) {
+        if(matcher.match(scanIndex, entry.getKey())) {
           matches.add(entry.getKey());
         }
       }
       return matches;
     }
 
-    private List<ScanIndex> getAllPossibleMatches(final ScanIndex scanIndex) {
-      final List<ScanIndex> matches = Lists.newArrayList();
-      for(final Map.Entry<ScanIndex, ITraqScanSummary> entry : scansMap.entrySet()) {
-        System.out.println("Possible match to " + scanIndex + " is " + entry.getKey());
-        if(scanIndex.numberAndChargeMatch(entry.getKey())) {
-          matches.add(entry.getKey());
-        }
+    private ITraqScanSummary tryFindSummary(final ScanIndex scanIndex, final List<ScanIndex> potentialMatches) {
+      ITraqScanSummary match = null;
+      if(potentialMatches.size() > 1) {
+        final String ambiguousMatches = Iterables.toString(potentialMatches);
+        final String errorMessage = String.format("Ambigious match for scan %s possible matches include %s ", scanIndex, ambiguousMatches);
+        throw new IllegalStateException(errorMessage);
+      } else if(!potentialMatches.isEmpty()) {
+        match = scansMap.get(potentialMatches.get(0));
       }
-      return matches;
+      return match;
     }
 
     public ITraqScanSummary apply(final ScanIndex scanIndex) {
       ITraqScanSummary summary = scansMap.get(scanIndex);
       // Try a little harder if an exact match cannot be found...
-      if(summary == null) {
-        final List<ScanIndex> potentialMatches = getAlternativeMatches(scanIndex);
-        if(potentialMatches.size() == 1) {
-          summary = scansMap.get(potentialMatches.get(0));
-        }
-      }
-      if(summary == null) {
-        final List<ScanIndex> potentialMatches = getAllPossibleMatches(scanIndex);
-        if(potentialMatches.size() > 1) {
-          final String ambiguousMatches = Iterables.toString(potentialMatches);
-          final String errorMessage = String.format("Ambigious match for scan %s possible matches include %s ", scanIndex, ambiguousMatches);
-          throw new IllegalStateException(errorMessage);
-        } else if(!potentialMatches.isEmpty()) {
-          summary = scansMap.get(potentialMatches.get(0));
+      for(ScanIndexMatcher matcher : MATCHING_ALGORITHMS) {
+        if(summary == null) {
+          final List<ScanIndex> potentialMatches = getMatches(scanIndex, matcher);
+          summary = tryFindSummary(scanIndex, potentialMatches);
         }
       }
       if(summary == null) {

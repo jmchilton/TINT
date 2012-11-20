@@ -97,6 +97,14 @@ class ScanIndex {
     return scanIndex.number == number && (scanIndex.charge == 0 || scanIndex.charge == charge);
   }
 
+  public boolean numberAndNameMatch(@Nonnull final ScanIndex scanIndex) {
+    return scanIndex.number == number && namesMatch(scanIndex);
+  }
+
+  private boolean namesMatch(@Nonnull final ScanIndex scanIndex) {
+    return !Sets.intersection(alternativeNames, scanIndex.alternativeNames).isEmpty();
+  }
+
   public boolean numberChargeAndAlternativeNameMatch(@Nonnull final ScanIndex scanIndex) {
     boolean match = false;
     if(numberAndChargeMatch(scanIndex)) {

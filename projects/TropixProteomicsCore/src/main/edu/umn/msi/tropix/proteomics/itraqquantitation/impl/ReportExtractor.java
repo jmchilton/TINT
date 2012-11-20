@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ReportExtractor {
   public static enum ReportType {
-    SCAFFOLD, PEPXML;
+    SCAFFOLD, PEPXML, PROTEIN_PILOT, MAX_QUANT;
   }
 
   List<ReportEntry> parse(InputStream inputStream, ReportType reportType);

@@ -16,7 +16,7 @@
 
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
-class ScaffoldEntry implements ReportEntry {
+class ScaffoldEntry implements NamedReportEntry {
   private final String spectraId;
   private final int scanNumber;
   private final int scanAlt;

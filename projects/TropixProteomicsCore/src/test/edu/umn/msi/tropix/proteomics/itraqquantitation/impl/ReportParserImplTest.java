@@ -16,7 +16,7 @@ public class ReportParserImplTest {
     ReportExtractorImpl parser = new ReportExtractorImpl();
     final InputStream pepXmlStream = ProteomicsTests.getResourceAsStream("minimalPepXml.xml");
     final List<ReportEntry> reports = parser.parse(pepXmlStream, ReportType.PEPXML);
-    final ReportEntry entry1 = reports.get(0);
+    final NamedReportEntry entry1 = (NamedReportEntry) reports.get(0);
     Assert.assertEquals("dataset_200.dat", entry1.getSpectraId());
   }
 

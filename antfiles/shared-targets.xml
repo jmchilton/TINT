@@ -10,6 +10,7 @@
   <property file="${shared.antfiles.dir}/shared.properties" />
   <!-- Pull in dependency versions. -->
   <property file="${shared.antfiles.dir}/ivysettings.properties" />
+  <property file="${user.home}/.ant-global.properties"/>
 
   <!-- Shared Tasks -->
 
@@ -469,6 +470,14 @@
           <fileset dir="${shared.antfiles.lib.dir}">
             <include name="interfacesExtension-client*.jar" />
         </fileset>
+        </classpath>
+      </typedef>
+      
+      <typedef resource="org/apache/maven/artifact/ant/antlib.xml">
+        <classpath>
+          <fileset dir="${shared.antfiles.lib.dir}">
+            <include name="maven-ant-tasks*.jar" />
+          </fileset>
         </classpath>
       </typedef>
 
