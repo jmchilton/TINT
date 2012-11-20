@@ -20,8 +20,10 @@ import java.util.List;
 
 import com.google.common.base.Function;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
+
 interface ITraqMatcher {
 
-  List<ITraqMatch> match(Iterable<ReportEntry> scaffoldEntries, Function<ScanIndex, ITraqScanSummary> scanSummaries);
+  List<ITraqMatch> match(Iterable<ReportEntry> scaffoldEntries, Function<ScanIndex, ITraqScanSummary> scanSummaries, ITraqMatchBuilderOptions options);
 
 }

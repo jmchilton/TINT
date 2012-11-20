@@ -1,6 +1,6 @@
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
-public class BaseReportEntry implements NamedReportEntry {
+public class BaseReportEntry {
 
   private String spectraId;
   private int scanNumber;

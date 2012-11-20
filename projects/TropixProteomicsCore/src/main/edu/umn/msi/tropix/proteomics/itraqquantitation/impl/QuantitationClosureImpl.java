@@ -37,6 +37,7 @@ import edu.umn.msi.tropix.common.xml.XMLUtility;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantificationResultsExporter;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRatio;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 
@@ -47,29 +48,32 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
 
   private ITraqMatchBuilder iTraqMatchBuilder;
   private Quantifier quantifier = new QuantifierImpl();
-  
+
   public void setItraqMatchBuilder(final ITraqMatchBuilder iTraqMatchBuilder) {
     this.iTraqMatchBuilder = iTraqMatchBuilder;
   }
-  
+
   @VisibleForTesting
   public void setQuantifier(final Quantifier quantifier) {
     this.quantifier = quantifier;
   }
 
   public void apply(final QuantitationOptions options) {
-    final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels.get8PlexLabels();
-    
+    final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels
+        .get8PlexLabels();
+
     LOG.info("Building data entries for quantitation analysis");
-    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputReport(), new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels));
+    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputReport(),
+        new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels, GroupType.PROTEIN));
 
     Function<Double, Double> trainingFunction = null;
     if(options.getWeights() != null) {
       LOG.info("Building iTraq matches for training data");
-      //final List<ITraqMatch> trainingMatches = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(), new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels));
-      trainingFunction = new TrainingWeightFunctionImpl(options.getWeights());      
+      // final List<ITraqMatch> trainingMatches = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(),
+      // new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels));
+      trainingFunction = new TrainingWeightFunctionImpl(options.getWeights());
     }
-    
+
     LOG.info("Building report summary for quantitation analysis");
     final ReportSummary summary = new ReportSummary(iTraqMatchs, labels);
 
@@ -77,11 +81,11 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
 
     LOG.info("Running quantitation analysis.");
     final QuantificationResults results = quantifier.quantify(iTraqRatios, summary, trainingFunction);
-    
+
     final File outputFile = options.getOutputFile();
     if(FilenameUtils.getExtension(outputFile.getName()).toLowerCase().equals("xml")) {
       final XMLUtility<QuantificationResults> resultXmlUtility = new XMLUtility<QuantificationResults>(QuantificationResults.class);
-      
+
       LOG.info("Writing XML resluts");
       resultXmlUtility.serialize(results, outputFile);
     } else {
@@ -92,7 +96,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
         IO_UTILS.closeQuietly(outputStream);
       }
     }
-    
-  }    
+
+  }
 
 }

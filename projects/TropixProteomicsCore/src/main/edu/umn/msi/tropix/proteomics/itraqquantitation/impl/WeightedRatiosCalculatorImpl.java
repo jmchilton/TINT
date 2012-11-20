@@ -23,10 +23,10 @@ import com.google.common.primitives.Doubles;
 class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
 
   public Ratios computeRatioOfRatios(final ReportSummary reportSummary, final Function<Double, Double> weightFunction) {
-    final double[] ratios = new double[reportSummary.getNumProteins()], pValues = new double[reportSummary.getNumProteins()];
+    final double[] ratios = new double[reportSummary.getNumGroups()], pValues = new double[reportSummary.getNumGroups()];
     int proteinNum = 0;
-    for(final String protein : reportSummary.getProteins()) {
-      final ProteinSummary proteinSummary = reportSummary.getProteinSummary(protein);
+    for(final String protein : reportSummary.getGroups()) {
+      final GroupSummary proteinSummary = reportSummary.getGroupSummary(protein);
       final double[] iRatio = new double[proteinSummary.getNumEntries()];
       final double[] i114 = proteinSummary.getIntensities(ITraqLabels.get4PlexLabels().get(0)); // 114
       final double[] i115 = proteinSummary.getIntensities(ITraqLabels.get4PlexLabels().get(1)); // 115
@@ -71,10 +71,10 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
 
   public Ratios computeRatios(final ITraqLabel numLabel, final ITraqLabel denLabel, final ReportSummary reportSummary,
       final Function<Double, Double> weightFunction, final boolean normalized) {
-    final double[] ratios = new double[reportSummary.getNumProteins()], pValues = new double[reportSummary.getNumProteins()];
+    final double[] ratios = new double[reportSummary.getNumGroups()], pValues = new double[reportSummary.getNumGroups()];
     int proteinNum = 0;
-    for(final String protein : reportSummary.getProteins()) {
-      final ProteinSummary proteinSummary = reportSummary.getProteinSummary(protein);
+    for(final String protein : reportSummary.getGroups()) {
+      final GroupSummary proteinSummary = reportSummary.getGroupSummary(protein);
       final double[] iRatio = new double[proteinSummary.getNumEntries()];
       final double[] num = proteinSummary.getIntensities(numLabel);
       final double[] den = proteinSummary.getIntensities(denLabel);

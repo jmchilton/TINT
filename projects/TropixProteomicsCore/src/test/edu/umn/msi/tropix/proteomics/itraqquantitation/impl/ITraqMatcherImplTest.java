@@ -28,6 +28,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.common.collect.Collections;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
 
 public class ITraqMatcherImplTest {
 
@@ -44,29 +46,30 @@ public class ITraqMatcherImplTest {
     final List<ReportEntry> scaffoldEntries = Lists.<ReportEntry>newArrayList(entry1, entry2, entry3, entry4, entry5);
 
     final Map<ScanIndex, ITraqScanSummary> scanSummaries = Maps.newHashMap();
-    final List<ITraqLabel> labels = ITraqLabels.get4PlexLabels();
+    final List<ITraqLabel> labels = ITraqLabels.get4PlexL abels();
 
     final ITraqScanSummary scan1 = ITraqScanSummary.fromIntensities(100, 97, (short) 3, labels, Lists.newArrayList(2d, 4d, 6d, 8d));
-    scanSummaries.put(new ScanIndex("runId", 100, (short) 3), scan1);
+    scanSummaries.put(new ScanIndex("runId", 1, 100, (short) 3), scan1);
 
     final ITraqScanSummary scanNotMatched = ITraqScanSummary.fromIntensities(101, 101, (short) 3, labels, Lists.newArrayList(2d, 4d, 6d, 8d));
-    scanSummaries.put(new ScanIndex("runId", 101, (short) 3), scanNotMatched);
+    scanSummaries.put(new ScanIndex("runId", 1, 101, (short) 3), scanNotMatched);
 
     final ITraqScanSummary scan2 = ITraqScanSummary.fromIntensities(102, 102, (short) 1, labels, Lists.newArrayList(2d, 2d, 2d, 2d));
-    scanSummaries.put(new ScanIndex("runId", 102, (short) 1), scan2);
+    scanSummaries.put(new ScanIndex("runId", 1, 102, (short) 1), scan2);
 
     final ITraqScanSummary scan3 = ITraqScanSummary.fromIntensities(105, 105, (short) 10, labels, Lists.newArrayList(2d, 2d, 2d, 2d));
-    scanSummaries.put(new ScanIndex("runId", 105, (short) 10), scan3);
+    scanSummaries.put(new ScanIndex("runId", 1, 105, (short) 10), scan3);
 
     final ITraqScanSummary scan4 = ITraqScanSummary.fromIntensities(102, 102, (short) 1, labels, Lists.newArrayList(2d, 2d, 2d, 2d));
-    scanSummaries.put(new ScanIndex("secondRun", 102, (short) 1), scan4);
+    scanSummaries.put(new ScanIndex("secondRun", 1, 102, (short) 1), scan4);
 
     final ITraqScanSummary scan5 = ITraqScanSummary.fromIntensities(1001, 1001, (short) 2, labels, Lists.newArrayList(0.04d, 2d, 2d, 2d)); // Not
                                                                                                                                            // intense
                                                                                                                                            // enough
-    scanSummaries.put(new ScanIndex("secondRun", 1001, (short) 2), scan5);
+    scanSummaries.put(new ScanIndex("secondRun", 1, 1001, (short) 2), scan5);
 
-    final List<ITraqMatch> matches = iTraqMatcherImpl.match(scaffoldEntries, Functions.forMap(scanSummaries));
+    final List<ITraqMatch> matches = iTraqMatcherImpl.match(scaffoldEntries, Functions.forMap(scanSummaries), new ITraqMatchBuilderOptions(
+        ITraqLabels.get4PlexLabels(), GroupType.PROTEIN));
     assert matches.size() == 4;
 
     final Collection<ITraqScanSummary> matchedScans = Collections.transform(matches, new Function<ITraqMatch, ITraqScanSummary>() {
@@ -82,5 +85,4 @@ public class ITraqMatcherImplTest {
     assert !matchedScans.contains(scan5);
 
   }
-
 }

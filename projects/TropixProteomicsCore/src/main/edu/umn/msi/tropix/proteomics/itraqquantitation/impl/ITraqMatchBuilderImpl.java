@@ -47,7 +47,8 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
   private XmlPeakListParser peakListParser = new XmlPeakListParserImpl();
   private ITraqMatcher iTraqMatcher;
 
-  private void addSummariesForFile(final File mzxmlFile, final Map<ScanIndex, ITraqScanSummary> scanMap, final ITraqMatchBuilderOptions options,
+  private void addSummariesForFile(final File mzxmlFile, final Integer fileIndex, final Map<ScanIndex, ITraqScanSummary> scanMap,
+      final ITraqMatchBuilderOptions options,
       boolean useScanNumber) {
     // Parse the mzxml files
     final InputStream inputStream = FILE_UTILS.getFileInputStream(mzxmlFile);
@@ -61,7 +62,7 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
         // + mzxmlScan.getNumber());
         final double[] peaks = mzxmlScan.getPeaks();
         scanMap.put(
-            new ScanIndex(mzxmlScan.getParentName(), number, charge, Lists.newArrayList(mzxmlScan.getParentName(),
+            new ScanIndex(mzxmlScan.getParentName(), fileIndex, number, charge, Lists.newArrayList(mzxmlScan.getParentName(),
                 FilenameUtils.getBaseName(mzxmlFile.getName()), mzxmlFile.getName())),
             ITraqScanSummary.fromPeaks(number, number, charge, options.getITraqLabels(), peaks));
       }
@@ -77,8 +78,9 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
     final Map<ScanIndex, ITraqScanSummary> scanMap = Maps.newHashMap();
 
     // Loop through the mzxml files
+    int fileIndex = 0;
     for(final File file : mzxmlInputs) {
-      addSummariesForFile(file, scanMap, options, useScanNumber);
+      addSummariesForFile(file, fileIndex++, scanMap, options, useScanNumber);
     }
 
     return scanMap;
@@ -94,7 +96,7 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
     // Parse the MzXML files and obtain scan arrays for each
     final Map<ScanIndex, ITraqScanSummary> scansMap = parseScans(mzxmlInputs, options, inputReport.getReportType() == ReportType.SCAFFOLD);
 
-    return iTraqMatcher.match(scaffoldEntries, new ScanFunctionImpl(scansMap));
+    return iTraqMatcher.match(scaffoldEntries, new ScanFunctionImpl(scansMap), options);
   }
 
   interface ScanIndexMatcher {
@@ -129,9 +131,20 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
 
   }
 
+  static class FileIndexMatcher implements ScanIndexMatcher {
+
+    public boolean match(ScanIndex query, ScanIndex target) {
+      return query.numberChargeAndFileIndexMatch(target);
+    }
+
+  }
+
+  private static final ScanIndexMatcher NUMBER_CHARGE_AND_FILE_INDEX_MATCHER = new FileIndexMatcher();
+
   private static final ScanIndexMatcher NUMBER_AND_CHARGE_MATCHER = new NumberAndChargeMatcher();
 
   private static final ScanIndexMatcher[] MATCHING_ALGORITHMS = new ScanIndexMatcher[] {
+      NUMBER_CHARGE_AND_FILE_INDEX_MATCHER,
       ALTERNATIVE_NAME_MATCHER,
       NAME_AND_SCAN_NUMBER_MATCHER,
       NUMBER_AND_CHARGE_MATCHER

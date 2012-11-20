@@ -22,11 +22,11 @@ public class ScanIndexTest {
 
   @Test(groups = "unit")
   public void equals() {
-    assert !new ScanIndex("moo", 100, (short) 2).equals(null);
-    assert !new ScanIndex("moo", 104, (short) 2).equals(new Object());
-    assert !new ScanIndex("moo", 104, (short) 2).equals(new ScanIndex("moo", 103, (short) 2));
-    assert !new ScanIndex("moo", 104, (short) 2).equals(new ScanIndex("cow", 104, (short) 2));
-    assert new ScanIndex("moo", 104, (short) 2).equals(new ScanIndex("moo", 104, (short) 2));
+    assert !new ScanIndex("moo", 1, 100, (short) 2).equals(null);
+    assert !new ScanIndex("moo", 1, 104, (short) 2).equals(new Object());
+    assert !new ScanIndex("moo", 1, 104, (short) 2).equals(new ScanIndex("moo", 1, 103, (short) 2));
+    assert !new ScanIndex("moo", 1, 104, (short) 2).equals(new ScanIndex("cow", 1, 104, (short) 2));
+    assert new ScanIndex("moo", 1, 104, (short) 2).equals(new ScanIndex("moo", 1, 104, (short) 2));
   }
 
 }

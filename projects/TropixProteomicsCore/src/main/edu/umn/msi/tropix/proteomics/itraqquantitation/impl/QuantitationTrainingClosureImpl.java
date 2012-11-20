@@ -36,6 +36,7 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtils;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtilsFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationTrainingOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeight;
@@ -49,9 +50,10 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
   private static final QName WEIGHTS_QNAME = new QName("http://msi.umn.edu/tropix/proteomics/itraqquantitation/weight", "quantificationWeights");
 
   private ITraqMatchBuilder iTraqMatchBuilder;
-  
+
   public void apply(final QuantitationTrainingOptions options) {
-    final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels.get8PlexLabels();
+    final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels
+        .get8PlexLabels();
     final QuantificationTrainingOptions trainingOptions = options.getTrainingOptions();
     final double[] ratios = new double[labels.size()];
     if(ratios.length == 4) {
@@ -67,12 +69,12 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
       ratios[4] = trainingOptions.getI117Proportion();
       ratios[5] = trainingOptions.getI118Proportion();
       ratios[6] = trainingOptions.getI119Proportion();
-      ratios[7] = trainingOptions.getI121Proportion();      
+      ratios[7] = trainingOptions.getI121Proportion();
     }
-    
-    
+
     LOG.info("Building data entries for quantitation analysis");
-    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(), new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels));
+    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(),
+        new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels, GroupType.PROTEIN));
 
     final Map<ITraqLabel, double[]> intensities = Maps.newHashMap();
     final int numMatches = iTraqMatchs.size();
@@ -86,13 +88,13 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
       }
       i++;
     }
-    
-    final double[][] matrix = Variance.createVarianceMatrix(labels, intensities, ratios, trainingOptions.getNumBins());  
+
+    final double[][] matrix = Variance.createVarianceMatrix(labels, intensities, ratios, trainingOptions.getNumBins());
     final QuantificationWeight[] weights = new QuantificationWeight[matrix.length];
     for(i = 0; i < matrix.length; i++) {
       weights[i] = new QuantificationWeight(matrix[i][0], matrix[i][1]);
     }
-    
+
     final File outputFile = options.getOutputFile();
     final Writer outputWriter = FILE_UTILS.getFileWriter(outputFile);
     try {
@@ -105,5 +107,5 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
   public void setItraqMatchBuilder(final ITraqMatchBuilder iTraqMatchBuilder) {
     this.iTraqMatchBuilder = iTraqMatchBuilder;
   }
-  
+
 }

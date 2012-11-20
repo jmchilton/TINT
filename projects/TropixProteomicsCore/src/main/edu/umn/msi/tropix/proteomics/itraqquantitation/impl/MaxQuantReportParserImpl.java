@@ -12,7 +12,7 @@ public class MaxQuantReportParserImpl extends PerLineReportParserImpl {
   private static final String[] USED_COLUMNS = new String[] {"Raw file", "Scan number", "Sequence", "Proteins", "Charge", "Score"};
   private Map<String, Integer> columnIndices = Maps.newHashMap();
 
-  private class MaxQuantReportEntry extends BaseReportEntry {
+  private class MaxQuantReportEntry extends BaseReportEntry implements NamedReportEntry {
 
     MaxQuantReportEntry(final String line) {
       final String[] lineParts = line.split("\t");

@@ -25,13 +25,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-class ProteinSummary {
+class GroupSummary {
   private final List<ITraqMatch> iTraqMatchs;
   private final int numEntries;
   private final double[] weights;
   private final ImmutableMap<ITraqLabel, double[]> labelIntensities;
 
-  public ProteinSummary(final Iterable<ITraqMatch> inputDataEntries, final Iterable<ITraqLabel> labels) {
+  public GroupSummary(final Iterable<ITraqMatch> inputDataEntries, final Iterable<ITraqLabel> labels) {
     this.iTraqMatchs = Lists.newArrayList(inputDataEntries);
     this.numEntries = iTraqMatchs.size();
 
@@ -39,7 +39,7 @@ class ProteinSummary {
     for(ITraqLabel label : labels) {
       labelIntensities.put(label, new double[numEntries]);
     }
-    
+
     weights = new double[numEntries];
     for(int i = 0; i < numEntries; i++) {
       final ITraqMatch entry = iTraqMatchs.get(i);
@@ -52,6 +52,7 @@ class ProteinSummary {
       }
       weights[i] = MathUtils.log(2.0, intensitiesProduct);
     }
+
     this.labelIntensities = ImmutableMap.copyOf(labelIntensities);
   }
 
@@ -70,4 +71,5 @@ class ProteinSummary {
   public double[] getIntensities(final ITraqLabel label) {
     return labelIntensities.get(label);
   }
+
 }

@@ -61,7 +61,7 @@ public class ITraqQuantitationMethodsTest {
       final double d1 = scanner.nextDouble(), d2 = scanner.nextDouble(), d3 = scanner.nextDouble(), d4 = scanner.nextDouble();
       rValues.add(Lists.newArrayList(d1, d2, d3, d4));
     }
-    final int numProteins = summary.getNumProteins();
+    final int numProteins = summary.getNumGroups();
     assert numProteins == rValues.size();
     
     // final Column normalizedRatio = regularColumns.get(1);

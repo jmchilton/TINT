@@ -32,18 +32,29 @@ import com.google.common.collect.ImmutableList;
  */
 interface ITraqMatchBuilder {
 
+  static enum GroupType {
+    PROTEIN, PEPTIDE;
+  }
+
   @Immutable
   public static class ITraqMatchBuilderOptions {
     @Nonnull
     private final ImmutableList<ITraqLabel> iTraqLabels;
+    @Nonnull
+    private final GroupType groupType;
 
     @Nonnull
     public ImmutableList<ITraqLabel> getITraqLabels() {
       return iTraqLabels;
     }
 
-    public ITraqMatchBuilderOptions(@Nonnull final Iterable<ITraqLabel> iTraqLabels) {
+    public ITraqMatchBuilderOptions(@Nonnull final Iterable<ITraqLabel> iTraqLabels, @Nonnull final GroupType groupType) {
       this.iTraqLabels = ImmutableList.copyOf(iTraqLabels);
+      this.groupType = groupType;
+    }
+
+    public GroupType getGroupType() {
+      return groupType;
     }
 
   }

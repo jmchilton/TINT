@@ -23,38 +23,38 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 class ReportSummary {
-  private final LinkedHashMap<String, ProteinSummary> proteinSummaries;
-  private final int numProteins;
+  private final LinkedHashMap<String, GroupSummary> groupSummaries;
+  private final int numGroups;
 
-  public int getNumProteins() {
-    return numProteins;
+  public int getNumGroups() {
+    return numGroups;
   }
 
-  public Iterable<String> getProteins() {
-    return proteinSummaries.keySet();
+  public Iterable<String> getGroups() {
+    return groupSummaries.keySet();
   }
 
-  public ProteinSummary getProteinSummary(final String protein) {
-    return proteinSummaries.get(protein);
+  public GroupSummary getGroupSummary(final String groupLabel) {
+    return groupSummaries.get(groupLabel);
   }
 
   public ReportSummary(final Iterable<ITraqMatch> iTraqMatchs, final Iterable<ITraqLabel> labels) {
-    final Multimap<String, ITraqMatch> proteinMap = LinkedHashMultimap.create();
+    final Multimap<String, ITraqMatch> groupMap = LinkedHashMultimap.create();
 
     for(final ITraqMatch iTraqMatch : iTraqMatchs) {
-      final String protein = iTraqMatch.getProteinAccession();
-      proteinMap.put(protein, iTraqMatch);
+      final String groupLabel = iTraqMatch.getProteinAccession();
+      groupMap.put(groupLabel, iTraqMatch);
     }
 
     int numProteins = 0;
-    proteinSummaries = Maps.newLinkedHashMap();
-    for(final String protein : proteinMap.keySet()) {
-      final Iterable<ITraqMatch> proteinDataEntries = proteinMap.get(protein);
-      proteinSummaries.put(protein, new ProteinSummary(proteinDataEntries, labels));
+    groupSummaries = Maps.newLinkedHashMap();
+    for(final String groupLabel : groupMap.keySet()) {
+      final Iterable<ITraqMatch> groupDataEntries = groupMap.get(groupLabel);
+      groupSummaries.put(groupLabel, new GroupSummary(groupDataEntries, labels));
       numProteins++;
     }
 
-    this.numProteins = numProteins;
+    this.numGroups = numProteins;
   }
 
 }

@@ -4,7 +4,8 @@ import com.google.common.base.Optional;
 
 public class ProteinPilotReportParserImpl extends PerLineReportParserImpl {
 
-  private static class ProteinPilotReportEntry extends BaseReportEntry {
+  private static class ProteinPilotReportEntry extends BaseReportEntry implements IndexedReportEntry {
+    private int fileIndex;
 
     ProteinPilotReportEntry(final String line) {
       final String[] values = line.split("\t");
@@ -22,8 +23,12 @@ public class ProteinPilotReportParserImpl extends PerLineReportParserImpl {
       super.setPeptideSequence(peptideSequence);
       super.setProteinAccession(proteinNames);
       super.setScanCharge(charge);
-      super.setSpectraId(String.format("<InputIndex:%d", inputIndex));
       super.setScanNumber(scanNumber);
+      fileIndex = inputIndex - 1;
+    }
+
+    public int getInputFileIndex() {
+      return fileIndex;
     }
 
   }

@@ -33,6 +33,8 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParser;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 
 public class ITraqMatchBuilderImplTest {
@@ -77,21 +79,23 @@ public class ITraqMatchBuilderImplTest {
 
       final Capture<Function<ScanIndex, ITraqScanSummary>> scanSummariesCapture = EasyMockUtils.newCapture();
 
+      ITraqMatchBuilderOptions options = new ITraqMatchBuilder.ITraqMatchBuilderOptions(
+          ITraqLabels.get4PlexLabels(), GroupType.PROTEIN);
       final List<ITraqMatch> matches = Lists.newArrayList();
-      EasyMock.expect(iTraqMatcher.match(EasyMock.same(scaffoldEntries), EasyMock.capture(scanSummariesCapture))).andReturn(matches);
+      EasyMock.expect(
+          iTraqMatcher.match(EasyMock.same(scaffoldEntries), EasyMock.capture(scanSummariesCapture),
+              EasyMock.same(options))).andReturn(matches);
 
       EasyMock.replay(iTraqMatcher, peakListParser, scaffoldReportParser);
-      assert matches == builder.buildDataEntries(Lists.newArrayList(mzxml1, mzxml2), new InputReport(scaffold, ReportType.SCAFFOLD),
-          new ITraqMatchBuilder.ITraqMatchBuilderOptions(
-              ITraqLabels.get4PlexLabels()));
+      assert matches == builder.buildDataEntries(Lists.newArrayList(mzxml1, mzxml2), new InputReport(scaffold, ReportType.SCAFFOLD), options);
       EasyMockUtils.verifyAndReset(iTraqMatcher, peakListParser, scaffoldReportParser);
 
       final Function<ScanIndex, ITraqScanSummary> scanSummaries = scanSummariesCapture.getValue();
-      assert null != scanSummaries.apply(new ScanIndex("moo", 100, (short) 2));
-      assert null != scanSummaries.apply(new ScanIndex("cow", 1004, (short) 2));
+      assert null != scanSummaries.apply(new ScanIndex("moo", 1, 100, (short) 2));
+      assert null != scanSummaries.apply(new ScanIndex("cow", 1, 1004, (short) 2));
       RuntimeException e = null;
       try {
-        scanSummaries.apply(new ScanIndex("cow", 100, (short) 3));
+        scanSummaries.apply(new ScanIndex("cow", 1, 100, (short) 3));
       } catch(RuntimeException ie) {
         e = ie;
       }

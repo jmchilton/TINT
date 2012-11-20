@@ -23,6 +23,8 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.Lists;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+
 @Immutable
 class ITraqMatch {
   private final String proteinAccession;
@@ -30,13 +32,16 @@ class ITraqMatch {
   private final String peptideSequence;
   private final double peptideProbability;
   private final ITraqScanSummary iTraqScanSummary;
+  private final GroupType groupType;
 
-  public ITraqMatch(final ITraqScanSummary iTraqScanSummary, final String proteinAccession, final double proteinProbability, final String peptideSequence, final double peptideProbability) {
+  public ITraqMatch(final ITraqScanSummary iTraqScanSummary, final String proteinAccession, final double proteinProbability,
+      final String peptideSequence, final double peptideProbability, final GroupType groupType) {
     this.iTraqScanSummary = iTraqScanSummary;
     this.proteinAccession = proteinAccession;
     this.proteinProbability = proteinProbability;
     this.peptideSequence = peptideSequence;
     this.peptideProbability = peptideProbability;
+    this.groupType = groupType;
   }
 
   public String getProteinAccession() {
@@ -65,19 +70,21 @@ class ITraqMatch {
     final double proteinProbability = scanner.nextDouble();
     final String peptideSequence = scanner.next();
     final double peptideProbability = scanner.nextDouble();
-        
+
     final double i114 = scanner.nextDouble();
     final double i115 = scanner.nextDouble();
     final double i116 = scanner.nextDouble();
     final double i117 = scanner.nextDouble();
-    
+
     final int number = scanner.nextInt();
     final int alt = scanner.nextInt();
     final short charge = scanner.nextShort();
 
     final List<ITraqLabel> labels = ITraqLabels.get4PlexLabels();
-    final ITraqScanSummary iTraqScanSummary = ITraqScanSummary.fromIntensities(number, alt, charge, labels, Lists.newArrayList(i114, i115, i116, i117));
-    final ITraqMatch iTraqMatch = new ITraqMatch(iTraqScanSummary, proteinAccession, proteinProbability, peptideSequence, peptideProbability);
+    final ITraqScanSummary iTraqScanSummary = ITraqScanSummary.fromIntensities(number, alt, charge, labels,
+        Lists.newArrayList(i114, i115, i116, i117));
+    final ITraqMatch iTraqMatch = new ITraqMatch(iTraqScanSummary, proteinAccession, proteinProbability, peptideSequence, peptideProbability,
+        GroupType.PROTEIN);
     return iTraqMatch;
   }
 

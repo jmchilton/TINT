@@ -22,13 +22,15 @@ import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+
 public class ITraqMatchTest {
 
   @Test(groups = "unit")
   public void toFromLine() {
     final List<ITraqLabel> labels = ITraqLabels.get4PlexLabels();
     final ITraqScanSummary summary = ITraqScanSummary.fromIntensities(100, 99, (short) 1, labels, Lists.newArrayList(1.0, 2.0, 3.0, 4.0));
-    final ITraqMatch match = new ITraqMatch(summary, "prot1", 50.0, "pep1", 45.0);
+    final ITraqMatch match = new ITraqMatch(summary, "prot1", 50.0, "pep1", 45.0, GroupType.PROTEIN);
 
     final ITraqMatch convertedMatch = ITraqMatch.fromLine(match.toLine());
     assert convertedMatch.getProteinAccession().equals("prot1");

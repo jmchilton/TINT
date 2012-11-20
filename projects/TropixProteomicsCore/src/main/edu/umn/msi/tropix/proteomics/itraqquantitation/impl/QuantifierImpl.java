@@ -48,8 +48,8 @@ class QuantifierImpl implements Quantifier {
     final QuantificationResults results = new QuantificationResults();
 
     // Fill in protein information
-    for(final String proteinName : summary.getProteins()) {
-      final ProteinSummary proteinSummary = summary.getProteinSummary(proteinName);
+    for(final String proteinName : summary.getGroups()) {
+      final GroupSummary proteinSummary = summary.getGroupSummary(proteinName);
       final Protein protein = new Protein();
       protein.setName(proteinName);
       protein.setNumSequences(proteinSummary.getNumEntries());

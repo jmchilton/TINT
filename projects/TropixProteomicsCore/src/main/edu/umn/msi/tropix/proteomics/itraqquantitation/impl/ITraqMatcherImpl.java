@@ -21,29 +21,36 @@ import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
+
 class ITraqMatcherImpl implements ITraqMatcher {
 
-  public List<ITraqMatch> match(final Iterable<ReportEntry> scaffoldEntries, final Function<ScanIndex, ITraqScanSummary> scanSummaries) {
+  public List<ITraqMatch> match(final Iterable<ReportEntry> reportEntries, final Function<ScanIndex, ITraqScanSummary> scanSummaries,
+      ITraqMatchBuilderOptions options) {
     final List<ITraqMatch> iTraqMatchs = Lists.newLinkedList();
 
     // For each ScaffoldEntry find the matching Scan and if each of the iTraq intensities
     // is high enough add it to the result (dataEntries).
-    for(final ReportEntry scaffoldEntry : scaffoldEntries) {
-      final String runId;
-      if(scaffoldEntry instanceof NamedReportEntry) {
-        runId = ((NamedReportEntry) scaffoldEntry).getSpectraId();
+    for(final ReportEntry reportEntry : reportEntries) {
+      String runId = null;
+      Integer fileIndex = null;
+      if(reportEntry instanceof NamedReportEntry) {
+        runId = ((NamedReportEntry) reportEntry).getSpectraId();
+      } else if(reportEntry instanceof IndexedReportEntry) {
+        fileIndex = ((IndexedReportEntry) reportEntry).getInputFileIndex();
+        runId = fileIndex.toString();
       } else {
-        throw new RuntimeException("Unknown report entry type " + scaffoldEntry);
+        throw new RuntimeException("Unknown report entry type " + reportEntry);
       }
-      final int scanNumber = scaffoldEntry.getScanNumber();
-      final short scanCharge = scaffoldEntry.getScanCharge();
-      final ITraqScanSummary scan = scanSummaries.apply(new ScanIndex(runId, scanNumber, scanCharge));
+      final int scanNumber = reportEntry.getScanNumber();
+      final short scanCharge = reportEntry.getScanCharge();
+      final ITraqScanSummary scan = scanSummaries.apply(new ScanIndex(runId, fileIndex, scanNumber, scanCharge));
       if(scan.intensitiesGreaterThan(1.0)) {
-        final String proteinAccession = scaffoldEntry.getProteinAccession();
-        final double proteinProbability = scaffoldEntry.getProteinProbability();
-        final String peptideSequence = scaffoldEntry.getPeptideSequence();
-        final double peptideProbability = scaffoldEntry.getPeptideProbability();
-        iTraqMatchs.add(new ITraqMatch(scan, proteinAccession, proteinProbability, peptideSequence, peptideProbability));
+        final String proteinAccession = reportEntry.getProteinAccession();
+        final double proteinProbability = reportEntry.getProteinProbability();
+        final String peptideSequence = reportEntry.getPeptideSequence();
+        final double peptideProbability = reportEntry.getPeptideProbability();
+        iTraqMatchs.add(new ITraqMatch(scan, proteinAccession, proteinProbability, peptideSequence, peptideProbability, options.getGroupType()));
       }
     }
 
