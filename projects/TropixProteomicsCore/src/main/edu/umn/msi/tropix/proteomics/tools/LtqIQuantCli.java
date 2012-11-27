@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.report.PepXmlUtils;
@@ -24,6 +25,9 @@ public class LtqIQuantCli {
     @Parameter(names = "--report_type", required = false)
     private String reportType = "SCAFFOLD";
 
+    @Parameter(names = "--group_type", required = false)
+    private String groupType = "PROTEIN";
+
     @Parameter(description = "<input>")
     private List<String> files = Lists.newArrayList();
 
@@ -32,6 +36,9 @@ public class LtqIQuantCli {
 
     @Parameter(names = "--output", required = false)
     private String output = "itraq_quant.xls";
+
+    @Parameter(names = "--threads", required = false)
+    private int threads = 1;
 
   }
 
@@ -45,6 +52,7 @@ public class LtqIQuantCli {
     }
 
     final ReportType reportType = ReportType.valueOf(cliOptions.reportType);
+    final GroupType groupType = GroupType.valueOf(cliOptions.groupType);
     final List<File> mzxmlFiles = Lists.newArrayListWithCapacity(cliOptions.files.size());
     for(final String filePath : cliOptions.files) {
       mzxmlFiles.add(new File(filePath));
@@ -53,12 +61,15 @@ public class LtqIQuantCli {
     if(mzxmlFiles.size() == 0 && reportType == ReportType.PEPXML) {
       mzxmlFiles.addAll(PepXmlUtils.loadInputFiles(new File(cliOptions.report)));
     }
+
     System.out.println("Running with report type " + reportType + " and loading " + mzxmlFiles.size() + " peak lists.");
     final File reportFile = new File(cliOptions.report);
     final File outFile = new File(cliOptions.output);
-
+    System.out.println("Setting group type to " + groupType);
     final QuantitationOptions options = QuantitationOptions
         .forInput(mzxmlFiles, new InputReport(reportFile, reportType))
+        .withGroupType(groupType)
+        .withThreds(cliOptions.threads)
         .withOutput(outFile).is4Plex().get();
     final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
         "edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
@@ -66,4 +77,5 @@ public class LtqIQuantCli {
     final Closure<QuantitationOptions> closure = (Closure<QuantitationOptions>) context.getBean("quantitationClosure");
     closure.apply(options);
   }
+
 }

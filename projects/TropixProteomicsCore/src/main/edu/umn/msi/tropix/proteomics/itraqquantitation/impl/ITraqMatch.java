@@ -23,33 +23,42 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.Lists;
 
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry.SequenceWithModifications;
 
 @Immutable
 class ITraqMatch {
-  private final String proteinAccession;
-  private final double proteinProbability;
+  private final ProteinInformation proteinInformation;
   private final String peptideSequence;
   private final double peptideProbability;
+  private final SequenceWithModifications modifiedPeptideSequence;
   private final ITraqScanSummary iTraqScanSummary;
   private final GroupType groupType;
 
-  public ITraqMatch(final ITraqScanSummary iTraqScanSummary, final String proteinAccession, final double proteinProbability,
-      final String peptideSequence, final double peptideProbability, final GroupType groupType) {
+  public ITraqMatch(final ITraqScanSummary iTraqScanSummary,
+      final String proteinAccession, final double proteinProbability,
+      final String peptideSequence, final double peptideProbability, final SequenceWithModifications modifiedPeptideSequence,
+      final GroupType groupType) {
     this.iTraqScanSummary = iTraqScanSummary;
-    this.proteinAccession = proteinAccession;
-    this.proteinProbability = proteinProbability;
+    this.proteinInformation = new ProteinInformation(proteinAccession, proteinProbability);
     this.peptideSequence = peptideSequence;
     this.peptideProbability = peptideProbability;
+    this.modifiedPeptideSequence = modifiedPeptideSequence;
     this.groupType = groupType;
   }
 
+  @Deprecated
   public String getProteinAccession() {
-    return proteinAccession;
+    return proteinInformation.getProteinAccession();
   }
 
+  @Deprecated
   public double getProteinProbability() {
-    return proteinProbability;
+    return proteinInformation.getProteinScore();
+  }
+
+  public ProteinInformation getProteinInformation() {
+    return proteinInformation;
   }
 
   public String getPeptideSequence() {
@@ -62,6 +71,10 @@ class ITraqMatch {
 
   public ITraqScanSummary getScan() {
     return iTraqScanSummary;
+  }
+
+  protected SequenceWithModifications getModifiedPeptideSequence() {
+    return modifiedPeptideSequence;
   }
 
   public static ITraqMatch fromLine(final String line) {
@@ -83,7 +96,7 @@ class ITraqMatch {
     final List<ITraqLabel> labels = ITraqLabels.get4PlexLabels();
     final ITraqScanSummary iTraqScanSummary = ITraqScanSummary.fromIntensities(number, alt, charge, labels,
         Lists.newArrayList(i114, i115, i116, i117));
-    final ITraqMatch iTraqMatch = new ITraqMatch(iTraqScanSummary, proteinAccession, proteinProbability, peptideSequence, peptideProbability,
+    final ITraqMatch iTraqMatch = new ITraqMatch(iTraqScanSummary, proteinAccession, proteinProbability, peptideSequence, peptideProbability, null,
         GroupType.PROTEIN);
     return iTraqMatch;
   }

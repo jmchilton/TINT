@@ -24,6 +24,8 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableList;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
+
 /**
  * Classes implementing this interface should build a List of ITraqMatch objects from the specified mzxml files and scaffold report file.
  * 
@@ -32,29 +34,31 @@ import com.google.common.collect.ImmutableList;
  */
 interface ITraqMatchBuilder {
 
-  static enum GroupType {
-    PROTEIN, PEPTIDE;
-  }
-
   @Immutable
   public static class ITraqMatchBuilderOptions {
     @Nonnull
     private final ImmutableList<ITraqLabel> iTraqLabels;
     @Nonnull
     private final GroupType groupType;
+    private final int threads;
 
     @Nonnull
     public ImmutableList<ITraqLabel> getITraqLabels() {
       return iTraqLabels;
     }
 
-    public ITraqMatchBuilderOptions(@Nonnull final Iterable<ITraqLabel> iTraqLabels, @Nonnull final GroupType groupType) {
+    public ITraqMatchBuilderOptions(@Nonnull final Iterable<ITraqLabel> iTraqLabels, @Nonnull final GroupType groupType, final int threads) {
       this.iTraqLabels = ImmutableList.copyOf(iTraqLabels);
       this.groupType = groupType;
+      this.threads = threads;
     }
 
     public GroupType getGroupType() {
       return groupType;
+    }
+
+    public int getThreads() {
+      return threads;
     }
 
   }

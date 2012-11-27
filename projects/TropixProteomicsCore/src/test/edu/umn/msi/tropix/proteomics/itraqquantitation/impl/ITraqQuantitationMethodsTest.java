@@ -28,11 +28,12 @@ import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.WeightedRatiosCalculator.Ratios;
 import edu.umn.msi.tropix.proteomics.test.ProteomicsTests;
 
 public class ITraqQuantitationMethodsTest {
-  
+
   @Test(groups = "unit")
   public void testAverages() throws IOException {
     final InputStream entriesStream = ProteomicsTests.getResourceAsStream("quantitation_entries");
@@ -46,8 +47,9 @@ public class ITraqQuantitationMethodsTest {
       iTraqMatchs.add(ITraqMatch.fromLine(line));
     }
     final List<ITraqLabel> labels = ITraqLabels.get4PlexLabels();
-    final ReportSummary summary = new ReportSummary(iTraqMatchs, labels);
-    //final List<Column> weightedColumns = Lists.newArrayList(QuantifierImpl.getRatiosAndPValues("", "", labels.get(1), labels.get(2), summary, null));
+    final ReportSummary summary = new ReportSummary(iTraqMatchs, labels, GroupType.PROTEIN);
+    // final List<Column> weightedColumns = Lists.newArrayList(QuantifierImpl.getRatiosAndPValues("", "", labels.get(1), labels.get(2), summary,
+    // null));
     final Ratios ratios = new WeightedRatiosCalculatorImpl().computeRatios(labels.get(1), labels.get(2), summary, null);
     final List<List<Double>> rValues = Lists.newLinkedList();
     final InputStream averagesStream = ProteomicsTests.getResourceAsStream("quantitation_averages");
@@ -63,17 +65,17 @@ public class ITraqQuantitationMethodsTest {
     }
     final int numProteins = summary.getNumGroups();
     assert numProteins == rValues.size();
-    
+
     // final Column normalizedRatio = regularColumns.get(1);
     // final Column pvalue = regularColumns.get(2);
-   // final Column wnormalizedRatio = weightedColumns.get(1);
-    //final Column wpvalue = weightedColumns.get(1);
+    // final Column wnormalizedRatio = weightedColumns.get(1);
+    // final Column wpvalue = weightedColumns.get(1);
 
     for(int i = 0; i < numProteins; i++) {
       // almostEqual(Double.parseDouble(normalizedRatio.getValue(i)), rValues.get(i).get(0));
       // almostEqual(Double.parseDouble(pvalue.getValue(i)), rValues.get(i).get(1));
-      //almostEqual(Double.parseDouble(wnormalizedRatio.getValue(i)), rValues.get(i).get(2));
-      //final String pValueStr = wpvalue.getValue(i);
+      // almostEqual(Double.parseDouble(wnormalizedRatio.getValue(i)), rValues.get(i).get(2));
+      // final String pValueStr = wpvalue.getValue(i);
       double pValue = ratios.getPValues()[i];
       MathAsserts.assertWithin(pValue, rValues.get(i).get(3), .000001);
     }

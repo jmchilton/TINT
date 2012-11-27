@@ -25,8 +25,8 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
   public Ratios computeRatioOfRatios(final ReportSummary reportSummary, final Function<Double, Double> weightFunction) {
     final double[] ratios = new double[reportSummary.getNumGroups()], pValues = new double[reportSummary.getNumGroups()];
     int proteinNum = 0;
-    for(final String protein : reportSummary.getGroups()) {
-      final GroupSummary proteinSummary = reportSummary.getGroupSummary(protein);
+    for(final String groupLabel : reportSummary.getGroups()) {
+      final GroupSummary proteinSummary = reportSummary.getGroupSummary(groupLabel);
       final double[] iRatio = new double[proteinSummary.getNumEntries()];
       final double[] i114 = proteinSummary.getIntensities(ITraqLabels.get4PlexLabels().get(0)); // 114
       final double[] i115 = proteinSummary.getIntensities(ITraqLabels.get4PlexLabels().get(1)); // 115
@@ -72,9 +72,9 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
   public Ratios computeRatios(final ITraqLabel numLabel, final ITraqLabel denLabel, final ReportSummary reportSummary,
       final Function<Double, Double> weightFunction, final boolean normalized) {
     final double[] ratios = new double[reportSummary.getNumGroups()], pValues = new double[reportSummary.getNumGroups()];
-    int proteinNum = 0;
-    for(final String protein : reportSummary.getGroups()) {
-      final GroupSummary proteinSummary = reportSummary.getGroupSummary(protein);
+    int groupNum = 0;
+    for(final String groupLabel : reportSummary.getGroups()) {
+      final GroupSummary proteinSummary = reportSummary.getGroupSummary(groupLabel);
       final double[] iRatio = new double[proteinSummary.getNumEntries()];
       final double[] num = proteinSummary.getIntensities(numLabel);
       final double[] den = proteinSummary.getIntensities(denLabel);
@@ -92,8 +92,8 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
         iRatio[i] = Math.log(num[i] / den[i]);
       }
 
-      final String logRatioStr = Iterables.toString(Doubles.asList(iRatio));
-      System.out.println(logRatioStr);
+      // final String logRatioStr = Iterables.toString(Doubles.asList(iRatio));
+      // System.out.println(logRatioStr);
 
       if(normalized) {
         final double median = RUtils.median(iRatio);
@@ -110,15 +110,16 @@ class WeightedRatiosCalculatorImpl implements WeightedRatiosCalculator {
       }
 
       if(pValue < 0) {
+        // This hasn't been a problem since upgrading commons-math
         final String ratioStr = Iterables.toString(Doubles.asList(iRatio));
         final String weightsStr = Iterables.toString(Doubles.asList(weights));
         System.out.println(String.format("Negative p-value found for ratios %s and weights %s.", ratioStr, weightsStr));
       }
 
-      ratios[proteinNum] = iRatioW;
-      pValues[proteinNum] = pValue;
+      ratios[groupNum] = iRatioW;
+      pValues[groupNum] = pValue;
 
-      proteinNum++;
+      groupNum++;
     }
 
     return new Ratios(ratios, pValues);

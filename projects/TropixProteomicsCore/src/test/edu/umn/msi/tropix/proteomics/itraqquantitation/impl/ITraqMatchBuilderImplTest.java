@@ -33,7 +33,7 @@ import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.test.EasyMockUtils;
 import edu.umn.msi.tropix.proteomics.conversion.Scan;
 import edu.umn.msi.tropix.proteomics.conversion.impl.XmlPeakListParser;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 
@@ -80,7 +80,7 @@ public class ITraqMatchBuilderImplTest {
       final Capture<Function<ScanIndex, ITraqScanSummary>> scanSummariesCapture = EasyMockUtils.newCapture();
 
       ITraqMatchBuilderOptions options = new ITraqMatchBuilder.ITraqMatchBuilderOptions(
-          ITraqLabels.get4PlexLabels(), GroupType.PROTEIN);
+          ITraqLabels.get4PlexLabels(), GroupType.PROTEIN, 1);
       final List<ITraqMatch> matches = Lists.newArrayList();
       EasyMock.expect(
           iTraqMatcher.match(EasyMock.same(scaffoldEntries), EasyMock.capture(scanSummariesCapture),

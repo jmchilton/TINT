@@ -22,39 +22,66 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
+
 class ReportSummary {
-  private final LinkedHashMap<String, GroupSummary> groupSummaries;
+  private final LinkedHashMap<String, GroupSummary> groupSummariesByLabel;
+  private final LinkedHashMap<String, ProteinInformation> groupLabelProtein;
   private final int numGroups;
+  private final GroupType groupType;
 
   public int getNumGroups() {
     return numGroups;
   }
 
   public Iterable<String> getGroups() {
-    return groupSummaries.keySet();
+    return groupSummariesByLabel.keySet();
+  }
+
+  public GroupType getGroupType() {
+    return groupType;
   }
 
   public GroupSummary getGroupSummary(final String groupLabel) {
-    return groupSummaries.get(groupLabel);
+    return groupSummariesByLabel.get(groupLabel);
   }
 
-  public ReportSummary(final Iterable<ITraqMatch> iTraqMatchs, final Iterable<ITraqLabel> labels) {
+  public ProteinInformation getProteinInformationForPeptideGroup(final String groupLabel) {
+    return groupLabelProtein.get(groupLabel);
+  }
+
+  public ReportSummary(final Iterable<ITraqMatch> iTraqMatchs, final Iterable<ITraqLabel> labels, GroupType groupType) {
     final Multimap<String, ITraqMatch> groupMap = LinkedHashMultimap.create();
+    groupLabelProtein = Maps.newLinkedHashMap();
 
     for(final ITraqMatch iTraqMatch : iTraqMatchs) {
-      final String groupLabel = iTraqMatch.getProteinAccession();
+      final ProteinInformation proteinInformation = iTraqMatch.getProteinInformation();
+      String groupLabel;
+      if(groupType == GroupType.PROTEIN) {
+        groupLabel = proteinInformation.getProteinAccession();
+      } else if(groupType == GroupType.PEPTIDE) {
+        groupLabel = iTraqMatch.getPeptideSequence();
+      } else if(groupType == GroupType.PEPTIDE_WITH_MODIFICATIONS) {
+        groupLabel = iTraqMatch.getModifiedPeptideSequence().toString();
+      } else {
+        throw new IllegalArgumentException("Unknown group type " + groupType);
+      }
       groupMap.put(groupLabel, iTraqMatch);
+      if(!groupLabelProtein.containsKey(groupLabel)) {
+        groupLabelProtein.put(groupLabel, proteinInformation);
+      }
     }
 
-    int numProteins = 0;
-    groupSummaries = Maps.newLinkedHashMap();
+    int numGroups = 0;
+    groupSummariesByLabel = Maps.newLinkedHashMap();
     for(final String groupLabel : groupMap.keySet()) {
       final Iterable<ITraqMatch> groupDataEntries = groupMap.get(groupLabel);
-      groupSummaries.put(groupLabel, new GroupSummary(groupDataEntries, labels));
-      numProteins++;
+      groupSummariesByLabel.put(groupLabel, new GroupSummary(groupDataEntries, labels));
+      numGroups++;
     }
 
-    this.numGroups = numProteins;
+    this.numGroups = numGroups;
+    this.groupType = groupType;
   }
 
 }

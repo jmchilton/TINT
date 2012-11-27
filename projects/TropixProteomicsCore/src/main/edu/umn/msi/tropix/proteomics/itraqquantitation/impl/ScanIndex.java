@@ -54,6 +54,10 @@ class ScanIndex {
     return result;
   }
 
+  public int getNumber() {
+    return number;
+  }
+
   @Override
   public boolean equals(final Object obj) {
     if(this == obj) {
@@ -79,6 +83,9 @@ class ScanIndex {
     if(number != other.number) {
       return false;
     }
+    if(fileIndex != null && other.fileIndex != null && fileIndex != other.fileIndex) {
+      return false;
+    }
     return true;
   }
 
@@ -92,7 +99,7 @@ class ScanIndex {
     if(alternativeNames.size() > 1) {
       altNameStr = ", alternativeNames=" + Iterables.toString(alternativeNames);
     }
-    return "ScanIndex [charge=" + charge + ", name=" + name + ", number=" + number + altNameStr + "]";
+    return "ScanIndex [charge=" + charge + ", name=" + name + ", number=" + number + altNameStr + ",fileIndex=" + fileIndex + "]";
   }
 
   public boolean numberAndChargeMatch(@Nonnull final ScanIndex scanIndex) {
@@ -107,9 +114,9 @@ class ScanIndex {
     return !Sets.intersection(alternativeNames, scanIndex.alternativeNames).isEmpty();
   }
 
-  public boolean numberChargeAndFileIndexMatch(@Nonnull final ScanIndex scanIndex) {
+  public boolean numberAndFileIndexMatch(@Nonnull final ScanIndex scanIndex) {
     boolean match = false;
-    if(numberAndChargeMatch(scanIndex)) {
+    if(scanIndex.number == number) {
       match = fileIndex != null && fileIndex.equals(scanIndex.fileIndex);
     }
     return match;

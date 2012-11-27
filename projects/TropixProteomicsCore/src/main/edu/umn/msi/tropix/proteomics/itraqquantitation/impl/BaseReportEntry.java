@@ -1,5 +1,7 @@
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry.SequenceWithModifications;
+
 public class BaseReportEntry {
 
   private String spectraId;
@@ -8,6 +10,7 @@ public class BaseReportEntry {
   private String proteinAccession;
   private double peptideProbability;
   private String peptideSequence;
+  private SequenceWithModifications modifiedPeptideSequence;
 
   public BaseReportEntry() {
     super();
@@ -37,6 +40,10 @@ public class BaseReportEntry {
     this.peptideSequence = peptideSequence;
   }
 
+  protected void setModifiedPeptideSequence(final SequenceWithModifications modifiedPeptideSequence) {
+    this.modifiedPeptideSequence = modifiedPeptideSequence;
+  }
+
   public String getSpectraId() {
     return spectraId;
   }
@@ -63,6 +70,10 @@ public class BaseReportEntry {
 
   public double getProteinProbability() {
     return -2.0;
+  }
+
+  public SequenceWithModifications getModifiedPeptideSequence() {
+    return modifiedPeptideSequence;
   }
 
 }

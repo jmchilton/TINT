@@ -36,7 +36,6 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtils;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtilsFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationTrainingOptions;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeight;
@@ -73,8 +72,10 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
     }
 
     LOG.info("Building data entries for quantitation analysis");
-    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(),
-        new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels, GroupType.PROTEIN));
+    final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder
+        .buildDataEntries(options.getInputMzxmlFiles(), options.getInputScaffoldReport(),
+            new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels,
+                edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType.PROTEIN, 1));
 
     final Map<ITraqLabel, double[]> intensities = Maps.newHashMap();
     final int numMatches = iTraqMatchs.size();

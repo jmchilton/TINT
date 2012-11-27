@@ -26,11 +26,14 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.base.Function;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
+import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.common.io.FileUtils;
 import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.IOUtils;
@@ -61,9 +64,10 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
         // System.out.println("UseNumber:" + useScanNumber + " " + number + " <- number charge ->" + charge + " " + mzxmlScan.getIndex() + " "
         // + mzxmlScan.getNumber());
         final double[] peaks = mzxmlScan.getPeaks();
+        final ScanIndex scanIndex = new ScanIndex(mzxmlScan.getParentName(), fileIndex, number, charge, Lists.newArrayList(mzxmlScan.getParentName(),
+            FilenameUtils.getBaseName(mzxmlFile.getName()), mzxmlFile.getName()));
         scanMap.put(
-            new ScanIndex(mzxmlScan.getParentName(), fileIndex, number, charge, Lists.newArrayList(mzxmlScan.getParentName(),
-                FilenameUtils.getBaseName(mzxmlFile.getName()), mzxmlFile.getName())),
+            scanIndex,
             ITraqScanSummary.fromPeaks(number, number, charge, options.getITraqLabels(), peaks));
       }
     } finally {
@@ -71,31 +75,74 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
     }
   }
 
+  private static class InputSource {
+    private final int index;
+    private final File file;
+
+    public InputSource(int index, File file) {
+      this.index = index;
+      this.file = file;
+    }
+
+    protected int getIndex() {
+      return index;
+    }
+
+    protected File getFile() {
+      return file;
+    }
+
+  }
+
+  private List<InputSource> getInputSources(final Iterable<File> inputFiles) {
+    List<InputSource> inputSources = Lists.newArrayList();
+    int fileIndex = 0;
+    for(final File inputFile : inputFiles) {
+      inputSources.add(new InputSource(fileIndex++, inputFile));
+    }
+    return inputSources;
+  }
+
   /*
    * Returns a Map with the names of the runs defined in the MzXML files as keys, and a array of scans corresponding to that run as the values.
    */
-  private Map<ScanIndex, ITraqScanSummary> parseScans(final Iterable<File> mzxmlInputs, final ITraqMatchBuilderOptions options, boolean useScanNumber) {
-    final Map<ScanIndex, ITraqScanSummary> scanMap = Maps.newHashMap();
+  private Map<ScanIndex, ITraqScanSummary> parseScans(final Iterable<File> mzxmlInputs, final ITraqMatchBuilderOptions options,
+      final boolean useScanNumber) {
+    final Map<ScanIndex, ITraqScanSummary> scanMap = Maps.newConcurrentMap();
 
     // Loop through the mzxml files
-    int fileIndex = 0;
-    for(final File file : mzxmlInputs) {
-      addSummariesForFile(file, fileIndex++, scanMap, options, useScanNumber);
-    }
+    final List<InputSource> inputSources = getInputSources(mzxmlInputs);
 
+    if(options.getThreads() == 1) {
+      for(final InputSource inputSource : inputSources) {
+        addSummariesForFile(inputSource.getFile(), inputSource.getIndex(), scanMap, options, useScanNumber);
+      }
+    } else {
+      final Closure<InputSource> sourceReader = new Closure<InputSource>() {
+        public void apply(final InputSource inputSource) {
+          addSummariesForFile(inputSource.getFile(), inputSource.getIndex(), scanMap, options, useScanNumber);
+        }
+      };
+      if(!Concurrent.processInNThreads(options.getThreads(), sourceReader, inputSources)) {
+        throw new RuntimeException("Failed to produce scan map");
+      }
+    }
     return scanMap;
   }
 
   public List<ITraqMatch> buildDataEntries(final Iterable<File> mzxmlInputs, final InputReport inputReport, final ITraqMatchBuilderOptions options) {
     // Parse the specified Scaffold spectrum report
+    System.out.println("Running with " + options.getThreads() + " threads.");
     final Iterable<ReportEntry> scaffoldEntries = reportParser.parse(FILE_UTILS.getFileInputStream(inputReport.getReport()),
         inputReport.getReportType());
 
     // System.out.println("Found " + Iterables.size(scaffoldEntries) + " entries.");
 
     // Parse the MzXML files and obtain scan arrays for each
-    final Map<ScanIndex, ITraqScanSummary> scansMap = parseScans(mzxmlInputs, options, inputReport.getReportType() == ReportType.SCAFFOLD);
+    System.out.println("Building scansMap");
+    final Map<ScanIndex, ITraqScanSummary> scansMap = parseScans(mzxmlInputs, options, (inputReport.getReportType() != ReportType.PEPXML));
 
+    System.out.println("Matching build itraq matches");
     return iTraqMatcher.match(scaffoldEntries, new ScanFunctionImpl(scansMap), options);
   }
 
@@ -134,7 +181,7 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
   static class FileIndexMatcher implements ScanIndexMatcher {
 
     public boolean match(ScanIndex query, ScanIndex target) {
-      return query.numberChargeAndFileIndexMatch(target);
+      return query.numberAndFileIndexMatch(target);
     }
 
   }
@@ -152,16 +199,22 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
 
   private final class ScanFunctionImpl implements Function<ScanIndex, ITraqScanSummary> {
     private final Map<ScanIndex, ITraqScanSummary> scansMap;
+    private final Multimap<Integer, ScanIndex> scanIndices;
 
     private ScanFunctionImpl(final Map<ScanIndex, ITraqScanSummary> scansMap) {
       this.scansMap = scansMap;
+      scanIndices = HashMultimap.create();
+      for(final Map.Entry<ScanIndex, ITraqScanSummary> entry : scansMap.entrySet()) {
+        scanIndices.put(entry.getKey().getNumber(), entry.getKey());
+      }
     }
 
     private List<ScanIndex> getMatches(final ScanIndex scanIndex, ScanIndexMatcher matcher) {
       final List<ScanIndex> matches = Lists.newArrayList();
-      for(final Map.Entry<ScanIndex, ITraqScanSummary> entry : scansMap.entrySet()) {
-        if(matcher.match(scanIndex, entry.getKey())) {
-          matches.add(entry.getKey());
+      final int number = scanIndex.getNumber();
+      for(final ScanIndex possibleIndex : scanIndices.get(number)) {
+        if(matcher.match(scanIndex, possibleIndex)) {
+          matches.add(possibleIndex);
         }
       }
       return matches;
@@ -183,10 +236,11 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
       ITraqScanSummary summary = scansMap.get(scanIndex);
       // Try a little harder if an exact match cannot be found...
       for(ScanIndexMatcher matcher : MATCHING_ALGORITHMS) {
-        if(summary == null) {
-          final List<ScanIndex> potentialMatches = getMatches(scanIndex, matcher);
-          summary = tryFindSummary(scanIndex, potentialMatches);
+        if(summary != null) {
+          break;
         }
+        final List<ScanIndex> potentialMatches = getMatches(scanIndex, matcher);
+        summary = tryFindSummary(scanIndex, potentialMatches);
       }
       if(summary == null) {
         throw new IllegalStateException("Found no match for scan " + scanIndex + "in scans map " + summarizeScansMap());

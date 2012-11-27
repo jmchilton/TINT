@@ -26,8 +26,10 @@ class ScaffoldEntry implements NamedReportEntry {
   private final double proteinProbability;
   private final String peptideSequence;
   private final double peptideProbability;
+  private final SequenceWithModifications modifiedPeptideSequence = null;
 
-  public ScaffoldEntry(final String spectraId, final int scanNumber, final int scanAlt, final short scanCharge, final String proteinAccession, final double proteinProbability, final String peptideSequence, final double peptideProbability) {
+  public ScaffoldEntry(final String spectraId, final int scanNumber, final int scanAlt, final short scanCharge, final String proteinAccession,
+      final double proteinProbability, final String peptideSequence, final double peptideProbability) {
     this.spectraId = spectraId;
     this.scanNumber = scanNumber;
     this.scanAlt = scanAlt;
@@ -38,16 +40,10 @@ class ScaffoldEntry implements NamedReportEntry {
     this.peptideProbability = peptideProbability;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getSpectraId()
-   */
   public String getSpectraId() {
     return spectraId;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getScanNumber()
-   */
   public int getScanNumber() {
     return scanNumber;
   }
@@ -56,39 +52,28 @@ class ScaffoldEntry implements NamedReportEntry {
     return scanAlt;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getScanCharge()
-   */
   public short getScanCharge() {
     return scanCharge;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getProteinAccession()
-   */
   public String getProteinAccession() {
     return proteinAccession;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getProteinProbability()
-   */
   public double getProteinProbability() {
     return proteinProbability;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getPeptideSequence()
-   */
   public String getPeptideSequence() {
     return peptideSequence;
   }
 
-  /* (non-Javadoc)
-   * @see edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry#getPeptideProbability()
-   */
   public double getPeptideProbability() {
     return peptideProbability;
+  }
+
+  public SequenceWithModifications getModifiedPeptideSequence() {
+    return modifiedPeptideSequence;
   }
 
 }

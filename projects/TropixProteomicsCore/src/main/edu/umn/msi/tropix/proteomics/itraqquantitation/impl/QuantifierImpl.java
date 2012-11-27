@@ -18,9 +18,13 @@ package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import org.testng.collections.Maps;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -28,8 +32,10 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRatio;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.WeightedRatiosCalculator.Ratios;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.results.PeptideGroup;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.Protein;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.Ratio;
@@ -43,22 +49,52 @@ class QuantifierImpl implements Quantifier {
     this.weightedRatiosCalculator = weightedRatiosCalculator;
   }
 
+  private static int getNumPeptides(GroupSummary groupSummary) {
+    final Set<String> peptides = Sets.newHashSet();
+    for(final ITraqMatch iTraqMatch : groupSummary.getDataEntries()) {
+      peptides.add(iTraqMatch.getPeptideSequence());
+    }
+    return peptides.size();
+  }
+
   public QuantificationResults quantify(final Collection<ITraqRatio> iTraqRatios, final ReportSummary summary,
       @Nullable final Function<Double, Double> trainingFunction) {
     final QuantificationResults results = new QuantificationResults();
-
+    final List<List<Ratio>> ratioLists = Lists.newArrayList();
     // Fill in protein information
-    for(final String proteinName : summary.getGroups()) {
-      final GroupSummary proteinSummary = summary.getGroupSummary(proteinName);
-      final Protein protein = new Protein();
-      protein.setName(proteinName);
-      protein.setNumSequences(proteinSummary.getNumEntries());
-      final Set<String> peptides = Sets.newHashSet();
-      for(final ITraqMatch iTraqMatch : proteinSummary.getDataEntries()) {
-        peptides.add(iTraqMatch.getPeptideSequence());
+    Map<String, Protein> addedProteins = Maps.newHashMap();
+    for(final String groupLabel : summary.getGroups()) {
+      final GroupSummary groupSummary = summary.getGroupSummary(groupLabel);
+      final ProteinInformation proteinInformation = summary.getProteinInformationForPeptideGroup(groupLabel);
+      final String proteinLabel = proteinInformation.getProteinAccession();
+
+      final int numSpectra = groupSummary.getNumEntries();
+      final int numPeptides = getNumPeptides(groupSummary);
+
+      final Protein protein;
+      if(addedProteins.containsKey(proteinLabel)) {
+        protein = addedProteins.get(proteinLabel);
+      } else {
+        protein = new Protein();
+        protein.setName(proteinLabel);
+        results.getProtein().add(protein);
       }
-      protein.setNumPeptides(peptides.size());
-      results.getProtein().add(protein);
+
+      if(summary.getGroupType() != GroupType.PROTEIN) {
+        final PeptideGroup peptideGroup = new PeptideGroup();
+        peptideGroup.setGroupType(summary.getGroupType().toString());
+        peptideGroup.setGroupLabel(groupLabel);
+        peptideGroup.setNumPeptides(numPeptides);
+        peptideGroup.setNumSpectra(numSpectra);
+
+        protein.getPeptideGroup().add(peptideGroup);
+        ratioLists.add(peptideGroup.getRatio());
+      } else {
+        ratioLists.add(protein.getRatio());
+      }
+
+      protein.setNumSequences(protein.getNumSequences() + numSpectra);
+      protein.setNumPeptides(protein.getNumPeptides() + numPeptides);
     }
 
     for(final ITraqRatio iTraqRatio : iTraqRatios) {
@@ -93,7 +129,13 @@ class QuantifierImpl implements Quantifier {
           final double[] weightedRatios = ratios.getRatios();
           final double[] pValues = ratios.getPValues();
           int i = 0;
-          for(final Protein protein : results.getProtein()) {
+          if(weightedRatios.length != ratioLists.size()) {
+            throw new IllegalStateException(String.format(
+                "Grouping problems - number of computed ratios (%d) does not match number of ratio lists (%d).",
+                weightedRatios.length,
+                ratioLists.size()));
+          }
+          for(final List<Ratio> ratioList : ratioLists) {
             final Ratio ratio = new Ratio();
             ratio.setNumeratorLabel(numLabel.getLabel());
             ratio.setDenominatorLabel(denLabel.getLabel());
@@ -107,7 +149,7 @@ class QuantifierImpl implements Quantifier {
             if(pValue <= 1.0) {
               ratio.setPValue(pValue);
             }
-            protein.getRatio().add(ratio);
+            ratioList.add(ratio);
             i++;
           }
         }

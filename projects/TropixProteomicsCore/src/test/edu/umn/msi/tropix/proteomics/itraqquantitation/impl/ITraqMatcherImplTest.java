@@ -28,7 +28,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import edu.umn.msi.tropix.common.collect.Collections;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.ITraqMatchBuilderOptions;
 
 public class ITraqMatcherImplTest {
@@ -46,7 +46,7 @@ public class ITraqMatcherImplTest {
     final List<ReportEntry> scaffoldEntries = Lists.<ReportEntry>newArrayList(entry1, entry2, entry3, entry4, entry5);
 
     final Map<ScanIndex, ITraqScanSummary> scanSummaries = Maps.newHashMap();
-    final List<ITraqLabel> labels = ITraqLabels.get4PlexL abels();
+    final List<ITraqLabel> labels = ITraqLabels.get4PlexLabels();
 
     final ITraqScanSummary scan1 = ITraqScanSummary.fromIntensities(100, 97, (short) 3, labels, Lists.newArrayList(2d, 4d, 6d, 8d));
     scanSummaries.put(new ScanIndex("runId", 1, 100, (short) 3), scan1);
@@ -69,7 +69,7 @@ public class ITraqMatcherImplTest {
     scanSummaries.put(new ScanIndex("secondRun", 1, 1001, (short) 2), scan5);
 
     final List<ITraqMatch> matches = iTraqMatcherImpl.match(scaffoldEntries, Functions.forMap(scanSummaries), new ITraqMatchBuilderOptions(
-        ITraqLabels.get4PlexLabels(), GroupType.PROTEIN));
+        ITraqLabels.get4PlexLabels(), GroupType.PROTEIN, 1));
     assert matches.size() == 4;
 
     final Collection<ITraqScanSummary> matchedScans = Collections.transform(matches, new Function<ITraqMatch, ITraqScanSummary>() {

@@ -16,9 +16,10 @@
   <xsd:complexType name="Protein">
     <xsd:sequence>
       <xsd:element name="ratio" type="Ratio" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="peptideGroup" type="PeptideGroup" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
-    <xsd:attribute name="numSequences" type="xsd:int" use="required" />
+    <xsd:attribute name="numSequences" type="xsd:int" use="required" /> <!-- TODO Rename numSpectra? -->
     <xsd:attribute name="numPeptides" type="xsd:int" use="required" />
   </xsd:complexType>
 
@@ -31,6 +32,15 @@
     <xsd:attributeGroup ref="RatioLabelAttributes" />
   </xsd:complexType>
 
+  <xsd:complexType name="PeptideGroup">
+    <xsd:sequence>
+      <xsd:element name="ratio" type="Ratio" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="groupType" type="xsd:string" use="required" />
+    <xsd:attribute name="groupLabel" type="xsd:string" use="required" />
+    <xsd:attribute name="numSpectra" type="xsd:int" use="required" />
+    <xsd:attribute name="numPeptides" type="xsd:int" use="required" />
+  </xsd:complexType>
 
   <xsd:complexType name="Ratio">
     <xsd:attributeGroup ref="RatioLabelAttributes" />

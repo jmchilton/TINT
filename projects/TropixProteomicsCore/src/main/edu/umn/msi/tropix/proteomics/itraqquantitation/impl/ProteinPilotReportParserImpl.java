@@ -10,10 +10,11 @@ public class ProteinPilotReportParserImpl extends PerLineReportParserImpl {
     ProteinPilotReportEntry(final String line) {
       final String[] values = line.split("\t");
       final String spectrumName = values[22];
-      final String theoriticalChargeState = values[21];
-      final String peptideSequence = values[13];
-      final String proteinNames = values[7];
-      final String peptideConfidence = values[6];
+      final String theoriticalChargeState = values[20];
+      final String peptideSequence = values[12];
+      final String modifications = values[13];
+      final String proteinNames = values[6];
+      final String peptideConfidence = values[5];
       final String[] spectrumNameParts = spectrumName.split("\\.");
       final Integer inputIndex = Integer.parseInt(spectrumNameParts[0]);
       final Integer scanNumber = Integer.parseInt(spectrumNameParts[3]);
@@ -21,6 +22,7 @@ public class ProteinPilotReportParserImpl extends PerLineReportParserImpl {
 
       super.setPeptideProbability(Double.parseDouble(peptideConfidence));
       super.setPeptideSequence(peptideSequence);
+      super.setModifiedPeptideSequence(new SequenceWithModifications(peptideSequence + "|" + modifications));
       super.setProteinAccession(proteinNames);
       super.setScanCharge(charge);
       super.setScanNumber(scanNumber);

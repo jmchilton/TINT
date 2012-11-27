@@ -19,10 +19,13 @@ package edu.umn.msi.tropix.proteomics.itraqquantitation;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import javax.annotation.WillNotClose;
 
 import edu.umn.msi.tropix.common.xml.XMLUtility;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.results.PeptideGroup;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.Protein;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.Ratio;
@@ -37,33 +40,72 @@ public class QuantificationResultsExporter {
   }
 
   public static void writeAsSpreadsheet(final QuantificationResults results, @WillNotClose final OutputStream outputStream) {
+    writeAsSpreadsheet(results, outputStream, GroupType.PROTEIN);
+  }
+
+  private static List<Ratio> getFirstRatioList(final QuantificationResults results) {
+    final List<Protein> proteinList = results.getProtein();
+    if(proteinList == null || proteinList.isEmpty()) {
+      return null;
+    }
+    final Protein protein = proteinList.get(0);
+    final List<PeptideGroup> peptideGroupList = protein.getPeptideGroup();
+    final List<Ratio> ratioList;
+    if(peptideGroupList.isEmpty()) {
+      System.out.println("Example is protein");
+      ratioList = protein.getRatio();
+    } else {
+      System.out.println("Example is peptide group");
+      ratioList = peptideGroupList.get(0).getRatio();
+    }
+    return ratioList;
+  }
+
+  public static void writeAsSpreadsheet(final QuantificationResults results, @WillNotClose final OutputStream outputStream, final GroupType groupType) {
     final PrintStream printStream = new PrintStream(outputStream);
-    if(results.getProtein() == null || results.getProtein().isEmpty()) {
+    final List<Ratio> exampleRatioList = getFirstRatioList(results);
+    if(exampleRatioList == null) {
       printStream.append(NO_PROTEIN_MESSAGE);
     } else {
-      final Protein exampleProtein = results.getProtein().get(0);
-      printStream.append("Protein\tNumber of Sequences\tNumber of Unique Peptides");
-      for(final Ratio ratio : exampleProtein.getRatio()) {
+      if(groupType == GroupType.PROTEIN) {
+        printStream.append("Protein\tNumber of Spectra\tNumber of Unique Peptides");
+      } else if(groupType == GroupType.PEPTIDE) {
+        printStream.append("Protein\tPeptide\tNumber of Spectra");
+      } else if(groupType == GroupType.PEPTIDE_WITH_MODIFICATIONS) {
+        printStream.append("Protein\tPeptide with Modifications\tNumber of Spectra");
+      }
+      for(final Ratio ratio : exampleRatioList) {
         final String ratioSuffix = ratio.getNumeratorLabel() + ":" + ratio.getDenominatorLabel();
         final String ratioStr = ratio.getMethod() + "_ratio_" + ratioSuffix;
         final String pValueStr = ratio.getMethod() + "_pvalue_" + ratioSuffix;
         printStream.append("\t" + ratioStr + "\t" + pValueStr);
       }
       for(Protein protein : results.getProtein()) {
-        printStream.append("\n" + protein.getName() +"\t" + protein.getNumSequences() + "\t" + protein.getNumPeptides());
-        for(Ratio ratio : protein.getRatio()) {
-          printStream.append("\t" + ratio.getRatio() + "\t");
-          final Double pValue = ratio.getPValue();
-          if(pValue != null) {
-            printStream.append(Double.toString(pValue));
-          } else {
-            printStream.append("*");
+        if(groupType == GroupType.PROTEIN) {
+          printStream.append("\n" + protein.getName() + "\t" + protein.getNumSequences() + "\t" + protein.getNumPeptides());
+          writeRatioEntries(printStream, protein.getRatio());
+        } else {
+          for(PeptideGroup peptideGroup : protein.getPeptideGroup()) {
+            printStream.append("\n" + protein.getName() + "\t" + peptideGroup.getGroupLabel() + "\t" + peptideGroup.getNumSpectra());
+            writeRatioEntries(printStream, peptideGroup.getRatio());
           }
-
         }
       }
     }
     printStream.flush();
+  }
+
+  private static void writeRatioEntries(final PrintStream printStream, final List<Ratio> ratioList) {
+    for(Ratio ratio : ratioList) {
+      printStream.append("\t" + ratio.getRatio() + "\t");
+      final Double pValue = ratio.getPValue();
+      if(pValue != null) {
+        printStream.append(Double.toString(pValue));
+      } else {
+        printStream.append("*");
+      }
+
+    }
   }
 
 }

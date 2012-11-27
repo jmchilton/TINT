@@ -39,17 +39,31 @@ public final class QuantitationOptions {
   private final QuantificationType quantificationType;
   @Nullable
   private final QuantificationWeights weights;
+  @Nullable
+  private final GroupType groupType;
+  private final int threads;
+
+  public static enum GroupType {
+    PROTEIN, PEPTIDE, PEPTIDE_WITH_MODIFICATIONS;
+  }
 
   public static final class QuantitationOptionsBuilder {
     private final ImmutableList<File> inputMzxmlFiles;
     private final InputReport inputScaffoldReport;
+    private GroupType groupType;
     private QuantificationWeights weights = null;
     private File outputFile = new File("quantification_output.csv");
     private QuantificationType quantificationType = QuantificationType.FOUR_PLEX;
+    private int threads = 1;
 
     private QuantitationOptionsBuilder(final Iterable<File> inputMzxmlFiles, final InputReport inputScaffoldReport) {
       this.inputMzxmlFiles = ImmutableList.copyOf(inputMzxmlFiles);
       this.inputScaffoldReport = inputScaffoldReport;
+    }
+
+    public QuantitationOptionsBuilder withGroupType(final GroupType groupType) {
+      this.groupType = groupType;
+      return this;
     }
 
     public QuantitationOptionsBuilder withWeights(final QuantificationWeights weights) {
@@ -77,18 +91,25 @@ public final class QuantitationOptions {
       return this;
     }
 
+    public QuantitationOptionsBuilder withThreds(final int threads) {
+      this.threads = threads;
+      return this;
+    }
+
     public QuantitationOptions get() {
-      return new QuantitationOptions(inputMzxmlFiles, inputScaffoldReport, outputFile, quantificationType, weights);
+      return new QuantitationOptions(inputMzxmlFiles, inputScaffoldReport, outputFile, quantificationType, weights, groupType, threads);
     }
   }
 
   public QuantitationOptions(final ImmutableList<File> inputMzxmlFiles, final InputReport inputScaffoldReport, final File outputFile,
-      final QuantificationType quantificationType, final QuantificationWeights weights) {
+      final QuantificationType quantificationType, final QuantificationWeights weights, final GroupType groupType, final int threads) {
     this.inputMzxmlFiles = inputMzxmlFiles;
     this.inputScaffoldReport = inputScaffoldReport;
     this.outputFile = outputFile;
     this.quantificationType = quantificationType;
     this.weights = weights;
+    this.groupType = groupType;
+    this.threads = threads;
   }
 
   public static QuantitationOptionsBuilder forInput(final Iterable<File> inputMzxmlFiles, final InputReport inputScaffoldReport) {
@@ -118,6 +139,14 @@ public final class QuantitationOptions {
   public String toString() {
     return "QuantitationOptions[mzxmlFiles" + Joiner.on(",").join(inputMzxmlFiles) + ",scaffoldFile=" + inputScaffoldReport + ", outputFile="
         + outputFile + ", type=" + quantificationType.getValue() + ",weights=" + weights + "]";
+  }
+
+  public GroupType getGroupType() {
+    return groupType;
+  }
+
+  public int getThreads() {
+    return threads;
   }
 
 }

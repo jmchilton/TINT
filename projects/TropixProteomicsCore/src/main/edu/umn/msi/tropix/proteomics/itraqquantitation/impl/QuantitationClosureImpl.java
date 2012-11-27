@@ -37,7 +37,6 @@ import edu.umn.msi.tropix.common.xml.XMLUtility;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantificationResultsExporter;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRatio;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqMatchBuilder.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 
@@ -64,7 +63,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
 
     LOG.info("Building data entries for quantitation analysis");
     final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputReport(),
-        new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels, GroupType.PROTEIN));
+        new ITraqMatchBuilder.ITraqMatchBuilderOptions(labels, options.getGroupType(), options.getThreads()));
 
     Function<Double, Double> trainingFunction = null;
     if(options.getWeights() != null) {
@@ -75,7 +74,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
     }
 
     LOG.info("Building report summary for quantitation analysis");
-    final ReportSummary summary = new ReportSummary(iTraqMatchs, labels);
+    final ReportSummary summary = new ReportSummary(iTraqMatchs, labels, options.getGroupType());
 
     final Collection<ITraqRatio> iTraqRatios = ITraqLabels.buildRatios(labels);
 
@@ -91,7 +90,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
     } else {
       final OutputStream outputStream = FILE_UTILS.getFileOutputStream(outputFile);
       try {
-        QuantificationResultsExporter.writeAsSpreadsheet(results, outputStream);
+        QuantificationResultsExporter.writeAsSpreadsheet(results, outputStream, options.getGroupType());
       } finally {
         IO_UTILS.closeQuietly(outputStream);
       }
