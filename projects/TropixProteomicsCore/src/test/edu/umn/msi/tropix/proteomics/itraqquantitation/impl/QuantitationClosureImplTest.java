@@ -94,7 +94,7 @@ public class QuantitationClosureImplTest {
 
     quantifier.quantify(
         EasyMockUtils.<ITraqRatio, Collection<ITraqRatio>>hasSameUniqueElements(ITraqLabels.buildRatios(ITraqLabels.get4PlexLabels())),
-        EasyMock.isA(ReportSummary.class), (Function<Double, Double>) EasyMock.isNull());
+        EasyMock.isA(ReportSummary.class), (Function<Double, Double>) EasyMock.isNull(), EasyMock.eq(true));
     EasyMock.expectLastCall().andReturn(report);
     mockObjects.replay();
     closure.apply(options);

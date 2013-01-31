@@ -26,5 +26,6 @@ import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRat
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 
 interface Quantifier {
-  QuantificationResults quantify(Collection<ITraqRatio> iTraqRatios, ReportSummary summary, @Nullable Function<Double, Double> trainingFunction);
+  QuantificationResults quantify(Collection<ITraqRatio> iTraqRatios, ReportSummary summary, @Nullable Function<Double, Double> trainingFunction,
+      boolean includeNormalization);
 }

@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import edu.umn.msi.tropix.common.collect.Closure;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.report.PepXmlUtils;
@@ -21,6 +22,9 @@ public class LtqIQuantCli {
   public static class LtqIQuantOptions {
     @Parameter(names = "--report", required = false)
     private String report;
+
+    @Parameter(names = "--normalize", required = false)
+    private boolean normalize = false;
 
     @Parameter(names = "--report_type", required = false)
     private String reportType = "SCAFFOLD";
@@ -66,11 +70,15 @@ public class LtqIQuantCli {
     final File reportFile = new File(cliOptions.report);
     final File outFile = new File(cliOptions.output);
     System.out.println("Setting group type to " + groupType);
-    final QuantitationOptions options = QuantitationOptions
+    final QuantitationOptionsBuilder optionsBuilder = QuantitationOptions
         .forInput(mzxmlFiles, new InputReport(reportFile, reportType))
         .withGroupType(groupType)
         .withThreds(cliOptions.threads)
-        .withOutput(outFile).is4Plex().get();
+        .withOutput(outFile).is4Plex();
+    if(!cliOptions.normalize) {
+      optionsBuilder.excludeNormalized();
+    }
+    final QuantitationOptions options = optionsBuilder.get();
     final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
         "edu/umn/msi/tropix/proteomics/itraqquantitation/applicationContext.xml");
     @SuppressWarnings("unchecked")

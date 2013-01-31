@@ -79,7 +79,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
     final Collection<ITraqRatio> iTraqRatios = ITraqLabels.buildRatios(labels);
 
     LOG.info("Running quantitation analysis.");
-    final QuantificationResults results = quantifier.quantify(iTraqRatios, summary, trainingFunction);
+    final QuantificationResults results = quantifier.quantify(iTraqRatios, summary, trainingFunction, options.includeNormalized());
 
     final File outputFile = options.getOutputFile();
     if(FilenameUtils.getExtension(outputFile.getName()).toLowerCase().equals("xml")) {

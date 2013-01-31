@@ -41,10 +41,24 @@ public final class QuantitationOptions {
   private final QuantificationWeights weights;
   @Nullable
   private final GroupType groupType;
+  private final boolean includeNormalized;
   private final int threads;
 
   public static enum GroupType {
-    PROTEIN, PEPTIDE, PEPTIDE_WITH_MODIFICATIONS;
+    PROTEIN("Protein"),
+    PEPTIDE("Peptide"),
+    PEPTIDE_WITH_MODIFICATIONS("Peptide with Modifications"),
+    PEPTIDE_WITH_UNIQUE_MODIFICATION("Peptide with an Identified Modification");
+
+    private final String headerLabel;
+
+    private GroupType(final String headerLabel) {
+      this.headerLabel = headerLabel;
+    }
+
+    public String getHeaderLabel() {
+      return headerLabel;
+    }
   }
 
   public static final class QuantitationOptionsBuilder {
@@ -55,10 +69,16 @@ public final class QuantitationOptions {
     private File outputFile = new File("quantification_output.csv");
     private QuantificationType quantificationType = QuantificationType.FOUR_PLEX;
     private int threads = 1;
+    private boolean includeNormalized = true;
 
     private QuantitationOptionsBuilder(final Iterable<File> inputMzxmlFiles, final InputReport inputScaffoldReport) {
       this.inputMzxmlFiles = ImmutableList.copyOf(inputMzxmlFiles);
       this.inputScaffoldReport = inputScaffoldReport;
+    }
+
+    public QuantitationOptionsBuilder excludeNormalized() {
+      this.includeNormalized = false;
+      return this;
     }
 
     public QuantitationOptionsBuilder withGroupType(final GroupType groupType) {
@@ -97,12 +117,14 @@ public final class QuantitationOptions {
     }
 
     public QuantitationOptions get() {
-      return new QuantitationOptions(inputMzxmlFiles, inputScaffoldReport, outputFile, quantificationType, weights, groupType, threads);
+      return new QuantitationOptions(inputMzxmlFiles, inputScaffoldReport, outputFile, quantificationType, weights, groupType, includeNormalized,
+          threads);
     }
   }
 
   public QuantitationOptions(final ImmutableList<File> inputMzxmlFiles, final InputReport inputScaffoldReport, final File outputFile,
-      final QuantificationType quantificationType, final QuantificationWeights weights, final GroupType groupType, final int threads) {
+      final QuantificationType quantificationType, final QuantificationWeights weights, final GroupType groupType,
+      final boolean includeNormalized, final int threads) {
     this.inputMzxmlFiles = inputMzxmlFiles;
     this.inputScaffoldReport = inputScaffoldReport;
     this.outputFile = outputFile;
@@ -110,6 +132,7 @@ public final class QuantitationOptions {
     this.weights = weights;
     this.groupType = groupType;
     this.threads = threads;
+    this.includeNormalized = includeNormalized;
   }
 
   public static QuantitationOptionsBuilder forInput(final Iterable<File> inputMzxmlFiles, final InputReport inputScaffoldReport) {
@@ -147,6 +170,10 @@ public final class QuantitationOptions {
 
   public int getThreads() {
     return threads;
+  }
+
+  public boolean includeNormalized() {
+    return includeNormalized;
   }
 
 }

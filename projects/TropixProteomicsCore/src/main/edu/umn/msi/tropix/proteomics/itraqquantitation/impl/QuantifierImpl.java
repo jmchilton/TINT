@@ -58,7 +58,7 @@ class QuantifierImpl implements Quantifier {
   }
 
   public QuantificationResults quantify(final Collection<ITraqRatio> iTraqRatios, final ReportSummary summary,
-      @Nullable final Function<Double, Double> trainingFunction) {
+      @Nullable final Function<Double, Double> trainingFunction, final boolean includeNormalized) {
     final QuantificationResults results = new QuantificationResults();
     final List<List<Ratio>> ratioLists = Lists.newArrayList();
     // Fill in protein information
@@ -121,7 +121,13 @@ class QuantifierImpl implements Quantifier {
         continue;
       }
       for(final ITraqRatio iTraqRatio : iTraqRatios) {
-        for(final boolean normalized : new boolean[] {false, true}) {
+        boolean[] normalizationValues;
+        if(includeNormalized) {
+          normalizationValues = new boolean[] {false, true};
+        } else {
+          normalizationValues = new boolean[] {false};
+        }
+        for(final boolean normalized : normalizationValues) {
           final ITraqLabel numLabel = iTraqRatio.getNumerator();
           final ITraqLabel denLabel = iTraqRatio.getDenominator();
 

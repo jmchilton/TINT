@@ -17,12 +17,17 @@
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.testng.collections.Lists;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry.CanSplitModifications;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportEntry.SequenceWithModifications;
 
 class ReportSummary {
   private final LinkedHashMap<String, GroupSummary> groupSummariesByLabel;
@@ -56,19 +61,30 @@ class ReportSummary {
 
     for(final ITraqMatch iTraqMatch : iTraqMatchs) {
       final ProteinInformation proteinInformation = iTraqMatch.getProteinInformation();
-      String groupLabel;
+      List<String> groupLabels = Lists.newArrayList();
       if(groupType == GroupType.PROTEIN) {
-        groupLabel = proteinInformation.getProteinAccession();
+        groupLabels.add(proteinInformation.getProteinAccession());
       } else if(groupType == GroupType.PEPTIDE) {
-        groupLabel = iTraqMatch.getPeptideSequence();
+        groupLabels.add(iTraqMatch.getPeptideSequence());
       } else if(groupType == GroupType.PEPTIDE_WITH_MODIFICATIONS) {
-        groupLabel = iTraqMatch.getModifiedPeptideSequence().toString();
+        groupLabels.add(iTraqMatch.getModifiedPeptideSequence().toString());
+      } else if(groupType == GroupType.PEPTIDE_WITH_UNIQUE_MODIFICATION) {
+        SequenceWithModifications seqWithMods = iTraqMatch.getModifiedPeptideSequence();
+        if(!(seqWithMods instanceof CanSplitModifications)) {
+          throw new IllegalArgumentException("Attempt to split modifications when operation unavailable for data source.");
+        }
+        final CanSplitModifications splittableSeqWithMods = (CanSplitModifications) seqWithMods;
+        for(SequenceWithModifications seqWithOneMod : splittableSeqWithMods.splitupModifications()) {
+          groupLabels.add(seqWithOneMod.toString());
+        }
       } else {
         throw new IllegalArgumentException("Unknown group type " + groupType);
       }
-      groupMap.put(groupLabel, iTraqMatch);
-      if(!groupLabelProtein.containsKey(groupLabel)) {
-        groupLabelProtein.put(groupLabel, proteinInformation);
+      for(final String groupLabel : groupLabels) {
+        groupMap.put(groupLabel, iTraqMatch);
+        if(!groupLabelProtein.containsKey(groupLabel)) {
+          groupLabelProtein.put(groupLabel, proteinInformation);
+        }
       }
     }
 

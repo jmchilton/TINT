@@ -69,15 +69,14 @@ public class QuantificationResultsExporter {
     } else {
       if(groupType == GroupType.PROTEIN) {
         printStream.append("Protein\tNumber of Spectra\tNumber of Unique Peptides");
-      } else if(groupType == GroupType.PEPTIDE) {
-        printStream.append("Protein\tPeptide\tNumber of Spectra");
-      } else if(groupType == GroupType.PEPTIDE_WITH_MODIFICATIONS) {
-        printStream.append("Protein\tPeptide with Modifications\tNumber of Spectra");
+      } else {
+        printStream.append(String.format("Protein\t%s\tNumber of Spectra", groupType.getHeaderLabel()));
       }
       for(final Ratio ratio : exampleRatioList) {
-        final String ratioSuffix = ratio.getNumeratorLabel() + ":" + ratio.getDenominatorLabel();
-        final String ratioStr = ratio.getMethod() + "_ratio_" + ratioSuffix;
-        final String pValueStr = ratio.getMethod() + "_pvalue_" + ratioSuffix;
+        final String ratioPrefix = ratio.getNumeratorLabel() + ":" + ratio.getDenominatorLabel();
+        final String ratioStr = ratioPrefix + " ratio " + ratio.getMethod();
+
+        final String pValueStr = ratioPrefix + " pvalue " + ratio.getMethod();
         printStream.append("\t" + ratioStr + "\t" + pValueStr);
       }
       for(Protein protein : results.getProtein()) {
