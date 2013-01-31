@@ -492,7 +492,26 @@
         </sequential>
       </macrodef>
 
-    
+      <macrodef name="deploy-artifact">
+        <attribute name="id" />
+        <attribute name="version" default="${project.version}" />
+        <element name="attachments" implicit="true" />
+        <sequential>
+          <!-- Cannot publish with in memory pom, so define it, write it out, and reload it. -->
+          <pom id="@{id}-in" groupId="msi.umn.edu" version="@{version}" artifactId="@{id}" />
+          <writepom pomRefId="@{id}-in" file="${build.dir}/@{id}-pom.xml" />
+
+          <pom id="@{id}" file="${build.dir}/@{id}-pom.xml" />
+          <deploy>
+            <remoteRepository url="${artifactory.url}">
+              <authentication username="${artifactory.user}" password="${artifactory.password}" />
+            </remoteRepository>
+            <pom refid="@{id}" />
+            <attachments />
+          </deploy>
+        </sequential>
+      </macrodef>
+
       <macrodef name="copy-globus">
         <attribute name="parent" />
         <sequential>
