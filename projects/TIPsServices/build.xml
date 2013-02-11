@@ -98,6 +98,15 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="deploy-war">
+    <attribute name="name" />
+    <sequential>
+      <deploy-artifact id="@{name}">
+        <attach file="${wars.dir}/insecure/tint-@{name}-${project.version}.war" type="war" />
+      </deploy-artifact>
+    </sequential>
+  </macrodef>
+
   <macrodef name="recreate">
     <attribute name="name" />
     <attribute name="servicename" />
@@ -390,6 +399,61 @@
     <build-war name="inspect" />
   </target>
 
+  <target name="deploy-war-itraqquantitation" depends="build-war-itraqquantitation">
+    <deploy-war name="itraqquantitation" />
+  </target>
+
+  <target name="deploy-war-proteomicsconvert" depends="build-war-proteomicsconvert">
+    <deploy-war name="proteomicsconvert" />
+  </target>
+
+  <target name="deploy-war-rawextract" depends="build-war-rawextract">
+    <deploy-war name="rawextract" />
+  </target>
+
+  <target name="deploy-war-xtandem" depends="build-war-xtandem">
+    <deploy-war name="xtandem" />
+  </target>
+
+  <target name="deploy-war-sequest" depends="build-war-sequest">
+    <deploy-war name="sequest" />
+  </target>
+
+  <target name="deploy-war-omssa" depends="build-war-omssa">
+    <deploy-war name="omssa" />
+  </target>
+
+  <target name="deploy-war-scaffold" depends="build-war-scaffold">
+    <deploy-war name="scaffold" />
+  </target> 
+
+  <target name="deploy-war-bowtie" depends="build-war-bowtie">
+    <deploy-war name="bowtie" />
+  </target>
+
+  <target name="deploy-war-galaxy" depends="build-war-galaxy">
+    <deploy-war name="galaxy" />
+  </target>
+
+  <target name="deploy-war-myrimatch" depends="build-war-myrimatch">
+    <deploy-war name="myrimatch" />
+  </target>
+
+  <target name="deploy-war-idpicker" depends="build-war-idpicker">
+    <deploy-war name="idpicker" />
+  </target>
+
+  <target name="deploy-war-tagrecon" depends="build-war-tagrecon">
+    <deploy-war name="tagrecon" />
+  </target>
+
+  <target name="deploy-war-inspect" depends="build-war-inspect">
+    <deploy-war name="inspect" />
+  </target>
+
+
+
+
   <target name="recreate-cagrid" depends="recreate-cagrid-sequest, recreate-cagrid-xtandem,recreate-cagrid-scaffold,recreate-cagrid-omssa,recreate-cagrid-rawextract,recreate-cagrid-itraqquantitation,recreate-cagrid-bowtie,recreate-cagrid-proteomicsconvert, recreate-cagrid-galaxy, recreate-cagrid-myrimatch, recreate-cagrid-idpicker, recreate-cagrid-inspect, recreate-cagrid-tagrecon" />
 
   <target name="prepare-cagrid-sequest" depends="prepare" >
@@ -528,7 +592,14 @@
     <for list="${services}" param="service" parallel="true" threadCount="${build.threads}">
       <sequential>
         <antcall target="build-war-@{service}" />
-        <!--<build-war name="@{service}" /> -->
+      </sequential>
+    </for>
+  </target>
+
+  <target name="deploy-war" depends="build-war">
+    <for list="${services}" param="service" parallel="true" threadCount="${build.threads}">
+      <sequential>
+        <antcall target="deploy-war-@{service}" />
       </sequential>
     </for>
   </target>
