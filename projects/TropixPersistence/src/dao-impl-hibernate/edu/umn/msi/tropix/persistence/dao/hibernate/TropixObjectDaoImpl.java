@@ -665,14 +665,16 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
       }
     }
 
+    final int lastIndex = pathParts.size() - 1;
+    final String objectType = lastIndex == 0 ? "Folder" : "TropixObject";
     final String queryString = String
         .format(
-            "select %s from TropixObject o%d %s inner join o0.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.parentFolder is null %s",
-            String.format("o%d", pathParts.size() - 1),
-            pathParts.size() - 1,
+            "select %s from %s o%d %s inner join o0.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.parentFolder is null %s and o0.class is Folder",
+            String.format("o%d", lastIndex),
+            objectType,
+            lastIndex,
             joins.toString(),
             wheres.toString());
-    System.out.println(queryString);
     return executePathQuery(userId, queryString, 0, parameters);
   }
 
