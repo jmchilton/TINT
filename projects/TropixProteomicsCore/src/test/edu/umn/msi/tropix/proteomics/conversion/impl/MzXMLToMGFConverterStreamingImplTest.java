@@ -89,8 +89,8 @@ public class MzXMLToMGFConverterStreamingImplTest {
     final Scan scan1 = num78Scans.get(0), scan2 = num78Scans.get(1);
     assert scan1.getAlt() == 78;
     assert scan1.getMsLevel() == 2;
-    assert MathUtils.equals(scan1.getPrecursorMz(), 592.810000f) : scan1.getPrecursorMz();
-    assert MathUtils.equals(scan1.getPrecursorIntensity(), 1012.2700f) : scan1.getPrecursorIntensity();
+    assert MathUtils.equals(scan1.getPrecursorMz(), 592.810000f, 0.0001) : scan1.getPrecursorMz();
+    assert MathUtils.equals(scan1.getPrecursorIntensity(), 1012.2700f, 0.0001) : scan1.getPrecursorIntensity();
     assert scan1.getPrecursorCharge() == 2;
     assert scan2.getPrecursorCharge() == 3;
     assert MathUtils.equals(scan1.getPeaks(), scan2.getPeaks());
