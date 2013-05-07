@@ -10,6 +10,8 @@
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="FOUR_PLEX"/>
       <xsd:enumeration value="EIGHT_PLEX"/>
+      <xsd:enumeration value="TMT_TWO_PLEX"/>
+      <xsd:enumeration value="TMT_SIX_PLEX"/>
     </xsd:restriction>
   </xsd:simpleType> 
 

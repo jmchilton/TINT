@@ -37,7 +37,6 @@ import edu.umn.msi.tropix.common.xml.XMLUtility;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantificationResultsExporter;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ITraqLabels.ITraqRatio;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.results.QuantificationResults;
 
 class QuantitationClosureImpl implements Closure<QuantitationOptions> {
@@ -58,8 +57,7 @@ class QuantitationClosureImpl implements Closure<QuantitationOptions> {
   }
 
   public void apply(final QuantitationOptions options) {
-    final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels
-        .get8PlexLabels();
+    final List<ITraqLabel> labels = ITraqLabels.getLabels(options.getQuantificationType());
 
     LOG.info("Building data entries for quantitation analysis");
     final List<ITraqMatch> iTraqMatchs = iTraqMatchBuilder.buildDataEntries(options.getInputMzxmlFiles(), options.getInputReport(),

@@ -15,6 +15,7 @@ import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.Group
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.report.PepXmlUtils;
 
 public class LtqIQuantCli {
@@ -31,6 +32,9 @@ public class LtqIQuantCli {
 
     @Parameter(names = "--group_type", required = false)
     private String groupType = "PROTEIN";
+
+    @Parameter(names = "--type", required = false)
+    final String type = "FOUR_PLEX";
 
     @Parameter(description = "<input>")
     private List<String> files = Lists.newArrayList();
@@ -70,11 +74,13 @@ public class LtqIQuantCli {
     final File reportFile = new File(cliOptions.report);
     final File outFile = new File(cliOptions.output);
     System.out.println("Setting group type to " + groupType);
+    final QuantificationType quantificationType = QuantificationType.fromString(cliOptions.type);
     final QuantitationOptionsBuilder optionsBuilder = QuantitationOptions
         .forInput(mzxmlFiles, new InputReport(reportFile, reportType))
         .withGroupType(groupType)
         .withThreds(cliOptions.threads)
-        .withOutput(outFile).is4Plex();
+        .withOutput(outFile)
+        .withQuantificationType(quantificationType);
     if(!cliOptions.normalize) {
       optionsBuilder.excludeNormalized();
     }

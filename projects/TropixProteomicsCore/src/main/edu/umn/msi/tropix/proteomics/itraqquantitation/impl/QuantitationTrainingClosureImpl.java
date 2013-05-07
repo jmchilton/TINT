@@ -36,7 +36,6 @@ import edu.umn.msi.tropix.common.io.IOUtilsFactory;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtils;
 import edu.umn.msi.tropix.common.xml.AxisSerializationUtilsFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationTrainingOptions;
-import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.training.QuantificationTrainingOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeight;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;
@@ -51,8 +50,8 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
   private ITraqMatchBuilder iTraqMatchBuilder;
 
   public void apply(final QuantitationTrainingOptions options) {
-    final List<ITraqLabel> labels = options.getQuantificationType() == QuantificationType.FOUR_PLEX ? ITraqLabels.get4PlexLabels() : ITraqLabels
-        .get8PlexLabels();
+    final List<ITraqLabel> labels = ITraqLabels.getLabels(options.getQuantificationType());
+
     final QuantificationTrainingOptions trainingOptions = options.getTrainingOptions();
     final double[] ratios = new double[labels.size()];
     if(ratios.length == 4) {
@@ -60,7 +59,7 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
       ratios[1] = trainingOptions.getI115Proportion();
       ratios[2] = trainingOptions.getI116Proportion();
       ratios[3] = trainingOptions.getI117Proportion();
-    } else {
+    } else if(ratios.length == 8) {
       ratios[0] = trainingOptions.getI113Proportion();
       ratios[1] = trainingOptions.getI114Proportion();
       ratios[2] = trainingOptions.getI115Proportion();
@@ -69,6 +68,8 @@ public class QuantitationTrainingClosureImpl implements Closure<QuantitationTrai
       ratios[5] = trainingOptions.getI118Proportion();
       ratios[6] = trainingOptions.getI119Proportion();
       ratios[7] = trainingOptions.getI121Proportion();
+    } else {
+      throw new IllegalStateException("Quantitation training is not currently available for non-iTRAQ labels.");
     }
 
     LOG.info("Building data entries for quantitation analysis");

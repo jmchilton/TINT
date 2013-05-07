@@ -97,12 +97,15 @@ public final class QuantitationOptions {
     }
 
     public QuantitationOptionsBuilder is4Plex() {
-      this.quantificationType = QuantificationType.FOUR_PLEX;
-      return this;
+      return withQuantificationType(QuantificationType.FOUR_PLEX);
     }
 
     public QuantitationOptionsBuilder is8Plex() {
-      this.quantificationType = QuantificationType.EIGHT_PLEX;
+      return withQuantificationType(QuantificationType.EIGHT_PLEX);
+    }
+
+    public QuantitationOptionsBuilder withQuantificationType(final QuantificationType quantificationType) {
+      this.quantificationType = quantificationType;
       return this;
     }
 
