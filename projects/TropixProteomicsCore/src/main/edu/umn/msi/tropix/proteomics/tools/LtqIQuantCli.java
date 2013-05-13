@@ -10,12 +10,14 @@ import com.beust.jcommander.Parameter;
 import com.google.common.collect.Lists;
 
 import edu.umn.msi.tropix.common.collect.Closure;
+import edu.umn.msi.tropix.common.xml.AxisSerializationUtilsFactory;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.GroupType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.QuantitationOptions.QuantitationOptionsBuilder;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.InputReport;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.impl.ReportExtractor.ReportType;
 import edu.umn.msi.tropix.proteomics.itraqquantitation.options.QuantificationType;
+import edu.umn.msi.tropix.proteomics.itraqquantitation.weight.QuantificationWeights;
 import edu.umn.msi.tropix.proteomics.report.PepXmlUtils;
 
 public class LtqIQuantCli {
@@ -44,6 +46,9 @@ public class LtqIQuantCli {
 
     @Parameter(names = "--output", required = false)
     private String output = "itraq_quant.xls";
+
+    @Parameter(names = "--weights", required = false)
+    private String weights = null;
 
     @Parameter(names = "--threads", required = false)
     private int threads = 1;
@@ -81,6 +86,11 @@ public class LtqIQuantCli {
         .withThreds(cliOptions.threads)
         .withOutput(outFile)
         .withQuantificationType(quantificationType);
+    if(cliOptions.weights != null) {
+      final File weightsFile = new File(cliOptions.weights);
+      final QuantificationWeights weights = AxisSerializationUtilsFactory.getInstance().deserialize(weightsFile, QuantificationWeights.class);
+      optionsBuilder.withWeights(weights);
+    }
     if(!cliOptions.normalize) {
       optionsBuilder.excludeNormalized();
     }
@@ -91,5 +101,4 @@ public class LtqIQuantCli {
     final Closure<QuantitationOptions> closure = (Closure<QuantitationOptions>) context.getBean("quantitationClosure");
     closure.apply(options);
   }
-
 }
