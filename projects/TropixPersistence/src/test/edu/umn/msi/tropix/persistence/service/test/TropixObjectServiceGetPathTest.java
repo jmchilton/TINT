@@ -1,5 +1,7 @@
 package edu.umn.msi.tropix.persistence.service.test;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -11,6 +13,7 @@ import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.persistence.service.CachedTropixObjectPathLoader;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 
 public class TropixObjectServiceGetPathTest extends ServiceTest {
@@ -171,6 +174,12 @@ public class TropixObjectServiceGetPathTest extends ServiceTest {
 
   private void assertPathLeadsTo(final TropixObject object, final String... pathParts) {
     Assert.assertEquals(tropixObjectService.getPath(owner.getCagridId(), pathParts).getId(), object.getId());
+    final CachedTropixObjectPathLoader cachedLoader = new CachedTropixObjectPathLoader(tropixObjectService);
+    if(pathParts.length > 2) {
+      final String[] parentParts = Arrays.copyOfRange(pathParts, 0, pathParts.length - 1, String[].class);
+      cachedLoader.getPath(owner.getCagridId(), parentParts);
+      Assert.assertEquals(cachedLoader.getPath(owner.getCagridId(), pathParts).getId(), object.getId());
+    }
   }
 
   private void uncommit(final TropixFile file) {

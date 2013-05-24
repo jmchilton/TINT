@@ -38,7 +38,7 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 import edu.umn.msi.tropix.persistence.service.permission.PermissionReport;
 import edu.umn.msi.tropix.persistence.service.permission.PermissionType;
 
-public interface TropixObjectService extends TropixObjectLoaderService, TropixObjectDeleter {
+public interface TropixObjectService extends TropixObjectLoaderService, TropixObjectDeleter, TropixObjectPathLoader {
 
   @PersistenceMethod
   void commit(@UserId String userId, @Modifies String objectId);
@@ -143,12 +143,12 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
   TropixObject[] getChildren(@UserId final String userGridId, @Reads final String objectId);
 
   @PersistenceMethod
-  TropixObject getPath(@AutoUser @UserId final String userGridId, final String[] names);
-
-  @PersistenceMethod
   void hideSharedFolder(@UserId final String cagridId, @Reads final String rootSharedFolderId);
 
   @PersistenceMethod
   void hideGroupSharedFolder(@UserId final String cagridId, @MemberOf String groupId, @Reads final String rootSharedFolderId);
+
+  @PersistenceMethod
+  TropixObject getChild(@UserId final String identity, @Reads String parentId, String name);
 
 }

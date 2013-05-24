@@ -74,6 +74,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
   private static final Log LOG = LogFactory.getLog(TropixObjectDaoImpl.class);
   private static final int DEFAULT_MAX_SEARCH_RESULTS = 1000;
   private int maxSearchResults = DEFAULT_MAX_SEARCH_RESULTS;
+  private static final int SINGLE_QUERY_PATH_PART_LIMIT = 4; // Split get...FromPath query at certain point to avoid MySQL join number limits.
 
   /**
    * Override setSessionFactory so the @Inject annotation can be added to it.
@@ -630,23 +631,52 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
       addConstraintForPathPart(pathPart, index, wheres, parameters);
     }
 
-    final String queryString = String.format("select %s from  User u, TropixObject o%d %s where u.cagridId = :userId %s and u.homeFolder.id = o0.id",
-        String.format("o%d", pathParts.size()),
-        pathParts.size(),
-        joins.toString(), wheres.toString());
-    return executePathQuery(userId, queryString, 1, parameters);
+    final String queryString = String.format("User u, TropixObject o%d %s where u.cagridId = :userId %s and u.homeFolder.id = o0.id",
+        pathParts.size(), joins.toString(), wheres.toString());
+    return executePathQuery(userId, String.format("o%d", pathParts.size()), queryString, 1, parameters);
   }
 
-  private TropixObject executePathQuery(final String userId, final String queryString, final int firstIndex, final List<String> parameters) {
-    final Query query = super.getSession().createQuery(queryString);
+  private TropixObject executePathQuery(final String userId, final String selectWhatInput, final String fromClause, final int firstIndex,
+      final List<String> parameters) {
+    return executePathQuery(userId, selectWhatInput, fromClause, firstIndex, parameters, null);
+  }
+
+  private TropixObject executePathQuery(final String userId, final String selectWhatInput, final String fromClause, final int firstIndex,
+      final List<String> parameters, final String parentId) {
+    final String selectWhat;
+    final boolean splitQuery = parameters.size() > SINGLE_QUERY_PATH_PART_LIMIT;
+    if(splitQuery) {
+      selectWhat = String.format("%s.id", selectWhatInput);
+    } else {
+      selectWhat = selectWhatInput;
+    }
+    final String queryString = String.format("select %s from %s", selectWhat, fromClause);
+    final Query query = createQuery(queryString);
     query.setParameter("userId", userId);
+    if(parentId != null) {
+      query.setParameter("parentId", parentId);
+    }
     int index = firstIndex;
     for(String parameter : parameters) {
       String parameterName = String.format("o%dconst", index++);
       query.setParameter(parameterName, parameter);
     }
-    final TropixObject result = (TropixObject) query.uniqueResult();
+    final TropixObject result;
+    if(splitQuery) {
+      final String objectId = (String) query.uniqueResult();
+      if(objectId == null) {
+        result = null;
+      } else {
+        result = loadTropixObject(objectId);
+      }
+    } else {
+      result = (TropixObject) query.uniqueResult();
+    }
     return result;
+  }
+
+  private Query createQuery(final String queryString) {
+    return super.getSession().createQuery(queryString);
   }
 
   public TropixObject getGroupDirectoryPath(final String userId, final List<String> pathParts) {
@@ -669,15 +699,24 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     final String objectType = lastIndex == 0 ? "Folder" : "TropixObject";
     final String queryString = String
         .format(
-            "select %s from %s o%d %s inner join o0.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.parentFolder is null %s and o0.class is Folder",
-            String.format("o%d", lastIndex),
+            "%s o%d %s inner join o0.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.parentFolder is null %s and o0.class is Folder",
             objectType,
             lastIndex,
             joins.toString(),
             wheres.toString());
-    return executePathQuery(userId, queryString, 0, parameters);
+    return executePathQuery(userId, String.format("o%d", lastIndex), queryString, 0, parameters);
   }
 
+  @Override
+  public TropixObject getChild(String identity, String parentId, String name) {
+    final String queryString = 
+        "TropixObject o1 inner join o1.permissionParents o0 inner join o1.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.id = :parentId and o1.deletedTime is null and o1.committed is true";
+    final LinkedList<String> parameters = new LinkedList<String>();
+    final StringBuilder whereBuilder = new StringBuilder();
+    addConstraintForPathPart(name, 1, whereBuilder,  parameters);
+    return executePathQuery(identity, "o1", String.format("%s %s", queryString, whereBuilder.toString()), 1, parameters, parentId);
+  }
+  
   // TODO:
   public TropixObject getSharedDirectoryPath(final String userId, final List<String> asList) {
     return null;

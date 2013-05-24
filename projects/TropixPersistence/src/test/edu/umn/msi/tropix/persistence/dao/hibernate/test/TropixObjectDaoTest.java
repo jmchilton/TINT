@@ -50,7 +50,7 @@ import edu.umn.msi.tropix.persistence.dao.TropixObjectDao;
 public class TropixObjectDaoTest extends DaoTest {
   @Autowired
   private TropixObjectDao objectDao;
-
+  
   @Test
   public void isInstnace() {
     final String objectId = newObject();

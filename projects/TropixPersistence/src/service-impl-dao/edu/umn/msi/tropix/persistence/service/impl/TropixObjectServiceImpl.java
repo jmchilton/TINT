@@ -917,6 +917,13 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     return object;
   }
 
+  @Override
+  public TropixObject getChild(String identity, String parentId, String name) {
+    return getTropixObjectDao().getChild(identity, parentId, name);
+  }
+
+
+  
   public void cloneAsSharedFolder(String userGridId, String folderId, String[] userIds, String[] groupIds) {
     final VirtualFolder cloneTemplate = createVirtualCloneTemplate(folderId);
     final VirtualFolder clone = super.createVirtualFolder(userGridId, null, cloneTemplate);

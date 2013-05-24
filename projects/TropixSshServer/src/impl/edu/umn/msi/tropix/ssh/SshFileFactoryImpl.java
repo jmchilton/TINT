@@ -30,6 +30,7 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.locations.Locations;
+import edu.umn.msi.tropix.persistence.service.CachedTropixObjectPathLoader;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 import edu.umn.msi.tropix.storage.core.StorageManager;
@@ -42,6 +43,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
   private final TropixFileCreator tropixFileCreator;
   private final StorageManager storageManager;
   private final FolderService folderService;
+  private final CachedTropixObjectPathLoader pathLoader;
 
   private static final String HOME_DIRECTORY_PATH = "/" + Locations.MY_HOME;
   private static final String MY_GROUP_FOLDERS_PATH = "/" + Locations.MY_GROUP_FOLDERS;
@@ -53,6 +55,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       final StorageManager storageManager,
       final FolderService folderService) {
     this.tropixObjectService = tropixObjectService;
+    this.pathLoader = new CachedTropixObjectPathLoader(tropixObjectService);
     this.tropixFileCreator = tropixFileCreator;
     this.storageManager = storageManager;
     this.folderService = folderService;
@@ -82,7 +85,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
     private TropixObject getTropixObject(final String path) {
       List<String> pathPieces = Utils.pathPieces(path);
       if(pathPieces.size() > 0 && Locations.isValidBaseLocation(pathPieces.get(0))) {
-        return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
+        final String[] pathPiecesArray = Iterables.toArray(pathPieces, String.class);
+        //return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
+        return pathLoader.getPath(identity, pathPiecesArray);
       } else {
         return null;
       }
@@ -381,11 +386,12 @@ public class SshFileFactoryImpl implements SshFileFactory {
         children.add(getFile(credential, MY_GROUP_FOLDERS_PATH));
       } else if(isMyGroupFolders()) {
         final TropixObject[] objects = folderService.getGroupFolders(identity);
-        buildSshFiles(objects, children);
+        buildSshFiles(objects, children, true);
       } else {
         initObject();
         final TropixObject[] objects = tropixObjectService.getChildren(identity, object.getId());
-        buildSshFiles(objects, children);
+        buildSshFiles(objects, children, false);
+        // TODO: Cache these
       }
       return children.build();
     }
@@ -393,7 +399,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     // Hacking this to make sure names are unique in a case-insensitive manner because MySQL
     // likes are case-insensitive for the current schema. At some point we should update the name column
     // according to http://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html.
-    private <T extends TropixObject> void buildSshFiles(final T[] objects, final ImmutableList.Builder<SshFile> children) {
+    private <T extends TropixObject> void buildSshFiles(final T[] objects, final ImmutableList.Builder<SshFile> children, final boolean cache) {
       final Map<String, Boolean> uniqueName = Maps.newHashMap();
       for(TropixObject object : objects) {
         final String objectName = object.getName().toUpperCase();
@@ -417,7 +423,11 @@ public class SshFileFactoryImpl implements SshFileFactory {
           final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
           final String childName = Utils.join(virtualPath, derivedName);
           LOG.debug(String.format("Creating child with name [%s]", childName));
-          children.add(new SshFileImpl(credential, childName, object));
+          final SshFileImpl sshFile = new SshFileImpl(credential, childName, object);
+          if(cache) {
+            pathLoader.cache(identity, Utils.pathPieces(childName), object);
+          }
+          children.add(sshFile);
         }
       }
       final List<TropixFile> tropixFiles = tropixFilesBuilder.build();
@@ -428,7 +438,8 @@ public class SshFileFactoryImpl implements SshFileFactory {
           final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
           final String childName = Utils.join(virtualPath, derivedName);
           LOG.debug(String.format("Creating child with name [%s]", childName));
-          children.add(new SshFileImpl(credential, childName, tropixFile, filesMetadataIterator.next()));
+          final SshFileImpl sshFile = new SshFileImpl(credential, childName, tropixFile, filesMetadataIterator.next());
+          children.add(sshFile);
         }        
       }
     }

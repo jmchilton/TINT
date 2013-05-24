@@ -162,4 +162,6 @@ public interface TropixObjectDao {
 
   boolean filesExistAndCanReadAll(String[] fileIds, String userId);
 
+  TropixObject getChild(String identity, String parentId, String name);
+
 }
