@@ -68,7 +68,14 @@ public class GalaxyExporterImpl implements GalaxyExporter {
     final String libraryId = createdLibrary.getId();
     final LibraryContent rootFolder = client.getRootFolder(libraryId);
 
-    final FilesystemPathsLibraryUpload upload = new FilesystemPathsLibraryUpload();
+    final FilesystemPathsLibraryUpload upload = new FilesystemPathsLibraryUpload(exportOptions.isMultipleFileDataset());
+    String fileType = exportOptions.getFileType();
+    if(StringUtils.hasText(fileType)) {
+      if(exportOptions.isMultipleFileDataset() && !fileType.startsWith("m:")) {
+        fileType = "m:" + fileType;
+      }
+      upload.setFileType(fileType);
+    }
     upload.setContent(exportDirectory.getAbsolutePath());
     upload.setFolderId(rootFolder.getId());
     final ClientResponse response = client.uploadFilesystemPathsRequest(libraryId, upload);

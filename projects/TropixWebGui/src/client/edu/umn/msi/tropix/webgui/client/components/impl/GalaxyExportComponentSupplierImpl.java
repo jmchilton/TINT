@@ -107,15 +107,28 @@ public class GalaxyExportComponentSupplierImpl implements Supplier<WindowCompone
           runLocationComponent.getRuns(new AsyncCallbackImpl<Collection<ProteomicsRun>>() {
             protected void handleSuccess() {
               final GalaxyExportOptions options = getExportOptions();
-              // options.getFileObjectIds().addAll(Locations.getIds(treeComponent.getMultiSelection()));
+              if(exportType == ExportType.RAW) {
+                options.setFileType("raw");
+              } else if(exportType == ExportType.PEAK_LIST) {
+                options.setFileType("mzxml");
+              }
               ArrayList<String> arrayList = Lists.newArrayList();
-              for(final String id : ModelUtils.getIds(getResult())) {
+              final Collection<ProteomicsRun> result = getResult();
+              if(result.isEmpty()) {
+                SC.warn("Failed to select peak lists.");
+                get().destroy();
+                return;
+              }
+              for(final String id : ModelUtils.getIds(result)) {
                 arrayList.add(id);
               }
               if(exportType == ExportType.RAW) {
                 ExportService.Util.getInstance().exportRawGalaxy(options, arrayList, exportCompleteCallback());
               } else if(exportType == ExportType.PEAK_LIST) {
                 ExportService.Util.getInstance().exportMzXMLGalaxy(options, arrayList, exportCompleteCallback());
+              } else {
+                // TODO: Implement
+                SC.say("This option is not yet implemented.");
               }
               get().destroy();
             }
@@ -161,7 +174,8 @@ public class GalaxyExportComponentSupplierImpl implements Supplier<WindowCompone
   private abstract class GalaxyExportComponentImpl extends WindowComponentImpl<Window> implements ValidationListener {
     private final Form form;
     private final TextItem nameItem;
-    private final CheckboxItem checkboxItem;
+    private final CheckboxItem makePrivateCheckboxItem;
+    private final CheckboxItem multipleFileDatasetItem;
 
     private final Button exportButton = SmartUtils.getButton("Export", Resources.SAVE);
 
@@ -179,7 +193,8 @@ public class GalaxyExportComponentSupplierImpl implements Supplier<WindowCompone
       final GalaxyExportOptions options = new GalaxyExportOptions();
       final String name = StringUtils.toString(nameItem.getValue());
       options.setName(name);
-      options.setMakePrivate(checkboxItem.getValueAsBoolean());
+      options.setMakePrivate(makePrivateCheckboxItem.getValueAsBoolean());
+      options.setMultipleFileDataset(multipleFileDatasetItem.getValueAsBoolean());
       return options;
     }
 
@@ -198,8 +213,9 @@ public class GalaxyExportComponentSupplierImpl implements Supplier<WindowCompone
 
     GalaxyExportComponentImpl() {
       nameItem = new TextItem("name", "Name");
-      checkboxItem = new CheckboxItem("makePrivate", "Make uploaded data private?");
-      form = new Form(nameItem, checkboxItem);
+      makePrivateCheckboxItem = new CheckboxItem("makePrivate", "Make uploaded data private?");
+      multipleFileDatasetItem = new CheckboxItem("multipleFileDataset", "Export as multiple file dataset?");
+      form = new Form(nameItem, makePrivateCheckboxItem, multipleFileDatasetItem);
       form.setValidationPredicate(new Predicate<Form>() {
         public boolean apply(final Form form) {
           return StringUtils.hasText(form.getValueAsString("name"));
@@ -213,11 +229,6 @@ public class GalaxyExportComponentSupplierImpl implements Supplier<WindowCompone
       final Canvas canvas = initSelectionComponent();
       exportButton.setDisabled(true);
 
-      // getMultiSelectionComponent().addMultiSelectionListener(new Listener<Collection<TreeItem>>() {
-      // public void onEvent(final Collection<TreeItem> event) {
-      // validate();
-      // }
-      // });
       exportButton.addClickHandler(new CommandClickHandlerImpl(getExportCallback()));
       final VLayout layout = new VLayout();
       layout.setMembers(form, canvas);

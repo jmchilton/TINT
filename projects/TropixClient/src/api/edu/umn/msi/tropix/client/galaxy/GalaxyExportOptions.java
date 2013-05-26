@@ -6,7 +6,10 @@ import java.util.List;
 
 public class GalaxyExportOptions implements Serializable {
   private List<String> fileObjectIds = new ArrayList<String>();
+  private String fileType = null;
   private boolean makePrivate;
+  private boolean multipleFileDataset = false;
+
   private String name;
 
   public String getName() {
@@ -21,6 +24,14 @@ public class GalaxyExportOptions implements Serializable {
     return fileObjectIds;
   }
 
+  public void setFileType(final String fileType) {
+    this.fileType = fileType;
+  }
+
+  public String getFileType() {
+    return fileType;
+  }
+
   public void setFileObjectIds(final List<String> fileObjectIds) {
     this.fileObjectIds = fileObjectIds;
   }
@@ -31,6 +42,14 @@ public class GalaxyExportOptions implements Serializable {
 
   public void setMakePrivate(final boolean makePrivate) {
     this.makePrivate = makePrivate;
+  }
+
+  public boolean isMultipleFileDataset() {
+    return multipleFileDataset;
+  }
+
+  public void setMultipleFileDataset(boolean multipleFileDataset) {
+    this.multipleFileDataset = multipleFileDataset;
   }
 
 }
