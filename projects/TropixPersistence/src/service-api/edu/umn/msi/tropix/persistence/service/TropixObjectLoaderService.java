@@ -30,13 +30,13 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 
 public interface TropixObjectLoaderService {
 
-  @PersistenceMethod 
+  @PersistenceMethod
   TropixObject load(@UserId String userId, @Reads String objectId);
 
-  @PersistenceMethod 
+  @PersistenceMethod
   TropixObject load(@UserId String userId, @Reads String objectId, TropixObjectType type);
 
-  @PersistenceMethod 
+  @PersistenceMethod
   TropixObject[] load(@UserId String userId, @Reads String[] objectIds, TropixObjectType type);
 
 }

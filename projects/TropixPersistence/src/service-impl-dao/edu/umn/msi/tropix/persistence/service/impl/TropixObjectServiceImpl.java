@@ -99,6 +99,12 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     getTropixObjectDao().saveOrUpdateTropixObject(object);
   }
 
+  public <T extends TropixObject> T load(final String userId, final String objectId, final Class<T> clazz) {
+    final T object = getTropixObjectDao().loadTropixObject(objectId, clazz);
+    // clazz.cast(object); // I cannot believe this needs to be here, try removing it.
+    return object;
+  }
+
   public TropixObject load(final String userId, final String objectId, final TropixObjectType type) {
     final Class<? extends TropixObject> clazz = PersistenceModelUtils.getClass(type);
     final TropixObject object = getTropixObjectDao().loadTropixObject(objectId, clazz);
@@ -900,10 +906,10 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     }, true);
   }
 
-  public TropixObject getPath(final String userId, final String[] inputNames) {
-    Preconditions.checkArgument(inputNames != null && inputNames.length > 0);
-    final String rootLocationName = inputNames[0];
-    final List<String> restOfNames = Arrays.asList(inputNames).subList(1, inputNames.length);
+  public TropixObject getPath(final String userId, final List<String> inputNames) {
+    Preconditions.checkArgument(!inputNames.isEmpty());
+    final String rootLocationName = inputNames.get(0);
+    final List<String> restOfNames = inputNames.subList(1, inputNames.size());
     TropixObject object = null;
     if(Locations.MY_HOME.equals(rootLocationName)) {
       object = getTropixObjectDao().getHomeDirectoryPath(userId, restOfNames);
@@ -917,13 +923,14 @@ class TropixObjectServiceImpl extends ServiceBase implements TropixObjectService
     return object;
   }
 
-  @Override
+  public TropixObject getPath(final String userId, final String[] inputNames) {
+    return getPath(userId, Arrays.asList(inputNames));
+  }
+
   public TropixObject getChild(String identity, String parentId, String name) {
     return getTropixObjectDao().getChild(identity, parentId, name);
   }
 
-
-  
   public void cloneAsSharedFolder(String userGridId, String folderId, String[] userIds, String[] groupIds) {
     final VirtualFolder cloneTemplate = createVirtualCloneTemplate(folderId);
     final VirtualFolder clone = super.createVirtualFolder(userGridId, null, cloneTemplate);

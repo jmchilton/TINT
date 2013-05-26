@@ -13,8 +13,8 @@ import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
 import edu.umn.msi.tropix.models.locations.Locations;
-import edu.umn.msi.tropix.persistence.service.CachedTropixObjectPathLoader;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
+import edu.umn.msi.tropix.persistence.util.CachedTropixObjectPathLoader;
 
 public class TropixObjectServiceGetPathTest extends ServiceTest {
   private static final String TEST_GROUP_FOLDER_NAME = "grouptest";
@@ -175,9 +175,13 @@ public class TropixObjectServiceGetPathTest extends ServiceTest {
   private void assertPathLeadsTo(final TropixObject object, final String... pathParts) {
     Assert.assertEquals(tropixObjectService.getPath(owner.getCagridId(), pathParts).getId(), object.getId());
     final CachedTropixObjectPathLoader cachedLoader = new CachedTropixObjectPathLoader(tropixObjectService);
-    if(pathParts.length > 2) {
-      final String[] parentParts = Arrays.copyOfRange(pathParts, 0, pathParts.length - 1, String[].class);
-      cachedLoader.getPath(owner.getCagridId(), parentParts);
+    if(pathParts.length > 1 || (pathParts.length == 1 && !pathParts[0].equals(Locations.MY_GROUP_FOLDERS))) {
+
+      if(pathParts.length > 2 || (pathParts.length == 2 && !pathParts[0].equals(Locations.MY_GROUP_FOLDERS))) {
+        final String[] parentParts = Arrays.copyOfRange(pathParts, 0, pathParts.length - 1, String[].class);
+        cachedLoader.getPath(owner.getCagridId(), parentParts);
+      }
+      Assert.assertEquals(cachedLoader.getPath(owner.getCagridId(), pathParts).getId(), object.getId());
       Assert.assertEquals(cachedLoader.getPath(owner.getCagridId(), pathParts).getId(), object.getId());
     }
   }

@@ -707,16 +707,15 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     return executePathQuery(userId, String.format("o%d", lastIndex), queryString, 0, parameters);
   }
 
-  @Override
   public TropixObject getChild(String identity, String parentId, String name) {
-    final String queryString = 
+    final String queryString =
         "TropixObject o1 inner join o1.permissionParents o0 inner join o1.permissions p left join p.users u left join p.groups g left join g.users gu where (u.cagridId = :userId or gu.cagridId = :userId) and o0.id = :parentId and o1.deletedTime is null and o1.committed is true";
     final LinkedList<String> parameters = new LinkedList<String>();
     final StringBuilder whereBuilder = new StringBuilder();
-    addConstraintForPathPart(name, 1, whereBuilder,  parameters);
+    addConstraintForPathPart(name, 1, whereBuilder, parameters);
     return executePathQuery(identity, "o1", String.format("%s %s", queryString, whereBuilder.toString()), 1, parameters, parentId);
   }
-  
+
   // TODO:
   public TropixObject getSharedDirectoryPath(final String userId, final List<String> asList) {
     return null;

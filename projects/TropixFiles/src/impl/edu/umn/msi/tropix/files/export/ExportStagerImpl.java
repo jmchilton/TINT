@@ -16,7 +16,6 @@ import com.google.common.collect.Lists;
 import edu.umn.msi.tropix.common.execution.process.ProcessConfiguration;
 import edu.umn.msi.tropix.common.execution.process.Processes;
 import edu.umn.msi.tropix.common.io.FileContext;
-import edu.umn.msi.tropix.common.io.FileUtilsFactory;
 import edu.umn.msi.tropix.common.io.HasStreamInputContext;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
@@ -59,8 +58,13 @@ public class ExportStagerImpl implements ExportStager {
       }
     }
     if(files.length == 0) {
-      FileUtilsFactory.getInstance().writeStringToFile(new File(stagingDirectory, "moocow"), "Hello World!");
+      throw new RuntimeException("No files found for staging.");
     }
+    /*
+     * if(files.length == 0) {
+     * FileUtilsFactory.getInstance().writeStringToFile(new File(stagingDirectory, "moocow"), "Hello World!");
+     * }
+     */
 
     for(final TropixObject fileObject : files) {
       final TropixFile file = (TropixFile) fileObject;

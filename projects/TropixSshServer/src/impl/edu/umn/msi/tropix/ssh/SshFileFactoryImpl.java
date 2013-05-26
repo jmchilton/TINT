@@ -19,7 +19,6 @@ import org.apache.sshd.server.SshFile;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -30,9 +29,9 @@ import edu.umn.msi.tropix.models.Folder;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.locations.Locations;
-import edu.umn.msi.tropix.persistence.service.CachedTropixObjectPathLoader;
 import edu.umn.msi.tropix.persistence.service.FolderService;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
+import edu.umn.msi.tropix.persistence.util.CachedTropixObjectPathLoader;
 import edu.umn.msi.tropix.storage.core.StorageManager;
 import edu.umn.msi.tropix.storage.core.StorageManager.FileMetadata;
 
@@ -77,7 +76,6 @@ public class SshFileFactoryImpl implements SshFileFactory {
 
     private void initObject() {
       if(object == null) {
-        log("setting object");
         object = getTropixObject(virtualPath);
       }
     }
@@ -85,9 +83,8 @@ public class SshFileFactoryImpl implements SshFileFactory {
     private TropixObject getTropixObject(final String path) {
       List<String> pathPieces = Utils.pathPieces(path);
       if(pathPieces.size() > 0 && Locations.isValidBaseLocation(pathPieces.get(0))) {
-        final String[] pathPiecesArray = Iterables.toArray(pathPieces, String.class);
-        //return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
-        return pathLoader.getPath(identity, pathPiecesArray);
+        // return tropixObjectService.getPath(identity, Iterables.toArray(pathPieces, String.class));
+        return pathLoader.getPath(identity, pathPieces);
       } else {
         return null;
       }
@@ -123,12 +120,12 @@ public class SshFileFactoryImpl implements SshFileFactory {
     // What should this return for root?
     public String getName() {
       final String name = Utils.name(virtualPath);
-      log(String.format("getName called, result is %s", name));
+      // log(String.format("getName called, result is %s", name));
       return name;
     }
 
     public boolean isDirectory() {
-      log("isDirectory");
+      // log("isDirectory");
       if(isMetaLocationOrRootFolder()) {
         return true;
       } else if(internalDoesExist()) {
@@ -140,7 +137,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean isFile() {
-      log("isFile");
+      // log("isFile");
       if(isMetaLocationOrRootFolder()) {
         return false;
       } else if(internalDoesExist()) {
@@ -152,7 +149,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean doesExist() {
-      log("doesExist");
+      // log("doesExist");
       return internalDoesExist();
     }
 
@@ -168,7 +165,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
     }
 
     public boolean isRemovable() {
-      log("isRemovable");
+      // log("isRemovable");
       return !isMetaLocation && internalDoesExist();
     }
 
@@ -191,7 +188,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       boolean modified = false;
       if(isTropixFile()) {
         modified = storageManager.setDateModified(identity, getFileId(), time);
-      } 
+      }
       return modified;
     }
 
@@ -209,7 +206,7 @@ public class SshFileFactoryImpl implements SshFileFactory {
       final TropixFile file = (TropixFile) object;
       return file.getFileId();
     }
-    
+
     private void initFileMetadata() {
       if(!fileMetadataSet) {
         if(isTropixFile()) {
@@ -364,7 +361,8 @@ public class SshFileFactoryImpl implements SshFileFactory {
               tropixFile.setName(getName());
               tropixFile.setCommitted(true);
               tropixFile.setFileId(newFileId);
-              tropixFileCreator.createFile(credential, parentFolder.getId(), tropixFile, null);
+              final TropixFile newFile = tropixFileCreator.createFile(credential, parentFolder.getId(), tropixFile, null);
+              pathLoader.cache(identity, Utils.pathPieces(virtualPath), newFile);
               LOG.debug("File created " + virtualPath);
             }
           }
@@ -389,9 +387,9 @@ public class SshFileFactoryImpl implements SshFileFactory {
         buildSshFiles(objects, children, true);
       } else {
         initObject();
+
         final TropixObject[] objects = tropixObjectService.getChildren(identity, object.getId());
-        buildSshFiles(objects, children, false);
-        // TODO: Cache these
+        buildSshFiles(objects, children, true);
       }
       return children.build();
     }
@@ -437,10 +435,13 @@ public class SshFileFactoryImpl implements SshFileFactory {
           final String name = tropixFile.getName();
           final String derivedName = uniqueName.get(name.toUpperCase()) ? name : String.format("%s [id:%s]", name, object.getId());
           final String childName = Utils.join(virtualPath, derivedName);
+          if(cache) {
+            pathLoader.cache(identity, Utils.pathPieces(childName), tropixFile);
+          }
           LOG.debug(String.format("Creating child with name [%s]", childName));
           final SshFileImpl sshFile = new SshFileImpl(credential, childName, tropixFile, filesMetadataIterator.next());
           children.add(sshFile);
-        }        
+        }
       }
     }
 

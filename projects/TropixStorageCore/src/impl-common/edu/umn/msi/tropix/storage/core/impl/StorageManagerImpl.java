@@ -26,11 +26,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -50,6 +56,16 @@ public class StorageManagerImpl implements StorageManager {
   private FileService fileService;
   // Ids of callers who need the files uploaded to be committed, such as request services
   private Iterable<String> committingCallerIds = Lists.newArrayList();
+  private CacheLoader<String, FileMetadata> fileMetadataLoader = new CacheLoader<String, FileMetadata>() {
+
+    public FileMetadata load(String id) throws Exception {
+      return accessProvider.getFileMetadata(id);
+    }
+
+  };
+
+  private LoadingCache<String, FileMetadata> fileMetadataCache = CacheBuilder.newBuilder().maximumSize(10000).build(fileMetadataLoader);
+  private static final Log LOG = LogFactory.getLog(StorageManagerImpl.class);
 
   public void setCommittingCallerIds(final Iterable<String> committingCallerIds) {
     this.committingCallerIds = committingCallerIds;
@@ -92,17 +108,30 @@ public class StorageManagerImpl implements StorageManager {
     if(!authorizationProvider.canDownload(id, gridId)) {
       throw new RuntimeException("User " + gridId + " cannot access file " + id);
     }
-    return accessProvider.getFileMetadata(id);
+    // return accessProvider.getFileMetadata(id);
+    return getFileMetadata(id);
+  }
+
+  private FileMetadata getFileMetadata(final String id) {
+    try {
+      return fileMetadataCache.get(id);
+    } catch(ExecutionException e) {
+      return accessProvider.getFileMetadata(id);
+    }
   }
 
   public List<FileMetadata> getFileMetadata(List<String> ids, String gridId) {
     final ImmutableList.Builder<FileMetadata> fileMetadataList = ImmutableList.builder();
+    LOG.debug("About to call canDownloadAll");
     if(!authorizationProvider.canDownloadAll(Iterables.toArray(ids, String.class), gridId)) {
       throw new RuntimeException("User " + gridId + " cannot access one of files " + Iterables.toString(ids));
     }
+    LOG.debug("About to fetch file metadata");
+    // TODO: Last bottle neck for SFTP server?
     for(final String id : ids) {
-      fileMetadataList.add(accessProvider.getFileMetadata(id));
+      fileMetadataList.add(getFileMetadata(id));
     }
+    LOG.debug("Returning file metadata");
     return fileMetadataList.build();
   }
 

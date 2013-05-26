@@ -22,6 +22,8 @@
 
 package edu.umn.msi.tropix.persistence.service;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import edu.umn.msi.tropix.models.TropixFile;
@@ -38,7 +40,7 @@ import edu.umn.msi.tropix.persistence.aop.UserId;
 import edu.umn.msi.tropix.persistence.service.permission.PermissionReport;
 import edu.umn.msi.tropix.persistence.service.permission.PermissionType;
 
-public interface TropixObjectService extends TropixObjectLoaderService, TropixObjectDeleter, TropixObjectPathLoader {
+public interface TropixObjectService extends TropixObjectLoaderService, TropixObjectDeleter {
 
   @PersistenceMethod
   void commit(@UserId String userId, @Modifies String objectId);
@@ -150,5 +152,14 @@ public interface TropixObjectService extends TropixObjectLoaderService, TropixOb
 
   @PersistenceMethod
   TropixObject getChild(@UserId final String identity, @Reads String parentId, String name);
+
+  @PersistenceMethod
+  TropixObject getPath(@AutoUser @UserId final String userGridId, final String[] names);
+
+  @PersistenceMethod
+  TropixObject getPath(@AutoUser @UserId final String userGridId, final List<String> names);
+
+  @PersistenceMethod
+  <T extends TropixObject> T load(@UserId String userId, @Reads String objectId, Class<T> clazz);
 
 }
