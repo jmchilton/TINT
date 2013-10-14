@@ -7,8 +7,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.Sets;
+
 import edu.umn.msi.tropix.models.Database;
 import edu.umn.msi.tropix.models.Folder;
+import edu.umn.msi.tropix.models.Group;
 import edu.umn.msi.tropix.models.TropixFile;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.models.User;
@@ -32,6 +35,12 @@ public class TropixObjectServiceGetPathTest extends ServiceTest {
     // Create second root folder to make sure, not just go with only one
     createTempUser();
     rootGroupFolder = createTempGroupFolder(owner, TEST_GROUP_FOLDER_NAME);
+
+    // Tried to muddle the waters for the deep group path test to reproduce problem
+    // in production. Still added complexity doesn't hurt anything...
+    final Group group = owner.getGroups().iterator().next();
+    super.getUserDao().addToGroup(createTempUser().getCagridId(), group.getId());
+    super.getUserDao().addToGroup(createTempUser().getCagridId(), group.getId());
   }
 
   @Test
@@ -153,6 +162,23 @@ public class TropixObjectServiceGetPathTest extends ServiceTest {
     assertPathNotEmpty(Locations.MY_GROUP_FOLDERS, TEST_GROUP_FOLDER_NAME, "file");
     uncommit(file);
     assertPathIsEmpty(Locations.MY_GROUP_FOLDERS, TEST_GROUP_FOLDER_NAME, "file");
+  }
+
+  @Test
+  public void testSplitGroupQuery() {
+    final Folder f1 = saveToFolderWithName("f1", rootGroupFolder, owner);
+    final Folder f2 = saveToFolderWithName("f2", f1, owner);
+    final Folder f3 = saveToFolderWithName("f3", f2, owner);
+    final Folder f4 = saveToFolderWithName("f4", f3, owner);
+    final Folder f5 = saveToFolderWithName("f5", f4, owner);
+    final TropixFile file = saveWithNameToParent(new TropixFile(), "file", f5, owner);
+    assertPathLeadsTo(file, Locations.MY_GROUP_FOLDERS, TEST_GROUP_FOLDER_NAME, "f1", "f2", "f3", "f4", "f5", "file");
+  }
+
+  private Folder saveToFolderWithName(final String name, final Folder parentFolder, final User owner) {
+    final Folder folder = new Folder();
+    folder.setContents(Sets.<TropixObject>newHashSet());
+    return saveWithNameToParent(folder, name, parentFolder, owner);
   }
 
   @Test

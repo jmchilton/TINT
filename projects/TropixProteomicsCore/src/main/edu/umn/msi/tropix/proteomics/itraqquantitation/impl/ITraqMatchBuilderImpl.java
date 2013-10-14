@@ -133,17 +133,15 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
   public List<ITraqMatch> buildDataEntries(final Iterable<File> mzxmlInputs, final InputReport inputReport, final ITraqMatchBuilderOptions options) {
     // Parse the specified Scaffold spectrum report
     System.out.println("Running with " + options.getThreads() + " threads.");
-    final Iterable<ReportEntry> scaffoldEntries = reportParser.parse(FILE_UTILS.getFileInputStream(inputReport.getReport()),
+    final Iterable<ReportEntry> reportEntries = reportParser.parse(FILE_UTILS.getFileInputStream(inputReport.getReport()),
         inputReport.getReportType());
-
-    // System.out.println("Found " + Iterables.size(scaffoldEntries) + " entries.");
 
     // Parse the MzXML files and obtain scan arrays for each
     System.out.println("Building scansMap");
     final Map<ScanIndex, ITraqScanSummary> scansMap = parseScans(mzxmlInputs, options, (inputReport.getReportType() != ReportType.PEPXML));
 
     System.out.println("Matching build itraq matches");
-    return iTraqMatcher.match(scaffoldEntries, new ScanFunctionImpl(scansMap), options);
+    return iTraqMatcher.match(reportEntries, new ScanFunctionImpl(scansMap), options);
   }
 
   interface ScanIndexMatcher {
@@ -228,6 +226,9 @@ class ITraqMatchBuilderImpl implements ITraqMatchBuilder {
         throw new IllegalStateException(errorMessage);
       } else if(!potentialMatches.isEmpty()) {
         match = scansMap.get(potentialMatches.get(0));
+        if(match == null) {
+          throw new IllegalStateException("Programming error, invalid HashMap construction.");
+        }
       }
       return match;
     }

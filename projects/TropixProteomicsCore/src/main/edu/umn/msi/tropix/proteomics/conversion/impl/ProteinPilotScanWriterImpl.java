@@ -22,4 +22,9 @@ public class ProteinPilotScanWriterImpl extends BaseMgfScanWriterImpl {
     writeTitle(title);
   }
 
+  @Override
+  protected boolean doWriteRetentionTimes() {
+    return true;
+  }
+
 }

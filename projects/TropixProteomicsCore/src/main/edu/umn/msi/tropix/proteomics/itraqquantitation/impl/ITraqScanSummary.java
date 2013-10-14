@@ -33,16 +33,19 @@ final class ITraqScanSummary {
   private final short charge;
   private final ImmutableMap<ITraqLabel, Double> labelIntensitiesDerived;
   private final ImmutableList<ITraqLabel> labels;
-  
-  public static ITraqScanSummary fromPeaks(final int number, final int alt, final short charge, final Iterable<ITraqLabel> inputLabels, final double[] peaks) {
+
+  public static ITraqScanSummary fromPeaks(final int number, final int alt, final short charge, final Iterable<ITraqLabel> inputLabels,
+      final double[] peaks) {
     return new ITraqScanSummary(number, alt, charge, peaks, inputLabels);
   }
 
-  public static ITraqScanSummary fromIntensities(final int number, final int alt, final short charge, final Iterable<ITraqLabel> inputLabels, final Iterable<Double> intensities) {
+  public static ITraqScanSummary fromIntensities(final int number, final int alt, final short charge, final Iterable<ITraqLabel> inputLabels,
+      final Iterable<Double> intensities) {
     return new ITraqScanSummary(number, alt, charge, inputLabels, intensities);
   }
-  
-  private ITraqScanSummary(final int number, final int alt, final short charge, final Iterable<ITraqLabel> inputLabels, final Iterable<Double> intensities) {
+
+  private ITraqScanSummary(final int number, final int alt, final short charge, final Iterable<ITraqLabel> inputLabels,
+      final Iterable<Double> intensities) {
     this.number = number;
     this.alt = alt;
     this.charge = charge;
@@ -72,7 +75,7 @@ final class ITraqScanSummary {
         if(label.fitsPeak(mtoz)) {
           final double previousTotal = labelIntensitiesDerived.get(label);
           labelIntensitiesDerived.put(label, previousTotal + intensity);
-        }          
+        }
       }
     }
     this.labelIntensitiesDerived = ImmutableMap.copyOf(labelIntensitiesDerived);
@@ -84,6 +87,14 @@ final class ITraqScanSummary {
       allGreater = allGreater && intensityDerived > x;
     }
     return allGreater;
+  }
+
+  public void printIntensityWarning() {
+    final StringBuilder builder = new StringBuilder();
+    for(final ITraqLabel label : this.labels) {
+      builder.append(label.getLabel() + ": " + this.labelIntensitiesDerived.get(label));
+    }
+    System.out.println("Skipping scan with intensities: " + builder.toString());
   }
 
   public int getNumber() {
@@ -101,7 +112,7 @@ final class ITraqScanSummary {
   public double getIntensity(@Nonnull final ITraqLabel label) {
     return labelIntensitiesDerived.get(label);
   }
-  
+
   public ImmutableList<ITraqLabel> getLabels() {
     return labels;
   }

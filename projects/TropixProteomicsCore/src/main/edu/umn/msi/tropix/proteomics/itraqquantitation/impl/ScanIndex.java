@@ -16,6 +16,9 @@
 
 package edu.umn.msi.tropix.proteomics.itraqquantitation.impl;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -31,6 +34,7 @@ class ScanIndex {
   private final int number;
   private final short charge;
   private final ImmutableSet<String> alternativeNames;
+  private static final Pattern MULTIFILE_PATTERN = Pattern.compile("^\\d+_task_(.*)\\.dat$");
 
   ScanIndex(final String name, final Integer fileIndex, final int number, final short charge) {
     this(name, fileIndex, number, charge, Lists.<String>newArrayList(name));
@@ -41,7 +45,19 @@ class ScanIndex {
     this.fileIndex = fileIndex;
     this.number = number;
     this.charge = charge;
-    this.alternativeNames = ImmutableSet.copyOf(alternativeNames);
+    this.alternativeNames = buildAlternativeNames(alternativeNames);
+  }
+
+  private static final ImmutableSet<String> buildAlternativeNames(final Iterable<String> alternativeNames) {
+    final ImmutableSet.Builder<String> alternativeNamesBuilder = ImmutableSet.builder();
+    for(final String alternativeName : alternativeNames) {
+      alternativeNamesBuilder.add(alternativeName);
+      final Matcher matcher = MULTIFILE_PATTERN.matcher(alternativeName);
+      if(matcher.matches()) {
+        alternativeNamesBuilder.add(matcher.group(1));
+      }
+    }
+    return alternativeNamesBuilder.build();
   }
 
   @Override
@@ -107,11 +123,16 @@ class ScanIndex {
   }
 
   public boolean numberAndNameMatch(@Nonnull final ScanIndex scanIndex) {
-    return scanIndex.number == number && namesMatch(scanIndex);
+    final boolean numberAndNameMatch = (scanIndex.number == number) && namesMatch(scanIndex);
+    if(numberAndNameMatch) {
+      System.out.println("Number and Name Match: " + numberAndNameMatch + " for " + scanIndex + " and " + this);
+    }
+    return numberAndNameMatch;
   }
 
   private boolean namesMatch(@Nonnull final ScanIndex scanIndex) {
-    return !Sets.intersection(alternativeNames, scanIndex.alternativeNames).isEmpty();
+    final boolean namesMatch = !Sets.intersection(alternativeNames, scanIndex.alternativeNames).isEmpty();
+    return namesMatch;
   }
 
   public boolean numberAndFileIndexMatch(@Nonnull final ScanIndex scanIndex) {
@@ -126,7 +147,6 @@ class ScanIndex {
     boolean match = false;
     if(numberAndChargeMatch(scanIndex)) {
       match = !Sets.intersection(alternativeNames, scanIndex.alternativeNames).isEmpty();
-      // System.out.println("IN HERE!!!" + match);
     }
     return match;
   }

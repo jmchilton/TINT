@@ -37,6 +37,7 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
@@ -49,6 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
+import edu.umn.msi.tropix.common.logging.ExceptionUtils;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelper;
 import edu.umn.msi.tropix.common.reflect.ReflectionHelpers;
 import edu.umn.msi.tropix.models.DirectPermission;
@@ -646,7 +648,7 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     final String selectWhat;
     final boolean splitQuery = parameters.size() > SINGLE_QUERY_PATH_PART_LIMIT;
     if(splitQuery) {
-      selectWhat = String.format("%s.id", selectWhatInput);
+      selectWhat = String.format("distinct %s.id", selectWhatInput);
     } else {
       selectWhat = selectWhatInput;
     }
@@ -663,16 +665,28 @@ class TropixObjectDaoImpl extends TropixPersistenceTemplate implements TropixObj
     }
     final TropixObject result;
     if(splitQuery) {
-      final String objectId = (String) query.uniqueResult();
+      final String objectId = uniqueResult(query, String.class);
       if(objectId == null) {
         result = null;
       } else {
         result = loadTropixObject(objectId);
       }
     } else {
-      result = (TropixObject) query.uniqueResult();
+      result = uniqueResult(query, TropixObject.class);
     }
     return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> T uniqueResult(final Query query, Class<T> resultType) {
+    try {
+      return (T) query.uniqueResult();
+    } catch(final RuntimeException e) {
+      final String queryString = ToStringBuilder.reflectionToString(query, ToStringBuilder.getDefaultStyle(), false, Query.class);
+      final String message = String.format("Failed to fetch unique result for query %s", queryString);
+      ExceptionUtils.logQuietly(LOG, e, message);
+      throw e;
+    }
   }
 
   private Query createQuery(final String queryString) {

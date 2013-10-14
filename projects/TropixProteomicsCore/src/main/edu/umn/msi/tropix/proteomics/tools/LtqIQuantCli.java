@@ -36,7 +36,7 @@ public class LtqIQuantCli {
     private String groupType = "PROTEIN";
 
     @Parameter(names = "--type", required = false)
-    final String type = "FOUR_PLEX";
+    private String quant_type = "FOUR_PLEX";
 
     @Parameter(description = "<input>")
     private List<String> files = Lists.newArrayList();
@@ -74,12 +74,13 @@ public class LtqIQuantCli {
     if(mzxmlFiles.size() == 0 && reportType == ReportType.PEPXML) {
       mzxmlFiles.addAll(PepXmlUtils.loadInputFiles(new File(cliOptions.report)));
     }
-
-    System.out.println("Running with report type " + reportType + " and loading " + mzxmlFiles.size() + " peak lists.");
+    System.out.println("raw quant_type is " + cliOptions.quant_type);
+    final QuantificationType quantificationType = QuantificationType.fromValue(cliOptions.quant_type);
+    System.out.println("Running with report type " + reportType + " and loading " + mzxmlFiles.size() + " peak lists, quant type is "
+        + quantificationType.getValue() + ".");
     final File reportFile = new File(cliOptions.report);
     final File outFile = new File(cliOptions.output);
     System.out.println("Setting group type to " + groupType);
-    final QuantificationType quantificationType = QuantificationType.fromString(cliOptions.type);
     final QuantitationOptionsBuilder optionsBuilder = QuantitationOptions
         .forInput(mzxmlFiles, new InputReport(reportFile, reportType))
         .withGroupType(groupType)

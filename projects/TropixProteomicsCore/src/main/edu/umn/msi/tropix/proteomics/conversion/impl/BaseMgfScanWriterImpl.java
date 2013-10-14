@@ -138,8 +138,21 @@ abstract class BaseMgfScanWriterImpl implements MgfScanWriter {
     if(doWriteScanNumbers()) {
       writeScans(scan);
     }
+    long retentionTime = scan.getRt();
+    if(retentionTime != -1L && doWriteRetentionTimes()) {
+      writeRetentionTime(retentionTime);
+    }
+
     final short precursorCharge = getPrecursorCharge(scan);
     writeTitle(scan, precursorCharge);
+  }
+
+  protected boolean doWriteRetentionTimes() {
+    return false;
+  }
+
+  private void writeRetentionTime(long retentionTime) {
+    writeHeader("RTINSECONDS", formatDouble(retentionTime / 1000.0));
   }
 
   private static String getTitle(final Scan scan, final int charge) {

@@ -54,6 +54,9 @@ class ITraqMatcherImpl implements ITraqMatcher {
       match = new ITraqMatch(scan, proteinAccession, proteinProbability, peptideSequence, peptideProbability,
           modifiedPeptideSequence,
           options.getGroupType());
+    } else {
+      System.out.println("Skipping low intensity scan...");
+      scan.printIntensityWarning();
     }
     return match;
   }
@@ -64,11 +67,14 @@ class ITraqMatcherImpl implements ITraqMatcher {
 
     // For each ScaffoldEntry find the matching Scan and if each of the iTraq intensities
     // is high enough add it to the result (dataEntries).
+    int misMatches = 0;
     if(options.getThreads() == 1) {
       for(final ReportEntry reportEntry : reportEntries) {
         ITraqMatch match = match(reportEntry, scanSummaries, options);
         if(match != null) {
           iTraqMatchs.add(match);
+        } else {
+          misMatches++;
         }
       }
     } else {
@@ -88,10 +94,12 @@ class ITraqMatcherImpl implements ITraqMatcher {
         ITraqMatch match = matchMap.get(reportEntry);
         if(match != null) {
           iTraqMatchs.add(match);
+        } else {
+          misMatches++;
         }
       }
     }
-    System.out.println("Returning " + iTraqMatchs.size() + " matches.");
+    System.out.println("Returning " + iTraqMatchs.size() + " matches, failed to match: " + misMatches + " entries.");
     return iTraqMatchs;
   }
 }

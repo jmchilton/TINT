@@ -210,6 +210,11 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
     return provider;
   }
 
+  protected Folder createTempGroupFolder(final User user, final String name) {
+    final User owner = createTempUser();
+    return createTempGroupFolder(user, owner, name);
+  }
+
   protected Folder createTempGroupFolder(final User user, final User owner, final String name) {
     final Group group = createTempGroup(owner, user);
 
@@ -224,11 +229,6 @@ public class ServiceTest extends AbstractTransactionalTestNGSpringContextTests {
 
     return folder;
 
-  }
-
-  protected Folder createTempGroupFolder(final User user, final String name) {
-    final User owner = createTempUser();
-    return createTempGroupFolder(user, owner, name);
   }
 
   protected void initTempRequest(final Request request) {

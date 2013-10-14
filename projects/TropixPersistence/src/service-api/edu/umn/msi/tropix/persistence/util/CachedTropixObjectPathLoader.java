@@ -15,7 +15,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 
-import edu.umn.msi.tropix.common.logging.ExceptionUtils;
 import edu.umn.msi.tropix.models.TropixObject;
 import edu.umn.msi.tropix.persistence.service.TropixObjectService;
 
@@ -27,7 +26,7 @@ public class CachedTropixObjectPathLoader {
     }
   };
   private static final Joiner JOINER = Joiner.on(">");
-  private Cache<String, String> cache = CacheBuilder.newBuilder().maximumSize(10000).build();
+  private Cache<String, String> cache = CacheBuilder.newBuilder().maximumSize(1000).build();
   private TropixObjectService tropixObjectService;
 
   @Inject
@@ -90,23 +89,23 @@ public class CachedTropixObjectPathLoader {
     }
     // This is really slow for absent parent I guess. Do not use getPath for checking?
     /*
-    if(object == null) {
-      if(pathSize > 1) {
-        final String parentId = cache.getIfPresent(encodedParent);
-        if(parentId != null) {
-          try {
-            object = tropixObjectService.getChild(identity, parentId, pathParts.get(pathSize - 1));
-            LOG.debug("Cache getChild returned non-null object?" + (object != null));
-          } catch(RuntimeException e) {
-            ExceptionUtils.logQuietly(LOG, e, "getChild threw exception");
-            object = null;
-          }
-        }
-      } else {
-        System.out.println("Object is NULL but no parent");
-      }
-    }
-    */
+     * if(object == null) {
+     * if(pathSize > 1) {
+     * final String parentId = cache.getIfPresent(encodedParent);
+     * if(parentId != null) {
+     * try {
+     * object = tropixObjectService.getChild(identity, parentId, pathParts.get(pathSize - 1));
+     * LOG.debug("Cache getChild returned non-null object?" + (object != null));
+     * } catch(RuntimeException e) {
+     * ExceptionUtils.logQuietly(LOG, e, "getChild threw exception");
+     * object = null;
+     * }
+     * }
+     * } else {
+     * System.out.println("Object is NULL but no parent");
+     * }
+     * }
+     */
     return checkObject(object);
   }
 
