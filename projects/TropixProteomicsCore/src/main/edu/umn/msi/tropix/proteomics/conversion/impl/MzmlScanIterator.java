@@ -152,7 +152,8 @@ public class MzmlScanIterator extends AbstractXmlIterator<Scan> {
 
     private double[] parseData() {
       boolean is64Bit = !params.containsKey("32-bit float");
-      return ConversionUtils.extractDoublesFromBase64(data, is64Bit, true);
+      boolean isCompressed = params.containsKey("zlib compression");
+      return ConversionUtils.extractDoublesFromBase64(data, is64Bit, true, isCompressed);
     }
   }
 

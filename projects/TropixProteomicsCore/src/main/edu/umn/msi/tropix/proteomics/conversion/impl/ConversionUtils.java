@@ -21,12 +21,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 import javax.annotation.Nonnull;
 import javax.annotation.WillClose;
@@ -142,7 +145,11 @@ public class ConversionUtils {
   }
 
   public static double[] extractDoublesFromBase64(final String base64, final boolean is64Bit, final boolean littleEndian) {
-    final byte[] decodedBytes = Base64.decodeBase64(base64.getBytes());
+    return extractDoublesFromBase64(base64, is64Bit, littleEndian, false);
+  }
+
+  public static double[] extractDoublesFromBase64(final String base64, final boolean is64Bit, final boolean littleEndian, final boolean isCompressed) {
+    final byte[] decodedBytes = isCompressed ? decompress(Base64.decodeBase64(base64.getBytes())) : Base64.decodeBase64(base64.getBytes());
     final double[] doubles;
     if(littleEndian) {
       doubles = extractDoublesLittleEndian(decodedBytes, is64Bit);
@@ -182,6 +189,43 @@ public class ConversionUtils {
       }
     }
     return doubles;
+  }
+
+  public static  byte[] decompress(byte[] compressedData) {
+    byte[] decompressedData;
+
+    // using a ByteArrayOutputStream to not having to define the result array size beforehand
+    Inflater decompressor = new Inflater();
+
+    decompressor.setInput(compressedData);
+    // Create an expandable byte array to hold the decompressed data
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(compressedData.length);
+    byte[] buf = new byte[1024];
+    while (!decompressor.finished()) {
+      try {
+        int count = decompressor.inflate(buf);
+        if (count == 0 && decompressor.needsInput()) {
+          break;
+        }
+        bos.write(buf, 0, count);
+      } catch (DataFormatException e) {
+        throw new IllegalStateException("Encountered wrong data format " +
+            "while trying to decompress binary data!", e);
+      }
+    }
+    try {
+      bos.close();
+    } catch (IOException e) {
+      // ToDo: add logging
+      e.printStackTrace();
+    }
+    // Get the decompressed data
+    decompressedData = bos.toByteArray();
+
+    if (decompressedData == null) {
+      throw new IllegalStateException("Decompression of binary data produced no result (null)!");
+    }
+    return decompressedData;
   }
 
   public static Float getPrecursorMz(final Scan scan) {
